@@ -1,0 +1,166 @@
+:root,
+html,
+body {
+    margin: 0;
+    padding: 0;
+}
+
+.app-header {
+    width: 100%;
+    box-sizing: border-box;
+    background: #ffffff;
+    box-shadow: 0 1px 0 rgba(15, 23, 42, 0.06);
+    margin: 0;
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+}
+
+.header-container {
+    display: grid;
+    grid-template-columns: auto 1fr auto;
+    max-width: 1200px;
+    width: 100%;
+    margin: 0 auto;
+    padding: 12px 20px;
+    align-items: center;
+    gap: 16px;
+    position: relative;
+    box-sizing: border-box;
+}
+
+
+/* Left: logo */
+.logo {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.logo-icon {
+    display: block;
+    height: 28px;
+    width: auto;
+}
+
+.logo-text {
+    font-weight: 700;
+    font-size: 18px;
+    color: #0f172a;
+}
+
+.nav {
+    justify-self: center;
+    display: flex;
+    gap: 28px;
+}
+
+.nav-link {
+    color: #475569;
+    text-decoration: none;
+    font-size: 14px;
+    padding: 6px 4px;
+}
+
+.nav-link:hover {
+    color: #0f172a;
+    background: transparent;
+}
+
+/* active nav state */
+.nav-link.active {
+    color: #0f172a;
+    position: relative;
+}
+
+.nav-link.active::after {
+    content: "";
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: -8px;
+    margin: auto;
+    height: 2px;
+    width: 18px;
+    background: #2563eb;
+    border-radius: 2px;
+}
+
+/* Right actions */
+.header-right {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+}
+
+.right-link {
+    color: #475569;
+    text-decoration: none;
+    font-size: 14px;
+    padding: 6px 8px;
+}
+
+.right-link:hover {
+    color: #0f172a;
+}
+
+.btn.register {
+    background: #2563eb;
+    color: #fff;
+    border: none;
+    padding: 8px 16px;
+    border-radius: 9999px;
+    cursor: pointer;
+    font-weight: 600;
+    font-size: 14px;
+    line-height: 1;
+    box-shadow: 0 1px 0 rgba(0, 0, 0, 0.08);
+}
+
+.btn.register:hover {
+    filter: brightness(0.95);
+}
+
+/* language toggle */
+.lang-toggle {
+    color: #475569;
+    font-size: 13px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.lang-toggle .sep {
+    color: #cbd5e1;
+    margin: 0 6px;
+}
+
+/* Responsive */
+@media (max-width: 820px) {
+    .nav {
+        display: none;
+    }
+
+    .header-container {
+        padding: 10px 12px;
+    }
+
+    .logo-text {
+        font-size: 16px;
+    }
+}
+
+@media (max-width: 480px) {
+    .header-right .right-link {
+        display: none;
+    }
+
+    .lang-toggle {
+        display: none;
+    }
+
+    .btn.register {
+        padding: 6px 10px;
+        font-size: 13px;
+    }
+}
