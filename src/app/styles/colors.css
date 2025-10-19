@@ -1,0 +1,74 @@
+:root {
+    /* BRAND Colors */
+    --brand-primary: #0041D9;
+    --brand-secondary: #CCCCF5;
+    --brand-tertiary: #E7F6FD;
+
+    /* ACCENTS Colors */
+    --accent-yellow: #FFB836;
+    --accent-green: #56CDAD;
+    --accent-red: #FF6550;
+    --accent-blue: #26A4FF;
+    --accent-purple: #7B61FF;
+
+    /* NEUTRALS Colors */
+    --neutral-900: #25324B;
+    --neutral-800: #515B6F;
+    --neutral-700: #7C8493;
+    --neutral-600: #A8ADB7;
+    --neutral-500: #E4E5E7;
+    --neutral-400: #F9FAFC;
+    --neutral-300: #F8F8FD;
+
+    /* Semantic Color Mappings */
+    --primary-color: var(--brand-primary);
+    --primary-hover: #0033B3;
+    --primary-light: var(--brand-secondary);
+    --primary-dark: #002999;
+
+    /* Text Colors */
+    --text-primary: var(--neutral-900);
+    --text-secondary: var(--neutral-800);
+    --text-muted: var(--neutral-700);
+    --text-inverse: #ffffff;
+
+    /* Background Colors */
+    --background-primary: var(--neutral-300);
+    --background-secondary: #ffffff;
+    --background-tertiary: var(--neutral-400);
+    --background-dark: var(--neutral-900);
+
+    /* Border Colors */
+    --border-color: var(--neutral-500);
+    --border-light: var(--neutral-400);
+    --border-dark: var(--neutral-600);
+
+    /* Status Colors using Accents */
+    --success-color: var(--accent-green);
+    --success-light: #7DD3C2;
+    --success-dark: #3FB896;
+
+    --warning-color: var(--accent-yellow);
+    --warning-light: #FFCC5A;
+    --warning-dark: #E6A62E;
+
+    --error-color: var(--accent-red);
+    --error-light: #FF8A73;
+    --error-dark: #E64A2D;
+
+    --info-color: var(--accent-blue);
+    --info-light: #5BB8FF;
+    --info-dark: #1A8FE6;
+
+    /* Legacy Gray Scale (mapped to new neutrals) */
+    --gray-50: var(--neutral-300);
+    --gray-100: var(--neutral-400);
+    --gray-200: var(--neutral-500);
+    --gray-300: var(--neutral-600);
+    --gray-400: var(--neutral-700);
+    --gray-500: var(--neutral-800);
+    --gray-600: var(--neutral-900);
+    --gray-700: var(--neutral-900);
+    --gray-800: var(--neutral-900);
+    --gray-900: var(--neutral-900);
+}
