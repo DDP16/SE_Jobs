@@ -1,0 +1,19 @@
+{
+    "welcome": "Welcome to SE Jobs",
+    "home": "Home",
+    "jobs": "Jobs",
+    "contactUs": "Contact Us",
+    "forEmployers": "For Employers",
+    "login": "Login",
+    "register": "Register",
+    "about": "About",
+    "contact": "Contact",
+    "language": "Language",
+    "english": "English",
+    "vietnamese": "Vietnamese",
+    "pageNotFound": "Page Not Found",
+    "goBack": "Go Back",
+    "searchJobs": "Search Jobs",
+    "findYourDreamJob": "Find Your Dream Job",
+    "getStarted": "Get Started"
+}

@@ -1,14 +1,23 @@
 import './App.css'
+import './app/styles/colors.css'
+import './app/styles/font.css'
+import './i18n'
+import { useTranslation } from 'react-i18next'
+import ThemeProvider from './app/providers/ThemeProvider'
+import MainLayout from './app/layouts/MainLayout'
+import Home from './app/pages/Home'
 import MainRoutes from './app/routes/MainRoutes'
 
 function App() {
+  const { t } = useTranslation()
+
   return (
-    <>
-      <div>
+    <ThemeProvider>
+      <MainLayout maxWidth={false}>
         {/* <MainRoutes /> */}
-        <h1>Welcome to SE Jobs</h1>      
-      </div>
-    </>
+        <Home />
+      </MainLayout>
+    </ThemeProvider>
   )
 }
 

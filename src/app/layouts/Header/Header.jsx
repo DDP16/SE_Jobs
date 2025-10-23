@@ -1,29 +1,184 @@
-import React from "react";
-import "./Header.css";
+import React, { useState } from "react";
+import {
+  AppBar,
+  Toolbar,
+  Typography,
+  Box,
+  Button,
+  IconButton,
+  Menu,
+  MenuItem,
+  ToggleButton,
+  ToggleButtonGroup,
+  useTheme,
+  useMediaQuery
+} from '@mui/material';
+import { Menu as MenuIcon } from '@mui/icons-material';
+import { useTranslation } from "react-i18next";
 import logo from '../../assets/logo.svg';
 
 
 export default function Header() {
+  const { i18n, t } = useTranslation();
+  const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down('md'));
+  const [mobileMenuAnchor, setMobileMenuAnchor] = useState(null);
+
+  const handleLangChange = (_e, newLang) => {
+    if (newLang) i18n.changeLanguage(newLang);
+  };
+
+  const handleMobileMenuOpen = (event) => {
+    setMobileMenuAnchor(event.currentTarget);
+  };
+
+  const handleMobileMenuClose = () => {
+    setMobileMenuAnchor(null);
+  };
+
   return (
-    <header className="app-header">
-      <div className="header-container">
-        <div className="logo" onClick={() => navigate('/')}>
-          <img src={logo} alt="SE Jobs Logo" width="70" />
-        </div>
+    <AppBar
+      position="static"
+      sx={{
+        bgcolor: 'white',
+        color: 'text.primary',
+        boxShadow: 1
+      }}
+    >
+      <Toolbar sx={{
+        minHeight: { xs: '56px', md: '64px' },
+        px: { xs: 2, md: 3 },
+        justifyContent: 'space-between'
+      }}>
+        {/* Logo */}
+        <Box sx={{ display: 'flex', alignItems: 'center', cursor: 'pointer' }} onClick={() => window.location.assign('/')}>
+          <img src={logo} alt="SE Jobs Logo" width={isMobile ? "40" : "60"} style={{ marginRight: '8px', marginLeft: '10px' }} />
+        </Box>
 
-        <nav className="nav" aria-label="Main navigation">
-          <a className="nav-link active" href="#" aria-current="page">Home</a>
-          <a className="nav-link" href="#jobs">Jobs</a>
-          <a className="nav-link" href="#contact">Contact Us</a>
-        </nav>
+        {/* Desktop Navigation */}
+        {!isMobile && (
+          <Box sx={{
+            flexGrow: 1,
+            display: 'flex',
+            gap: 2,
+            ml: 4,
+            justifyContent: 'center'
+          }}>
+            <Button color="inherit">{t('home')}</Button>
+            <Button color="inherit">{t('jobs')}</Button>
+            <Button color="inherit">{t('contactUs')}</Button>
+          </Box>
+        )}
 
-        <div className="header-right">
-          <a className="right-link" href="#employers" style={{ fontStyle: 'italic' }}>For Employers</a>
-          <a className="right-link" href="#login">Login</a>
-          <button className="btn register">Register</button>
-          <div className="lang-toggle">EN<span className="sep">|</span>VI</div>
-        </div>
-      </div>
-    </header>
+        {/* Desktop Actions */}
+        {!isMobile && (
+          <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
+            <Button color="inherit">{t('forEmployers')}</Button>
+            <Button variant="outlined">{t('login')}</Button>
+            <Button variant="contained" color="primary">{t('register')}</Button>
+            <ToggleButtonGroup
+              exclusive
+              size="small"
+              value={i18n.language?.startsWith('vi') ? 'vi' : 'en'}
+              onChange={handleLangChange}
+              aria-label="Language switcher"
+              sx={{
+                '& .MuiToggleButton-root': {
+                  border: 'none',
+                  padding: '4px 8px',
+                  minWidth: '32px',
+                  '&.Mui-selected': {
+                    backgroundColor: 'transparent',
+                    color: 'primary.main',
+                    fontWeight: 600,
+                  },
+                },
+              }}
+            >
+              <ToggleButton value="en" aria-label="Switch to English">EN</ToggleButton>
+              <ToggleButton value="vi" aria-label="Switch to Vietnamese">VI</ToggleButton>
+            </ToggleButtonGroup>
+          </Box>
+        )}
+
+        {/* Mobile Menu */}
+        {isMobile && (
+          <IconButton
+            edge="end"
+            color="inherit"
+            aria-label="menu"
+            onClick={handleMobileMenuOpen}
+          >
+            <MenuIcon />
+          </IconButton>
+        )}
+
+        {/* Mobile Menu Dropdown */}
+        <Menu
+          anchorEl={mobileMenuAnchor}
+          open={Boolean(mobileMenuAnchor)}
+          onClose={handleMobileMenuClose}
+          anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
+          transformOrigin={{ vertical: 'top', horizontal: 'right' }}
+        >
+          <MenuItem onClick={handleMobileMenuClose}>
+            <Button color="inherit" sx={{ width: '100%', justifyContent: 'flex-start' }}>
+              {t('home')}
+            </Button>
+          </MenuItem>
+          <MenuItem onClick={handleMobileMenuClose}>
+            <Button color="inherit" sx={{ width: '100%', justifyContent: 'flex-start' }}>
+              {t('jobs')}
+            </Button>
+          </MenuItem>
+          <MenuItem onClick={handleMobileMenuClose}>
+            <Button color="inherit" sx={{ width: '100%', justifyContent: 'flex-start' }}>
+              {t('contactUs')}
+            </Button>
+          </MenuItem>
+          <MenuItem onClick={handleMobileMenuClose}>
+            <Button color="inherit" sx={{ width: '100%', justifyContent: 'flex-start' }}>
+              {t('forEmployers')}
+            </Button>
+          </MenuItem>
+          <MenuItem onClick={handleMobileMenuClose}>
+            <Button variant="outlined" sx={{ width: '100%', justifyContent: 'center' }}>
+              {t('login')}
+            </Button>
+          </MenuItem>
+          <MenuItem onClick={handleMobileMenuClose}>
+            <Button variant="contained" color="primary" sx={{ width: '100%', justifyContent: 'center' }}>
+              {t('register')}
+            </Button>
+          </MenuItem>
+          <MenuItem onClick={handleMobileMenuClose}>
+            <Box sx={{ width: '100%', display: 'flex', justifyContent: 'center', mt: 1 }}>
+              <ToggleButtonGroup
+                exclusive
+                size="small"
+                value={i18n.language?.startsWith('vi') ? 'vi' : 'en'}
+                onChange={handleLangChange}
+                aria-label="Language switcher"
+                sx={{
+                  '& .MuiToggleButton-root': {
+                    border: 'none',
+                    padding: '4px 8px',
+                    minWidth: '32px',
+                    '&.Mui-selected': {
+                      backgroundColor: 'transparent',
+                      color: 'primary.main',
+                      fontWeight: 600,
+                    },
+                  },
+                }}
+              >
+                <ToggleButton value="en" aria-label="Switch to English">EN</ToggleButton>
+                <ToggleButton value="vi" aria-label="Switch to Vietnamese">VI</ToggleButton>
+              </ToggleButtonGroup>
+            </Box>
+          </MenuItem>
+        </Menu>
+      </Toolbar>
+    </AppBar>
   );
 }
