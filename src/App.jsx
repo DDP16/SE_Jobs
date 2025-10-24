@@ -1,14 +1,8 @@
-import Header from './app/layouts/Header'
 import './App.css'
+import MainRoutes from './app/routes/MainRoutes'
 
 function App() {
-  return (
-    <>
-      <div>
-        <h1>Welcome to SE Jobs</h1>      
-      </div>
-    </>
-  )
+  return <MainRoutes />
 }
 
 export default App
