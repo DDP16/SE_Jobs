@@ -1,15 +1,11 @@
 import './App.css'
 import MainRoutes from './app/routes/MainRoutes'
+import './app/styles/colors.css'
+import './app/styles/font.css'
+import './i18n'
 
 function App() {
-  return (
-    <>
-      <div>
-        {/* <MainRoutes /> */}
-        <h1>Welcome to SE Jobs</h1>      
-      </div>
-    </>
-  )
+  return <MainRoutes />
 }
 
 export default App

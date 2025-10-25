@@ -1,19 +1,22 @@
-import React from "react";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 import Home from "../pages/Home";
-import Header from "../layouts/Header";
-import Footer from "../layouts/Footer";
 import PageNotFound from "../layouts/PageNotFound";
+import ThemeProvider from "../providers/ThemeProvider";
+import MainLayout from "../layouts/MainLayout";
 
 export default function MainRoutes() {
   return (
-    <BrowserRouter>
-      {/* <Header /> */}
-      <Routes>
-        <Route path="/" element={<Home />} />
-        <Route path="*" element={<PageNotFound />} />
-      </Routes>
-      {/* <Footer /> */}
-    </BrowserRouter>
+    <ThemeProvider>
+      <BrowserRouter>
+        <Routes>                            
+          <Route path="/" element={
+            <MainLayout maxWidth={false}>
+              <Home/>
+            </MainLayout>
+          }/>
+          <Route path="*" element={<PageNotFound/>} />
+        </Routes>
+      </BrowserRouter>
+    </ThemeProvider>
   );
 }
