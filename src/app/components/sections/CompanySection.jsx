@@ -9,7 +9,7 @@ import {
 } from '@mui/material';
 import { ArrowForward, ChevronLeft, ChevronRight } from '@mui/icons-material';
 import CompanyCard from '../features/CompanyCard';
-import { mockCompanies } from '../../data/mockData';
+import { mockCompanies } from '../../../mocks/mockData';
 
 export default function CompanySection() {
     const featuredCompanies = mockCompanies.slice(0, 6);

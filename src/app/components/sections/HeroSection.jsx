@@ -7,7 +7,7 @@ import {
     Chip
 } from '@mui/material';
 import SearchBar from '../features/SearchBar';
-import { mockPopularSearches } from '../../data/mockData';
+import { mockPopularSearches } from '../../../mocks/mockData';
 
 export default function HeroSection({ onSearch }) {
     return (
