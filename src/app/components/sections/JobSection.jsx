@@ -11,7 +11,7 @@ import {
 } from '@mui/material';
 import { ArrowForward } from '@mui/icons-material';
 import JobCard from '../features/JobCard';
-import { mockJobs } from '../../data/mockData';
+import { mockJobs } from '../../../mocks/mockData';
 import { useState } from 'react';
 
 export default function JobSection() {

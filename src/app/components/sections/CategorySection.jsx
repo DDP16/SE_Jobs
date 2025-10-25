@@ -10,7 +10,7 @@ import {
     Button
 } from '@mui/material';
 import { ArrowForward } from '@mui/icons-material';
-import { mockCategories } from '../../data/mockData';
+import { mockCategories } from '../../../mocks/mockData';
 
 export default function CategorySection() {
     return (
