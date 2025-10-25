@@ -7,18 +7,12 @@ import ThemeProvider from './app/providers/ThemeProvider'
 import MainLayout from './app/layouts/MainLayout'
 import Home from './app/pages/Home'
 import MainRoutes from './app/routes/MainRoutes'
+import './app/styles/colors.css'
+import './app/styles/font.css'
+import './i18n'
 
 function App() {
-  const { t } = useTranslation()
-
-  return (
-    <ThemeProvider>
-      <MainLayout maxWidth={false}>
-        {/* <MainRoutes /> */}
-        <Home />
-      </MainLayout>
-    </ThemeProvider>
-  )
+  return <MainRoutes />
 }
 
 export default App
