@@ -56,12 +56,14 @@ body {
 }
 
 /* HEADING Styles */
+/* Commented out to allow Tailwind classes to work on headings
 h1 {
     font-family: var(--font-primary);
     font-size: var(--font-size-h1);
     font-weight: var(--font-weight-regular);
     line-height: var(--leading-tight);
 }
+*/
 
 h2 {
     font-family: var(--font-primary);
