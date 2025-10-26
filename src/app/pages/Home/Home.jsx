@@ -17,7 +17,7 @@ export default function Home() {
       <CompanySection />
       <CategorySection />
       <JobSection />
-      <CTASection />
+      {/* <CTASection /> */}
     </>
   );
 }

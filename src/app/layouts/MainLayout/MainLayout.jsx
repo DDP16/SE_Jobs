@@ -3,17 +3,11 @@ import { Box, Container } from '@mui/material';
 import Header from '../Header';
 import Footer from '../Footer';
 
-interface MainLayoutProps {
-    children: React.ReactNode;
-    maxWidth?: 'xs' | 'sm' | 'md' | 'lg' | 'xl' | false;
-    disableGutters?: boolean;
-}
-
 export default function MainLayout({
     children,
-    maxWidth = 'lg',
+    maxWidth = false, 
     disableGutters = false
-}: MainLayoutProps) {
+}) {
     return (
         <Box sx={{
             display: 'flex',

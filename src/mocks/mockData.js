@@ -83,6 +83,48 @@ export const mockJobs = [
         isFeatured: false,
         applied: 7,
         capacity: 12
+    },
+    {
+        id: 7,
+        title: "Product Designer",
+        company: "Apple",
+        location: "Cupertino, USA",
+        type: "Full-time",
+        salary: "$5,000 - $8,000",
+        description: "We are looking for a Product Designer to join our team. You will be responsible for designing user experiences and interfaces.",
+        tags: ["Design", "UX", "UI"],
+        logo: "A",
+        isFeatured: false,
+        applied: 12,
+        capacity: 15
+    },
+    {
+        id: 8,
+        title: "Frontend Developer",
+        company: "Google",
+        location: "Mountain View, USA",
+        type: "Full-time",
+        salary: "$6,000 - $10,000",
+        description: "We are looking for a Frontend Developer to join our team. You will be responsible for developing user-facing features.",
+        tags: ["Development", "React", "JavaScript"],
+        logo: "G",
+        isFeatured: true,
+        applied: 15,
+        capacity: 20
+    },
+    {
+        id: 9,
+        title: "UX Researcher",
+        company: "Microsoft",
+        location: "Seattle, USA",
+        type: "Full-time",
+        salary: "$4,500 - $7,000",
+        description: "We are looking for a UX Researcher to join our team. You will be responsible for conducting user research and usability testing.",
+        tags: ["Research", "UX", "Analytics"],
+        logo: "M",
+        isFeatured: false,
+        applied: 7,
+        capacity: 12
     }
 ];
 
@@ -156,14 +198,14 @@ export const mockCompanies = [
 ];
 
 export const mockCategories = [
-    { id: 1, name: "Design", count: 24, icon: "🎨" },
-    { id: 2, name: "Sales", count: 12, icon: "💼" },
-    { id: 3, name: "Marketing", count: 8, icon: "📈" },
-    { id: 4, name: "Business", count: 15, icon: "💡" },
-    { id: 5, name: "Human Resource", count: 6, icon: "👥" },
-    { id: 6, name: "Finance", count: 9, icon: "💰" },
-    { id: 7, name: "Engineering", count: 18, icon: "⚙️" },
-    { id: 8, name: "Technology", count: 22, icon: "💻" }
+    { id: 1, name: "Design", count: 235, icon: "Palette" },
+    { id: 2, name: "Sales", count: 756, icon: "BusinessCenter" },
+    { id: 3, name: "Marketing", count: 140, icon: "TrendingUp" },
+    { id: 4, name: "Finance", count: 325, icon: "AttachMoney" },
+    { id: 5, name: "Technology", count: 436, icon: "Computer" },
+    { id: 6, name: "Engineering", count: 542, icon: "Engineering" },
+    { id: 7, name: "Business", count: 211, icon: "Lightbulb" },
+    { id: 8, name: "Human Resource", count: 346, icon: "Groups" }
 ];
 
 export const mockPopularSearches = [
