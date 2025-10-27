@@ -5,30 +5,85 @@ import PerksSection from "./partials/PerksSection";
 import CompanySection from "./partials/CompanySection";
 import SimilarJobs from "./partials/SimilarJobs";
 
-export default function JobDescription() {
+export default function JobDescription({
+  job,
+  showBreadcrumb = true,
+  showJobHeader = true,
+  showJobDetails = true,
+  showJobSidebar = true,
+  showPerksSection = true,
+  showCompanySection = true,
+  showSimilarJobs = true,
+  layout = "full" // "full" | "compact" | "minimal"
+}) {
+  // Layout configurations
+  const layoutConfig = {
+    full: {
+      showBreadcrumb: true,
+      showJobHeader: true,
+      showJobDetails: true,
+      showJobSidebar: true,
+      showPerksSection: true,
+      showCompanySection: true,
+      showSimilarJobs: true
+    },
+    compact: {
+      showBreadcrumb: false,
+      showJobHeader: true,
+      showJobDetails: true,
+      showJobSidebar: true,
+      showPerksSection: false,
+      showCompanySection: false,
+      showSimilarJobs: false
+    },
+    minimal: {
+      showBreadcrumb: false,
+      showJobHeader: true,
+      showJobDetails: true,
+      showJobSidebar: false,
+      showPerksSection: false,
+      showCompanySection: false,
+      showSimilarJobs: false
+    }
+  };
+
+  // Use layout config if layout prop is provided
+  const config = layoutConfig[layout] || {};
+  const finalConfig = {
+    showBreadcrumb: showBreadcrumb && config.showBreadcrumb !== false,
+    showJobHeader: showJobHeader && config.showJobHeader !== false,
+    showJobDetails: showJobDetails && config.showJobDetails !== false,
+    showJobSidebar: showJobSidebar && config.showJobSidebar !== false,
+    showPerksSection: showPerksSection && config.showPerksSection !== false,
+    showCompanySection: showCompanySection && config.showCompanySection !== false,
+    showSimilarJobs: showSimilarJobs && config.showSimilarJobs !== false
+  };
+
   return (
     <div className="min-h-screen bg-background">
       <div className="max-w-7xl mx-auto px-6">
-        <div className="mb-6">
-          <p className="text-sm text-muted-foreground">
-            Home / Companies / Nomad / Social Media Assistant
-          </p>
-        </div>
+        {finalConfig.showBreadcrumb && (
+          <div className="mb-6">
+            <p className="text-sm text-muted-foreground">
+              Home / Companies / {job?.company || 'Company'} / {job?.title || 'Job Title'}
+            </p>
+          </div>
+        )}
 
-        <JobHeader />
+        {finalConfig.showJobHeader && <JobHeader job={job} />}
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-8">
           <div className="lg:col-span-2">
-            <JobDetails />
+            {finalConfig.showJobDetails && <JobDetails job={job} />}
           </div>
           <div>
-            <JobSidebar />
+            {finalConfig.showJobSidebar && <JobSidebar job={job} />}
           </div>
         </div>
 
-        <PerksSection />
-        <CompanySection />
-        <SimilarJobs />
+        {finalConfig.showPerksSection && <PerksSection job={job} />}
+        {finalConfig.showCompanySection && <CompanySection job={job} />}
+        {finalConfig.showSimilarJobs && <SimilarJobs job={job} />}
       </div>
     </div>
   );

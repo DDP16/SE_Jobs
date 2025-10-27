@@ -15,6 +15,7 @@ import {
 } from '@mui/material';
 import { Menu as MenuIcon } from '@mui/icons-material';
 import { useTranslation } from "react-i18next";
+import { Link } from "react-router-dom";
 import logo from '../../assets/logo.svg';
 
 
@@ -62,10 +63,10 @@ export default function Header() {
             display: 'flex',
             gap: 2,
             ml: 4,
-            justifyContent: 'center'
+            // justifyContent: 'center'
           }}>
-            <Button color="inherit">{t('home')}</Button>
-            <Button color="inherit">{t('jobs')}</Button>
+            <Button color="inherit" component={Link} to="/">{t('home')}</Button>
+            <Button color="inherit" component={Link} to="/jobs">{t('jobs')}</Button>
             <Button color="inherit">{t('contactUs')}</Button>
           </Box>
         )}

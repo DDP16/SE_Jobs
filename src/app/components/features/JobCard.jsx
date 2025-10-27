@@ -24,7 +24,8 @@ export default function JobCard({
     onShare,
     onApply,
     isBookmarked = false,
-    showActions = false //set when user login or not
+    showActions = false, //set when user login or not
+    variant = "card" // "card" or "list"
 }) {
     const {
         id,
@@ -43,6 +44,85 @@ export default function JobCard({
 
     const appliedPercentage = (applied / capacity) * 100;
 
+    if (variant === "list") {
+        return (
+            <Card
+                sx={{
+                    display: 'flex',
+                    flexDirection: 'row',
+                    alignItems: 'center',
+                    p: 3,
+                    mb: 2,
+                    borderRadius: '12px',
+                    boxShadow: '0 1px 3px rgba(0, 0, 0, 0.1)',
+                    transition: 'all 0.2s ease-in-out',
+                    '&:hover': {
+                        boxShadow: '0 4px 12px rgba(0, 0, 0, 0.15)',
+                        transform: 'translateY(-1px)'
+                    }
+                }}
+            >
+                {/* Company Logo */}
+                <Avatar
+                    sx={{
+                        width: 60,
+                        height: 60,
+                        mr: 3,
+                        bgcolor: 'primary.main',
+                        color: 'white',
+                        fontSize: '1.5rem',
+                        fontWeight: 600
+                    }}
+                >
+                    {logo}
+                </Avatar>
+
+                {/* Job Info */}
+                <Box sx={{ flexGrow: 1 }}>
+                    <Stack direction="row" justifyContent="space-between" alignItems="flex-start" sx={{ mb: 1 }}>
+                        <Box>
+                            <Typography variant="h6" sx={{ fontWeight: 600, mb: 0.5 }}>
+                                {title}
+                            </Typography>
+                            <Typography variant="body2" sx={{ color: 'text.secondary', mb: 1 }}>
+                                {company} • {location}
+                            </Typography>
+                        </Box>
+                        <Stack direction="row" spacing={1}>
+                            <Chip label={type} size="small" variant="outlined" />
+                            {isFeatured && <Badge variant="success">Featured</Badge>}
+                        </Stack>
+                    </Stack>
+
+                    <Typography variant="body2" sx={{ color: 'text.secondary', mb: 2 }}>
+                        {description.length > 150 ? `${description.substring(0, 150)}...` : description}
+                    </Typography>
+
+                    <Stack direction="row" justifyContent="space-between" alignItems="center">
+                        <Stack direction="row" spacing={1} flexWrap="wrap" useFlexGap>
+                            {tags.slice(0, 3).map((tag, index) => (
+                                <Chip key={index} label={tag} size="small" variant="outlined" />
+                            ))}
+                        </Stack>
+                        <Stack direction="row" spacing={1}>
+                            <Typography variant="body2" sx={{ color: 'primary.main', fontWeight: 600 }}>
+                                {salary}
+                            </Typography>
+                            <Button
+                                variant="contained"
+                                size="small"
+                                onClick={() => onApply?.(job)}
+                                sx={{ textTransform: 'none' }}
+                            >
+                                Apply Now
+                            </Button>
+                        </Stack>
+                    </Stack>
+                </Box>
+            </Card>
+        );
+    }
+
     return (
         <Card
             className="h-full w-full flex flex-col relative bg-white rounded-lg shadow-sm hover:shadow-md transition-all duration-200 hover:-translate-y-1 border border-gray-100"
@@ -52,7 +132,7 @@ export default function JobCard({
                 display: 'flex',
                 flexDirection: 'column',
                 position: 'relative',
-                minHeight: '280px',
+                minHeight: '200px',
                 minWidth: '260px',
                 maxWidth: '100%',
                 '&:hover': {
@@ -130,7 +210,7 @@ export default function JobCard({
                     </Box>
                 </Box>
 
-                <Typography
+                {/* <Typography
                     variant="body2"
                     color="text.secondary"
                     className="text-gray-600 mb-4 text-sm leading-relaxed"
@@ -145,7 +225,7 @@ export default function JobCard({
                     }}
                 >
                     {description}
-                </Typography>
+                </Typography> */}
 
                 {tags.length > 0 && (
                     <Stack
@@ -178,7 +258,7 @@ export default function JobCard({
                     className="flex items-center justify-between mt-auto"
                     sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}
                 >
-                    <Box className="w-full">
+                    {/* <Box className="w-full">
                         <Typography
                             variant="caption"
                             color="text.secondary"
@@ -208,7 +288,7 @@ export default function JobCard({
                                 }}
                             />
                         </Box>
-                    </Box>
+                    </Box> */}
                 </Box>
             </CardContent>
 
