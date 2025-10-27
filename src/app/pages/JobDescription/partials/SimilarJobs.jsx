@@ -87,9 +87,9 @@ export default function SimilarJobs() {
   ];
 
   return (
-    <section className="mb-16">
+    <section className="my-18 mx-30">
       <div className="flex items-center justify-between mb-6">
-        <h2 className="text-2xl font-bold text-foreground">Similar Jobs</h2>
+        <h3 className="text-2xl font-bold text-foreground">Similar Jobs</h3>
         <a href="#" className="text-primary flex items-center gap-2 hover:underline font-medium">
           Show all jobs
           <ArrowRight className="w-5 h-5" />
@@ -110,18 +110,19 @@ export default function SimilarJobs() {
                 {job.icon}
               </div>
               <div className="flex-1 min-w-0">
-                <h3 className="font-bold text-foreground mb-1">{job.title}</h3>
+                <h5 className="font-bold text-foreground mb-1">{job.title}</h5>
                 <p className="text-sm text-muted-foreground mb-3">
                   {job.company} • {job.location}
                 </p>
                 <div className="flex flex-wrap gap-2">
-                  <Badge variant="secondary" className="bg-success/10 text-success rounded-lg">
+                  <Badge variant="secondary" className="bg-accent-green/10 text-accent-green rounded-4xl px-2.5 py-1.5">
                     {job.type}
                   </Badge>
-                  <Badge variant="outline" className="border-border rounded-lg">
+                  <div className="w-px bg-neutrals-20" />
+                  <Badge variant="outline" className="border-accent-yellow text-accent-yellow rounded-4xl px-2.5 py-1.5">
                     {job.category}
                   </Badge>
-                  <Badge variant="outline" className="border-primary text-primary rounded-lg">
+                  <Badge variant="outline" className="border-primary text-primary rounded-4xl px-2.5 py-1.5">
                     {job.style}
                   </Badge>
                 </div>

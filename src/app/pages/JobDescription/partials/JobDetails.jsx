@@ -1,5 +1,5 @@
 import { motion } from "framer-motion";
-import { Check } from "lucide-react";
+import { CircleCheck } from "lucide-react";
 
 export default function JobDetails() {
   const containerVariants = {
@@ -24,8 +24,8 @@ export default function JobDetails() {
       animate="visible"
       className="space-y-8"
     >
-      <motion.section variants={itemVariants} className="bg-card rounded-2xl p-8 shadow-sm">
-        <h2 className="text-2xl font-bold text-foreground mb-4">Description</h2>
+      <motion.section variants={itemVariants}>
+        <h3 className="text-2xl font-bold text-foreground mb-4">Description</h3>
         <p className="text-muted-foreground leading-relaxed">
           Stripe is looking for a Social Media Marketing expert to help manage our online networks. You will
           be responsible for monitoring our social media channels, creating content, finding effective ways
@@ -33,8 +33,8 @@ export default function JobDetails() {
         </p>
       </motion.section>
 
-      <motion.section variants={itemVariants} className="bg-card rounded-2xl p-8 shadow-sm">
-        <h2 className="text-2xl font-bold text-foreground mb-6">Responsibilities</h2>
+      <motion.section variants={itemVariants}>
+        <h3 className="text-2xl font-bold text-foreground mb-6">Responsibilities</h3>
         <ul className="space-y-3">
           {[
             "Community engagement to ensure that is supported and actively represented online",
@@ -44,15 +44,15 @@ export default function JobDetails() {
             "Engage with online communities",
           ].map((item, index) => (
             <li key={index} className="flex gap-3 text-muted-foreground">
-              <Check className="w-5 h-5 text-success flex-shrink-0 mt-0.5" />
+              <CircleCheck className="w-5 h-5 text-accent-green shrink-0 mt-0.5" />
               <span>{item}</span>
             </li>
           ))}
         </ul>
       </motion.section>
 
-      <motion.section variants={itemVariants} className="bg-card rounded-2xl p-8 shadow-sm">
-        <h2 className="text-2xl font-bold text-foreground mb-6">Who You Are</h2>
+      <motion.section variants={itemVariants}>
+        <h3 className="text-2xl font-bold text-foreground mb-6">Who You Are</h3>
         <ul className="space-y-3">
           {[
             "You get energy from people and building the ideal work environment",
@@ -62,15 +62,15 @@ export default function JobDetails() {
             "You're a growth marketer and know how to run campaigns",
           ].map((item, index) => (
             <li key={index} className="flex gap-3 text-muted-foreground">
-              <Check className="w-5 h-5 text-success flex-shrink-0 mt-0.5" />
+              <CircleCheck className="w-5 h-5 text-accent-green shrink-0 mt-0.5" />
               <span>{item}</span>
             </li>
           ))}
         </ul>
       </motion.section>
 
-      <motion.section variants={itemVariants} className="bg-card rounded-2xl p-8 shadow-sm">
-        <h2 className="text-2xl font-bold text-foreground mb-6">Nice-To-Haves</h2>
+      <motion.section variants={itemVariants}>
+        <h3 className="text-2xl font-bold text-foreground mb-6">Nice-To-Haves</h3>
         <ul className="space-y-3">
           {[
             "Fluent in English",
@@ -78,7 +78,7 @@ export default function JobDetails() {
             "Copy editing skills",
           ].map((item, index) => (
             <li key={index} className="flex gap-3 text-muted-foreground">
-              <Check className="w-5 h-5 text-primary/50 flex-shrink-0 mt-0.5" />
+              <CircleCheck className="w-5 h-5 text-accent-green shrink-0 mt-0.5" />
               <span>{item}</span>
             </li>
           ))}

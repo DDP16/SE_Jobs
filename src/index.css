@@ -1,3 +1,4 @@
+@import url('https://api.fontshare.com/v2/css?f[]=clash-display@1&display=swap');
 @import "tailwindcss";
 
 /* Definition of the design system. All colors, gradients, fonts, etc should be defined here.
@@ -6,96 +7,146 @@ All colors MUST be HSL.
 
 @theme {
   /* === Primary (0041D9) === */
-  --color-primary: #0041d9;
-  --color-secondary: #40baff;
+  --color-primary: #0041D9;
+  --color-secondary: #40BAFF;
+  --color-tertiary: #CCCCF5;
+  --color-quaternary: #E7F6FD;
 
-  --color-primary-50: #e5edff;
-  --color-primary-100: #c3d4ff;
-  --color-primary-200: #9ab8ff;
-  --color-primary-300: #6d99ff;
-  --color-primary-400: #3f78f5;
-  --color-primary-500: #0041d9;
-  --color-primary-600: #0039c3;
-  --color-primary-700: #0030a8;
-  --color-primary-800: #00298f;
-  --color-primary-900: #001d66;
+  --color-primary-50: #E5EDFF;
+  --color-primary-100: #C3D4FF;
+  --color-primary-200: #9AB8FF;
+  --color-primary-300: #6D99FF;
+  --color-primary-400: #3F78F5;
+  --color-primary-500: #0041D9;
+  --color-primary-600: #0039C3;
+  --color-primary-700: #0030A8;
+  --color-primary-800: #00298F;
+  --color-primary-900: #001D66;
 
   /* === Secondary (40BAFF) === */
-  --color-secondary-50: #e3f7ff;
-  --color-secondary-100: #b9ebff;
-  --color-secondary-200: #8ddfff;
-  --color-secondary-300: #61d3ff;
-  --color-secondary-400: #40baff;
-  --color-secondary-500: #24a7f5;
-  --color-secondary-600: #1f96e3;
-  --color-secondary-700: #1a82cc;
-  --color-secondary-800: #176fb5;
-  --color-secondary-900: #10518f;
+  --color-secondary-50: #E3F7FF;
+  --color-secondary-100: #B9EBFF;
+  --color-secondary-200: #8DDFFF;
+  --color-secondary-300: #61D3FF;
+  --color-secondary-400: #40BAFF;
+  --color-secondary-500: #24A7F5;
+  --color-secondary-600: #1F96E3;
+  --color-secondary-700: #1A82CC;
+  --color-secondary-800: #176FB5;
+  --color-secondary-900: #10518F;
 
   /* === Complementary Colors === */
-  --color-compleprimary-50: #fbe8e4;
-  --color-compleprimary-100: #fccbb4;
-  --color-compleprimary-200: #f9aa83;
-  --color-compleprimary-300: #f58a50;
-  --color-compleprimary-400: #f27225;
-  --color-compleprimary-500: #ee5c00;
-  --color-compleprimary-600: #e45600;
-  --color-compleprimary-700: #d74f00;
-  --color-compleprimary-800: #c94800;
-  --color-compleprimary-900: #b13a00;
+  --color-complementary-50: #FBE8E4;
+  --color-complementary-100: #FCCBB4;
+  --color-complementary-200: #F9AA83;
+  --color-complementary-300: #F58A50;
+  --color-complementary-400: #F27225;
+  --color-complementary-500: #EE5C00;
+  --color-complementary-600: #E45600;
+  --color-complementary-700: #D74F00;
+  --color-complementary-800: #C94800;
+  --color-complementary-900: #B13A00;
 
-  --color-complesecond-50: #fdfee9;
-  --color-complesecond-100: #fbfac9;
-  --color-complesecond-200: #f9f6a6;
-  --color-complesecond-300: #f7f284;
-  --color-complesecond-400: #f4ee69;
-  --color-complesecond-500: #f1e951;
-  --color-complesecond-600: #f5dc50;
-  --color-complesecond-700: #f2c546;
-  --color-complesecond-800: #efae3d;
-  --color-complesecond-900: #e9892d;
+  --color-complesecond-50: #FDFEE9;
+  --color-complesecond-100: #FBFAC9;
+  --color-complesecond-200: #F9F6A6;
+  --color-complesecond-300: #F7F284;
+  --color-complesecond-400: #F4EE69;
+  --color-complesecond-500: #F1E951;
+  --color-complesecond-600: #F5DC50;
+  --color-complesecond-700: #F2C546;
+  --color-complesecond-800: #EFAE3D;
+  --color-complesecond-900: #E9892D;
 
   /* === Neutrals and UI === */
   --color-ebony: #222428;
-  --color-white-smoke: #f5f5f5;
-  --color-mint-cream: #f5fffa;
-  --color-seashell: #fff5ee;
-  --color-floral-white: #fffaf0;
-  --color-snow: #fffafa;
-  --color-ghost-white: #f8f8ff;
-  --color-jet: #2a2a2a;
+  --color-white-smoke: #F5F5F5;
+  --color-mint-cream: #F5FFFA;
+  --color-seashell: #FFF5EE;
+  --color-floral-white: #FFFAF0;
+  --color-snow: #FFFAFA;
+  --color-ghost-white: #F8F8FF;
+  --color-jet: #2A2A2A;
   --color-raisin-black: #242124;
   --color-oxford-blue: #212437;
-  --color-card-dark: #1f2937;
-  --color-gunmetal: #1d1f21;
-  --color-white: #ffffff;
+  --color-card-dark: #1F2937;
+  --color-gunmetal: #1D1F21;
+  --color-white: #FFFFFF;
+  --color-accent-yellow: #FFB836;
+  --color-accent-green: #56CDAD;
+  --color-accent-red: #FF6550;
+  --color-accent-blue: #26A4FF;
+  --color-accent-purple: #7B61FF;
+  --color-neutrals-10: #F8F8FD;
+  --color-neutrals-20: #D6DDEB;
 
-  --color-bg: #f5f5f5;
+  --color-bg: #F5F5F5;
 
-  --color-amber-light: #f8d199;
-  --color-amber-dark: #d28c1a;
-  --color-coral-dark: #e64a19;
+  --color-amber-light: #F8D199;
+  --color-amber-dark: #D28C1A;
+  --color-coral-dark: #E64A19;
 
-  /* === Orange Scale === */
-  --color-orange-50: #fff7ed;
-  --color-orange-100: #ffedd5;
-  --color-orange-200: #fed7aa;
-  --color-orange-300: #fdba74;
-  --color-orange-400: #fb923c;
-  --color-orange-500: #f97316;
-  --color-orange-600: #ea580c;
-  --color-orange-700: #c2410c;
-  --color-orange-800: #9a3412;
-  --color-orange-900: #7c2d12;
+  --color-orange-50: #FFF7ED;
+  --color-orange-100: #FFEDD5;
+  --color-orange-200: #FED7AA;
+  --color-orange-300: #FDBA74;
+  --color-orange-400: #FB923C;
+  --color-orange-500: #F97316;
+  --color-orange-600: #EA580C;
+  --color-orange-700: #C2410C;
+  --color-orange-800: #9A3412;
+  --color-orange-900: #7C2D12;
 
   /* === Foreground Colors === */
   --color-foreground: #25324B;
   --color-muted-foreground: #515B6F;
 
+  /* === Background Colors === */
+  --color-background-lightBlue: var(--color-neutrals-10);
+
+  /* === Font Families === */
+  --font-primary: 'Epilogue', system-ui, -apple-system, 'Segoe UI', Roboto, Arial, sans-serif;
+
+  /* === Font Sizes === */
+  --font-size-h1: 72px;
+  --font-size-h2: 48px;
+  --font-size-h3: 32px;
+  --font-size-h4: 24px;
+  --font-size-h5: 20px;
+
   /* === Animations === */
   --animate-gradient: gradient 8s linear infinite;
   --animate-marquee: marquee 15s linear infinite;
   --animate-fadeIn: fadeIn 0.3s ease-out;
+}
+
+h1 {
+  font-family: var(--font-primary);
+  font-size: var(--font-size-h1);
+}
+
+h2 {
+  font-family: var(--font-primary);
+  font-size: var(--font-size-h2);
+}
+
+h3 {
+  font-family: var(--font-primary);
+  font-size: var(--font-size-h3);
+}
+
+h4 {
+  font-family: var(--font-primary);
+  font-size: var(--font-size-h4);
+}
+
+h5 {
+  font-family: var(--font-primary);
+  font-size: var(--font-size-h5);
+}
+
+body {
+  font-family: var(--font-primary);
 }
 
 /* === Utilities Layer === */

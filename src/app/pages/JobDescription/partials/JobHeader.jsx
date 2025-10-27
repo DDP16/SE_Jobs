@@ -8,27 +8,27 @@ export default function JobHeader() {
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.5 }}
-      className="bg-card rounded-2xl p-8 shadow-sm mb-8"
+      className="bg-white p-8 shadow-sm mb-8 border border-gray-200 "
     >
       <div className="flex items-center justify-between">
         <div className="flex gap-6">
-          <div className="bg-primary rounded-xl w-16 h-16 flex items-center justify-center text-white text-2xl font-bold">
+          <div className="bg-primary w-16 h-16 flex items-center justify-center text-white text-2xl font-bold">
             S
           </div> 
           <div>
-            <h1 className="text-3xl font-bold text-foreground mb-2">
+            <h3 className="text-3xl font-bold text-foreground mb-2">
               Social Media Assistant
-            </h1>
+            </h3>
             <p className="text-muted-foreground">
               Stripe • Paris, France • Full-Time
             </p>
           </div>
         </div>
         <div className="flex gap-3">
-          <Button variant="outline" size="icon" className="rounded-lg">
+          <Button variant="outline" size="icon">
             <Share2 className="w-5 h-5" />
           </Button>
-          <Button className="bg-primary hover:bg-primary/90 text-white px-8 rounded-lg">
+          <Button className="bg-primary hover:bg-primary/90 text-white px-8">
             Apply
           </Button>
         </div>

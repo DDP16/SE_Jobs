@@ -33,23 +33,7 @@ export default function MainLayout({
                     flexDirection: 'column'
                 }}
             >
-                {maxWidth ? (
-                    <Container
-                        maxWidth={maxWidth}
-                        disableGutters={disableGutters}
-                        sx={{
-                            flexGrow: 1,
-                            display: 'flex',
-                            flexDirection: 'column'
-                        }}
-                    >
-                        {children}
-                    </Container>
-                ) : (
-                    <Box sx={{ flexGrow: 1 }}>
-                        {children}
-                    </Box>
-                )}
+                {children}
             </Box>
 
             {/* Footer */}

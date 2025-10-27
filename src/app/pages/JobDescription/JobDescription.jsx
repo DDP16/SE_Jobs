@@ -7,8 +7,8 @@ import SimilarJobs from "./partials/SimilarJobs";
 
 export default function JobDescription() {
   return (
-    <div className="min-h-screen bg-background">
-      <div className="max-w-7xl mx-auto px-6">
+    <div className="min-h-screen bg-white mx-auto">
+      <div className="py-10 px-30 bg-background-lightBlue">
         <div className="mb-6">
           <p className="text-sm text-muted-foreground">
             Home / Companies / Nomad / Social Media Assistant
@@ -16,20 +16,20 @@ export default function JobDescription() {
         </div>
 
         <JobHeader />
-
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-8">
-          <div className="lg:col-span-2">
-            <JobDetails />
-          </div>
-          <div>
-            <JobSidebar />
-          </div>
-        </div>
-
-        <PerksSection />
-        <CompanySection />
-        <SimilarJobs />
       </div>
+
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 my-18 mx-30">
+        <div className="lg:col-span-2">
+          <JobDetails />
+        </div>
+        <div>
+          <JobSidebar />
+        </div>
+      </div>
+
+      <PerksSection />
+      <CompanySection />
+      <SimilarJobs />
     </div>
   );
 }
