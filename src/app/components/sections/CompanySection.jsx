@@ -173,17 +173,6 @@ export default function CompanySection() {
                         }} />
                     </Box>
                 </Box>
-
-                <Box sx={{ textAlign: 'center' }}>
-                    <Button
-                        variant="outlined"
-                        size="large"
-                        endIcon={<ArrowForward />}
-                        sx={{ minWidth: 200 }}
-                    >
-                        View All Companies
-                    </Button>
-                </Box>
             </Container>
         </Box>
     );

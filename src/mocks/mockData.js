@@ -209,12 +209,12 @@ export const mockCategories = [
 ];
 
 export const mockPopularSearches = [
-    "Developer",
-    "Designer",
-    "Marketing",
-    "Sales",
-    "Remote",
-    "Full-time",
-    "Part-time",
-    "Freelance"
+    "React Native",
+    "Objective C",
+    "Swift",
+    "CI/CD",
+    "Android",
+    "iOS",
+    "Flutter",
+    "Kotlin"
 ];

@@ -1,5 +1,6 @@
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 import Home from "../pages/Home";
+import FindJobs from "../pages/FindJobs";
 import PageNotFound from "../layouts/PageNotFound";
 import ThemeProvider from "../providers/ThemeProvider";
 import MainLayout from "../layouts/MainLayout";
@@ -12,6 +13,7 @@ export default function MainRoutes() {
         <MainLayout>
           <Routes>
             <Route path="/" element={<Home />} />
+            <Route path="/jobs" element={<FindJobs />} />
             <Route path="/job/:id" element={<JobDescription />} />
             <Route path="*" element={<PageNotFound />} />
           </Routes>
