@@ -36,13 +36,34 @@ export default function CompanySection() {
     return (
         <Box sx={{ py: 8, bgcolor: 'background.default' }}>
             <Container maxWidth="lg">
-                <Box sx={{ textAlign: 'center', mb: 6 }}>
-                    <Typography variant="h2" sx={{ mb: 2 }}>
-                        Top Companies
+                <Box
+                    className="flex justify-between items-center mb-8"
+                    sx={{ mb: 4 }}
+                >
+                    <Box>
+                        <Typography
+                        variant="h2"
+                        sx={{
+                            fontSize: { xs: '2rem', md: '2.5rem' },
+                            fontWeight: 700,
+                            color: 'text.primary'
+                        }}
+                    >
+                        Top <span style={{ color: '#0041D9' }}>Companies</span>
                     </Typography>
-                    <Typography variant="h6" color="text.secondary" sx={{ maxWidth: '900px', mx: 'auto' }}>
-                        Discover opportunities at leading companies that are actively hiring
-                    </Typography>
+                    </Box>
+                    <Button
+                        variant="text"
+                        endIcon={<ArrowForward />}
+                        className="text-blue-600 hover:text-blue-700 font-medium"
+                        sx={{
+                            textTransform: 'none',
+                            fontSize: '1rem',
+                            fontWeight: 500
+                        }}
+                    >
+                        View All Companies
+                    </Button>
                 </Box>
 
                 <Box sx={{ position: 'relative', mb: 4 }}>

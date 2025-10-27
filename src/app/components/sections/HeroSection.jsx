@@ -12,29 +12,20 @@ import { mockPopularSearches } from '../../../mocks/mockData';
 export default function HeroSection({ onSearch }) {
     return (
         <Box
+            className="bg-gradient-to-br from-gray-50 to-blue-50 py-12 md:py-20 relative overflow-hidden w-full"
             sx={{
-                bgcolor: 'primary.main', // --brand-primary
-                color: 'white',
+                bgcolor: 'colors.primary',
+                color: 'text.primary',
                 py: { xs: 3, md: 5 },
                 position: 'relative',
-                overflow: 'hidden'
+                overflow: 'hidden',
+                width: '100%'
             }}
         >
-            {/* Background Pattern */}
-            <Box
-                sx={{
-                    position: 'absolute',
-                    top: 0,
-                    left: 0,
-                    right: 0,
-                    bottom: 0,
-                    background: 'linear-gradient(135deg, rgba(37, 99, 235, 0.1) 0%, rgba(37, 99, 235, 0.05) 100%)',
-                    opacity: 0.1
-                }}
-            />
 
             <Container
                 maxWidth="lg"
+                className="relative z-10 px-4 sm:px-6 md:px-8 w-full"
                 sx={{
                     position: 'relative',
                     zIndex: 1,
@@ -42,13 +33,17 @@ export default function HeroSection({ onSearch }) {
                     width: '100%'
                 }}
             >
-                <Box sx={{
-                    textAlign: 'center',
-                    mb: { xs: 2, md: 3 },
-                    width: '100%'
-                }}>
+                <Box
+                    className="text-center mb-8 md:mb-12 w-full"
+                    sx={{
+                        textAlign: 'center',
+                        mb: { xs: 2, md: 3 },
+                        width: '100%'
+                    }}
+                >
                     <Typography
                         variant="h1"
+                        className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold mb-4 md:mb-6 leading-tight text-gray-900"
                         sx={{
                             mb: { xs: 1, md: 2 },
                             fontSize: { xs: '1.8rem', sm: '2.2rem', md: '2.8rem' },
@@ -57,10 +52,11 @@ export default function HeroSection({ onSearch }) {
                             wordBreak: 'break-word'
                         }}
                     >
-                        Find Your Dream Job
+                        Find your <span className="text-blue-500 underline decoration-blue-500 decoration-2 underline-offset-4">dream job</span>
                     </Typography>
                     <Typography
                         variant="h5"
+                        className="text-lg md:text-xl text-gray-600 mb-6 md:mb-8 max-w-3xl mx-auto leading-relaxed"
                         sx={{
                             mb: { xs: 2, md: 3 },
                             opacity: 0.9,
@@ -70,17 +66,19 @@ export default function HeroSection({ onSearch }) {
                             px: { xs: 1, md: 0 }
                         }}
                     >
-                        Discover thousands of job opportunities from top companies worldwide.
-                        Start your career journey today.
+                        Find your next career at companies like HubSpot, Nike, and Dropbox
                     </Typography>
                 </Box>
 
                 {/* Search Bar */}
-                <Box sx={{
-                    mb: { xs: 2, md: 3 },
-                    width: '100%',
-                    maxWidth: '100%'
-                }}>
+                <Box
+                    className="mb-6 md:mb-8 w-full max-w-4xl mx-auto"
+                    sx={{
+                        mb: { xs: 2, md: 3 },
+                        width: '100%',
+                        maxWidth: '100%'
+                    }}
+                >
                     <SearchBar
                         onSearch={onSearch}
                         placeholder="Job title, keywords, or company"
@@ -90,9 +88,16 @@ export default function HeroSection({ onSearch }) {
                 </Box>
 
                 {/* Popular Searches */}
-                <Box sx={{ textAlign: 'center' }}>
-                    <Typography variant="body2" sx={{ mb: 1, opacity: 0.8 }}>
-                        Popular searches:
+                <Box
+                    className="text-center"
+                    sx={{ textAlign: 'center' }}
+                >
+                    <Typography
+                        variant="body2"
+                        className="text-gray-600 mb-3 text-sm font-medium"
+                        sx={{ mb: 1, opacity: 0.8 }}
+                    >
+                        Popular:
                     </Typography>
                     <Stack
                         direction="row"
@@ -100,18 +105,21 @@ export default function HeroSection({ onSearch }) {
                         justifyContent="center"
                         flexWrap="wrap"
                         gap={1}
+                        className="justify-center flex-wrap gap-2"
                     >
                         {mockPopularSearches.map((search, index) => (
                             <Chip
                                 key={index}
                                 label={search}
                                 variant="outlined"
+                                className="text-gray-700 border-gray-300 hover:bg-blue-50 hover:border-blue-300 transition-all duration-300 hover:scale-105 cursor-pointer"
                                 sx={{
-                                    color: 'white',
-                                    borderColor: 'rgba(255, 255, 255, 0.3)',
+                                    color: 'text.primary',
+                                    borderColor: 'rgba(0, 0, 0, 0.2)',
                                     '&:hover': {
-                                        bgcolor: 'rgba(255, 255, 255, 0.1)',
-                                        borderColor: 'rgba(255, 255, 255, 0.5)'
+                                        bgcolor: 'rgba(59, 130, 246, 0.1)',
+                                        borderColor: 'rgba(59, 130, 246, 0.3)',
+                                        transform: 'scale(1.05)'
                                     }
                                 }}
                                 clickable
