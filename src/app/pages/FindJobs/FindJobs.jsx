@@ -3,7 +3,8 @@ import { Container, Box } from '@mui/material';
 import FilterSection from "../../components/sections/FilterSection";
 import JobListSection from "../../components/sections/JobListSection";
 import HeroSection from "../../components/sections/HeroSection";
-import JobDescription from "../JobDescription/JobDescription";
+import JobDescription from "../JobDescription";
+import { layoutType } from "../../lib";
 
 export default function FindJobs() {
     const [selectedJob, setSelectedJob] = useState(null);
@@ -45,10 +46,7 @@ export default function FindJobs() {
                         {selectedJob ? (
                             <JobDescription
                                 job={selectedJob}
-                                layout="compact"
-                                showBreadcrumb={false}
-                                showSimilarJobs={false}
-                                showCompanySection={false}
+                                layout={layoutType.half_width}
                             />
                         ) : (
                             <Box sx={{
