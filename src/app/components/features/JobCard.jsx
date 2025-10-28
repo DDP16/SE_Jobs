@@ -25,7 +25,9 @@ export default function JobCard({
     onApply,
     isBookmarked = false,
     showActions = false, //set when user login or not
-    variant = "card" // "card" or "list"
+    variant = "card", // "card" or "list"
+    showDescription = true, // control whether to show description
+    showApplyButton = true // control whether to show apply button
 }) {
     const {
         id,
@@ -94,9 +96,11 @@ export default function JobCard({
                         </Stack>
                     </Stack>
 
-                    <Typography variant="body2" sx={{ color: 'text.secondary', mb: 2 }}>
-                        {description.length > 150 ? `${description.substring(0, 150)}...` : description}
-                    </Typography>
+                    {showDescription && (
+                        <Typography variant="body2" sx={{ color: 'text.secondary', mb: 2 }}>
+                            {description.length > 150 ? `${description.substring(0, 150)}...` : description}
+                        </Typography>
+                    )}
 
                     <Stack direction="row" justifyContent="space-between" alignItems="center">
                         <Stack direction="row" spacing={1} flexWrap="wrap" useFlexGap>
@@ -105,17 +109,21 @@ export default function JobCard({
                             ))}
                         </Stack>
                         <Stack direction="row" spacing={1}>
-                            <Typography variant="body2" sx={{ color: 'primary.main', fontWeight: 600 }}>
-                                {salary}
-                            </Typography>
-                            <Button
-                                variant="contained"
-                                size="small"
-                                onClick={() => onApply?.(job)}
-                                sx={{ textTransform: 'none' }}
-                            >
-                                Apply Now
-                            </Button>
+                            {showActions && (
+                                <Typography variant="body2" sx={{ color: 'primary.main', fontWeight: 600 }}>
+                                    {salary}
+                                </Typography>
+                            )}
+                            {showApplyButton && (
+                                <Button
+                                    variant="contained"
+                                    size="small"
+                                    onClick={() => onApply?.(job)}
+                                    sx={{ textTransform: 'none' }}
+                                >
+                                    Apply Now
+                                </Button>
+                            )}
                         </Stack>
                     </Stack>
                 </Box>
@@ -210,22 +218,24 @@ export default function JobCard({
                     </Box>
                 </Box>
 
-                {/* <Typography
-                    variant="body2"
-                    color="text.secondary"
-                    className="text-gray-600 mb-4 text-sm leading-relaxed"
-                    sx={{
-                        mb: 2,
-                        display: '-webkit-box',
-                        WebkitLineClamp: 2,
-                        WebkitBoxOrient: 'vertical',
-                        overflow: 'hidden',
-                        fontSize: '0.875rem',
-                        lineHeight: 1.4
-                    }}
-                >
-                    {description}
-                </Typography> */}
+                {showDescription && (
+                    <Typography
+                        variant="body2"
+                        color="text.secondary"
+                        className="text-gray-600 mb-4 text-sm leading-relaxed"
+                        sx={{
+                            mb: 2,
+                            display: '-webkit-box',
+                            WebkitLineClamp: 2,
+                            WebkitBoxOrient: 'vertical',
+                            overflow: 'hidden',
+                            fontSize: '0.875rem',
+                            lineHeight: 1.4
+                        }}
+                    >
+                        {description}
+                    </Typography>
+                )}
 
                 {tags.length > 0 && (
                     <Stack
