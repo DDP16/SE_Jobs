@@ -4,7 +4,6 @@ export { default as Input } from './common/Input';
 export { default as Card } from './common/Card';
 export { default as Badge } from './common/Badge';
 
-
 // Feature Components
 export { default as SearchBar } from './features/SearchBar';
 export { default as JobCard } from './features/JobCard';
