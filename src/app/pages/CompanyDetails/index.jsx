@@ -1,2 +1,3 @@
-export { default } from './CompanyDetails';
+import CompanyDetails from "./CompanyDetails";
 
+export default CompanyDetails;

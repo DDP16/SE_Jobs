@@ -5,6 +5,7 @@ import CompanyHeader from './partials/CompanyHeader';
 import CompanyOverview from './partials/CompanyOverview';
 import CompanyInfo from './partials/CompanyInfo';
 import CompanyJobs from './partials/CompanyJobs';
+import PerksSection from "../../components/company/PerksSection";
 import { mockCompanies, mockJobs } from '../../../mocks/mockData';
 
 export default function CompanyDetails() {
@@ -21,7 +22,7 @@ export default function CompanyDetails() {
     return (
         <Box sx={{ minHeight: '100vh', bgcolor: 'background.default' }}>
             {/* Breadcrumb */}
-            <Box sx={{ bgcolor: 'background.paper', py: 2, px: { xs: 2, md: 4 }, borderBottom: '1px solid', borderColor: 'divider' }}>
+            <Box sx={{ bgcolor: 'background.paper', px: { xs: 2, md: 4 }, borderBottom: '1px solid', borderColor: 'divider' }}>
                 {/* <Box sx={{ maxWidth: 1200, mx: 'auto' }}>
                     <p className="text-sm text-muted-foreground">
                         Trang chủ / Danh sách công ty / {company.name}
@@ -29,30 +30,26 @@ export default function CompanyDetails() {
                 </Box> */}
             </Box>
 
-            {/* Header Section */}
-            <Box sx={{ bgcolor: 'background.paper', borderBottom: '1px solid', borderColor: 'divider' }}>
-                <CompanyHeader company={company} />
-            </Box>
+            <CompanyHeader company={company} />
 
-            {/* Main Content */}
-            <Box sx={{ maxWidth: 1200, mx: 'auto', px: { xs: 2, md: 4 }, py: { xs: 3, md: 4 } }}>
+            <Box className="px-10 xl:px-30">
                 <Box sx={{
                     display: 'grid',
                     gridTemplateColumns: { xs: '1fr', md: '2fr 1fr' },
                     gap: { xs: 3, md: 4 }
                 }}>
-                    {/* Left Column */}
                     <Box sx={{ minWidth: 0 }}>
                         <CompanyOverview company={company} />
                         <CompanyJobs jobs={companyJobs} company={company} />
                     </Box>
 
-                    {/* Right Column - Sidebar */}
                     <Box sx={{ minWidth: 0 }}>
                         <CompanyInfo company={company} />
                     </Box>
                 </Box>
             </Box>
+
+            <PerksSection company={company} />
         </Box>
     );
 }

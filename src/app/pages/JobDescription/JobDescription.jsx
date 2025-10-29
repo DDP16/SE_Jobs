@@ -1,7 +1,7 @@
 import JobHeader from "./partials/JobHeader";
 import JobDetails from "./partials/JobDetails";
 import JobSidebar from "./partials/JobSidebar";
-import PerksSection from "./partials/PerksSection";
+import PerksSection from "../../components/company/PerksSection";
 import CompanySection from "./partials/CompanySection";
 import SimilarJobs from "./partials/SimilarJobs";
 import { layoutType } from "../../lib";
@@ -74,11 +74,13 @@ export default function JobDescription({
         {finalConfig.showJobHeader && <JobHeader job={job} />}
       </div>
 
-      <div className={`grid grid-cols-1 gap-8 py-18 ${layout !== layoutType.half_width ? "px-30 lg:grid-cols-3 md:grid-cols-2" : "px-15 lg:grid-cols-1"}`}>
+      <div className={` grid grid-cols-1 gap-8 py-18 ${layout !== layoutType.half_width ? "px-30 lg:grid-cols-3 md:grid-cols-2" : "px-15 lg:grid-cols-1"}`}>
         <div className="lg:col-span-2">
           {finalConfig.showJobDetails && <JobDetails job={job} />}
         </div>
-        <div>{finalConfig.showJobSidebar && <JobSidebar job={job} />}</div>
+        <div className="sticky top-0 z-10 self-start">
+          {finalConfig.showJobSidebar && <JobSidebar job={job} />}
+        </div>
       </div>
 
       {finalConfig.showPerksSection && <PerksSection job={job} />}

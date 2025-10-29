@@ -1,3 +1,5 @@
+export { default as PerksSection } from './company/PerksSection';
+
 // Common Components
 export { default as Button } from './common/Button';
 export { default as Input } from './common/Input';

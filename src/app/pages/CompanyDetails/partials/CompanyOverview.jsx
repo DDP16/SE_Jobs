@@ -1,5 +1,6 @@
 import React from 'react';
-import { Box, Typography, Paper } from '@mui/material';
+import { Box, Typography, Paper, Button, Stack, Grid } from '@mui/material';
+import { Link } from 'lucide-react';
 
 export default function CompanyOverview({ company = {} }) {
     const {
@@ -9,6 +10,7 @@ export default function CompanyOverview({ company = {} }) {
                       Đội ngũ của chúng tôi bao gồm những cá nhân tài năng từ nhiều nền tảng khác nhau, 
                       có chung niềm đam mê về công nghệ và đổi mới. Chúng tôi làm việc cùng nhau để 
                       giải quyết các vấn đề phức tạp và mang lại kết quả xuất sắc cho khách hàng.`,
+        contact = ['twitter.com/stripe', 'facebook.com/StripeHQ', 'linkedin.com/company/stripe'],
     } = company;
 
     const benefits = [
@@ -30,12 +32,15 @@ export default function CompanyOverview({ company = {} }) {
                     border: '1px solid',
                     borderColor: 'divider',
                     borderRadius: 2,
-                    mb: 3
+                    mb: 3,
+                    display: 'flex',
+                    flexDirection: 'column',
+                    gap: 2.5
                 }}
             >
                 <Typography
                     variant="h6"
-                    sx={{ fontWeight: 700, mb: 2 }}
+                    sx={{ fontWeight: 700 }}
                 >
                     Giới thiệu công ty
                 </Typography>
@@ -49,41 +54,27 @@ export default function CompanyOverview({ company = {} }) {
                 >
                     {description}
                 </Typography>
-            </Paper>
-
-            {/* Vì sao bạn nên làm việc tại đây */}
-            <Paper
-                elevation={0}
-                sx={{
-                    p: { xs: 2, md: 3 },
-                    border: '1px solid',
-                    borderColor: 'divider',
-                    borderRadius: 2,
-                    mb: 3
-                }}
-            >
                 <Typography
                     variant="h6"
-                    sx={{ fontWeight: 700, mb: 2 }}
+                    sx={{ fontWeight: 700 }}
                 >
-                    Vì sao bạn nên làm việc tại đây
+                    Liên hệ
                 </Typography>
-                <Box component="ul" sx={{ pl: 2, m: 0 }}>
-                    {benefits.map((benefit, index) => (
-                        <Box
-                            component="li"
+                <Grid container spacing={2}>
+                    {contact.map((link, index) => (
+                        <Button 
                             key={index}
-                            sx={{
-                                mb: 1.5,
-                                color: 'text.secondary',
-                                fontSize: '0.875rem',
-                                lineHeight: 1.7
-                            }}
+                            variant="outlined"
+                            href={`https://${link}`}
+                            target="_blank"
                         >
-                            {benefit}
-                        </Box>
+                            <div className='flex items-center gap-2'>
+                                <Link size={15}/>
+                                <span className='text-[15px]'>{link}</span>
+                            </div>
+                        </Button>
                     ))}
-                </Box>
+                </Grid>
             </Paper>
         </Box>
     );
