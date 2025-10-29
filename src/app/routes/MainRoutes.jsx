@@ -1,12 +1,8 @@
 import { BrowserRouter, Route, Routes } from "react-router-dom";
-import Home from "../pages/Home";
-import FindJobs from "../pages/FindJobs";
-import CompanyList from "../pages/CompanyList";
-import CompanyDetails from "../pages/CompanyDetails";
+import { Home, FindJobs, JobDescription, CompanyDetails, CompanyList } from "../pages";
 import PageNotFound from "../layouts/PageNotFound";
 import ThemeProvider from "../providers/ThemeProvider";
 import MainLayout from "../layouts/MainLayout";
-import JobDescription from "../pages/JobDescription";
 
 export default function MainRoutes() {
   return (

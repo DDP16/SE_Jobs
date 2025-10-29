@@ -4,14 +4,15 @@ import CompanyListHero from './partials/CompanyListHero';
 import CompanyFilters from './partials/CompanyFilters';
 import CompanyGrid from './partials/CompanyGrid';
 import { mockCompanies } from '../../../mocks/mockData';
+import { sortType, viewMode as viewModeEnum } from '../../lib';
 
 export default function CompanyList() {
     const [searchKeyword, setSearchKeyword] = useState('');
     const [selectedIndustries, setSelectedIndustries] = useState([]);
     const [selectedSizes, setSelectedSizes] = useState([]);
     const [selectedLocations, setSelectedLocations] = useState([]);
-    const [sortBy, setSortBy] = useState('featured');
-    const [viewMode, setViewMode] = useState('list'); // 'grid' or 'list'
+    const [sortBy, setSortBy] = useState(sortType.featured);
+    const [viewMode, setViewMode] = useState(viewModeEnum.list);
 
     // Filter companies based on search and filters
     const filteredCompanies = mockCompanies.filter(company => {
@@ -43,11 +44,11 @@ export default function CompanyList() {
     // Sort companies
     const sortedCompanies = [...filteredCompanies].sort((a, b) => {
         switch (sortBy) {
-            case 'featured':
+            case sortType.featured:
                 return (b.isHiring ? 1 : 0) - (a.isHiring ? 1 : 0);
-            case 'jobs':
+            case sortType.jobs:
                 return b.jobsCount - a.jobsCount;
-            case 'name':
+            case sortType.name:
                 return a.name.localeCompare(b.name);
             default:
                 return 0;
