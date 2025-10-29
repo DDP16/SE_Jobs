@@ -67,6 +67,7 @@ export default function Header() {
           }}>
             <Button color="inherit" component={Link} to="/">{t('home')}</Button>
             <Button color="inherit" component={Link} to="/jobs">{t('jobs')}</Button>
+            <Button color="inherit" component={Link} to="/companies">{t('companies')}</Button>
             <Button color="inherit">{t('contactUs')}</Button>
           </Box>
         )}
@@ -123,13 +124,18 @@ export default function Header() {
           transformOrigin={{ vertical: 'top', horizontal: 'right' }}
         >
           <MenuItem onClick={handleMobileMenuClose}>
-            <Button color="inherit" sx={{ width: '100%', justifyContent: 'flex-start' }}>
+            <Button color="inherit" component={Link} to="/" sx={{ width: '100%', justifyContent: 'flex-start' }}>
               {t('home')}
             </Button>
           </MenuItem>
           <MenuItem onClick={handleMobileMenuClose}>
-            <Button color="inherit" sx={{ width: '100%', justifyContent: 'flex-start' }}>
+            <Button color="inherit" component={Link} to="/jobs" sx={{ width: '100%', justifyContent: 'flex-start' }}>
               {t('jobs')}
+            </Button>
+          </MenuItem>
+          <MenuItem onClick={handleMobileMenuClose}>
+            <Button color="inherit" component={Link} to="/companies" sx={{ width: '100%', justifyContent: 'flex-start' }}>
+              {t('companies')}
             </Button>
           </MenuItem>
           <MenuItem onClick={handleMobileMenuClose}>

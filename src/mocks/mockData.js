@@ -133,10 +133,14 @@ export const mockCompanies = [
         id: 1,
         name: "Nomad",
         logo: "N",
-        location: "Paris, France",
-        industry: "Technology",
-        size: "10-50 employees",
-        description: "We are a technology company focused on creating innovative solutions for remote work.",
+        location: "Hà Nội, Việt Nam",
+        industry: "Công nghệ",
+        size: "10-50 nhân viên",
+        description: `Nomad là công ty công nghệ hàng đầu chuyên cung cấp giải pháp làm việc từ xa.
+        
+        Chúng tôi tin rằng tương lai của công việc là linh hoạt và không giới hạn. Với đội ngũ chuyên gia giàu kinh nghiệm, chúng tôi tạo ra các sản phẩm giúp kết nối đội ngũ từ xa hiệu quả hơn.
+        
+        Tại Nomad, chúng tôi luôn đề cao sự sáng tạo, tinh thần học hỏi và văn hóa làm việc tích cực. Mỗi thành viên đều được trao quyền để đóng góp ý tưởng và phát triển sự nghiệp.`,
         jobsCount: 5,
         isHiring: true
     },
@@ -144,10 +148,14 @@ export const mockCompanies = [
         id: 2,
         name: "Dropbox",
         logo: "D",
-        location: "San Francisco, USA",
-        industry: "Cloud Storage",
-        size: "1000+ employees",
-        description: "Dropbox is a file hosting service that offers cloud storage, file synchronization, and client software.",
+        location: "Hồ Chí Minh, Việt Nam",
+        industry: "Lưu trữ đám mây",
+        size: "1000+ nhân viên",
+        description: `Dropbox là dịch vụ lưu trữ và chia sẻ file hàng đầu thế giới.
+        
+        Với hơn 700 triệu người dùng trên toàn cầu, Dropbox giúp mọi người làm việc hiệu quả hơn. Chúng tôi cung cấp nền tảng đám mây an toàn và đáng tin cậy.
+        
+        Tại Dropbox Việt Nam, chúng tôi tìm kiếm những tài năng đam mê công nghệ, có tư duy sáng tạo và mong muốn tạo ra sản phẩm phục vụ hàng triệu người dùng.`,
         jobsCount: 12,
         isHiring: true
     },
@@ -155,10 +163,14 @@ export const mockCompanies = [
         id: 3,
         name: "Toggl",
         logo: "T",
-        location: "Remote",
-        industry: "Productivity",
-        size: "50-200 employees",
-        description: "Toggl is a time tracking and productivity tool that helps teams and individuals track their time.",
+        location: "Làm việc từ xa",
+        industry: "Năng suất",
+        size: "50-200 nhân viên",
+        description: `Toggl là công cụ quản lý thời gian và năng suất làm việc được tin dùng bởi hơn 5 triệu người.
+        
+        Sứ mệnh của chúng tôi là giúp mọi người làm việc thông minh hơn, không chỉ chăm chỉ hơn. Chúng tôi tin vào sự cân bằng giữa công việc và cuộc sống.
+        
+        Với văn hóa làm việc từ xa 100%, Toggl tạo cơ hội cho nhân tài từ mọi nơi trên thế giới có thể cùng nhau xây dựng sản phẩm tuyệt vời.`,
         jobsCount: 8,
         isHiring: true
     },
@@ -166,10 +178,14 @@ export const mockCompanies = [
         id: 4,
         name: "Apple",
         logo: "A",
-        location: "Cupertino, USA",
-        industry: "Technology",
-        size: "1000+ employees",
-        description: "Apple Inc. is an American multinational technology company that specializes in consumer electronics.",
+        location: "Đà Nẵng, Việt Nam",
+        industry: "Công nghệ",
+        size: "1000+ nhân viên",
+        description: `Apple là công ty công nghệ đa quốc gia hàng đầu thế giới chuyên về điện tử tiêu dùng.
+        
+        Chúng tôi tạo ra những sản phẩm đổi mới làm thay đổi cách con người sống và làm việc. Từ iPhone, iPad đến Mac, mỗi sản phẩm đều thể hiện sự hoàn hảo trong thiết kế và công nghệ.
+        
+        Apple Việt Nam đang tìm kiếm những kỹ sư, nhà thiết kế và chuyên gia tài năng để cùng nhau tạo ra những sản phẩm định hình tương lai.`,
         jobsCount: 25,
         isHiring: true
     },
@@ -177,10 +193,14 @@ export const mockCompanies = [
         id: 5,
         name: "Google",
         logo: "G",
-        location: "Mountain View, USA",
-        industry: "Technology",
-        size: "1000+ employees",
-        description: "Google is a multinational technology company specializing in Internet-related services and products.",
+        location: "Hà Nội, Việt Nam",
+        industry: "Công nghệ",
+        size: "1000+ nhân viên",
+        description: `Google là công ty công nghệ hàng đầu thế giới với sứ mệnh tổ chức thông tin toàn cầu.
+        
+        Với các sản phẩm như Google Search, Gmail, Maps, YouTube, chúng tôi phục vụ hàng tỷ người dùng mỗi ngày. Chúng tôi luôn đổi mới và tìm kiếm những giải pháp công nghệ tiên tiến.
+        
+        Tại Google Việt Nam, bạn sẽ làm việc cùng những bộ óc xuất sắc nhất, giải quyết những thách thức lớn và tạo ra tác động toàn cầu.`,
         jobsCount: 50,
         isHiring: true
     },
@@ -188,10 +208,14 @@ export const mockCompanies = [
         id: 6,
         name: "Microsoft",
         logo: "M",
-        location: "Seattle, USA",
-        industry: "Technology",
-        size: "1000+ employees",
-        description: "Microsoft Corporation is an American multinational technology corporation which produces computer software.",
+        location: "Hồ Chí Minh, Việt Nam",
+        industry: "Công nghệ",
+        size: "1000+ nhân viên",
+        description: `Microsoft là tập đoàn công nghệ đa quốc gia với sứ mệnh giúp mọi người và tổ chức trên hành tinh đạt được nhiều hơn.
+        
+        Từ Windows, Office 365 đến Azure, chúng tôi cung cấp các giải pháp công nghệ toàn diện cho doanh nghiệp và cá nhân. Chúng tôi tin vào sức mạnh của công nghệ để thay đổi thế giới.
+        
+        Microsoft Việt Nam là nơi bạn có thể phát triển sự nghiệp, học hỏi từ những chuyên gia hàng đầu và đóng góp vào những dự án có tầm ảnh hưởng lớn.`,
         jobsCount: 30,
         isHiring: true
     }

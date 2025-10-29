@@ -63,8 +63,8 @@ export default function JobListSection({ onJobSelect, selectedJob }) {
                         <JobCard
                             job={job}
                             showDescription={false}
-                            showApplyButton = {false}
-                            showActions = {false}
+                            showApplyButton={false}
+                            showActions={false}
                             onBookmark={(job) => handleJobAction('bookmark', job)}
                             onShare={(job) => handleJobAction('share', job)}
                             onApply={(job) => handleJobAction('apply', job)}
