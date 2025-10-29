@@ -1,6 +1,7 @@
 import { motion } from "framer-motion";
 import { Share2 } from "lucide-react";
 import { Button } from "../../../components/ui/button";
+import { srcAsset } from "../../../lib";
 
 export default function JobHeader() {
   return (
@@ -12,9 +13,11 @@ export default function JobHeader() {
     >
       <div className="flex items-center justify-between">
         <div className="flex gap-6">
-          <div className="bg-primary w-16 h-16 flex items-center justify-center text-white text-2xl font-bold">
-            S
-          </div> 
+          <img
+            src={srcAsset.stripeIcon}
+            alt="Stripe Logo"
+            className="w-16 h-16 object-contain"
+          />
           <div>
             <h3 className="text-3xl font-bold text-foreground mb-2">
               Social Media Assistant
@@ -35,4 +38,4 @@ export default function JobHeader() {
       </div>
     </motion.div>
   );
-};
+}
