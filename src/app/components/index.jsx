@@ -8,6 +8,8 @@ export { default as Badge } from './common/Badge';
 export { default as SearchBar } from './features/SearchBar';
 export { default as JobCard } from './features/JobCard';
 export { default as CompanyCard } from './features/CompanyCard';
+export { default as FilterDialog } from './features/FilterDialog';
+export { default as FilterToolbar } from './features/FilterToolbar';
 
 // Section Components
 export { default as HeroSection } from './sections/HeroSection';

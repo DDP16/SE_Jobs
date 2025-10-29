@@ -186,6 +186,7 @@ export default function JobSection() {
                                         }}
                                     >
                                         <JobCard
+                                            showDescription={false}
                                             job={job}
                                             onBookmark={(job) => handleJobAction('bookmark', job)}
                                             onShare={(job) => handleJobAction('share', job)}

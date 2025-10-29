@@ -4,19 +4,15 @@ import {
     Typography,
     Stack,
     Button,
-    Select,
-    MenuItem,
-    FormControl,
-    InputLabel,
     Pagination,
-    Container
+    PaginationItem
 } from '@mui/material';
-import { Sort } from '@mui/icons-material';
+import ArrowBackIcon from '@mui/icons-material/ArrowBack';
+import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
 import JobCard from '../features/JobCard';
 import { mockJobs } from '../../../mocks/mockData';
 
 export default function JobListSection({ onJobSelect, selectedJob }) {
-    const [sortBy, setSortBy] = useState('relevance');
     const [currentPage, setCurrentPage] = useState(1);
     const jobsPerPage = 10;
 
@@ -24,12 +20,10 @@ export default function JobListSection({ onJobSelect, selectedJob }) {
         console.log(`${action} job:`, job);
     };
 
-    const handleSortChange = (event) => {
-        setSortBy(event.target.value);
-    };
-
     const handlePageChange = (event, page) => {
         setCurrentPage(page);
+        // Scroll to top of job list
+        window.scrollTo({ top: 0, behavior: 'smooth' });
     };
 
     // Calculate pagination
@@ -41,32 +35,10 @@ export default function JobListSection({ onJobSelect, selectedJob }) {
     return (
         <Box sx={{ flexGrow: 1, minWidth: 0 }}>
             {/* Header */}
-            <Box sx={{ mb: 3 }}>
-                <Stack direction="row" justifyContent="space-between" alignItems="center">
-                    <Typography variant="h5" sx={{ fontWeight: 600, fontSize: '20px' }}>
-                        {mockJobs.length} jobs found
-                    </Typography>
-                    <Stack direction="row" spacing={2} alignItems="center">
-                        <Typography variant="body2" sx={{ color: 'text.secondary', fontSize: '14px' }}>
-                            Sort by:
-                        </Typography>
-                        <FormControl size="small" sx={{ minWidth: 160 }}>
-                            <InputLabel>Sort</InputLabel>
-                            <Select
-                                value={sortBy}
-                                label="Sort"
-                                onChange={handleSortChange}
-                                startAdornment={<Sort sx={{ mr: 1, fontSize: '18px' }} />}
-                                sx={{ fontSize: '14px' }}
-                            >
-                                <MenuItem value="relevance">Relevance</MenuItem>
-                                <MenuItem value="date">Date Posted</MenuItem>
-                                <MenuItem value="salary">Salary</MenuItem>
-                                <MenuItem value="company">Company</MenuItem>
-                            </Select>
-                        </FormControl>
-                    </Stack>
-                </Stack>
+            <Box className="bg-white rounded-xl p-4 md:p-5 shadow-sm border border-gray-100" sx={{ mb: 3 }}>
+                <Typography variant="h6" sx={{ fontWeight: 600, fontSize: '18px', color: 'text.primary' }}>
+                    {mockJobs.length} {mockJobs.length === 1 ? 'job' : 'jobs'} found
+                </Typography>
             </Box>
 
             {/* Job List */}
@@ -90,6 +62,9 @@ export default function JobListSection({ onJobSelect, selectedJob }) {
                     >
                         <JobCard
                             job={job}
+                            showDescription={false}
+                            showApplyButton={false}
+                            showActions={false}
                             onBookmark={(job) => handleJobAction('bookmark', job)}
                             onShare={(job) => handleJobAction('share', job)}
                             onApply={(job) => handleJobAction('apply', job)}
@@ -100,23 +75,61 @@ export default function JobListSection({ onJobSelect, selectedJob }) {
             </Stack>
 
             {/* Pagination */}
-            <Box sx={{ display: 'flex', justifyContent: 'center', mt: 5 }}>
-                <Pagination
-                    count={totalPages}
-                    page={currentPage}
-                    onChange={handlePageChange}
-                    color="primary"
-                    size="large"
-                    showFirstButton
-                    showLastButton
-                    sx={{
-                        '& .MuiPaginationItem-root': {
-                            fontSize: '14px',
-                            fontWeight: 500
-                        }
-                    }}
-                />
-            </Box>
+            {totalPages > 1 && (
+                <Box className="bg-white rounded-xl p-4 md:p-5 shadow-sm border border-gray-100" sx={{ mt: 4 }}>
+                    <Stack direction={{ xs: 'column', sm: 'row' }} spacing={2} alignItems="center" justifyContent="space-between">
+                        {/* Page info */}
+                        <Typography variant="body2" sx={{ color: 'text.secondary', fontSize: '14px' }}>
+                            Showing <strong>{startIndex + 1}-{Math.min(endIndex, mockJobs.length)}</strong> of <strong>{mockJobs.length}</strong> jobs
+                        </Typography>
+
+                        {/* Pagination */}
+                        <Pagination
+                            count={totalPages}
+                            page={currentPage}
+                            onChange={handlePageChange}
+                            variant="outlined"
+                            shape="rounded"
+                            color="primary"
+                            showFirstButton
+                            showLastButton
+                            renderItem={(item) => (
+                                <PaginationItem
+                                    slots={{
+                                        previous: ArrowBackIcon,
+                                        next: ArrowForwardIcon
+                                    }}
+                                    {...item}
+                                />
+                            )}
+                            sx={{
+                                '& .MuiPaginationItem-root': {
+                                    fontSize: '14px',
+                                    fontWeight: 500,
+                                    minWidth: '36px',
+                                    height: '36px',
+                                    margin: '0 2px',
+                                    '&.Mui-selected': {
+                                        backgroundColor: 'primary.main',
+                                        color: 'white',
+                                        fontWeight: 600,
+                                        '&:hover': {
+                                            backgroundColor: 'primary.dark',
+                                        }
+                                    },
+                                    '&:hover': {
+                                        backgroundColor: 'primary.50',
+                                        borderColor: 'primary.main',
+                                    }
+                                },
+                                '& .MuiPaginationItem-icon': {
+                                    fontSize: '20px'
+                                }
+                            }}
+                        />
+                    </Stack>
+                </Box>
+            )}
 
             {/* No Results */}
             {mockJobs.length === 0 && (
