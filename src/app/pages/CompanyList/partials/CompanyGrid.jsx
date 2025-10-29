@@ -18,12 +18,13 @@ import {
 } from '@mui/icons-material';
 import { useNavigate } from 'react-router-dom';
 import CompanyCard from '../../../components/features/CompanyCard';
+import { sortType, viewMode as viewModeEnum } from '../../../lib';
 
 export default function CompanyGrid({
     companies = [],
-    sortBy = 'featured',
+    sortBy = sortType.featured,
     onSortChange,
-    viewMode = 'grid',
+    viewMode = viewModeEnum.grid,
     onViewModeChange,
     totalCount = 0
 }) {
@@ -82,9 +83,9 @@ export default function CompanyGrid({
                                     }
                                 }}
                             >
-                                <MenuItem value="featured">Featured</MenuItem>
-                                <MenuItem value="jobs">Most Jobs</MenuItem>
-                                <MenuItem value="name">Name (A-Z)</MenuItem>
+                                <MenuItem value={sortType.featured}>Featured</MenuItem>
+                                <MenuItem value={sortType.jobs}>Most Jobs</MenuItem>
+                                <MenuItem value={sortType.name}>Name (A-Z)</MenuItem>
                             </Select>
                         </FormControl>
                     </Box>
@@ -102,12 +103,12 @@ export default function CompanyGrid({
                     >
                         <IconButton
                             size="small"
-                            onClick={() => onViewModeChange('grid')}
+                            onClick={() => onViewModeChange(viewModeEnum.grid)}
                             sx={{
-                                bgcolor: viewMode === 'grid' ? 'primary.main' : 'transparent',
-                                color: viewMode === 'grid' ? 'white' : 'text.secondary',
+                                bgcolor: viewMode === viewModeEnum.grid ? 'primary.main' : 'transparent',
+                                color: viewMode === viewModeEnum.grid ? 'white' : 'text.secondary',
                                 '&:hover': {
-                                    bgcolor: viewMode === 'grid' ? 'primary.dark' : 'action.hover'
+                                    bgcolor: viewMode === viewModeEnum.grid ? 'primary.dark' : 'action.hover'
                                 }
                             }}
                         >
@@ -115,12 +116,12 @@ export default function CompanyGrid({
                         </IconButton>
                         <IconButton
                             size="small"
-                            onClick={() => onViewModeChange('list')}
+                            onClick={() => onViewModeChange(viewModeEnum.list)}
                             sx={{
-                                bgcolor: viewMode === 'list' ? 'primary.main' : 'transparent',
-                                color: viewMode === 'list' ? 'white' : 'text.secondary',
+                                bgcolor: viewMode === viewModeEnum.list ? 'primary.main' : 'transparent',
+                                color: viewMode === viewModeEnum.list ? 'white' : 'text.secondary',
                                 '&:hover': {
-                                    bgcolor: viewMode === 'list' ? 'primary.dark' : 'action.hover'
+                                    bgcolor: viewMode === viewModeEnum.list ? 'primary.dark' : 'action.hover'
                                 }
                             }}
                         >
@@ -151,34 +152,38 @@ export default function CompanyGrid({
                 </Paper>
             ) : (
                 <>
-                    <Grid
-                        container
-                        spacing={{ xs: 2, md: 3 }}
-                        sx={{
-                            ...(viewMode === 'list' && {
-                                flexDirection: 'column',
-                                '& .MuiGrid-item': {
-                                    maxWidth: '100%'
-                                }
-                            })
-                        }}
-                    >
-                        {paginatedCompanies.map((company) => (
-                            <Grid
-                                item
-                                xs={12}
-                                sm={viewMode === 'grid' ? 6 : 12}
-                                lg={viewMode === 'grid' ? 4 : 12}
-                                key={company.id}
-                            >
+                    {viewMode === viewModeEnum.grid ? (
+                        // Grid View
+                        <Grid container spacing={{ xs: 2, md: 3 }}>
+                            {paginatedCompanies.map((company) => (
+                                <Grid
+                                    item
+                                    xs={12}
+                                    sm={6}
+                                    lg={4}
+                                    key={company.id}
+                                >
+                                    <CompanyCard
+                                        company={company}
+                                        onClick={handleCompanyClick}
+                                        showStats={true}
+                                    />
+                                </Grid>
+                            ))}
+                        </Grid>
+                    ) : (
+                        // List View
+                        <Box sx={{ display: 'flex', flexDirection: 'column', gap: { xs: 2, md: 3 } }}>
+                            {paginatedCompanies.map((company) => (
                                 <CompanyCard
+                                    key={company.id}
                                     company={company}
                                     onClick={handleCompanyClick}
                                     showStats={true}
                                 />
-                            </Grid>
-                        ))}
-                    </Grid>
+                            ))}
+                        </Box>
+                    )}
 
                     {/* Pagination */}
                     {totalPages > 1 && (

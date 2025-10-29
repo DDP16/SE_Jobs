@@ -1,7 +1,5 @@
 import { BrowserRouter, Route, Routes } from "react-router-dom";
-import { Home, FindJobs, JobDescription } from "../pages";
-import CompanyList from "../pages/CompanyList";
-import CompanyDetails from "../pages/CompanyDetails";
+import { Home, FindJobs, JobDescription, CompanyDetails, CompanyList } from "../pages";
 import PageNotFound from "../layouts/PageNotFound";
 import ThemeProvider from "../providers/ThemeProvider";
 import MainLayout from "../layouts/MainLayout";
