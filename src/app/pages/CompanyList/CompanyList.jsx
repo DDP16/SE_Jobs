@@ -4,7 +4,7 @@ import CompanyListHero from './partials/CompanyListHero';
 import CompanyFilters from './partials/CompanyFilters';
 import CompanyGrid from './partials/CompanyGrid';
 import { mockCompanies } from '../../../mocks/mockData';
-import { sortType, viewMode as viewModeEnum } from '../../lib';
+import { sortType } from '../../lib';
 
 export default function CompanyList() {
     const [searchKeyword, setSearchKeyword] = useState('');
@@ -12,7 +12,6 @@ export default function CompanyList() {
     const [selectedSizes, setSelectedSizes] = useState([]);
     const [selectedLocations, setSelectedLocations] = useState([]);
     const [sortBy, setSortBy] = useState(sortType.featured);
-    const [viewMode, setViewMode] = useState(viewModeEnum.list);
 
     // Filter companies based on search and filters
     const filteredCompanies = mockCompanies.filter(company => {
@@ -122,8 +121,6 @@ export default function CompanyList() {
                             companies={sortedCompanies}
                             sortBy={sortBy}
                             onSortChange={setSortBy}
-                            viewMode={viewMode}
-                            onViewModeChange={setViewMode}
                             totalCount={filteredCompanies.length}
                         />
                     </Box>
