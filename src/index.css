@@ -8,6 +8,7 @@ All colors MUST be HSL.
 @theme {
   /* === Primary (0041D9) === */
   --color-primary: #0041D9;
+  --color-primary-dark: #0023A8;
   --color-secondary: #40BAFF;
   --color-tertiary: #CCCCF5;
   --color-quaternary: #E7F6FD;
@@ -66,6 +67,7 @@ All colors MUST be HSL.
   --color-floral-white: #FFFAF0;
   --color-snow: #FFFAFA;
   --color-ghost-white: #F8F8FF;
+  --color-anti-flash-white: #F4F4F4;
   --color-jet: #2A2A2A;
   --color-raisin-black: #242124;
   --color-oxford-blue: #212437;

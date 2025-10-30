@@ -1,5 +1,5 @@
 import { BrowserRouter, Route, Routes, Outlet } from "react-router-dom";
-import { Home, FindJobs, JobDescription, CompanyDetails, CompanyList, SignIn } from "../pages";
+import { Home, FindJobs, JobDescription, CompanyDetails, CompanyList, SignIn, SignUp } from "../pages";
 import PageNotFound from "../layouts/PageNotFound";
 import ThemeProvider from "../providers/ThemeProvider";
 import MainLayout from "../layouts/MainLayout";
@@ -19,6 +19,7 @@ export default function MainRoutes() {
       <BrowserRouter>
         <Routes>
           <Route path="/signin" element={<SignIn />} />
+          <Route path="/signup" element={<SignUp />} />
           <Route path="/" element={<LayoutWrapper />}>
             <Route index element={<Home />} />
             <Route path="jobs" element={<FindJobs />} />

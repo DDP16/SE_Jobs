@@ -15,7 +15,7 @@ import {
 } from '@mui/material';
 import { Menu as MenuIcon } from '@mui/icons-material';
 import { useTranslation } from "react-i18next";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import logo from '../../assets/logo.svg';
 
 
@@ -24,6 +24,7 @@ export default function Header() {
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down('md'));
   const [mobileMenuAnchor, setMobileMenuAnchor] = useState(null);
+  let navigate = useNavigate();
 
   const handleLangChange = (_e, newLang) => {
     if (newLang) i18n.changeLanguage(newLang);
@@ -76,8 +77,19 @@ export default function Header() {
         {!isMobile && (
           <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
             <Button color="inherit">{t('forEmployers')}</Button>
-            <Button variant="outlined">{t('login')}</Button>
-            <Button variant="contained" color="primary">{t('register')}</Button>
+            <Button 
+              variant="outlined"
+              onClick={() => navigate('/signin')}
+            >
+              {t('login')}
+            </Button>
+            <Button
+              variant="contained"
+              color="primary"
+              onClick={() => navigate('/signup')}
+            >
+              {t('register')}
+            </Button>
             <ToggleButtonGroup
               exclusive
               size="small"
