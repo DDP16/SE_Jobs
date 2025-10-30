@@ -1,6 +1,7 @@
 import { motion } from "framer-motion";
 import { Badge } from "../../../components/ui/badge";
 import { ArrowRight } from "lucide-react";
+import { srcAsset } from "../../../lib";
 
 export default function SimilarJobs() {
   const jobs = [
@@ -11,7 +12,7 @@ export default function SimilarJobs() {
       type: "Full-Time",
       category: "Marketing",
       style: "Design",
-      icon: "N",
+      icon: srcAsset.nomadIcon,
       color: "bg-emerald-500",
     },
     {
@@ -21,7 +22,7 @@ export default function SimilarJobs() {
       type: "Full-Time",
       category: "Marketing",
       style: "Design",
-      icon: "N",
+      icon: srcAsset.netlifyIcon,
       color: "bg-cyan-500",
     },
     {
@@ -31,7 +32,7 @@ export default function SimilarJobs() {
       type: "Full-Time",
       category: "Marketing",
       style: "Design",
-      icon: "D",
+      icon: srcAsset.dropboxIcon,
       color: "bg-blue-600",
     },
     {
@@ -41,7 +42,7 @@ export default function SimilarJobs() {
       type: "Full-Time",
       category: "Marketing",
       style: "Design",
-      icon: "M",
+      icon: srcAsset.mazeIcon,
       color: "bg-primary",
     },
     {
@@ -51,7 +52,7 @@ export default function SimilarJobs() {
       type: "Full-Time",
       category: "Marketing",
       style: "Design",
-      icon: "T",
+      icon: srcAsset.terraformIcon,
       color: "bg-teal-500",
     },
     {
@@ -61,7 +62,7 @@ export default function SimilarJobs() {
       type: "Full-Time",
       category: "Marketing",
       style: "Design",
-      icon: "U",
+      icon: srcAsset.udacityIcon,
       color: "bg-indigo-500",
     },
     {
@@ -71,7 +72,7 @@ export default function SimilarJobs() {
       type: "Full-Time",
       category: "Marketing",
       style: "Design",
-      icon: "P",
+      icon: srcAsset.packerIcon,
       color: "bg-red-500",
     },
     {
@@ -81,7 +82,7 @@ export default function SimilarJobs() {
       type: "Full-Time",
       category: "Marketing",
       style: "Design",
-      icon: "W",
+      icon: srcAsset.webflowIcon,
       color: "bg-purple-600",
     },
   ];
@@ -90,7 +91,10 @@ export default function SimilarJobs() {
     <section className="my-18 mx-30">
       <div className="flex items-center justify-between mb-6">
         <h3 className="text-2xl font-bold text-foreground">Similar Jobs</h3>
-        <a href="#" className="text-primary flex items-center gap-2 hover:underline font-medium">
+        <a
+          href="#"
+          className="text-primary flex items-center gap-2 hover:underline font-medium"
+        >
           Show all jobs
           <ArrowRight className="w-5 h-5" />
         </a>
@@ -106,23 +110,34 @@ export default function SimilarJobs() {
             className="bg-card rounded-2xl p-6 shadow-sm hover:shadow-md transition-shadow cursor-pointer"
           >
             <div className="flex items-start gap-4">
-              <div className={`${job.color} rounded-lg w-12 h-12 flex items-center justify-center text-white font-bold flex-shrink-0`}>
-                {job.icon}
-              </div>
+              <img
+                src={job.icon}
+                alt={`${job.company} Logo`}
+                className="w-12 h-12 object-contain"
+              />
               <div className="flex-1 min-w-0">
                 <h5 className="font-bold text-foreground mb-1">{job.title}</h5>
                 <p className="text-sm text-muted-foreground mb-3">
                   {job.company} • {job.location}
                 </p>
                 <div className="flex flex-wrap gap-2">
-                  <Badge variant="secondary" className="bg-accent-green/10 text-accent-green rounded-4xl px-2.5 py-1.5">
+                  <Badge
+                    variant="secondary"
+                    className="bg-accent-green/10 text-accent-green rounded-4xl px-2.5 py-1.5"
+                  >
                     {job.type}
                   </Badge>
                   <div className="w-px bg-neutrals-20" />
-                  <Badge variant="outline" className="border-accent-yellow text-accent-yellow rounded-4xl px-2.5 py-1.5">
+                  <Badge
+                    variant="outline"
+                    className="border-accent-yellow text-accent-yellow rounded-4xl px-2.5 py-1.5"
+                  >
                     {job.category}
                   </Badge>
-                  <Badge variant="outline" className="border-primary text-primary rounded-4xl px-2.5 py-1.5">
+                  <Badge
+                    variant="outline"
+                    className="border-primary text-primary rounded-4xl px-2.5 py-1.5"
+                  >
                     {job.style}
                   </Badge>
                 </div>
@@ -133,4 +148,4 @@ export default function SimilarJobs() {
       </div>
     </section>
   );
-};
+}

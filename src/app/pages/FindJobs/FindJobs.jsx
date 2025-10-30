@@ -4,7 +4,8 @@ import { useTheme } from '@mui/material/styles';
 import { useNavigate } from 'react-router-dom';
 import JobListSection from "../../components/sections/JobListSection";
 import HeroSection from "../../components/sections/HeroSection";
-import JobDescription from "../JobDescription/JobDescription";
+import JobDescription from "../JobDescription";
+import { layoutType } from "../../lib";
 import FilterDialog from "../../components/features/FilterDialog";
 import FilterToolbar from "../../components/features/FilterToolbar";
 
@@ -118,10 +119,7 @@ export default function FindJobs() {
                         {selectedJob ? (
                             <JobDescription
                                 job={selectedJob}
-                                layout="compact"
-                                showBreadcrumb={false}
-                                showSimilarJobs={false}
-                                showCompanySection={false}
+                                layout={layoutType.half_width}
                             />
                         ) : (
                             <Box className="p-12 md:p-16 text-center bg-white rounded-xl border border-gray-200 shadow-sm">

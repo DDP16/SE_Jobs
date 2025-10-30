@@ -1,5 +1,6 @@
 import { motion } from "framer-motion";
 import { ArrowRight } from "lucide-react";
+import { srcAsset } from "../../../lib";
 
 export default function CompanySection() {
   return (
@@ -12,9 +13,11 @@ export default function CompanySection() {
       <div className="grid grid-cols-2 gap-10 items-center h-[250px]">
         <div>
           <div className="flex items-center mb-6 gap-4">
-            <div className="bg-primary rounded-xl w-16 h-16 flex items-center justify-center text-white text-2xl font-bold">
-              S
-            </div>
+            <img
+              src={srcAsset.stripeIcon}
+              alt="Stripe Logo"
+              className="w-16 h-16 object-contain"
+            />
             <div>
               <h3 className="text-2xl font-bold text-foreground">Stripe</h3>
               <a

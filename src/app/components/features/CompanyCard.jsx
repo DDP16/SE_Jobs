@@ -75,7 +75,7 @@ export default function CompanyCard({
 
                     {isHiring && (
                         <Chip
-                            label="Hiring"
+                            label={jobsCount > 0 ? `${jobsCount} open positions` : "No Hiring"}
                             color="success"
                             size="small"
                             sx={{ ml: 1 }}
@@ -114,7 +114,7 @@ export default function CompanyCard({
                     </Stack>
                 )}
 
-                {jobsCount > 0 && (
+                {/* {jobsCount > 0 && (
                     <Box sx={{
                         display: 'flex',
                         justifyContent: 'space-between',
@@ -130,7 +130,7 @@ export default function CompanyCard({
                             View jobs →
                         </Typography>
                     </Box>
-                )}
+                )} */}
             </CardContent>
         </Card>
     );

@@ -15,7 +15,7 @@ import {
 } from '@mui/material';
 import { Menu as MenuIcon } from '@mui/icons-material';
 import { useTranslation } from "react-i18next";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import logo from '../../assets/logo.svg';
 
 
@@ -24,6 +24,7 @@ export default function Header() {
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down('md'));
   const [mobileMenuAnchor, setMobileMenuAnchor] = useState(null);
+  let navigate = useNavigate();
 
   const handleLangChange = (_e, newLang) => {
     if (newLang) i18n.changeLanguage(newLang);
@@ -67,6 +68,7 @@ export default function Header() {
           }}>
             <Button color="inherit" component={Link} to="/">{t('home')}</Button>
             <Button color="inherit" component={Link} to="/jobs">{t('jobs')}</Button>
+            <Button color="inherit" component={Link} to="/companies">{t('companies')}</Button>
             <Button color="inherit">{t('contactUs')}</Button>
           </Box>
         )}
@@ -75,8 +77,19 @@ export default function Header() {
         {!isMobile && (
           <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
             <Button color="inherit">{t('forEmployers')}</Button>
-            <Button variant="outlined">{t('login')}</Button>
-            <Button variant="contained" color="primary">{t('register')}</Button>
+            <Button 
+              variant="outlined"
+              onClick={() => navigate('/signin')}
+            >
+              {t('login')}
+            </Button>
+            <Button
+              variant="contained"
+              color="primary"
+              onClick={() => navigate('/signup')}
+            >
+              {t('register')}
+            </Button>
             <ToggleButtonGroup
               exclusive
               size="small"
@@ -123,13 +136,18 @@ export default function Header() {
           transformOrigin={{ vertical: 'top', horizontal: 'right' }}
         >
           <MenuItem onClick={handleMobileMenuClose}>
-            <Button color="inherit" sx={{ width: '100%', justifyContent: 'flex-start' }}>
+            <Button color="inherit" component={Link} to="/" sx={{ width: '100%', justifyContent: 'flex-start' }}>
               {t('home')}
             </Button>
           </MenuItem>
           <MenuItem onClick={handleMobileMenuClose}>
-            <Button color="inherit" sx={{ width: '100%', justifyContent: 'flex-start' }}>
+            <Button color="inherit" component={Link} to="/jobs" sx={{ width: '100%', justifyContent: 'flex-start' }}>
               {t('jobs')}
+            </Button>
+          </MenuItem>
+          <MenuItem onClick={handleMobileMenuClose}>
+            <Button color="inherit" component={Link} to="/companies" sx={{ width: '100%', justifyContent: 'flex-start' }}>
+              {t('companies')}
             </Button>
           </MenuItem>
           <MenuItem onClick={handleMobileMenuClose}>

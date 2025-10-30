@@ -1,9 +1,10 @@
 import JobHeader from "./partials/JobHeader";
 import JobDetails from "./partials/JobDetails";
 import JobSidebar from "./partials/JobSidebar";
-import PerksSection from "./partials/PerksSection";
+import PerksSection from "../../components/company/PerksSection";
 import CompanySection from "./partials/CompanySection";
 import SimilarJobs from "./partials/SimilarJobs";
+import { layoutType } from "../../lib";
 
 export default function JobDescription({
   job,
@@ -14,32 +15,33 @@ export default function JobDescription({
   showPerksSection = true,
   showCompanySection = true,
   showSimilarJobs = true,
-  layout = "full", // "full" | "compact" | "minimal"
+  layout = layoutType.full, // "full" | "compact" | "minimal"
 }) {
   // Layout configurations
   const layoutConfig = {
-    full: {
+    [layoutType.full]: {
       showBreadcrumb: true,
-      showJobHeader: true,
-      showJobDetails: true,
       showJobSidebar: true,
       showPerksSection: true,
       showCompanySection: true,
       showSimilarJobs: true,
     },
-    compact: {
-      showBreadcrumb: false,
-      showJobHeader: true,
-      showJobDetails: true,
+    [layoutType.compact]: {
+      showBreadcrumb: false, 
       showJobSidebar: true,
       showPerksSection: false,
       showCompanySection: false,
       showSimilarJobs: false,
     },
-    minimal: {
+    [layoutType.half_width]: {
+      showBreadcrumb: false, 
+      showJobSidebar: true,
+      showPerksSection: false,
+      showCompanySection: false,
+      showSimilarJobs: false,
+    },
+    [layoutType.minimal]: {
       showBreadcrumb: false,
-      showJobHeader: true,
-      showJobDetails: true,
       showJobSidebar: false,
       showPerksSection: false,
       showCompanySection: false,
@@ -50,35 +52,35 @@ export default function JobDescription({
   // Use layout config if layout prop is provided
   const config = layoutConfig[layout] || {};
   const finalConfig = {
-    showBreadcrumb: showBreadcrumb && config.showBreadcrumb !== false,
-    showJobHeader: showJobHeader && config.showJobHeader !== false,
-    showJobDetails: showJobDetails && config.showJobDetails !== false,
-    showJobSidebar: showJobSidebar && config.showJobSidebar !== false,
-    showPerksSection: showPerksSection && config.showPerksSection !== false,
-    showCompanySection:
-      showCompanySection && config.showCompanySection !== false,
-    showSimilarJobs: showSimilarJobs && config.showSimilarJobs !== false,
+    showBreadcrumb: showBreadcrumb && config.showBreadcrumb,
+    showJobHeader: showJobHeader,
+    showJobDetails: showJobDetails,
+    showJobSidebar: showJobSidebar && config.showJobSidebar,
+    showPerksSection: showPerksSection && config.showPerksSection,
+    showCompanySection: showCompanySection && config.showCompanySection,
+    showSimilarJobs: showSimilarJobs && config.showSimilarJobs,
   };
 
   return (
     <div className="min-h-screen bg-white mx-auto">
-      <div className="py-10 px-30 bg-background-lightBlue">
+      <div className={`py-10 ${layout !== layoutType.half_width ? "px-30" : ""} bg-background-lightBlue`}>
         {finalConfig.showBreadcrumb && (
           <div className="mb-6">
             <p className="text-sm text-muted-foreground">
-              Home / Companies / {job?.company || "Company"} /{" "}
-              {job?.title || "Job Title"}
+              Home / Companies / {job?.company || "Company"} / {job?.title || "Job Title"}
             </p>
           </div>
         )}
         {finalConfig.showJobHeader && <JobHeader job={job} />}
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 my-18 mx-30">
+      <div className={` grid grid-cols-1 gap-8 py-18 ${layout !== layoutType.half_width ? "px-30 lg:grid-cols-3 md:grid-cols-2" : "px-15 lg:grid-cols-1"}`}>
         <div className="lg:col-span-2">
           {finalConfig.showJobDetails && <JobDetails job={job} />}
         </div>
-        <div>{finalConfig.showJobSidebar && <JobSidebar job={job} />}</div>
+        <div className="sticky top-0 z-10 self-start">
+          {finalConfig.showJobSidebar && <JobSidebar job={job} />}
+        </div>
       </div>
 
       {finalConfig.showPerksSection && <PerksSection job={job} />}
