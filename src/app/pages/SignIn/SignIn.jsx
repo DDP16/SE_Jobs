@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { motion } from "framer-motion";
 import { Eye, EyeOff } from "lucide-react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { Input } from "../../components/ui/input";
 import { Button } from "../../components/ui/button";
 import { srcAsset } from "../../lib";
@@ -13,6 +13,7 @@ export default function SignIn() {
   const [password, setPassword] = useState("");
   const [emailError, setEmailError] = useState("");
   const [passwordError, setPasswordError] = useState("");
+  let nav = useNavigate();
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -48,7 +49,7 @@ export default function SignIn() {
         transition={{ duration: 0.5 }}
         className="absolute top-9 left-12"
       >
-        <img src={srcAsset.SELargeLogo} alt="KHOA CÔNG NGHỆ PHẦN MỀM" className="h-12 w-auto" />
+        <img src={srcAsset.SELargeLogo} alt="KHOA CÔNG NGHỆ PHẦN MỀM" className="h-12 w-auto cursor-pointer" onClick={() => {nav("/");}} />
       </motion.div>
 
       <motion.div
