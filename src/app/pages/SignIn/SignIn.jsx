@@ -6,7 +6,7 @@ import { Input } from "../../components/ui/input";
 import { Button } from "../../components/ui/button";
 import { srcAsset } from "../../lib";
 import { validateEmail, validatePassword } from "../../modules";
-import { loginWithEmail } from "../../modules/authService";
+import { loginWithEmail } from "../../modules";
 
 export default function SignIn() {
   const [showPassword, setShowPassword] = useState(false);
@@ -16,7 +16,7 @@ export default function SignIn() {
   const [passwordError, setPasswordError] = useState("");
   let nav = useNavigate();
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     let valid = true;
 
@@ -38,8 +38,15 @@ export default function SignIn() {
     }
 
     if (valid) {
-      console.log("Login attempt:", { email, password });
-      loginWithEmail(email, password, nav);
+      try {
+        const result = await loginWithEmail(email, password);
+        if (result && result.status === 200) {
+          nav("/");
+        }
+      } catch (error) {
+        console.error("Login error:", error);
+        setEmailError(error.message || "Login failed");
+      }
     }
   };
 

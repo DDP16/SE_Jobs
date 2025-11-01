@@ -5,7 +5,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { Input } from "../../components/ui/input";
 import { Button } from "../../components/ui/button";
 import { srcAsset } from "../../lib";
-import { validateEmail, validatePassword } from "../../modules";
+import { register, validateEmail, validatePassword } from "../../modules";
 
 export default function SignUp() {
   const [showPassword, setShowPassword] = useState(false);
@@ -18,7 +18,7 @@ export default function SignUp() {
   const [confirmPasswordError, setConfirmPasswordError] = useState("");
   let nav = useNavigate();
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     let valid = true;
 
@@ -47,7 +47,14 @@ export default function SignUp() {
     }
 
     if (valid) {
-      console.log("Sign up attempt:", { email, password, confirmPassword });
+      try {
+        const result = await register(email, password);
+        if (result && result.status === 200) {
+          nav("/");
+        }
+      } catch (error) {
+
+      }
     }
   };
 
