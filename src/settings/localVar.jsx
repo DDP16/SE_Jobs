@@ -1,0 +1,1 @@
+export const BE_ENPOINT = 'http://localhost:3000';
