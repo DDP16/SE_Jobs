@@ -65,9 +65,9 @@ export default function SignIn() {
         initial={{ opacity: 0, scale: 0.95 }}
         animate={{ opacity: 1, scale: 1 }}
         transition={{ duration: 0.5, delay: 0.2 }}
-        className="bg-white rounded-3xl shadow-2xl px-12 py-14 w-full max-w-xl"
+        className="bg-white rounded-3xl shadow-2xl p-12 w-full lg:max-w-2/5 md:max-w-lg"
       >
-        <div className="flex justify-between items-center mb-9">
+        <div className="flex justify-between items-center mb-5">
           <div className="flex flex-col gap-2">
             <p className="text-[20px] text-gray-600 mb-1">Welcome to SE JOBS</p>
             <h3 className="text-3xl font-medium text-gray-900">Sign in</h3>
@@ -80,7 +80,7 @@ export default function SignIn() {
           </div>
         </div>
 
-        <form onSubmit={handleSubmit} className="space-y-9">
+        <form onSubmit={handleSubmit} className="space-y-5">
           <div className="space-y-2">
             <label htmlFor="email" className="block text-base font-medium text-gray-900">
               Enter your Email
