@@ -5,13 +5,13 @@ const HEADERS = {
   accept: "application/json",
 };
 
-export const get = async (uri, onSuccess, onFail) => {
+export const get = async (uri, extendHeaders, onSuccess, onFail) => {
   const res = await fetch(BE_ENPOINT + uri, {
-    headers: HEADERS,
+    headers: { ...HEADERS, ...extendHeaders },
   });
 
   if (!res.ok) {
-    onFail();
+    onFail(res);
     return;
   }
 
@@ -27,7 +27,7 @@ export const post = async (uri, reqData, onSuccess, onFail) => {
   });
 
   if (!res.ok) {
-    onFail();
+    onFail(res);
     return;
   }
 
