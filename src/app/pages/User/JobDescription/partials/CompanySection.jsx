@@ -1,6 +1,6 @@
 import { motion } from "framer-motion";
 import { ArrowRight } from "lucide-react";
-import { srcAsset } from "../../../lib";
+import { srcAsset } from "../../../../lib";
 
 export default function CompanySection() {
   return (

@@ -3,8 +3,8 @@ import { Container, Box } from '@mui/material';
 import CompanyListHero from './partials/CompanyListHero';
 import CompanyFilters from './partials/CompanyFilters';
 import CompanyGrid from './partials/CompanyGrid';
-import { mockCompanies } from '../../../mocks/mockData';
-import { sortType } from '../../lib';
+import { mockCompanies } from '../../../../mocks/mockData';
+import { sortType } from '../../../lib';
 
 export default function CompanyList() {
     const [searchKeyword, setSearchKeyword] = useState('');

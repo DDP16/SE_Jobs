@@ -2,12 +2,12 @@ import React, { useState } from "react";
 import { Container, Box, Stack, useMediaQuery } from '@mui/material';
 import { useTheme } from '@mui/material/styles';
 import { useNavigate } from 'react-router-dom';
-import JobListSection from "../../components/sections/JobListSection";
-import HeroSection from "../../components/sections/HeroSection";
+import JobListSection from "../../../components/sections/JobListSection";
+import HeroSection from "../../../components/sections/HeroSection";
 import JobDescription from "../JobDescription";
-import { layoutType } from "../../lib";
-import FilterDialog from "../../components/features/FilterDialog";
-import FilterToolbar from "../../components/features/FilterToolbar";
+import { layoutType } from "../../../lib";
+import FilterDialog from "../../../components/features/FilterDialog";
+import FilterToolbar from "../../../components/features/FilterToolbar";
 
 export default function FindJobs() {
     const [selectedJob, setSelectedJob] = useState(null);

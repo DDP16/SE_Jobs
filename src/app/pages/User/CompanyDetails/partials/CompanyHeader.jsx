@@ -8,7 +8,7 @@ import {
   LocationOn,
   People,
 } from "@mui/icons-material";
-import { srcAsset } from "../../../lib";
+import { srcAsset } from "../../../../lib";
 
 export default function CompanyHeader({ company = {} }) {
   const [isFollowing, setIsFollowing] = useState(false);

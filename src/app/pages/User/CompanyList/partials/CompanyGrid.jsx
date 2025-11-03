@@ -13,8 +13,8 @@ import {
     Sort
 } from '@mui/icons-material';
 import { useNavigate } from 'react-router-dom';
-import CompanyCard from '../../../components/features/CompanyCard';
-import { sortType } from '../../../lib';
+import CompanyCard from '../../../../components/features/CompanyCard';
+import { sortType } from '../../../../lib';
 
 export default function CompanyGrid({
     companies = [],

@@ -1,7 +1,7 @@
-export { default as Home } from "./Home";
-export { default as FindJobs } from "./FindJobs";
-export { default as JobDescription } from "./JobDescription";
-export { default as CompanyDetails } from "./CompanyDetails";
-export { default as CompanyList } from "./CompanyList";
-export { default as SignIn } from "./SignIn";
-export { default as SignUp } from "./SignUp";
+export { default as Home } from "./User/Home";
+export { default as FindJobs } from "./User/FindJobs";
+export { default as JobDescription } from "./User/JobDescription";
+export { default as CompanyDetails } from "./User/CompanyDetails";
+export { default as CompanyList } from "./User/CompanyList";
+export { default as SignIn } from "./Auth/SignIn";
+export { default as SignUp } from "./Auth/SignUp";

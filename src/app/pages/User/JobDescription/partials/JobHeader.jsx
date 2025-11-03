@@ -1,7 +1,7 @@
 import { motion } from "framer-motion";
 import { Share2 } from "lucide-react";
-import { Button } from "../../../components/ui/button";
-import { srcAsset } from "../../../lib";
+import { Button } from "../../../../components/ui/button";
+import { srcAsset } from "../../../../lib";
 
 export default function JobHeader() {
   return (

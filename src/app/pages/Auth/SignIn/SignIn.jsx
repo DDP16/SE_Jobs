@@ -2,11 +2,11 @@ import { useState } from "react";
 import { motion } from "framer-motion";
 import { Eye, EyeOff } from "lucide-react";
 import { Link, useNavigate } from "react-router-dom";
-import { Input } from "../../components/ui/input";
-import { Button } from "../../components/ui/button";
-import { srcAsset } from "../../lib";
-import { validateEmail, validatePassword } from "../../modules";
-import { loginWithEmail } from "../../modules";
+import { Input } from "../../../components/ui/input";
+import { Button } from "../../../components/ui/button";
+import { srcAsset } from "../../../lib";
+import { validateEmail, validatePassword } from "../../../modules";
+import { loginWithEmail } from "../../../modules";
 
 export default function SignIn() {
   const [showPassword, setShowPassword] = useState(false);
