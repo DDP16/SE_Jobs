@@ -5,7 +5,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { Input } from "../../components/ui/input";
 import { Button } from "../../components/ui/button";
 import { srcAsset } from "../../lib";
-import { validateEmail, validatePassword } from "../../modules";
+import { register, validateEmail, validatePassword } from "../../modules";
 
 export default function SignUp() {
   const [showPassword, setShowPassword] = useState(false);
@@ -13,12 +13,16 @@ export default function SignUp() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
+  const [firstname, setFirstname] = useState("");
+  const [lastname, setLastname] = useState("");
   const [emailError, setEmailError] = useState("");
   const [passwordError, setPasswordError] = useState("");
   const [confirmPasswordError, setConfirmPasswordError] = useState("");
+  const [firstnameError, setFirstnameError] = useState("");
+  const [lastnameError, setLastnameError] = useState("");
   let nav = useNavigate();
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     let valid = true;
 
@@ -46,8 +50,29 @@ export default function SignUp() {
       setConfirmPasswordError("");
     }
 
+    if (!firstname) {
+      setFirstnameError("First name is required.");
+      valid = false;
+    } else {
+      setFirstnameError("");
+    }
+
+    if (!lastname) {
+      setLastnameError("Last name is required.");
+      valid = false;
+    } else {
+      setLastnameError("");
+    }
+
     if (valid) {
-      console.log("Sign up attempt:", { email, password, confirmPassword });
+      try {
+        const result = await register(email, password, firstname, lastname);
+        if (result && result.status === 200) {
+          nav("/signin");
+        }
+      } catch (error) {
+
+      }
     }
   };
 
@@ -66,11 +91,11 @@ export default function SignUp() {
         initial={{ opacity: 0, scale: 0.95 }}
         animate={{ opacity: 1, scale: 1 }}
         transition={{ duration: 0.5, delay: 0.2 }}
-        className="bg-white rounded-3xl shadow-2xl px-12 py-14 w-full max-w-xl"
+        className="bg-white rounded-3xl shadow-2xl p-12 w-full lg:max-w-2/5 md:max-w-lg"
       >
-        <div className="flex justify-between items-center mb-9">
+        <div className="flex justify-between items-center mb-5">
           <div className="flex flex-col gap-2">
-            <p className="text-[20px] text-gray-600 mb-1">Welcome to SE JOBS</p>
+            <p className="text-[20px] text-gray-600">Welcome to SE JOBS</p>
             <h3 className="text-3xl font-medium text-gray-900">Sign up</h3>
           </div>
           <div className="text-right">
@@ -81,8 +106,42 @@ export default function SignUp() {
           </div>
         </div>
 
-        <form onSubmit={handleSubmit} className="space-y-9">
-          <div className="space-y-2">
+        <form onSubmit={handleSubmit} className="space-y-5 flex flex-col items-center">
+          <div className="w-full grid grid-cols-2 gap-4">
+            <div className="space-y-2">
+              <label htmlFor="firstname" className="block text-base font-medium text-gray-900">
+                First Name
+              </label>
+              <Input
+                id="firstname"
+                type="text"
+                placeholder="First Name"
+                value={firstname}
+                onChange={(e) => setFirstname(e.target.value)}
+                className="w-full h-11 rounded-xl border-gray-300 focus:border-blue-500 focus:ring-blue-500"
+              />
+              {firstnameError && (
+                <p className="text-xs text-red-500 mt-1">{firstnameError}</p>
+              )}
+            </div>
+            <div className="space-y-2">
+              <label htmlFor="lastname" className="block text-base font-medium text-gray-900">
+                Last Name
+              </label>
+              <Input
+                id="lastname"
+                type="text"
+                placeholder="Last Name"
+                value={lastname}
+                onChange={(e) => setLastname(e.target.value)}
+                className="w-full h-11 rounded-xl border-gray-300 focus:border-blue-500 focus:ring-blue-500"
+              />
+              {lastnameError && (
+                <p className="text-xs text-red-500 mt-1">{lastnameError}</p>
+              )}
+            </div>
+          </div>
+          <div className="w-full space-y-2">
             <label htmlFor="email" className="block text-base font-medium text-gray-900">
               Enter your Email
             </label>
@@ -99,7 +158,7 @@ export default function SignUp() {
             )}
           </div>
 
-          <div className="space-y-2">
+          <div className="w-full space-y-2">
             <label htmlFor="password" className="block text-base font-medium text-gray-900">
               Enter your Password
             </label>
@@ -125,7 +184,7 @@ export default function SignUp() {
             )}
           </div>
 
-          <div className="space-y-2">
+          <div className="w-full space-y-2">
             <label htmlFor="confirmPassword" className="block text-base font-medium text-gray-900">
               Confirm your Password
             </label>
@@ -154,7 +213,7 @@ export default function SignUp() {
 
           <Button
             type="submit"
-            className="w-full bg-blue-600 hover:bg-blue-700 text-white rounded-xl h-12 text-base font-semibold"
+            className="w-1/2 bg-blue-600 hover:bg-blue-700 text-white rounded-xl h-12 text-base font-semibold"
           >
             Sign up
           </Button>
