@@ -11,9 +11,17 @@ import {
   ToggleButton,
   ToggleButtonGroup,
   useTheme,
-  useMediaQuery
+  useMediaQuery,
+  Avatar,
+  Divider,
+  ListItemIcon
 } from '@mui/material';
-import { Menu as MenuIcon } from '@mui/icons-material';
+import {
+  Menu as MenuIcon,
+  AccountCircle as AccountCircleIcon,
+  Dashboard as DashboardIcon,
+  Logout as LogoutIcon
+} from '@mui/icons-material';
 import { useTranslation } from "react-i18next";
 import { Link, useNavigate } from "react-router-dom";
 import logo from '../../assets/logo.svg';
@@ -24,7 +32,12 @@ export default function Header() {
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down('md'));
   const [mobileMenuAnchor, setMobileMenuAnchor] = useState(null);
+  const [userMenuAnchor, setUserMenuAnchor] = useState(null);
   let navigate = useNavigate();
+
+  // Check if user is logged in 
+  const isLoggedIn = !!localStorage.getItem('auth_token');
+  const userName = localStorage.getItem('user_name') || 'User';
 
   const handleLangChange = (_e, newLang) => {
     if (newLang) i18n.changeLanguage(newLang);
@@ -36,6 +49,27 @@ export default function Header() {
 
   const handleMobileMenuClose = () => {
     setMobileMenuAnchor(null);
+  };
+
+  const handleUserMenuOpen = (event) => {
+    setUserMenuAnchor(event.currentTarget);
+  };
+
+  const handleUserMenuClose = () => {
+    setUserMenuAnchor(null);
+  };
+
+  const handleProfileClick = () => {
+    handleUserMenuClose();
+    navigate('/profile/dashboard');
+  };
+
+  const handleLogout = () => {
+    handleUserMenuClose();
+    localStorage.removeItem('auth_token');
+    localStorage.removeItem('user_id');
+    localStorage.removeItem('user_name');
+    navigate('/');
   };
 
   return (
@@ -77,19 +111,73 @@ export default function Header() {
         {!isMobile && (
           <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
             <Button color="inherit">{t('forEmployers')}</Button>
-            <Button 
-              variant="outlined"
-              onClick={() => navigate('/signin')}
-            >
-              {t('login')}
-            </Button>
-            <Button
-              variant="contained"
-              color="primary"
-              onClick={() => navigate('/signup')}
-            >
-              {t('register')}
-            </Button>
+
+            {isLoggedIn ? (
+              <>
+                <IconButton
+                  onClick={handleUserMenuOpen}
+                  sx={{
+                    border: '2px solid',
+                    borderColor: 'primary.main',
+                    p: 0.5
+                  }}
+                >
+                  <Avatar
+                    sx={{
+                      width: 32,
+                      height: 32,
+                      bgcolor: 'primary.main',
+                      fontSize: '0.9rem',
+                      fontWeight: 600
+                    }}
+                  >
+                    {userName.charAt(0).toUpperCase()}
+                  </Avatar>
+                </IconButton>
+                <Menu
+                  anchorEl={userMenuAnchor}
+                  open={Boolean(userMenuAnchor)}
+                  onClose={handleUserMenuClose}
+                  transformOrigin={{ horizontal: 'right', vertical: 'top' }}
+                  anchorOrigin={{ horizontal: 'right', vertical: 'bottom' }}
+                  PaperProps={{
+                    elevation: 3,
+                    sx: { mt: 1.5, minWidth: 200 }
+                  }}
+                >
+                  <MenuItem onClick={handleProfileClick}>
+                    <ListItemIcon>
+                      <DashboardIcon fontSize="small" />
+                    </ListItemIcon>
+                    Profile Dashboard
+                  </MenuItem>
+                  <Divider />
+                  <MenuItem onClick={handleLogout}>
+                    <ListItemIcon>
+                      <LogoutIcon fontSize="small" />
+                    </ListItemIcon>
+                    Logout
+                  </MenuItem>
+                </Menu>
+              </>
+            ) : (
+              <>
+                <Button
+                  variant="outlined"
+                  onClick={() => navigate('/signin')}
+                >
+                  {t('login')}
+                </Button>
+                <Button
+                  variant="contained"
+                  color="primary"
+                  onClick={() => navigate('/signup')}
+                >
+                  {t('register')}
+                </Button>
+              </>
+            )}
+
             <ToggleButtonGroup
               exclusive
               size="small"

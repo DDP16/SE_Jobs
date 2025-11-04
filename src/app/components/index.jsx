@@ -5,6 +5,7 @@ export { default as Button } from './common/Button';
 export { default as Input } from './common/Input';
 export { default as Card } from './common/Card';
 export { default as Badge } from './common/Badge';
+export { DefaultSidebar as SideBar } from './common/SideBar';
 
 // Feature Components
 export { default as SearchBar } from './features/SearchBar';
