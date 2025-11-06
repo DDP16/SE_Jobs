@@ -1,11 +1,13 @@
 import { useState } from "react";
-import { motion } from "framer-motion";
+import { delay, motion } from "framer-motion";
 import { Eye, EyeOff } from "lucide-react";
 import { Link, useNavigate } from "react-router-dom";
-import { Input } from "../../../components/ui/input";
-import { Button } from "../../../components/ui/button";
-import { srcAsset } from "../../../lib";
-import { register, validateEmail, validatePassword } from "../../../modules";
+import { Input } from "../../components/ui/input";
+import { Button } from "../../components/ui/button";
+import { srcAsset } from "../../lib";
+import { register, validateEmail, validatePassword } from "../../modules";
+import { useCustomAlert } from "../../hooks/useCustomAlert";
+import { CustomAlert } from "../../components";
 
 export default function SignUp() {
   const [showPassword, setShowPassword] = useState(false);
@@ -21,6 +23,7 @@ export default function SignUp() {
   const [firstnameError, setFirstnameError] = useState("");
   const [lastnameError, setLastnameError] = useState("");
   let nav = useNavigate();
+  const { alertConfig, hideAlert, showSuccess, showError, showWarning} = useCustomAlert();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -68,10 +71,11 @@ export default function SignUp() {
       try {
         const result = await register(email, password, firstname, lastname);
         if (result && result.status === 200) {
-          nav("/signin");
+          showSuccess("Registration successful! Please sign in.");
+          delay(() => {nav("/signin");}, 1000);
         }
       } catch (error) {
-
+        showError(error.message || "Registration failed");
       }
     }
   };
@@ -219,6 +223,10 @@ export default function SignUp() {
           </Button>
         </form>
       </motion.div>
+      <CustomAlert 
+        {...alertConfig} 
+        onClose={hideAlert} 
+      />
     </div>
   );
 };

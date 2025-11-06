@@ -6,6 +6,7 @@ export { default as Input } from './common/Input';
 export { default as Card } from './common/Card';
 export { default as Badge } from './common/Badge';
 export { DefaultSidebar as SideBar } from './common/SideBar';
+export { default as CustomAlert } from './common/CustomAlert';
 
 // Feature Components
 export { default as SearchBar } from './features/SearchBar';
