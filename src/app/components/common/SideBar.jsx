@@ -20,11 +20,10 @@ export default function ProfileSidebar({ user }) {
 
     const menuItems = [
         { icon: <DashboardIcon />, text: 'Dashboard', path: '/profile/dashboard', color: 'error' },
-        { icon: <DescriptionIcon />, text: 'CV Attachment', path: '/profile/cv-attachment' },
-        { icon: <PersonIcon />, text: 'Profile', path: '/profile/itviec-profile' },
+        { icon: <PersonIcon />, text: 'Profile', path: '/profile/user-profile' },
         { icon: <WorkIcon />, text: 'My Jobs', path: '/profile/my-jobs' },
-        { icon: <InboxIcon />, text: 'Job Invitation', path: '/profile/job-invitation', badge: 0 },
-        { icon: <MailIcon />, text: 'Email Subscriptions', path: '/profile/email-subscriptions' },
+        // { icon: <InboxIcon />, text: 'Job Invitation', path: '/profile/job-invitation', badge: 0 },
+        // { icon: <MailIcon />, text: 'Email Subscriptions', path: '/profile/email-subscriptions' },
         { icon: <NotificationsIcon />, text: 'Notifications', path: '/profile/notifications' },
         { icon: <SettingsIcon />, text: 'Settings', path: '/profile/settings' },
     ];
