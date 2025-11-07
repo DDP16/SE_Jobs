@@ -143,66 +143,8 @@ export default function ProfileDashboard() {
                         {/* User Activities Section */}
                         <UserActivities stats={stats} />
 
-                        {/* Total Jobs Applied */}
-                        {/* <Grid item xs={12} md={3}>
-                                <Paper
-                                    elevation={0}
-                                    sx={{
-                                        p: 3,
-                                        borderRadius: 2,
-                                        border: '1px solid',
-                                        borderColor: 'divider',
-                                        height: '100%',
-                                    }}
-                                >
-                                    <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
-                                        Total Jobs Applied
-                                    </Typography>
-                                    <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
-                                        <Typography variant="h2" sx={{ fontWeight: 700, color: theme.palette.text.primary }}>
-                                            {stats.totalJobs}
-                                        </Typography>
-                                        <Box
-                                            sx={{
-                                                width: 64,
-                                                height: 64,
-                                                bgcolor: theme.palette.primary.main + '14',
-                                                borderRadius: 2,
-                                                display: 'flex',
-                                                alignItems: 'center',
-                                                justifyContent: 'center',
-                                            }}
-                                        >
-                                            <DescriptionIcon sx={{ fontSize: 32, color: theme.palette.primary.main }} />
-                                        </Box>
-                                    </Box>
-                                    <Typography variant="h6" sx={{ fontWeight: 600, color: theme.palette.text.primary, mt: 3 }}>
-                                        Interviewed
-                                    </Typography>
-                                    <Box sx={{ display: 'flex', alignItems: 'center', gap: 2, mt: 1 }}>
-                                        <Typography variant="h3" sx={{ fontWeight: 700, color: theme.palette.text.primary }}>
-                                            {stats.interviewed}
-                                        </Typography>
-                                        <Box
-                                            sx={{
-                                                width: 56,
-                                                height: 56,
-                                                bgcolor: theme.palette.grey[50],
-                                                borderRadius: 2,
-                                                display: 'flex',
-                                                alignItems: 'center',
-                                                justifyContent: 'center',
-                                            }}
-                                        >
-                                            <PersonIcon sx={{ fontSize: 28, color: theme.palette.text.secondary }} />
-                                        </Box>
-                                    </Box>
-                                </Paper>
-                            </Grid> */}
-
-
-                        {/* User Activity */}
                         {/* Recent Applications History */}
+                        {/* Or Recommend Jobs */}
                         <Paper
                             elevation={0}
                             sx={{

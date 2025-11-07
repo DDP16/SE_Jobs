@@ -25,7 +25,6 @@ export default function ActivityCard({
     const navigate = useNavigate();
 
     return (
-        // Use flex-basis:0 and flexGrow so items distribute space evenly regardless of internal content
         <Grid item xs={12} sm={4} sx={{ display: 'flex', flexBasis: 0, flexGrow: 1, minWidth: 0 }}>
             <Box
                 onClick={() => navigateTo && navigate(navigateTo)}
