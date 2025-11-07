@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
 import {
     Box,
@@ -39,6 +40,7 @@ const getInitials = (name) => {
 
 export default function ProfileDashboard() {
     const theme = useTheme();
+    const { t } = useTranslation();
     const navigate = useNavigate();
     const [user] = useState({
         name: 'Sang Trinh',
@@ -129,7 +131,7 @@ export default function ProfileDashboard() {
                                                         },
                                                     }}
                                                 >
-                                                    Cập nhật hồ sơ
+                                                    {t('profile.updateProfile')}
                                                 </Button>
                                             </Box>
                                         </Box>
@@ -211,7 +213,7 @@ export default function ProfileDashboard() {
                             }}
                         >
                             <Typography variant="h6" sx={{ fontWeight: 600, mb: 3 }}>
-                                Recent Applications History
+                                {t('dashboard.recentApplicationsHistory')}
                             </Typography>
                             <Stack spacing={2}>
                                 {recentApplications.map((application) => (
@@ -244,9 +246,9 @@ export default function ProfileDashboard() {
                                             }}
                                         >
                                             <Box sx={{ flex: 1 }}>
-                                                <Typography variant="caption" color="text.secondary">
-                                                    Date Applied
-                                                </Typography>
+                                                    <Typography variant="caption" color="text.secondary">
+                                                        {t('dashboard.dateApplied')}
+                                                    </Typography>
                                                 <Typography variant="body2" sx={{ fontWeight: 600 }}>
                                                     {application.dateApplied}
                                                 </Typography>
@@ -276,7 +278,7 @@ export default function ProfileDashboard() {
                                     },
                                 }}
                             >
-                                View all applications history
+                                {t('dashboard.viewAllApplicationsHistory')}
                             </Button>
                         </Paper>
                     </Box>

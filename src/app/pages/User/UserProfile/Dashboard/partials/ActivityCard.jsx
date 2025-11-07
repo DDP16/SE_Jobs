@@ -25,7 +25,8 @@ export default function ActivityCard({
     const navigate = useNavigate();
 
     return (
-        <Grid item xs={12} sm={4}>
+        // Use flex-basis:0 and flexGrow so items distribute space evenly regardless of internal content
+        <Grid item xs={12} sm={4} sx={{ display: 'flex', flexBasis: 0, flexGrow: 1, minWidth: 0 }}>
             <Box
                 onClick={() => navigateTo && navigate(navigateTo)}
                 sx={{
@@ -34,7 +35,10 @@ export default function ActivityCard({
                     bgcolor: bgColor,
                     position: 'relative',
                     overflow: 'hidden',
-                    height: '100%',
+                    display: 'flex',
+                    flexDirection: 'column',
+                    flex: 1,
+                    width: '100%',
                     cursor: navigateTo ? 'pointer' : 'default',
                     transition: 'all 0.3s ease',
                     '&:hover': navigateTo ? {
@@ -46,9 +50,11 @@ export default function ActivityCard({
                 <Typography variant="body2" sx={{ mb: 2, color: 'text.primary' }}>
                     {title}
                 </Typography>
-                <Typography variant="h3" sx={{ fontWeight: 700, color: textColor }}>
-                    {value}
-                </Typography>
+                <Box sx={{ flex: 1, display: 'flex', alignItems: 'flex-start' }}>
+                    <Typography variant="h3" sx={{ fontWeight: 700, color: textColor }}>
+                        {value}
+                    </Typography>
+                </Box>
                 <Box
                     sx={{
                         position: 'absolute',

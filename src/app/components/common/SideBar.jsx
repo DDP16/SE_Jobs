@@ -1,5 +1,6 @@
 import React from 'react';
 import { Box, List, ListItemButton, ListItemIcon, ListItemText, Badge, Typography, Avatar, useTheme } from '@mui/material';
+import { useTranslation } from 'react-i18next';
 import {
     Dashboard as DashboardIcon,
     Description as DescriptionIcon,
@@ -18,15 +19,16 @@ export default function ProfileSidebar({ user }) {
     const navigate = useNavigate();
     const location = useLocation();
     const theme = useTheme();
+    const { t } = useTranslation();
 
     const menuItems = [
-        { icon: <DashboardIcon />, text: 'Dashboard', path: '/profile/dashboard' },
-        { icon: <PersonIcon />, text: 'Profile', path: '/profile/user-profile' },
-        { icon: <WorkIcon />, text: 'My Jobs', path: '/profile/my-jobs' },
+        { icon: <DashboardIcon />, text: t('sidebar.dashboard'), path: '/profile/dashboard' },
+        { icon: <PersonIcon />, text: t('sidebar.profile'), path: '/profile/user-profile' },
+        { icon: <WorkIcon />, text: t('sidebar.myJobs'), path: '/profile/my-jobs' },
         // { icon: <InboxIcon />, text: 'Job Invitation', path: '/profile/job-invitation', badge: 0 },
         // { icon: <MailIcon />, text: 'Email Subscriptions', path: '/profile/email-subscriptions' },
-        { icon: <NotificationsIcon />, text: 'Notifications', path: '/profile/notifications' },
-        { icon: <SettingsIcon />, text: 'Settings', path: '/profile/settings' },
+        { icon: <NotificationsIcon />, text: t('sidebar.notifications'), path: '/profile/notifications' },
+        { icon: <SettingsIcon />, text: t('sidebar.settings'), path: '/profile/settings' },
     ];
 
     const handleNavigation = (path) => {
@@ -53,7 +55,7 @@ export default function ProfileSidebar({ user }) {
                 <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 1 }}>
                     <WavingHandIcon sx={{ fontSize: 20, color: theme.palette.warning.main }} />
                     <Typography variant="body2" color="text.secondary">
-                        Welcome
+                        {t('sidebar.welcome')}
                     </Typography>
                 </Box>
                 <Typography variant="h6" sx={{ fontWeight: 600, color: theme.palette.text.primary }}>

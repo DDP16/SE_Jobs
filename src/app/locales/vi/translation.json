@@ -17,4 +17,30 @@
     "searchJobs": "Tìm việc làm",
     "findYourDreamJob": "Tìm công việc mơ ước của bạn",
     "getStarted": "Bắt đầu"
+    ,
+    "userActivities": {
+        "title": "Hoạt động của bạn"
+    },
+    "activities": {
+        "applied": "Việc làm đã ứng tuyển",
+        "saved": "Việc làm đã lưu",
+        "invitations": "Lời mời công việc"
+    },
+    "profile": {
+        "updateProfile": "Cập nhật hồ sơ"
+    },
+    "dashboard": {
+        "recentApplicationsHistory": "Recent Applications History",
+        "viewAllApplicationsHistory": "Xem toàn bộ lịch sử ứng tuyển",
+        "dateApplied": "Ngày ứng tuyển"
+    }
+    ,
+    "sidebar": {
+        "welcome": "Xin chào",
+        "dashboard": "Dashboard",
+        "profile": "Hồ sơ",
+        "myJobs": "Việc làm của tôi",
+        "notifications": "Thông báo",
+        "settings": "Cài đặt"
+    }
 }

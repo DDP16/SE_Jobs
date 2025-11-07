@@ -1,6 +1,7 @@
 import React from 'react';
 import { Paper, Typography, Grid } from '@mui/material';
 import { Description as DescriptionIcon } from '@mui/icons-material';
+import { useTranslation } from 'react-i18next';
 import ActivityCard from './ActivityCard';
 
 /**
@@ -11,10 +12,11 @@ import ActivityCard from './ActivityCard';
  * @param {Object} props.stats - Statistics data containing totalJobs, savedJobs, invitations
  */
 export default function UserActivities({ stats }) {
+    const { t } = useTranslation();
     // Activity cards configuration
     const activities = [
         {
-            title: 'Việc làm đã ứng tuyển',
+            title: t('activities.applied'),
             value: stats.totalJobs || 0,
             bgColor: '#E8F4FD',
             textColor: '#2196F3',
@@ -22,7 +24,7 @@ export default function UserActivities({ stats }) {
             navigateTo: '/profile/my-jobs',
         },
         {
-            title: 'Việc làm đã lưu',
+            title: t('activities.saved'),
             value: stats.savedJobs || 0,
             bgColor: '#FFEBEE',
             textColor: '#F44336',
@@ -34,7 +36,7 @@ export default function UserActivities({ stats }) {
             navigateTo: '/profile/my-jobs',
         },
         {
-            title: 'Lời mời công việc',
+            title: t('activities.invitations'),
             value: stats.invitations || 0,
             bgColor: '#E8F5E9',
             textColor: '#4CAF50',
@@ -59,9 +61,9 @@ export default function UserActivities({ stats }) {
             }}
         >
             <Typography variant="h6" sx={{ fontWeight: 600, mb: 3 }}>
-                Hoạt động của bạn
+                {t('userActivities.title')}
             </Typography>
-            <Grid container spacing={3}>
+            <Grid container spacing={3} alignItems="stretch">
                 {activities.map((activity, index) => (
                     <ActivityCard
                         key={index}
