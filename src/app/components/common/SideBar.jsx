@@ -1,5 +1,6 @@
 import React from 'react';
-import { Box, List, ListItemButton, ListItemIcon, ListItemText, Badge, Typography, Avatar } from '@mui/material';
+import { Box, List, ListItemButton, ListItemIcon, ListItemText, Badge, Typography, Avatar, useTheme } from '@mui/material';
+import { useTranslation } from 'react-i18next';
 import {
     Dashboard as DashboardIcon,
     Description as DescriptionIcon,
@@ -17,15 +18,17 @@ import { useNavigate, useLocation } from 'react-router-dom';
 export default function ProfileSidebar({ user }) {
     const navigate = useNavigate();
     const location = useLocation();
+    const theme = useTheme();
+    const { t } = useTranslation();
 
     const menuItems = [
-        { icon: <DashboardIcon />, text: 'Dashboard', path: '/profile/dashboard', color: 'error' },
-        { icon: <PersonIcon />, text: 'Profile', path: '/profile/user-profile' },
-        { icon: <WorkIcon />, text: 'My Jobs', path: '/profile/my-jobs' },
+        { icon: <DashboardIcon />, text: t('sidebar.dashboard'), path: '/profile/dashboard' },
+        { icon: <PersonIcon />, text: t('sidebar.profile'), path: '/profile/user-profile' },
+        { icon: <WorkIcon />, text: t('sidebar.myJobs'), path: '/profile/my-jobs' },
         // { icon: <InboxIcon />, text: 'Job Invitation', path: '/profile/job-invitation', badge: 0 },
         // { icon: <MailIcon />, text: 'Email Subscriptions', path: '/profile/email-subscriptions' },
-        { icon: <NotificationsIcon />, text: 'Notifications', path: '/profile/notifications' },
-        { icon: <SettingsIcon />, text: 'Settings', path: '/profile/settings' },
+        { icon: <NotificationsIcon />, text: t('sidebar.notifications'), path: '/profile/notifications' },
+        { icon: <SettingsIcon />, text: t('sidebar.settings'), path: '/profile/settings' },
     ];
 
     const handleNavigation = (path) => {
@@ -40,7 +43,7 @@ export default function ProfileSidebar({ user }) {
                 width: 280,
                 bgcolor: 'background.paper',
                 borderRadius: 2,
-                boxShadow: '0 2px 8px rgba(0,0,0,0.08)',
+                boxShadow: theme.shadows[2],
                 overflow: 'hidden',
                 height: 'fit-content',
                 position: 'sticky',
@@ -50,12 +53,12 @@ export default function ProfileSidebar({ user }) {
             {/* Welcome Section */}
             <Box sx={{ p: 3, borderBottom: '1px solid', borderColor: 'divider' }}>
                 <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 1 }}>
-                    <WavingHandIcon sx={{ fontSize: 20, color: 'warning.main' }} />
+                    <WavingHandIcon sx={{ fontSize: 20, color: theme.palette.warning.main }} />
                     <Typography variant="body2" color="text.secondary">
-                        Welcome
+                        {t('sidebar.welcome')}
                     </Typography>
                 </Box>
-                <Typography variant="h6" sx={{ fontWeight: 600, color: 'text.primary' }}>
+                <Typography variant="h6" sx={{ fontWeight: 600, color: theme.palette.text.primary }}>
                     {user?.name || 'User'}
                 </Typography>
             </Box>
@@ -70,10 +73,10 @@ export default function ProfileSidebar({ user }) {
                             px: 3,
                             py: 1.5,
                             borderLeft: isActive(item.path) ? '3px solid' : '3px solid transparent',
-                            borderColor: isActive(item.path) ? 'error.main' : 'transparent',
-                            bgcolor: isActive(item.path) ? 'rgba(244, 67, 54, 0.08)' : 'transparent',
+                            borderColor: isActive(item.path) ? theme.palette.primary.main : 'transparent',
+                            bgcolor: isActive(item.path) ? theme.palette.primary.main + '14' : 'transparent',
                             '&:hover': {
-                                bgcolor: isActive(item.path) ? 'rgba(244, 67, 54, 0.12)' : 'action.hover',
+                                bgcolor: isActive(item.path) ? theme.palette.primary.main + '1F' : 'action.hover',
                             },
                         }}
                     >
@@ -81,8 +84,8 @@ export default function ProfileSidebar({ user }) {
                             sx={{
                                 minWidth: 40,
                                 color: isActive(item.path)
-                                    ? item.color === 'error' ? 'error.main' : 'text.primary'
-                                    : 'text.secondary',
+                                    ? theme.palette.primary.main
+                                    : theme.palette.text.secondary,
                             }}
                         >
                             {item.badge !== undefined ? (
@@ -98,7 +101,7 @@ export default function ProfileSidebar({ user }) {
                             primaryTypographyProps={{
                                 fontSize: '0.9rem',
                                 fontWeight: isActive(item.path) ? 600 : 400,
-                                color: isActive(item.path) ? 'text.primary' : 'text.secondary',
+                                color: isActive(item.path) ? theme.palette.text.primary : theme.palette.text.secondary,
                             }}
                         />
                     </ListItemButton>

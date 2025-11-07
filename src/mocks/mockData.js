@@ -266,3 +266,63 @@ export const mockPopularSearches = [
     "Flutter",
     "Kotlin"
 ];
+
+export const mockRecentApplications = [
+    {
+        id: 1,
+        title: 'Social Media Assistant',
+        company: 'Nomad',
+        logo: 'N',
+        location: 'Paris, France',
+        type: 'Full-Time',
+        dateApplied: '24 July 2021',
+        status: 'In Review',
+        statusColor: 'warning',
+        tags: ['Marketing', 'Social Media'],
+        description: 'We are looking for a Social Media Assistant to join our team.'
+    },
+    {
+        id: 2,
+        title: 'Social Media Assistant',
+        company: 'Udacity',
+        logo: 'U',
+        location: 'New York, USA',
+        type: 'Full-Time',
+        dateApplied: '23 July 2021',
+        status: 'Shortlisted',
+        statusColor: 'primary',
+        tags: ['Marketing', 'Social Media'],
+        description: 'Join our growing team to manage social media campaigns.'
+    },
+    {
+        id: 3,
+        title: 'Social Media Assistant',
+        company: 'Packer',
+        logo: 'P',
+        location: 'Madrid, Spain',
+        type: 'Full-Time',
+        dateApplied: '22 July 2021',
+        status: 'Declined',
+        statusColor: 'error',
+        tags: ['Marketing', 'Social Media'],
+        description: 'Help us build engaging social media content for our brand.'
+    }
+];
+
+export const mockDashboardStats = {
+    totalJobs: 45,
+    interviewed: 18,
+    unsuitable: 60,
+    interviewedPercent: 40,
+    savedJobs: 0,
+    invitations: 0
+};
+
+export const mockUpcomingInterviews = [
+    {
+        time: '10:30 AM',
+        name: 'Joe Bartmann',
+        position: 'HR Manager at Divvy',
+        avatar: 'https://i.pravatar.cc/150?img=12'
+    }
+];

@@ -17,4 +17,30 @@
     "searchJobs": "Search Jobs",
     "findYourDreamJob": "Find Your Dream Job",
     "getStarted": "Get Started"
+    ,
+    "userActivities": {
+        "title": "Your Activities"
+    },
+    "activities": {
+        "applied": "Jobs Applied",
+        "saved": "Saved Jobs",
+        "invitations": "Job Invitations"
+    },
+    "profile": {
+        "updateProfile": "Update Profile"
+    },
+    "dashboard": {
+        "recentApplicationsHistory": "Recent Applications History",
+        "viewAllApplicationsHistory": "View all applications history",
+        "dateApplied": "Date Applied"
+    }
+    ,
+    "sidebar": {
+        "welcome": "Welcome",
+        "dashboard": "Dashboard",
+        "profile": "Profile",
+        "myJobs": "My Jobs",
+        "notifications": "Notifications",
+        "settings": "Settings"
+    }
 }
