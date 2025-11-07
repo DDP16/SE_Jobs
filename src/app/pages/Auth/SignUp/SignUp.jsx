@@ -2,12 +2,10 @@ import { useState } from "react";
 import { delay, motion } from "framer-motion";
 import { Eye, EyeOff } from "lucide-react";
 import { Link, useNavigate } from "react-router-dom";
-import { Input } from "../../components/ui/input";
-import { Button } from "../../components/ui/button";
-import { srcAsset } from "../../lib";
-import { register, validateEmail, validatePassword } from "../../modules";
-import { useCustomAlert } from "../../hooks/useCustomAlert";
-import { CustomAlert } from "../../components";
+import { uiInput as Input, uiButton as Button, CustomAlert } from "../../../components";
+import { srcAsset } from "../../../lib";
+import { register, validateEmail, validatePassword } from "../../../modules";
+import { useCustomAlert } from "../../../hooks/useCustomAlert";
 
 export default function SignUp() {
   const [showPassword, setShowPassword] = useState(false);

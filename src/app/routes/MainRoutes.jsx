@@ -23,9 +23,9 @@ export default function MainRoutes() {
           <Route path="/" element={<LayoutWrapper />}>
             <Route index element={<Home />} />
             <Route path="jobs" element={<FindJobs />} />
-            <Route path="job/:id" element={<JobDescription />} />
+            <Route path="job" element={<JobDescription />} />
             <Route path="companies" element={<CompanyList />} />
-            <Route path="company/:id" element={<CompanyDetails />} />
+            <Route path="company" element={<CompanyDetails />} />
 
             <Route path="profile/dashboard" element={<ProfileDashboard />} />
             <Route path="profile/user-profile" element={<Profile />} />

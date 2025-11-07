@@ -19,7 +19,7 @@ import {
     CheckCircle as CheckCircleIcon,
     ArrowForward as ArrowForwardIcon
 } from '@mui/icons-material';
-import ProfileSidebar from '../../../../components/common/SideBar';
+import { ProfileSidebar } from '../../../../components';
 
 export default function ProfileDashboard() {
     const [user, setUser] = useState({

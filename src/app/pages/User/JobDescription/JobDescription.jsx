@@ -1,10 +1,12 @@
 import JobHeader from "./partials/JobHeader";
 import JobDetails from "./partials/JobDetails";
 import JobSidebar from "./partials/JobSidebar";
-import PerksSection from "../../../components/company/PerksSection";
+import { PerksSection } from "../../../components";
 import CompanySection from "./partials/CompanySection";
 import SimilarJobs from "./partials/SimilarJobs";
 import { layoutType } from "../../../lib";
+import { mockJobs } from "../../../../mocks/mockData";
+import { useSearchParams } from "react-router-dom";
 
 export default function JobDescription({
   job,
@@ -60,6 +62,13 @@ export default function JobDescription({
     showCompanySection: showCompanySection && config.showCompanySection,
     showSimilarJobs: showSimilarJobs && config.showSimilarJobs,
   };
+
+  const [searchParams] = useSearchParams();
+  const jobId = searchParams.get("id");
+  if (jobId && !job) {
+    job = mockJobs.find(j => j.id.toString() === jobId);
+    console.log("JobDescription - jobId:", jobId, "job:", job);
+  }
 
   return (
     <div className="min-h-screen bg-white mx-auto">
