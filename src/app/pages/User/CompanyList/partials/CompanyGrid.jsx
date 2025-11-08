@@ -13,7 +13,7 @@ import {
     Sort
 } from '@mui/icons-material';
 import { useNavigate } from 'react-router-dom';
-import CompanyCard from '../../../../components/features/CompanyCard';
+import { CompanyCard } from '../../../../components';
 import { sortType } from '../../../../lib';
 
 export default function CompanyGrid({
@@ -27,7 +27,7 @@ export default function CompanyGrid({
     const companiesPerPage = 12;
 
     const handleCompanyClick = (company) => {
-        navigate(`/company/${company.id}`);
+        navigate(`/company?id=${company.id}`);
     };
 
     const handlePageChange = (event, value) => {

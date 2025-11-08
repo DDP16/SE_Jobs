@@ -22,8 +22,7 @@ import {
     Email as EmailIcon,
     Phone as PhoneIcon
 } from '@mui/icons-material';
-import ProfileSidebar from '../../../../components/common/SideBar';
-import JobCard from '../../../../components/features/JobCard';
+import { ProfileSidebar, JobCard } from '../../../../components';
 import { mockRecentApplications, mockDashboardStats } from '../../../../../mocks/mockData';
 import { UserActivities } from './partials';
 

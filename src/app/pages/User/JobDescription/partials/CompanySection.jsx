@@ -2,7 +2,7 @@ import { motion } from "framer-motion";
 import { ArrowRight } from "lucide-react";
 import { srcAsset } from "../../../../lib";
 
-export default function CompanySection() {
+export default function CompanySection({ job }) {
   return (
     <motion.section
       initial={{ opacity: 0, y: 40 }}
@@ -19,21 +19,18 @@ export default function CompanySection() {
               className="w-16 h-16 object-contain"
             />
             <div>
-              <h3 className="text-2xl font-bold text-foreground">Stripe</h3>
+              <h3 className="text-2xl font-bold text-foreground">{job.company}</h3>
               <a
                 href="#"
                 className="text-primary flex items-center gap-1 hover:underline mt-1"
               >
-                Read more about Stripe
+                Read more about {job.company}
                 <ArrowRight className="w-4 h-4" />
               </a>
             </div>
           </div>
           <p className="text-muted-foreground leading-relaxed mb-6">
-            Stripe is a technology company that builds economic infrastructure
-            for the internet. Businesses of every size—from new startups to
-            public companies—use our software to accept payments and manage
-            their businesses online.
+            {job.description || "Job Description"}
           </p>
         </div>
 

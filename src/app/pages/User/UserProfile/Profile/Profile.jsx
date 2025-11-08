@@ -29,7 +29,7 @@ import {
     Visibility as VisibilityIcon,
     CheckCircle as CheckCircleIcon,
 } from '@mui/icons-material';
-import ProfileSidebar from '../../../../components/common/SideBar';
+import { ProfileSidebar } from '../../../../components';
 
 export default function Profile() {
     const fileInputRef = useRef(null);

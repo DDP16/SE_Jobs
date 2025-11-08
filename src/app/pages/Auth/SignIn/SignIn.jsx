@@ -2,11 +2,11 @@ import { useState } from "react";
 import { motion } from "framer-motion";
 import { Eye, EyeOff } from "lucide-react";
 import { Link, useNavigate } from "react-router-dom";
-import { Input } from "../../../components/ui/input";
-import { Button } from "../../../components/ui/button";
+import { uiInput as Input, uiButton as Button, CustomAlert } from "../../../components";
 import { srcAsset } from "../../../lib";
 import { validateEmail, validatePassword } from "../../../modules";
 import { loginWithEmail } from "../../../modules";
+import { useCustomAlert } from "../../../hooks/useCustomAlert";
 
 export default function SignIn() {
   const [showPassword, setShowPassword] = useState(false);
@@ -15,6 +15,7 @@ export default function SignIn() {
   const [emailError, setEmailError] = useState("");
   const [passwordError, setPasswordError] = useState("");
   let nav = useNavigate();
+  const { alertConfig, hideAlert, showSuccess, showError, showWarning} = useCustomAlert();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -41,11 +42,12 @@ export default function SignIn() {
       try {
         const result = await loginWithEmail(email, password);
         if (result && result.status === 200) {
+          showSuccess("Login successful!");
           nav("/");
         }
       } catch (error) {
         console.error("Login error:", error);
-        setEmailError(error.message || "Login failed");
+        showWarning(error.message || "Login failed");
       }
     }
   };
@@ -137,6 +139,11 @@ export default function SignIn() {
           </Button>
         </form>
       </motion.div>
+
+      <CustomAlert
+        {...alertConfig}
+        onClose={hideAlert}
+      />
     </div>
   );
 };

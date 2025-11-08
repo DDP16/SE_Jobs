@@ -37,7 +37,7 @@ export default function JobCard({
         type = "Full-time",
         salary = "€2,000 - €3,000",
         description = "Job description...",
-        tags = [],
+        categories = [],
         logo = "C",
         isFeatured = false,
         applied = 0,
@@ -104,7 +104,7 @@ export default function JobCard({
 
                     <Stack direction="row" justifyContent="space-between" alignItems="center">
                         <Stack direction="row" spacing={1} flexWrap="wrap" useFlexGap>
-                            {tags.slice(0, 3).map((tag, index) => (
+                            {categories.slice(0, 3).map((tag, index) => (
                                 <Chip key={index} label={tag} size="small" variant="outlined" />
                             ))}
                         </Stack>
@@ -237,14 +237,14 @@ export default function JobCard({
                     </Typography>
                 )}
 
-                {tags.length > 0 && (
+                {categories.length > 0 && (
                     <Stack
                         direction="row"
                         spacing={0.5}
                         className="mb-4 flex-wrap gap-1"
                         sx={{ mb: 2, flexWrap: 'wrap' }}
                     >
-                        {tags.slice(0, 3).map((tag, index) => (
+                        {categories.slice(0, 3).map((tag, index) => (
                             <Badge
                                 key={index}
                                 label={tag}
@@ -253,9 +253,9 @@ export default function JobCard({
                                 className="text-xs px-2 py-1 bg-gray-50 text-gray-600 border-gray-200"
                             />
                         ))}
-                        {tags.length > 3 && (
+                        {categories.length > 3 && (
                             <Badge
-                                label={`+${tags.length - 3}`}
+                                label={`+${categories.length - 3}`}
                                 variant="outlined"
                                 size="small"
                                 className="text-xs px-2 py-1 bg-gray-50 text-gray-600 border-gray-200"

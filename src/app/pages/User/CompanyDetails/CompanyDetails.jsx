@@ -1,15 +1,16 @@
 import React from 'react';
-import { useParams } from 'react-router-dom';
+import { useParams, useSearchParams } from 'react-router-dom';
 import { Box } from '@mui/material';
 import CompanyHeader from './partials/CompanyHeader';
 import CompanyOverview from './partials/CompanyOverview';
 import CompanyInfo from './partials/CompanyInfo';
 import CompanyJobs from './partials/CompanyJobs';
-import PerksSection from "../../../components/company/PerksSection";
+import { PerksSection } from "../../../components";
 import { mockCompanies, mockJobs } from '../../../../mocks/mockData';
 
 export default function CompanyDetails() {
-    const { id } = useParams();
+    const [searchParams] = useSearchParams();
+    const id = searchParams.get("id");
 
     // Get company data (in real app, this would be an API call)
     const company = mockCompanies.find(c => c.id === parseInt(id)) || mockCompanies[0];
