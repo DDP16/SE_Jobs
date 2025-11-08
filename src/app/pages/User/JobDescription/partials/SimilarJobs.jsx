@@ -1,7 +1,7 @@
 import { motion } from "framer-motion";
-import { Badge } from "../../../components/ui/badge";
+import { Badge } from "../../../../components/ui/badge";
 import { ArrowRight } from "lucide-react";
-import { srcAsset } from "../../../lib";
+import { srcAsset } from "../../../../lib";
 
 export default function SimilarJobs() {
   const jobs = [

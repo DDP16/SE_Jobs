@@ -1,10 +1,10 @@
 import JobHeader from "./partials/JobHeader";
 import JobDetails from "./partials/JobDetails";
 import JobSidebar from "./partials/JobSidebar";
-import PerksSection from "../../components/company/PerksSection";
+import PerksSection from "../../../components/company/PerksSection";
 import CompanySection from "./partials/CompanySection";
 import SimilarJobs from "./partials/SimilarJobs";
-import { layoutType } from "../../lib";
+import { layoutType } from "../../../lib";
 
 export default function JobDescription({
   job,

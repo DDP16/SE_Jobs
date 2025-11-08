@@ -5,8 +5,8 @@ import CompanyHeader from './partials/CompanyHeader';
 import CompanyOverview from './partials/CompanyOverview';
 import CompanyInfo from './partials/CompanyInfo';
 import CompanyJobs from './partials/CompanyJobs';
-import PerksSection from "../../components/company/PerksSection";
-import { mockCompanies, mockJobs } from '../../../mocks/mockData';
+import PerksSection from "../../../components/company/PerksSection";
+import { mockCompanies, mockJobs } from '../../../../mocks/mockData';
 
 export default function CompanyDetails() {
     const { id } = useParams();
