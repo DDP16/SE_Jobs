@@ -9,7 +9,10 @@ export { DefaultSidebar as SideBar } from './common/SideBar';
 export { default as CustomAlert } from './common/CustomAlert';
 export { default as BorderLinearProgress } from './common/BorderLinearProgress';
 export { default as ProfileSidebar } from './common/SideBar';
+
+// Modals
 export { default as ApplicationModal } from './common/ApplicationModal';
+export { default as InformationModal } from './common/InformationModal';
 
 // Feature Components
 export { default as SearchBar } from './features/SearchBar';

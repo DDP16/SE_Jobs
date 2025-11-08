@@ -30,6 +30,7 @@ import {
     CheckCircle as CheckCircleIcon,
 } from '@mui/icons-material';
 import { ProfileSidebar } from '../../../../components';
+import { InformationModal, ApplicationModal } from '../../../../components';
 
 export default function Profile() {
     const fileInputRef = useRef(null);
@@ -46,6 +47,8 @@ export default function Profile() {
 
     const [cvFile, setCvFile] = useState(null);
     const [isDragging, setIsDragging] = useState(false);
+    const [isOpenInformationModal, setIsOpenInformationModal] = useState(false);
+    const [isOpenApplicationModal, setIsOpenApplicationModal] = useState(false);
 
     const profileSections = [
         {
@@ -171,6 +174,30 @@ export default function Profile() {
         fileInputRef.current?.click();
     };
 
+    const handleOpenInformationModal = () => {
+        setIsOpenInformationModal(true);
+    };
+
+    const handleSaveInformation = (formData) => {
+        // Update user state with the form data from modal
+        setUser((prevUser) => ({
+            ...prevUser,
+            name: formData.fullName,
+            email: formData.email,
+            phone: formData.phone,
+            dateOfBirth: formData.dateOfBirth,
+            gender: formData.gender,
+            currentAddress: formData.address,
+            personalLinks: formData.personalLink,
+            // Add title if it exists in the form
+            ...(formData.title && { title: formData.title }),
+        }));
+
+        // Here you can also make an API call to save the data
+        // Example: await updateUserProfile(formData);
+        console.log("User information saved:", formData);
+    };
+
     return (
         <Box sx={{ bgcolor: '#f8f9fa', minHeight: '100vh', py: 4 }}>
             <Container maxWidth="xl">
@@ -220,7 +247,7 @@ export default function Profile() {
                                             },
                                         }}
                                     >
-                                        <EditIcon sx={{ fontSize: 14 }} />
+                                        <EditIcon sx={{ fontSize: 14 }} onClick={() => handleOpenInformationModal()} />
                                     </IconButton>
                                 </Box>
 
@@ -235,6 +262,7 @@ export default function Profile() {
                                             </Typography>
                                         </Box>
                                         <IconButton
+                                            onClick={handleOpenInformationModal}
                                             sx={{
                                                 border: '1px solid',
                                                 borderColor: 'divider',
@@ -746,6 +774,14 @@ export default function Profile() {
                     </Box>
                 </Box>
             </Container>
+
+            {/* Information Modal */}
+            <InformationModal
+                open={isOpenInformationModal}
+                onOpenChange={setIsOpenInformationModal}
+                initialData={user}
+                onSave={handleSaveInformation}
+            />
         </Box>
     );
 }
