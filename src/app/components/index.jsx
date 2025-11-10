@@ -13,6 +13,7 @@ export { default as ProfileSidebar } from './common/SideBar';
 // Modals
 export { default as ApplicationModal } from './common/ApplicationModal';
 export { default as InformationModal } from './common/InformationModal';
+export { default as EducationModal } from './common/EducationModal';
 
 // Feature Components
 export { default as SearchBar } from './features/SearchBar';

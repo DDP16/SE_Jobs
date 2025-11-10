@@ -31,6 +31,7 @@ import {
 } from '@mui/icons-material';
 import { ProfileSidebar } from '../../../../components';
 import { InformationModal, ApplicationModal } from '../../../../components';
+import EducationModal from '../../../../components/common/EducationModal';
 
 export default function Profile() {
     const fileInputRef = useRef(null);
@@ -49,31 +50,41 @@ export default function Profile() {
     const [isDragging, setIsDragging] = useState(false);
     const [isOpenInformationModal, setIsOpenInformationModal] = useState(false);
     const [isOpenApplicationModal, setIsOpenApplicationModal] = useState(false);
+    const [isOpenEducationModal, setIsOpenEducationModal] = useState(false);
+    const [selectedEducation, setSelectedEducation] = useState(null);
+
+    // Profile section data - sẽ được cập nhật từ API hoặc form
+    const [introduction, setIntroduction] = useState('');
+    const [experiences, setExperiences] = useState([]);
+    const [educations, setEducations] = useState([]);
+    const [skills, setSkills] = useState([]);
+    const [showAllExperiences, setShowAllExperiences] = useState(false);
+    const [showAllEducations, setShowAllEducations] = useState(false);
 
     const profileSections = [
         {
             id: 'introduction',
             title: 'Giới thiệu bản thân',
-            subtitle: 'Giới thiệu điểm mạnh và 5 năm kinh nghiệm của bạn',
-            isEmpty: true,
+            subtitle: 'Giới thiệu điểm mạnh và số năm kinh nghiệm của bạn',
+            isEmpty: !introduction,
         },
         {
             id: 'education',
             title: 'Học vấn',
             subtitle: 'Chia sẻ trình độ học vấn của bạn',
-            isEmpty: true,
+            isEmpty: educations.length === 0,
         },
         {
             id: 'experience',
             title: 'Kinh nghiệm làm việc',
             subtitle: 'Thể hiện những thông tin chi tiết về quá trình làm việc',
-            isEmpty: true,
+            isEmpty: experiences.length === 0,
         },
         {
             id: 'skills',
             title: 'Kỹ năng',
             subtitle: 'Liệt kê các kỹ năng chuyên môn của bạn',
-            isEmpty: true,
+            isEmpty: skills.length === 0,
         },
         {
             id: 'languages',
@@ -101,9 +112,249 @@ export default function Profile() {
         },
     ];
 
-    const handleAddSection = (sectionId) => {
-        console.log(`Add ${sectionId} clicked`);
-        // Navigate to add/edit page for this section
+    const handleAddSection = (sectionId, educationData = null) => {
+        if (sectionId === 'education') {
+            setSelectedEducation(educationData);
+            setIsOpenEducationModal(true);
+        } else {
+            console.log(`Add ${sectionId} clicked`);
+            // Handle other sections
+        }
+    };
+
+    const renderSectionContent = (section) => {
+        switch (section.id) {
+            case 'introduction':
+                if (introduction) {
+                    return (
+                        <Typography
+                            variant="body1"
+                            sx={{
+                                color: 'text.primary',
+                                whiteSpace: 'pre-line',
+                                lineHeight: 1.6
+                            }}
+                        >
+                            {introduction}
+                        </Typography>
+                    );
+                }
+                return null;
+
+            case 'experience':
+                if (experiences.length > 0) {
+                    const displayedExperiences = showAllExperiences ? experiences : experiences.slice(0, 2);
+                    const remainingCount = experiences.length - 2;
+
+                    return (
+                        <Box>
+                            {displayedExperiences.map((exp) => (
+                                <Box
+                                    key={exp.id}
+                                    sx={{
+                                        display: 'flex',
+                                        gap: 2,
+                                        mb: 3,
+                                        position: 'relative',
+                                        '&:last-child': { mb: 0 }
+                                    }}
+                                >
+                                    {/* Company Logo */}
+                                    <Avatar
+                                        sx={{
+                                            width: 56,
+                                            height: 56,
+                                            bgcolor: exp.company === 'Twitter' ? '#1DA1F2' : '#000',
+                                            fontSize: '1.5rem',
+                                            fontWeight: 600,
+                                            flexShrink: 0,
+                                        }}
+                                    >
+                                        {exp.logo}
+                                    </Avatar>
+
+                                    {/* Experience Details */}
+                                    <Box sx={{ flex: 1, minWidth: 0 }}>
+                                        <Box sx={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', mb: 0.5 }}>
+                                            <Typography variant="h6" sx={{ fontWeight: 600, fontSize: '1rem' }}>
+                                                {exp.role}
+                                            </Typography>
+                                            <IconButton
+                                                onClick={() => handleAddSection(section.id)}
+                                                sx={{
+                                                    color: '#7c4dff',
+                                                    p: 0.5,
+                                                    '&:hover': {
+                                                        bgcolor: 'rgba(124, 77, 255, 0.1)',
+                                                    },
+                                                }}
+                                                size="small"
+                                            >
+                                                <EditIcon sx={{ fontSize: 18 }} />
+                                            </IconButton>
+                                        </Box>
+                                        <Typography variant="body2" color="text.secondary" sx={{ mb: 0.5 }}>
+                                            {exp.company} - {exp.employmentType} - {exp.startDate} - {exp.endDate} ({exp.duration})
+                                        </Typography>
+                                        <Typography variant="body2" color="text.secondary" sx={{ mb: 1 }}>
+                                            {exp.location}
+                                        </Typography>
+                                        {exp.description && (
+                                            <Typography variant="body2" color="text.secondary" sx={{ lineHeight: 1.6 }}>
+                                                {exp.description}
+                                            </Typography>
+                                        )}
+                                    </Box>
+                                </Box>
+                            ))}
+
+                            {!showAllExperiences && experiences.length > 2 && (
+                                <Box sx={{ textAlign: 'center', mt: 2 }}>
+                                    <Button
+                                        onClick={() => setShowAllExperiences(true)}
+                                        sx={{
+                                            color: '#1976d2',
+                                            textTransform: 'none',
+                                            fontWeight: 500,
+                                            '&:hover': {
+                                                bgcolor: 'rgba(25, 118, 210, 0.1)',
+                                            },
+                                        }}
+                                    >
+                                        Show {remainingCount} more experiences
+                                    </Button>
+                                </Box>
+                            )}
+                        </Box>
+                    );
+                }
+                return null;
+
+            case 'education':
+                if (educations.length > 0) {
+                    const displayedEducations = showAllEducations ? educations : educations.slice(0, 2);
+                    const remainingCount = educations.length - 2;
+
+                    return (
+                        <Box>
+                            {displayedEducations.map((edu) => (
+                                <Box
+                                    key={edu.id}
+                                    sx={{
+                                        mb: 3,
+                                        position: 'relative',
+                                        '&:last-child': { mb: 0 }
+                                    }}
+                                >
+                                    {/* Education Details */}
+                                    <Box sx={{ flex: 1, minWidth: 0 }}>
+                                        <Box sx={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', mb: 0.5 }}>
+                                            <Typography variant="h6" sx={{ fontWeight: 600, fontSize: '1rem' }}>
+                                                {edu.university}
+                                            </Typography>
+                                            <Box sx={{ display: 'flex', gap: 0.5, alignItems: 'center' }}>
+                                                <IconButton
+                                                    onClick={() => handleOpenEducationModal(edu)}
+                                                    sx={{
+                                                        color: '#d32f2f',
+                                                        p: 0.5,
+                                                        '&:hover': {
+                                                            bgcolor: 'rgba(211, 47, 47, 0.1)',
+                                                        },
+                                                    }}
+                                                    size="small"
+                                                >
+                                                    <EditIcon sx={{ fontSize: 18 }} />
+                                                </IconButton>
+                                                <IconButton
+                                                    onClick={() => handleDeleteEducation(edu.id)}
+                                                    sx={{
+                                                        color: 'text.secondary',
+                                                        p: 0.5,
+                                                        '&:hover': {
+                                                            bgcolor: 'rgba(0, 0, 0, 0.05)',
+                                                        },
+                                                    }}
+                                                    size="small"
+                                                >
+                                                    <DeleteIcon sx={{ fontSize: 18 }} />
+                                                </IconButton>
+                                            </Box>
+                                        </Box>
+                                        <Typography variant="body2" color="text.secondary" sx={{ mb: 0.5 }}>
+                                            {edu.degree} {edu.major && `- ${edu.major}`}
+                                        </Typography>
+                                        <Typography variant="body2" color="text.secondary" sx={{ mb: 1 }}>
+                                            {(() => {
+                                                const startDate = edu.startMonth
+                                                    ? `${String(edu.startMonth).padStart(2, '0')}/${edu.startYear}`
+                                                    : edu.startYear;
+                                                const endDate = (edu.endYear === 'Present' || edu.isCurrentlyStudying)
+                                                    ? 'HIỆN TẠI'
+                                                    : (edu.endMonth
+                                                        ? `${String(edu.endMonth).padStart(2, '0')}/${edu.endYear}`
+                                                        : edu.endYear);
+                                                return `${startDate} - ${endDate}`;
+                                            })()}
+                                        </Typography>
+                                        {edu.description && (
+                                            <Typography variant="body2" color="text.secondary" sx={{ lineHeight: 1.6 }}>
+                                                {edu.description}
+                                            </Typography>
+                                        )}
+                                    </Box>
+                                </Box>
+                            ))}
+
+                            {!showAllEducations && educations.length > 2 && (
+                                <Box sx={{ textAlign: 'center', mt: 2 }}>
+                                    <Button
+                                        onClick={() => setShowAllEducations(true)}
+                                        sx={{
+                                            color: '#1976d2',
+                                            textTransform: 'none',
+                                            fontWeight: 500,
+                                            '&:hover': {
+                                                bgcolor: 'rgba(25, 118, 210, 0.1)',
+                                            },
+                                        }}
+                                    >
+                                        Show {remainingCount} more educations
+                                    </Button>
+                                </Box>
+                            )}
+                        </Box>
+                    );
+                }
+                return null;
+
+            case 'skills':
+                if (skills.length > 0) {
+                    return (
+                        <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 1 }}>
+                            {skills.map((skill, index) => (
+                                <Chip
+                                    key={index}
+                                    label={skill}
+                                    sx={{
+                                        bgcolor: '#E8E0FF',
+                                        color: '#5E35B1',
+                                        fontWeight: 500,
+                                        borderRadius: 2,
+                                        '&:hover': {
+                                            bgcolor: '#D1C4E9',
+                                        },
+                                    }}
+                                />
+                            ))}
+                        </Box>
+                    );
+                }
+                return null;
+
+            default:
+                return null;
+        }
     };
 
     const getInitials = (name) => {
@@ -196,6 +447,58 @@ export default function Profile() {
         // Here you can also make an API call to save the data
         // Example: await updateUserProfile(formData);
         console.log("User information saved:", formData);
+    };
+
+    const handleSaveEducation = (formData) => {
+        // Format the education data to match the display structure
+        const educationData = {
+            id: selectedEducation?.id || Date.now(), // Use existing ID or generate new one
+            university: formData.school,
+            degree: formData.degree,
+            major: formData.major,
+            startYear: formData.startYear,
+            endYear: formData.isCurrentlyStudying ? 'Present' : formData.endYear,
+            description: formData.description,
+            logo: formData.school ? formData.school.charAt(0).toUpperCase() : 'U',
+            // Additional fields for compatibility
+            startMonth: formData.startMonth,
+            endMonth: formData.endMonth,
+            isCurrentlyStudying: formData.isCurrentlyStudying,
+        };
+
+        if (selectedEducation) {
+            // Update existing education
+            setEducations((prev) =>
+                prev.map((edu) =>
+                    edu.id === selectedEducation.id ? educationData : edu
+                )
+            );
+        } else {
+            // Add new education
+            setEducations((prev) => [...prev, educationData]);
+        }
+
+        // Reset selected education
+        setSelectedEducation(null);
+
+        // Here you can also make an API call to save the data
+        // Example: await saveEducation(educationData);
+        console.log("Education saved:", educationData);
+    };
+
+    const handleOpenEducationModal = (educationData = null) => {
+        setSelectedEducation(educationData);
+        setIsOpenEducationModal(true);
+    };
+
+    const handleDeleteEducation = (educationId) => {
+        if (window.confirm('Bạn có chắc chắn muốn xóa thông tin học vấn này?')) {
+            setEducations((prev) => prev.filter((edu) => edu.id !== educationId));
+
+            // Here you can also make an API call to delete the data
+            // Example: await deleteEducation(educationId);
+            console.log("Education deleted:", educationId);
+        }
     };
 
     return (
@@ -512,7 +815,7 @@ export default function Profile() {
                                 key={section.id}
                                 elevation={0}
                                 sx={{
-                                    p: 4,
+                                    p: section.isEmpty ? 2.5 : 4,
                                     mb: 3,
                                     borderRadius: 2,
                                     border: '1px solid',
@@ -520,62 +823,44 @@ export default function Profile() {
                                     position: 'relative',
                                 }}
                             >
-                                <Box sx={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between' }}>
+                                <Box sx={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', mb: section.isEmpty ? 0 : 2 }}>
                                     <Box sx={{ flex: 1 }}>
-                                        <Typography variant="h6" sx={{ fontWeight: 600, mb: 1 }}>
-                                            {section.title}
-                                        </Typography>
-                                        <Typography variant="body2" color="text.secondary" sx={{ mb: 3 }}>
-                                            {section.subtitle}
-                                        </Typography>
-
-                                        {section.isEmpty && (
-                                            <Box
-                                                sx={{
-                                                    display: 'flex',
-                                                    alignItems: 'center',
-                                                    justifyContent: 'center',
-                                                    py: 4,
+                                        <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', mb: section.isEmpty ? 0.5 : 1 }}>
+                                            <Typography variant="h6" sx={{ fontWeight: 600 }}>
+                                                {section.title}
+                                            </Typography>
+                                            <IconButton
+                                                onClick={() => {
+                                                    if (section.id === 'education') {
+                                                        handleOpenEducationModal(null);
+                                                    } else {
+                                                        handleAddSection(section.id);
+                                                    }
                                                 }}
+                                                sx={{
+                                                    color: '#d32f2f',
+                                                    p: 0.5,
+                                                    '&:hover': {
+                                                        bgcolor: 'rgba(211, 47, 47, 0.1)',
+                                                    },
+                                                }}
+                                                size="small"
                                             >
-                                                <Box
-                                                    sx={{
-                                                        textAlign: 'center',
-                                                        opacity: 0.3,
-                                                    }}
-                                                >
-                                                    <Box
-                                                        component="img"
-                                                        src={`data:image/svg+xml,${encodeURIComponent(`
-                                                            <svg width="120" height="120" viewBox="0 0 120 120" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                                                <circle cx="60" cy="60" r="50" fill="#FFE5E5"/>
-                                                                <path d="M60 35v50M35 60h50" stroke="#FF6B6B" stroke-width="6" stroke-linecap="round"/>
-                                                            </svg>
-                                                        `)}`}
-                                                        alt="Empty state"
-                                                        sx={{ width: 120, height: 120, mb: 2 }}
-                                                    />
-                                                </Box>
+                                                <AddIcon sx={{ fontSize: 18 }} />
+                                            </IconButton>
+                                        </Box>
+                                        {section.isEmpty && (
+                                            <Typography variant="body2" color="text.secondary">
+                                                {section.subtitle}
+                                            </Typography>
+                                        )}
+
+                                        {!section.isEmpty && (
+                                            <Box>
+                                                {renderSectionContent(section)}
                                             </Box>
                                         )}
                                     </Box>
-
-                                    <IconButton
-                                        onClick={() => handleAddSection(section.id)}
-                                        sx={{
-                                            width: 40,
-                                            height: 40,
-                                            border: '1px solid',
-                                            borderColor: 'error.main',
-                                            color: 'error.main',
-                                            '&:hover': {
-                                                bgcolor: 'error.main',
-                                                color: 'white',
-                                            },
-                                        }}
-                                    >
-                                        <ErrorIcon />
-                                    </IconButton>
                                 </Box>
                             </Paper>
                         ))}
@@ -781,6 +1066,29 @@ export default function Profile() {
                 onOpenChange={setIsOpenInformationModal}
                 initialData={user}
                 onSave={handleSaveInformation}
+            />
+
+            {/* Education Modal */}
+            <EducationModal
+                open={isOpenEducationModal}
+                onOpenChange={(open) => {
+                    setIsOpenEducationModal(open);
+                    if (!open) {
+                        setSelectedEducation(null);
+                    }
+                }}
+                initialData={selectedEducation ? {
+                    school: selectedEducation.university,
+                    degree: selectedEducation.degree,
+                    major: selectedEducation.major,
+                    startMonth: selectedEducation.startMonth || '',
+                    startYear: selectedEducation.startYear,
+                    endMonth: selectedEducation.endMonth || '',
+                    endYear: selectedEducation.endYear === 'Present' ? '' : selectedEducation.endYear,
+                    isCurrentlyStudying: selectedEducation.endYear === 'Present' || selectedEducation.isCurrentlyStudying,
+                    description: selectedEducation.description || '',
+                } : null}
+                onSave={handleSaveEducation}
             />
         </Box>
     );
