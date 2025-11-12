@@ -14,6 +14,10 @@ export { default as ProfileSidebar } from './common/SideBar';
 export { default as ApplicationModal } from './common/ApplicationModal';
 export { default as InformationModal } from './common/InformationModal';
 export { default as EducationModal } from './common/EducationModal';
+export { default as IntroductionModal } from './common/IntroductionModal';
+// export { default as CertificateModal } from './common/CertificateModal';
+export { default as ExperienceModal } from './common/ExperienceModal';
+// export { default as SkillModal } from './common/SkillModal';
 
 // Feature Components
 export { default as SearchBar } from './features/SearchBar';

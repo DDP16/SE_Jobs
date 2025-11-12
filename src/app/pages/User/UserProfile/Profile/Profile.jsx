@@ -30,7 +30,7 @@ import {
     CheckCircle as CheckCircleIcon,
 } from '@mui/icons-material';
 import { ProfileSidebar } from '../../../../components';
-import { InformationModal, ApplicationModal } from '../../../../components';
+import { InformationModal, IntroductionModal, ExperienceModal } from '../../../../components';
 import EducationModal from '../../../../components/common/EducationModal';
 
 export default function Profile() {
@@ -49,9 +49,11 @@ export default function Profile() {
     const [cvFile, setCvFile] = useState(null);
     const [isDragging, setIsDragging] = useState(false);
     const [isOpenInformationModal, setIsOpenInformationModal] = useState(false);
-    const [isOpenApplicationModal, setIsOpenApplicationModal] = useState(false);
     const [isOpenEducationModal, setIsOpenEducationModal] = useState(false);
+    const [isOpenIntroductionModal, setIsOpenIntroductionModal] = useState(false);
     const [selectedEducation, setSelectedEducation] = useState(null);
+    const [isOpenExperienceModal, setIsOpenExperienceModal] = useState(false);
+    const [selectedExperience, setSelectedExperience] = useState(null);
 
     // Profile section data - sẽ được cập nhật từ API hoặc form
     const [introduction, setIntroduction] = useState('');
@@ -116,9 +118,12 @@ export default function Profile() {
         if (sectionId === 'education') {
             setSelectedEducation(educationData);
             setIsOpenEducationModal(true);
-        } else {
-            console.log(`Add ${sectionId} clicked`);
-            // Handle other sections
+        } else if (sectionId === 'introduction') {
+            setIsOpenIntroductionModal(true);
+            return;
+        } else if (sectionId === 'experience') {
+            setIsOpenExperienceModal(true);
+            return;
         }
     };
 
@@ -179,30 +184,59 @@ export default function Profile() {
                                             <Typography variant="h6" sx={{ fontWeight: 600, fontSize: '1rem' }}>
                                                 {exp.role}
                                             </Typography>
-                                            <IconButton
-                                                onClick={() => handleAddSection(section.id)}
-                                                sx={{
-                                                    color: '#7c4dff',
-                                                    p: 0.5,
-                                                    '&:hover': {
-                                                        bgcolor: 'rgba(124, 77, 255, 0.1)',
-                                                    },
-                                                }}
-                                                size="small"
-                                            >
-                                                <EditIcon sx={{ fontSize: 18 }} />
-                                            </IconButton>
+                                            <Box sx={{ display: 'flex', gap: 0.5, alignItems: 'center' }}>
+                                                <IconButton
+                                                    onClick={() => handleOpenExperienceModal(exp)}
+                                                    sx={{
+                                                        color: '#7c4dff',
+                                                        p: 0.5,
+                                                        '&:hover': {
+                                                            bgcolor: 'rgba(124, 77, 255, 0.1)',
+                                                        },
+                                                    }}
+                                                    size="small"
+                                                >
+                                                    <EditIcon sx={{ fontSize: 18 }} />
+                                                </IconButton>
+                                                <IconButton
+                                                    onClick={() => handleDeleteExperience(exp.id)}
+                                                    sx={{
+                                                        color: 'text.secondary',
+                                                        p: 0.5,
+                                                        '&:hover': {
+                                                            bgcolor: 'rgba(0, 0, 0, 0.05)',
+                                                        },
+                                                    }}
+                                                    size="small"
+                                                >
+                                                    <DeleteIcon sx={{ fontSize: 18 }} />
+                                                </IconButton>
+                                            </Box>
                                         </Box>
-                                        <Typography variant="body2" color="text.secondary" sx={{ mb: 0.5 }}>
-                                            {exp.company} - {exp.employmentType} - {exp.startDate} - {exp.endDate} ({exp.duration})
+                                        <Typography variant="body1" color="text.secondary" sx={{ mb: 0.5 }}>
+                                            {exp.company}
                                         </Typography>
                                         <Typography variant="body2" color="text.secondary" sx={{ mb: 1 }}>
-                                            {exp.location}
+                                            {(() => {
+                                                const fmt = (m, y) => (m ? `${String(m).padStart(2, '0')}/${y}` : y || '');
+                                                const start = fmt(exp.startMonth, exp.startYear);
+                                                let end = exp.isCurrentlyWorking || exp.endYear === 'Present' ? 'NOW' : fmt(exp.endMonth, exp.endYear);
+                                                if (!start && !end) return '';
+                                                return `${start}${start && end ? ' - ' : ''}${end}`;
+                                            })()}
                                         </Typography>
-                                        {exp.description && (
-                                            <Typography variant="body2" color="text.secondary" sx={{ lineHeight: 1.6 }}>
-                                                {exp.description}
+                                        {exp.location && (
+                                            <Typography variant="body2" color="text.secondary" sx={{ mb: 1 }}>
+                                                {exp.location}
                                             </Typography>
+                                        )}
+                                        {exp.description && (
+                                            <Typography
+                                                variant="body2"
+                                                color="text.secondary"
+                                                sx={{ lineHeight: 1.6, whiteSpace: 'pre-line', wordBreak: 'break-word' }}
+                                                dangerouslySetInnerHTML={{ __html: exp.description }}
+                                            />
                                         )}
                                     </Box>
                                 </Box>
@@ -486,9 +520,46 @@ export default function Profile() {
         console.log("Education saved:", educationData);
     };
 
+    const handleSaveExperience = (formData) => {
+        const experienceData = {
+            id: selectedExperience?.id || Date.now(),
+            role: formData.jobTitle,
+            company: formData.company,
+            logo: formData.company ? formData.company.charAt(0).toUpperCase() : 'C',
+            startMonth: formData.startMonth,
+            startYear: formData.startYear,
+            endMonth: formData.endMonth,
+            endYear: formData.endYear,
+            isCurrentlyWorking: formData.isCurrentlyWorking,
+            description: formData.description,
+        };
+
+        if (selectedExperience) {
+            setExperiences((prev) => prev.map((exp) => (exp.id === selectedExperience.id ? experienceData : exp)));
+        } else {
+            setExperiences((prev) => [...prev, experienceData]);
+        }
+
+        setSelectedExperience(null);
+        setIsOpenExperienceModal(false);
+        console.log('Experience saved:', experienceData);
+    };
+
+    const handleSaveIntroduction = (formData) => {
+        // formData.introduction contains the HTML/text content from the modal
+        setIntroduction(formData.introduction || formData.content || '');
+        setIsOpenIntroductionModal(false);
+        console.log('Introduction saved:', formData);
+    };
+
     const handleOpenEducationModal = (educationData = null) => {
         setSelectedEducation(educationData);
         setIsOpenEducationModal(true);
+    };
+
+    const handleOpenExperienceModal = (experienceData = null) => {
+        setSelectedExperience(experienceData);
+        setIsOpenExperienceModal(true);
     };
 
     const handleDeleteEducation = (educationId) => {
@@ -498,6 +569,16 @@ export default function Profile() {
             // Here you can also make an API call to delete the data
             // Example: await deleteEducation(educationId);
             console.log("Education deleted:", educationId);
+        }
+    };
+
+    const handleDeleteExperience = (experienceId) => {
+        if (window.confirm('Bạn có chắc chắn muốn xóa thông tin công việc này?')) {
+            setExperiences((prev) => prev.filter((exp) => exp.id !== experienceId));
+
+            // Here you can also make an API call to delete the data
+            // Example: await deleteExperience(experienceId);
+            console.log('Experience deleted:', experienceId);
         }
     };
 
@@ -947,24 +1028,9 @@ export default function Profile() {
                                         right: 16,
                                     }}
                                 >
-                                    <Box
-                                        component="img"
-                                        src={`data:image/svg+xml,${encodeURIComponent(`
-                                            <svg width="48" height="48" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                                <circle cx="24" cy="24" r="20" fill="#FFB84D"/>
-                                                <text x="24" y="32" text-anchor="middle" fill="white" font-size="24" font-weight="bold">!</text>
-                                            </svg>
-                                        `)}`}
-                                        alt="Warning"
-                                        sx={{ width: 48, height: 48 }}
-                                    />
                                 </Box>
                                 <Typography variant="body2" sx={{ lineHeight: 1.6 }}>
-                                    Nâng cấp hồ sơ của bạn lên{' '}
-                                    <Box component="span" sx={{ fontWeight: 700, color: 'error.main' }}>
-                                        70%
-                                    </Box>{' '}
-                                    để tài xỉu CV đánh cho chuyên gia IT.
+                                    Nâng cấp hồ sơ của bạn lên 100% để thu hút nhà tuyển dụng hơn!
                                 </Typography>
                             </Box>
 
@@ -974,6 +1040,7 @@ export default function Profile() {
                                     fullWidth
                                     variant="text"
                                     startIcon={<AddIcon />}
+                                    onClick={() => setIsOpenIntroductionModal(true)}
                                     sx={{
                                         justifyContent: 'flex-start',
                                         textTransform: 'none',
@@ -1006,6 +1073,7 @@ export default function Profile() {
                                     fullWidth
                                     variant="text"
                                     startIcon={<AddIcon />}
+                                    onClick={() => handleOpenExperienceModal()}
                                     sx={{
                                         justifyContent: 'flex-start',
                                         textTransform: 'none',
@@ -1068,6 +1136,14 @@ export default function Profile() {
                 onSave={handleSaveInformation}
             />
 
+            {/* Introduction Modal */}
+            <IntroductionModal
+                open={isOpenIntroductionModal}
+                onOpenChange={(open) => setIsOpenIntroductionModal(open)}
+                initialData={{ introduction }}
+                onSave={handleSaveIntroduction}
+            />
+
             {/* Education Modal */}
             <EducationModal
                 open={isOpenEducationModal}
@@ -1089,6 +1165,26 @@ export default function Profile() {
                     description: selectedEducation.description || '',
                 } : null}
                 onSave={handleSaveEducation}
+            />
+
+            {/* Experience Modal */}
+            <ExperienceModal
+                open={isOpenExperienceModal}
+                onOpenChange={(open) => {
+                    setIsOpenExperienceModal(open);
+                    if (!open) setSelectedExperience(null);
+                }}
+                initialData={selectedExperience ? {
+                    jobTitle: selectedExperience.role,
+                    company: selectedExperience.company,
+                    isCurrentlyWorking: selectedExperience.isCurrentlyWorking,
+                    startMonth: selectedExperience.startMonth || '',
+                    startYear: selectedExperience.startYear,
+                    endMonth: selectedExperience.endMonth || '',
+                    endYear: selectedExperience.endYear === 'Present' ? '' : selectedExperience.endYear,
+                    description: selectedExperience.description || '',
+                } : null}
+                onSave={handleSaveExperience}
             />
         </Box>
     );
