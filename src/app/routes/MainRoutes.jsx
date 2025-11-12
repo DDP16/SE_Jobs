@@ -1,5 +1,5 @@
 import { BrowserRouter, Route, Routes, Outlet } from "react-router-dom";
-import { Home, FindJobs, JobDescription, CompanyDetails, CompanyList, SignIn, SignUp, ProfileDashboard, Profile } from "../pages";
+import { Home, FindJobs, JobDescription, CompanyDetails, CompanyList, SignIn, SignUp, ProfileDashboard, Profile, UserProfileSettings } from "../pages";
 import PageNotFound from "../layouts/PageNotFound";
 import ThemeProvider from "../providers/ThemeProvider";
 import MainLayout from "../layouts/MainLayout";
@@ -33,7 +33,7 @@ export default function MainRoutes() {
             <Route path="profile/job-invitation" element={<ProfileDashboard />} />
             <Route path="profile/email-subscriptions" element={<ProfileDashboard />} />
             <Route path="profile/notifications" element={<ProfileDashboard />} />
-            <Route path="profile/settings" element={<ProfileDashboard />} />
+            <Route path="profile/settings" element={<UserProfileSettings />} />
             <Route path="*" element={<PageNotFound />} />
           </Route>
         </Routes>
