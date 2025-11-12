@@ -32,6 +32,11 @@ import {
 import { ProfileSidebar } from '../../../../components';
 import { InformationModal, ApplicationModal } from '../../../../components';
 import EducationModal from '../../../../components/common/EducationModal';
+import LanguagesModal from '../../../../components/common/LanguagesModal';
+import ProjectsModal from '../../../../components/common/ProjectsModal';
+import CertificatesModal from '../../../../components/common/CertificatesModal';
+import AwardsModal from '../../../../components/common/AwardsModal';
+import SkillsModal from '../../../../components/common/SkillsModal';
 
 export default function Profile() {
     const fileInputRef = useRef(null);
@@ -51,13 +56,26 @@ export default function Profile() {
     const [isOpenInformationModal, setIsOpenInformationModal] = useState(false);
     const [isOpenApplicationModal, setIsOpenApplicationModal] = useState(false);
     const [isOpenEducationModal, setIsOpenEducationModal] = useState(false);
+    const [isOpenLanguagesModal, setIsOpenLanguagesModal] = useState(false);
+    const [isOpenProjectsModal, setIsOpenProjectsModal] = useState(false);
+    const [isOpenCertificatesModal, setIsOpenCertificatesModal] = useState(false);
+    const [isOpenAwardsModal, setIsOpenAwardsModal] = useState(false);
+    const [isOpenSkillsModal, setIsOpenSkillsModal] = useState(false);
     const [selectedEducation, setSelectedEducation] = useState(null);
+    const [selectedProject, setSelectedProject] = useState(null);
+    const [selectedCertificate, setSelectedCertificate] = useState(null);
+    const [selectedAward, setSelectedAward] = useState(null);
+    const [selectedSkillGroup, setSelectedSkillGroup] = useState(null);
 
     // Profile section data - sẽ được cập nhật từ API hoặc form
     const [introduction, setIntroduction] = useState('');
     const [experiences, setExperiences] = useState([]);
     const [educations, setEducations] = useState([]);
     const [skills, setSkills] = useState([]);
+    const [languages, setLanguages] = useState([]);
+    const [projects, setProjects] = useState([]);
+    const [certificates, setCertificates] = useState([]);
+    const [awards, setAwards] = useState([]);
     const [showAllExperiences, setShowAllExperiences] = useState(false);
     const [showAllEducations, setShowAllEducations] = useState(false);
 
@@ -90,25 +108,25 @@ export default function Profile() {
             id: 'languages',
             title: 'Ngoại ngữ',
             subtitle: 'Liệt kê các ngôn ngữ mà bạn biết',
-            isEmpty: true,
+            isEmpty: languages.length === 0,
         },
         {
             id: 'projects',
             title: 'Dự án nổi bật',
             subtitle: 'Giới thiệu dự án nổi bật của bạn',
-            isEmpty: true,
+            isEmpty: projects.length === 0,
         },
         {
             id: 'certificates',
             title: 'Chứng chỉ',
             subtitle: 'Bổ sung chứng chỉ liên quan đến kỹ năng của bạn',
-            isEmpty: true,
+            isEmpty: certificates.length === 0,
         },
         {
             id: 'awards',
             title: 'Giải thưởng',
             subtitle: 'Thể hiện giải thưởng hoặc thành tích mà bạn đạt được',
-            isEmpty: true,
+            isEmpty: awards.length === 0,
         },
     ];
 
@@ -116,6 +134,20 @@ export default function Profile() {
         if (sectionId === 'education') {
             setSelectedEducation(educationData);
             setIsOpenEducationModal(true);
+        } else if (sectionId === 'languages') {
+            setIsOpenLanguagesModal(true);
+        } else if (sectionId === 'projects') {
+            setSelectedProject(null);
+            setIsOpenProjectsModal(true);
+        } else if (sectionId === 'certificates') {
+            setSelectedCertificate(null);
+            setIsOpenCertificatesModal(true);
+        } else if (sectionId === 'awards') {
+            setSelectedAward(null);
+            setIsOpenAwardsModal(true);
+        } else if (sectionId === 'skills') {
+            setSelectedSkillGroup(null);
+            setIsOpenSkillsModal(true);
         } else {
             console.log(`Add ${sectionId} clicked`);
             // Handle other sections
@@ -331,11 +363,83 @@ export default function Profile() {
             case 'skills':
                 if (skills.length > 0) {
                     return (
+                        <Box>
+                            {skills.map((skillGroup) => (
+                                <Box
+                                    key={skillGroup.id}
+                                    sx={{
+                                        mb: 3,
+                                        position: 'relative',
+                                        '&:last-child': { mb: 0 }
+                                    }}
+                                >
+                                    <Box sx={{ flex: 1, minWidth: 0 }}>
+                                        <Box sx={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', mb: 1 }}>
+                                            <Typography variant="h6" sx={{ fontWeight: 600, fontSize: '1rem' }}>
+                                                {skillGroup.groupName || skillGroup.name}
+                                            </Typography>
+                                            <Box sx={{ display: 'flex', gap: 0.5, alignItems: 'center' }}>
+                                                <IconButton
+                                                    onClick={() => handleOpenSkillGroupModal(skillGroup)}
+                                                    sx={{
+                                                        color: '#d32f2f',
+                                                        p: 0.5,
+                                                        '&:hover': {
+                                                            bgcolor: 'rgba(211, 47, 47, 0.1)',
+                                                        },
+                                                    }}
+                                                    size="small"
+                                                >
+                                                    <EditIcon sx={{ fontSize: 18 }} />
+                                                </IconButton>
+                                                <IconButton
+                                                    onClick={() => handleDeleteSkillGroup(skillGroup.id)}
+                                                    sx={{
+                                                        color: 'text.secondary',
+                                                        p: 0.5,
+                                                        '&:hover': {
+                                                            bgcolor: 'rgba(0, 0, 0, 0.05)',
+                                                        },
+                                                    }}
+                                                    size="small"
+                                                >
+                                                    <DeleteIcon sx={{ fontSize: 18 }} />
+                                                </IconButton>
+                                            </Box>
+                                        </Box>
+                                        <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 1 }}>
+                                            {skillGroup.skills && skillGroup.skills.map((skill, index) => (
+                                                <Chip
+                                                    key={index}
+                                                    label={`${skill.name} (${skill.experience})`}
+                                                    sx={{
+                                                        bgcolor: '#E8E0FF',
+                                                        color: '#5E35B1',
+                                                        fontWeight: 500,
+                                                        borderRadius: 2,
+                                                        '&:hover': {
+                                                            bgcolor: '#D1C4E9',
+                                                        },
+                                                    }}
+                                                />
+                                            ))}
+                                        </Box>
+                                    </Box>
+                                </Box>
+                            ))}
+                        </Box>
+                    );
+                }
+                return null;
+
+            case 'languages':
+                if (languages.length > 0) {
+                    return (
                         <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 1 }}>
-                            {skills.map((skill, index) => (
+                            {languages.map((lang, index) => (
                                 <Chip
                                     key={index}
-                                    label={skill}
+                                    label={`${lang.language} (${lang.level})`}
                                     sx={{
                                         bgcolor: '#E8E0FF',
                                         color: '#5E35B1',
@@ -346,6 +450,272 @@ export default function Profile() {
                                         },
                                     }}
                                 />
+                            ))}
+                        </Box>
+                    );
+                }
+                return null;
+
+            case 'projects':
+                if (projects.length > 0) {
+                    return (
+                        <Box>
+                            {projects.map((project) => (
+                                <Box
+                                    key={project.id}
+                                    sx={{
+                                        mb: 3,
+                                        position: 'relative',
+                                        '&:last-child': { mb: 0 }
+                                    }}
+                                >
+                                    <Box sx={{ flex: 1, minWidth: 0 }}>
+                                        <Box sx={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', mb: 0.5 }}>
+                                            <Typography variant="h6" sx={{ fontWeight: 600, fontSize: '1rem' }}>
+                                                {project.projectName || project.name}
+                                            </Typography>
+                                            <Box sx={{ display: 'flex', gap: 0.5, alignItems: 'center' }}>
+                                                <IconButton
+                                                    onClick={() => handleOpenProjectModal(project)}
+                                                    sx={{
+                                                        color: '#d32f2f',
+                                                        p: 0.5,
+                                                        '&:hover': {
+                                                            bgcolor: 'rgba(211, 47, 47, 0.1)',
+                                                        },
+                                                    }}
+                                                    size="small"
+                                                >
+                                                    <EditIcon sx={{ fontSize: 18 }} />
+                                                </IconButton>
+                                                <IconButton
+                                                    onClick={() => handleDeleteProject(project.id)}
+                                                    sx={{
+                                                        color: 'text.secondary',
+                                                        p: 0.5,
+                                                        '&:hover': {
+                                                            bgcolor: 'rgba(0, 0, 0, 0.05)',
+                                                        },
+                                                    }}
+                                                    size="small"
+                                                >
+                                                    <DeleteIcon sx={{ fontSize: 18 }} />
+                                                </IconButton>
+                                            </Box>
+                                        </Box>
+                                        <Typography variant="body2" color="text.secondary" sx={{ mb: 0.5 }}>
+                                            {(() => {
+                                                const startDate = project.startMonth
+                                                    ? `${String(project.startMonth).padStart(2, '0')}/${project.startYear}`
+                                                    : project.startYear;
+                                                const endDate = (project.isCurrentlyWorking)
+                                                    ? 'HIỆN TẠI'
+                                                    : (project.endMonth
+                                                        ? `${String(project.endMonth).padStart(2, '0')}/${project.endYear}`
+                                                        : project.endYear);
+                                                return `${startDate} - ${endDate}`;
+                                            })()}
+                                        </Typography>
+                                        {project.description && (
+                                            <Typography
+                                                variant="body2"
+                                                color="text.secondary"
+                                                sx={{ lineHeight: 1.6, mb: 1 }}
+                                                dangerouslySetInnerHTML={{ __html: project.description }}
+                                            />
+                                        )}
+                                        {project.websiteLink && (
+                                            <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.5, mt: 1 }}>
+                                                <LinkIcon sx={{ fontSize: 16, color: 'text.secondary' }} />
+                                                <Typography
+                                                    variant="body2"
+                                                    component="a"
+                                                    href={project.websiteLink}
+                                                    target="_blank"
+                                                    rel="noopener noreferrer"
+                                                    sx={{
+                                                        color: 'primary.main',
+                                                        textDecoration: 'none',
+                                                        '&:hover': {
+                                                            textDecoration: 'underline',
+                                                        },
+                                                    }}
+                                                >
+                                                    {project.websiteLink}
+                                                </Typography>
+                                            </Box>
+                                        )}
+                                    </Box>
+                                </Box>
+                            ))}
+                        </Box>
+                    );
+                }
+                return null;
+
+            case 'certificates':
+                if (certificates.length > 0) {
+                    return (
+                        <Box>
+                            {certificates.map((cert) => (
+                                <Box
+                                    key={cert.id}
+                                    sx={{
+                                        mb: 3,
+                                        position: 'relative',
+                                        '&:last-child': { mb: 0 }
+                                    }}
+                                >
+                                    <Box sx={{ flex: 1, minWidth: 0 }}>
+                                        <Box sx={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', mb: 0.5 }}>
+                                            <Typography variant="h6" sx={{ fontWeight: 600, fontSize: '1rem' }}>
+                                                {cert.certificateName || cert.name}
+                                            </Typography>
+                                            <Box sx={{ display: 'flex', gap: 0.5, alignItems: 'center' }}>
+                                                <IconButton
+                                                    onClick={() => handleOpenCertificateModal(cert)}
+                                                    sx={{
+                                                        color: '#d32f2f',
+                                                        p: 0.5,
+                                                        '&:hover': {
+                                                            bgcolor: 'rgba(211, 47, 47, 0.1)',
+                                                        },
+                                                    }}
+                                                    size="small"
+                                                >
+                                                    <EditIcon sx={{ fontSize: 18 }} />
+                                                </IconButton>
+                                                <IconButton
+                                                    onClick={() => handleDeleteCertificate(cert.id)}
+                                                    sx={{
+                                                        color: 'text.secondary',
+                                                        p: 0.5,
+                                                        '&:hover': {
+                                                            bgcolor: 'rgba(0, 0, 0, 0.05)',
+                                                        },
+                                                    }}
+                                                    size="small"
+                                                >
+                                                    <DeleteIcon sx={{ fontSize: 18 }} />
+                                                </IconButton>
+                                            </Box>
+                                        </Box>
+                                        <Typography variant="body2" color="text.secondary" sx={{ mb: 0.5 }}>
+                                            {cert.organization}
+                                        </Typography>
+                                        <Typography variant="body2" color="text.secondary" sx={{ mb: 1 }}>
+                                            {(() => {
+                                                const issueDate = cert.issueMonth
+                                                    ? `${String(cert.issueMonth).padStart(2, '0')}/${cert.issueYear}`
+                                                    : cert.issueYear;
+                                                return `Issued: ${issueDate}`;
+                                            })()}
+                                        </Typography>
+                                        {cert.description && (
+                                            <Typography
+                                                variant="body2"
+                                                color="text.secondary"
+                                                sx={{ lineHeight: 1.6, mb: 1 }}
+                                                dangerouslySetInnerHTML={{ __html: cert.description }}
+                                            />
+                                        )}
+                                        {cert.certificateUrl && (
+                                            <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.5, mt: 1 }}>
+                                                <LinkIcon sx={{ fontSize: 16, color: 'text.secondary' }} />
+                                                <Typography
+                                                    variant="body2"
+                                                    component="a"
+                                                    href={cert.certificateUrl}
+                                                    target="_blank"
+                                                    rel="noopener noreferrer"
+                                                    sx={{
+                                                        color: 'primary.main',
+                                                        textDecoration: 'none',
+                                                        '&:hover': {
+                                                            textDecoration: 'underline',
+                                                        },
+                                                    }}
+                                                >
+                                                    {cert.certificateUrl}
+                                                </Typography>
+                                            </Box>
+                                        )}
+                                    </Box>
+                                </Box>
+                            ))}
+                        </Box>
+                    );
+                }
+                return null;
+
+            case 'awards':
+                if (awards.length > 0) {
+                    return (
+                        <Box>
+                            {awards.map((award) => (
+                                <Box
+                                    key={award.id}
+                                    sx={{
+                                        mb: 3,
+                                        position: 'relative',
+                                        '&:last-child': { mb: 0 }
+                                    }}
+                                >
+                                    <Box sx={{ flex: 1, minWidth: 0 }}>
+                                        <Box sx={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', mb: 0.5 }}>
+                                            <Typography variant="h6" sx={{ fontWeight: 600, fontSize: '1rem' }}>
+                                                {award.awardName || award.name}
+                                            </Typography>
+                                            <Box sx={{ display: 'flex', gap: 0.5, alignItems: 'center' }}>
+                                                <IconButton
+                                                    onClick={() => handleOpenAwardModal(award)}
+                                                    sx={{
+                                                        color: '#d32f2f',
+                                                        p: 0.5,
+                                                        '&:hover': {
+                                                            bgcolor: 'rgba(211, 47, 47, 0.1)',
+                                                        },
+                                                    }}
+                                                    size="small"
+                                                >
+                                                    <EditIcon sx={{ fontSize: 18 }} />
+                                                </IconButton>
+                                                <IconButton
+                                                    onClick={() => handleDeleteAward(award.id)}
+                                                    sx={{
+                                                        color: 'text.secondary',
+                                                        p: 0.5,
+                                                        '&:hover': {
+                                                            bgcolor: 'rgba(0, 0, 0, 0.05)',
+                                                        },
+                                                    }}
+                                                    size="small"
+                                                >
+                                                    <DeleteIcon sx={{ fontSize: 18 }} />
+                                                </IconButton>
+                                            </Box>
+                                        </Box>
+                                        <Typography variant="body2" color="text.secondary" sx={{ mb: 0.5 }}>
+                                            {award.awardOrganization || award.organization}
+                                        </Typography>
+                                        <Typography variant="body2" color="text.secondary" sx={{ mb: 1 }}>
+                                            {(() => {
+                                                const issueDate = award.issueMonth
+                                                    ? `${String(award.issueMonth).padStart(2, '0')}/${award.issueYear}`
+                                                    : award.issueYear;
+                                                return `Issued: ${issueDate}`;
+                                            })()}
+                                        </Typography>
+                                        {award.description && (
+                                            <Typography
+                                                variant="body2"
+                                                color="text.secondary"
+                                                sx={{ lineHeight: 1.6 }}
+                                                dangerouslySetInnerHTML={{ __html: award.description }}
+                                            />
+                                        )}
+                                    </Box>
+                                </Box>
                             ))}
                         </Box>
                     );
@@ -498,6 +868,201 @@ export default function Profile() {
             // Here you can also make an API call to delete the data
             // Example: await deleteEducation(educationId);
             console.log("Education deleted:", educationId);
+        }
+    };
+
+    const handleSaveLanguages = (languagesData) => {
+        setLanguages(languagesData);
+        // Here you can also make an API call to save the data
+        // Example: await saveLanguages(languagesData);
+        console.log("Languages saved:", languagesData);
+    };
+
+    const handleSaveProject = (formData) => {
+        const projectData = {
+            id: selectedProject?.id || Date.now(),
+            projectName: formData.projectName,
+            name: formData.projectName,
+            isCurrentlyWorking: formData.isCurrentlyWorking,
+            startMonth: formData.startMonth,
+            startYear: formData.startYear,
+            endMonth: formData.endMonth,
+            endYear: formData.endYear,
+            description: formData.description,
+            websiteLink: formData.websiteLink,
+            website: formData.websiteLink,
+        };
+
+        if (selectedProject) {
+            // Update existing project
+            setProjects((prev) =>
+                prev.map((proj) =>
+                    proj.id === selectedProject.id ? projectData : proj
+                )
+            );
+        } else {
+            // Add new project
+            setProjects((prev) => [...prev, projectData]);
+        }
+
+        // Reset selected project
+        setSelectedProject(null);
+
+        // Here you can also make an API call to save the data
+        // Example: await saveProject(projectData);
+        console.log("Project saved:", projectData);
+    };
+
+    const handleOpenProjectModal = (projectData = null) => {
+        setSelectedProject(projectData);
+        setIsOpenProjectsModal(true);
+    };
+
+    const handleDeleteProject = (projectId) => {
+        if (window.confirm('Bạn có chắc chắn muốn xóa dự án này?')) {
+            setProjects((prev) => prev.filter((proj) => proj.id !== projectId));
+
+            // Here you can also make an API call to delete the data
+            // Example: await deleteProject(projectId);
+            console.log("Project deleted:", projectId);
+        }
+    };
+
+    const handleSaveCertificate = (formData) => {
+        const certificateData = {
+            id: selectedCertificate?.id || Date.now(),
+            certificateName: formData.certificateName,
+            name: formData.certificateName,
+            organization: formData.organization,
+            issueMonth: formData.issueMonth,
+            issueYear: formData.issueYear,
+            certificateUrl: formData.certificateUrl,
+            url: formData.certificateUrl,
+            description: formData.description,
+        };
+
+        if (selectedCertificate) {
+            // Update existing certificate
+            setCertificates((prev) =>
+                prev.map((cert) =>
+                    cert.id === selectedCertificate.id ? certificateData : cert
+                )
+            );
+        } else {
+            // Add new certificate
+            setCertificates((prev) => [...prev, certificateData]);
+        }
+
+        // Reset selected certificate
+        setSelectedCertificate(null);
+
+        // Here you can also make an API call to save the data
+        // Example: await saveCertificate(certificateData);
+        console.log("Certificate saved:", certificateData);
+    };
+
+    const handleOpenCertificateModal = (certificateData = null) => {
+        setSelectedCertificate(certificateData);
+        setIsOpenCertificatesModal(true);
+    };
+
+    const handleDeleteCertificate = (certificateId) => {
+        if (window.confirm('Bạn có chắc chắn muốn xóa chứng chỉ này?')) {
+            setCertificates((prev) => prev.filter((cert) => cert.id !== certificateId));
+
+            // Here you can also make an API call to delete the data
+            // Example: await deleteCertificate(certificateId);
+            console.log("Certificate deleted:", certificateId);
+        }
+    };
+
+    const handleSaveAward = (formData) => {
+        const awardData = {
+            id: selectedAward?.id || Date.now(),
+            awardName: formData.awardName,
+            name: formData.awardName,
+            awardOrganization: formData.awardOrganization,
+            organization: formData.awardOrganization,
+            issueMonth: formData.issueMonth,
+            issueYear: formData.issueYear,
+            description: formData.description,
+        };
+
+        if (selectedAward) {
+            // Update existing award
+            setAwards((prev) =>
+                prev.map((award) =>
+                    award.id === selectedAward.id ? awardData : award
+                )
+            );
+        } else {
+            // Add new award
+            setAwards((prev) => [...prev, awardData]);
+        }
+
+        // Reset selected award
+        setSelectedAward(null);
+
+        // Here you can also make an API call to save the data
+        // Example: await saveAward(awardData);
+        console.log("Award saved:", awardData);
+    };
+
+    const handleOpenAwardModal = (awardData = null) => {
+        setSelectedAward(awardData);
+        setIsOpenAwardsModal(true);
+    };
+
+    const handleDeleteAward = (awardId) => {
+        if (window.confirm('Bạn có chắc chắn muốn xóa giải thưởng này?')) {
+            setAwards((prev) => prev.filter((award) => award.id !== awardId));
+
+            // Here you can also make an API call to delete the data
+            // Example: await deleteAward(awardId);
+            console.log("Award deleted:", awardId);
+        }
+    };
+
+    const handleSaveSkillGroup = (formData) => {
+        const skillGroupData = {
+            id: selectedSkillGroup?.id || Date.now(),
+            groupName: formData.groupName,
+            name: formData.groupName,
+            skills: formData.skills || [],
+        };
+
+        if (selectedSkillGroup) {
+            // Update existing skill group
+            setSkills((prev) =>
+                prev.map((group) =>
+                    group.id === selectedSkillGroup.id ? skillGroupData : group
+                )
+            );
+        } else {
+            // Add new skill group
+            setSkills((prev) => [...prev, skillGroupData]);
+        }
+
+        // Reset selected skill group
+        setSelectedSkillGroup(null);
+
+        // Here you can also make an API call to save the data
+        // Example: await saveSkillGroup(skillGroupData);
+        console.log("Skill group saved:", skillGroupData);
+    };
+
+    const handleOpenSkillGroupModal = (skillGroupData = null) => {
+        setSelectedSkillGroup(skillGroupData);
+        setIsOpenSkillsModal(true);
+    };
+
+    const handleDeleteSkillGroup = (skillGroupId) => {
+        if (window.confirm('Bạn có chắc chắn muốn xóa nhóm kỹ năng này?')) {
+            setSkills((prev) => prev.filter((group) => group.id !== skillGroupId));
+
+            // Here you can also make an API call to delete the data
+            // Example: await deleteSkillGroup(skillGroupId);
+            console.log("Skill group deleted:", skillGroupId);
         }
     };
 
@@ -833,6 +1398,14 @@ export default function Profile() {
                                                 onClick={() => {
                                                     if (section.id === 'education') {
                                                         handleOpenEducationModal(null);
+                                                    } else if (section.id === 'projects') {
+                                                        handleOpenProjectModal(null);
+                                                    } else if (section.id === 'certificates') {
+                                                        handleOpenCertificateModal(null);
+                                                    } else if (section.id === 'awards') {
+                                                        handleOpenAwardModal(null);
+                                                    } else if (section.id === 'skills') {
+                                                        handleOpenSkillGroupModal(null);
                                                     } else {
                                                         handleAddSection(section.id);
                                                     }
@@ -1089,6 +1662,98 @@ export default function Profile() {
                     description: selectedEducation.description || '',
                 } : null}
                 onSave={handleSaveEducation}
+            />
+
+            {/* Languages Modal */}
+            <LanguagesModal
+                open={isOpenLanguagesModal}
+                onOpenChange={setIsOpenLanguagesModal}
+                initialData={languages}
+                onSave={handleSaveLanguages}
+            />
+
+            {/* Projects Modal */}
+            <ProjectsModal
+                open={isOpenProjectsModal}
+                onOpenChange={(open) => {
+                    setIsOpenProjectsModal(open);
+                    if (!open) {
+                        setSelectedProject(null);
+                    }
+                }}
+                initialData={selectedProject ? {
+                    projectName: selectedProject.projectName || selectedProject.name,
+                    name: selectedProject.projectName || selectedProject.name,
+                    isCurrentlyWorking: selectedProject.isCurrentlyWorking,
+                    startMonth: selectedProject.startMonth || '',
+                    startYear: selectedProject.startYear,
+                    endMonth: selectedProject.endMonth || '',
+                    endYear: selectedProject.endYear,
+                    description: selectedProject.description || '',
+                    websiteLink: selectedProject.websiteLink || selectedProject.website || '',
+                    website: selectedProject.websiteLink || selectedProject.website || '',
+                } : null}
+                onSave={handleSaveProject}
+            />
+
+            {/* Certificates Modal */}
+            <CertificatesModal
+                open={isOpenCertificatesModal}
+                onOpenChange={(open) => {
+                    setIsOpenCertificatesModal(open);
+                    if (!open) {
+                        setSelectedCertificate(null);
+                    }
+                }}
+                initialData={selectedCertificate ? {
+                    certificateName: selectedCertificate.certificateName || selectedCertificate.name,
+                    name: selectedCertificate.certificateName || selectedCertificate.name,
+                    organization: selectedCertificate.organization,
+                    issueMonth: selectedCertificate.issueMonth || '',
+                    issueYear: selectedCertificate.issueYear,
+                    certificateUrl: selectedCertificate.certificateUrl || selectedCertificate.url || '',
+                    url: selectedCertificate.certificateUrl || selectedCertificate.url || '',
+                    description: selectedCertificate.description || '',
+                } : null}
+                onSave={handleSaveCertificate}
+            />
+
+            {/* Awards Modal */}
+            <AwardsModal
+                open={isOpenAwardsModal}
+                onOpenChange={(open) => {
+                    setIsOpenAwardsModal(open);
+                    if (!open) {
+                        setSelectedAward(null);
+                    }
+                }}
+                initialData={selectedAward ? {
+                    awardName: selectedAward.awardName || selectedAward.name,
+                    name: selectedAward.awardName || selectedAward.name,
+                    awardOrganization: selectedAward.awardOrganization || selectedAward.organization,
+                    organization: selectedAward.awardOrganization || selectedAward.organization,
+                    issueMonth: selectedAward.issueMonth || '',
+                    issueYear: selectedAward.issueYear,
+                    description: selectedAward.description || '',
+                } : null}
+                onSave={handleSaveAward}
+            />
+
+            {/* Skills Modal */}
+            <SkillsModal
+                open={isOpenSkillsModal}
+                onOpenChange={(open) => {
+                    setIsOpenSkillsModal(open);
+                    if (!open) {
+                        setSelectedSkillGroup(null);
+                    }
+                }}
+                initialData={selectedSkillGroup ? {
+                    groupName: selectedSkillGroup.groupName || selectedSkillGroup.name,
+                    name: selectedSkillGroup.groupName || selectedSkillGroup.name,
+                    skills: selectedSkillGroup.skills || [],
+                } : null}
+                onSave={handleSaveSkillGroup}
             />
         </Box>
     );

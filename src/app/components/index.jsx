@@ -21,6 +21,11 @@ export { default as JobCard } from './features/JobCard';
 export { default as CompanyCard } from './features/CompanyCard';
 export { default as FilterDialog } from './features/FilterDialog';
 export { default as FilterToolbar } from './features/FilterToolbar';
+export { default as SkillsModal } from './common/SkillsModal';
+export { default as CertificatesModal } from './common/CertificatesModal';
+export { default as AwardsModal } from './common/AwardsModal';
+export { default as LanguagesModal } from './common/LanguagesModal';
+export { default as ProjectsModal } from './common/ProjectsModal';
 
 // Section Components
 export { default as HeroSection } from './sections/HeroSection';
