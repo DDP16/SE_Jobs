@@ -347,7 +347,7 @@ export default function FilterDialog({
                 >
                     Reset All
                 </Button>
-                <div className="flex-grow" />
+                <div className="grow" />
                 <Button
                     onClick={onClose}
                     variant="outlined"

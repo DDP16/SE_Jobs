@@ -268,7 +268,7 @@ export default function ExperienceModal({ open, onOpenChange, initialData, onSav
                                 ref={editorRef}
                                 contentEditable
                                 onInput={handleContentChange}
-                                className="min-h-[160px] p-4 border border-t-0 border-neutrals-40 rounded-b-lg focus:outline-none focus:ring-2 focus:ring-primary"
+                                className="min-h-40 p-4 border border-t-0 border-neutrals-40 rounded-b-lg focus:outline-none focus:ring-2 focus:ring-primary"
                                 style={{ whiteSpace: 'pre-wrap', wordBreak: 'break-word' }}
                             />
 
