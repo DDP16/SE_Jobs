@@ -4,7 +4,7 @@ import {
   uiTextarea as Textarea,
   uiButton as Button,
   uiLabel as Label,
-} from "../../components";
+} from "@/components";
 import { Dialog, DialogContent, DialogTitle } from "@mui/material";
 import {
   X,

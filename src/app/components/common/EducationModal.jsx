@@ -4,7 +4,7 @@ import {
     uiTextarea as Textarea,
     uiButton as Button,
     uiLabel as Label,
-} from "../../components";
+} from "@/components";
 import { Dialog, DialogContent } from "@mui/material";
 import { X } from "lucide-react";
 import { FormControl, Select, MenuItem, Checkbox, FormControlLabel } from "@mui/material";

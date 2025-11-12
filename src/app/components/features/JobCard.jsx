@@ -165,7 +165,7 @@ export default function JobCard({
             )}
 
             <CardContent
-                className="flex-grow p-4"
+                className="grow p-4"
                 sx={{ flexGrow: 1, p: 2 }}
             >
                 <Box
@@ -187,7 +187,7 @@ export default function JobCard({
                     </Avatar>
 
                     <Box
-                        className="flex-grow min-w-0"
+                        className="grow min-w-0"
                         sx={{ flexGrow: 1, minWidth: 0 }}
                     >
                         <Typography

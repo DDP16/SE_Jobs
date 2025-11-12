@@ -3,7 +3,7 @@ import {
     uiInput as Input,
     uiButton as Button,
     uiLabel as Label,
-} from "../../components";
+} from "@/components";
 import { Dialog, DialogContent } from "@mui/material";
 import {
     X,
