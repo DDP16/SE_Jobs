@@ -1,15 +1,8 @@
-import { Button } from "@/components/ui/admin/button";
+import { Button } from "@/components/ui/button";
 import { cn } from "@/lib";
-
 import React from "react";
 
-type ActionButtonProps = {
-  icon: React.ReactNode;
-  onClick?: () => void;
-  "aria-label"?: string;
-};
-
-export const ActionButton: React.FC<ActionButtonProps> = ({ icon, onClick, "aria-label": ariaLabel }) => (
+export const ActionButton = ({ icon, onClick, "aria-label": ariaLabel }) => (
   <Button
     variant="ghost"
     size="icon"

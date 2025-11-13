@@ -3,11 +3,12 @@ import { Benefits } from "@/components/admin/Company/Benefits";
 import { CompanyHeader } from "@/components/admin/Company/CompanyHeader";
 import { CompanyDescription } from "@/components/admin/Company/CompanyDescription";
 import { Contact } from "@/components/admin/Company/Contact";
-import { OfficeLocations } from "@/components/admin/Company/OfficeLocation";
-import { TechStack } from "@/components/admin/Company/Techstack";
+
+import { Techstack } from "@/components/admin/Company/Techstack";
 import { WorkingAtCompany } from "@/components/admin/Company/WorkingAtCompany";
 import { Team } from "@/components/admin/Company/Team";
 import { TopBar } from "@/components/admin/TopBar";
+import { OfficeLocations } from "../../components/admin/Company/OfficeLocation";
 
 const CompanyProfile = () => {
   return (
@@ -27,7 +28,7 @@ const CompanyProfile = () => {
             </div>
 
             <div className="space-y-6">
-              <TechStack />
+              <Techstack />
               <OfficeLocations />
             </div>
           </div>

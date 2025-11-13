@@ -1,5 +1,4 @@
 import { Plus, Pencil, Twitter, Facebook, Linkedin, Mail } from "lucide-react";
-
 import { ActionButton } from "./ActionButton";
 
 const contacts = [

@@ -1,6 +1,6 @@
 import { Bell, Plus, ChevronDown } from "lucide-react";
-import { Button } from "@/components/ui/admin/button";
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "../ui/admin/dropdown-menu";
+import { Button } from "@/components/ui/button";
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "../ui/dropdown-menu";
 
 export const TopBar = () => {
   return (
@@ -8,7 +8,7 @@ export const TopBar = () => {
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
           <button className="flex items-center gap-3 hover:opacity-80 transition-opacity">
-            <div className="w-10 h-10  from-green-400 to-green-600 rounded-lg flex items-center justify-center">
+            <div className="w-10 h-10 from-green-400 to-green-600 rounded-lg flex items-center justify-center">
               <span className="text-white font-bold text-lg">N</span>
             </div>
             <div className="text-left">

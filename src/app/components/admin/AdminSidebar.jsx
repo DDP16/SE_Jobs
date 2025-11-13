@@ -10,11 +10,12 @@ import {
   HelpCircle,
   LogOut,
 } from "lucide-react";
-import { Button } from "@/components/ui/admin/button";
-import { Badge } from "@/components/ui/admin/badge";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/admin/avatar";
+import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Box } from "@mui/material";
 import logo from "@/assets/logo.svg";
+
 const navigation = [
   { name: "Dashboard", icon: Home, badge: null },
   { name: "Messages", icon: MessageSquare, badge: 1 },
@@ -57,7 +58,6 @@ export const AdminSidebar = () => {
           </button>
         ))}
       </nav>
-
       {/* Settings Section */}
       <div className="px-3 py-4 border-t border-border space-y-1 border-gray-300">
         <div className="px-3 py-2 text-xs font-medium text-muted-foreground">SETTINGS</div>
@@ -70,7 +70,6 @@ export const AdminSidebar = () => {
           <span>Help Center</span>
         </button>
       </div>
-
       {/* User Profile */}
       <div className="p-4 border-t border-border border-gray-300">
         <div className="flex items-center gap-3 mb-3">

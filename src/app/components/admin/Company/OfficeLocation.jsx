@@ -1,11 +1,11 @@
 import { Plus, Pencil, ArrowRight } from "lucide-react";
-import { Button } from "@/components/ui/admin/button";
-import { Badge } from "@/components/ui/admin/badge";
+import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
 import { ActionButton } from "./ActionButton";
 
 const locations = [
   { country: "United States", flag: "🇺🇸", isHeadquarters: true },
-  { country: "England", flag: "🏴󠁧󠁢󠁥󠁮󠁧󠁿", isHeadquarters: false },
+  { country: "England", flag: "🏴", isHeadquarters: false },
   { country: "Japan", flag: "🇯🇵", isHeadquarters: false },
   { country: "Australia", flag: "🇦🇺", isHeadquarters: false },
   { country: "China", flag: "🇨🇳", isHeadquarters: false },
