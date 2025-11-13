@@ -1,38 +1,35 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useEffect } from 'react';
+import { Container, Box } from '@mui/material';
+import { 
+    InformationModal, 
+    IntroductionModal, 
+    ExperienceModal, 
+    EducationModal,
+    LanguagesModal, 
+    ProjectsModal, 
+    SkillsModal,
+    CertificatesModal,
+    AwardsModal,
+    ProfileSidebar
+} from '../../../../components';
+
+// Partials
+import ProfileHeader from './partials/ProfileHeader';
+import CVUpload from './partials/CVUpload';
+import IntroductionSection from './partials/IntroductionSection';
+import ExperienceSection from './partials/ExperienceSection';
+import EducationSection from './partials/EducationSection';
+import ProfileCompletionCard from './partials/ProfileSidebar';
 import {
-    Box,
-    Container,
-    Typography,
-    Avatar,
-    Button,
-    Paper,
-    IconButton,
-    Divider,
-    LinearProgress,
-    Card,
-    CardContent,
-    CircularProgress,
-    Chip,
-} from '@mui/material';
-import {
-    Edit as EditIcon,
-    Phone as PhoneIcon,
-    Email as EmailIcon,
-    LocationOn as LocationOnIcon,
-    Link as LinkIcon,
-    Person as PersonIcon,
-    Add as AddIcon,
-    ErrorOutline as ErrorIcon,
-    CloudUpload as CloudUploadIcon,
-    Description as DescriptionIcon,
-    Delete as DeleteIcon,
-    Visibility as VisibilityIcon,
-    CheckCircle as CheckCircleIcon,
-} from '@mui/icons-material';
-import { ProfileSidebar } from '../../../../components';
+    SkillsSection,
+    LanguagesSection,
+    ProjectsSection,
+    CertificatesSection,
+    AwardsSection
+} from './partials/ProfileSections';
 
 export default function Profile() {
-    const fileInputRef = useRef(null);
+    // User Data
     const [user, setUser] = useState({
         name: 'Sang Trinh',
         email: 'test@gmail.com',
@@ -41,712 +38,419 @@ export default function Profile() {
         gender: '',
         currentAddress: '',
         personalLinks: '',
-        profileCompletion: 5,
     });
 
+    // Profile Data
     const [cvFile, setCvFile] = useState(null);
-    const [isDragging, setIsDragging] = useState(false);
+    const [introduction, setIntroduction] = useState('');
+    const [experiences, setExperiences] = useState([]);
+    const [educations, setEducations] = useState([]);
+    const [skills, setSkills] = useState([]);
+    const [languages, setLanguages] = useState([]);
+    const [projects, setProjects] = useState([]);
+    const [certificates, setCertificates] = useState([]);
+    const [awards, setAwards] = useState([]);
 
-    const profileSections = [
-        {
-            id: 'introduction',
-            title: 'Giới thiệu bản thân',
-            subtitle: 'Giới thiệu điểm mạnh và 5 năm kinh nghiệm của bạn',
-            isEmpty: true,
-        },
-        {
-            id: 'education',
-            title: 'Học vấn',
-            subtitle: 'Chia sẻ trình độ học vấn của bạn',
-            isEmpty: true,
-        },
-        {
-            id: 'experience',
-            title: 'Kinh nghiệm làm việc',
-            subtitle: 'Thể hiện những thông tin chi tiết về quá trình làm việc',
-            isEmpty: true,
-        },
-        {
-            id: 'skills',
-            title: 'Kỹ năng',
-            subtitle: 'Liệt kê các kỹ năng chuyên môn của bạn',
-            isEmpty: true,
-        },
-        {
-            id: 'languages',
-            title: 'Ngoại ngữ',
-            subtitle: 'Liệt kê các ngôn ngữ mà bạn biết',
-            isEmpty: true,
-        },
-        {
-            id: 'projects',
-            title: 'Dự án nổi bật',
-            subtitle: 'Giới thiệu dự án nổi bật của bạn',
-            isEmpty: true,
-        },
-        {
-            id: 'certificates',
-            title: 'Chứng chỉ',
-            subtitle: 'Bổ sung chứng chỉ liên quan đến kỹ năng của bạn',
-            isEmpty: true,
-        },
-        {
-            id: 'awards',
-            title: 'Giải thưởng',
-            subtitle: 'Thể hiện giải thưởng hoặc thành tích mà bạn đạt được',
-            isEmpty: true,
-        },
-    ];
+    // UI State
+    const [showAllExperiences, setShowAllExperiences] = useState(false);
+    const [showAllEducations, setShowAllEducations] = useState(false);
+    const [completionPercentage, setCompletionPercentage] = useState(5);
 
-    const handleAddSection = (sectionId) => {
-        console.log(`Add ${sectionId} clicked`);
-        // Navigate to add/edit page for this section
+    // Modal State
+    const [modals, setModals] = useState({
+        information: false,
+        introduction: false,
+        experience: false,
+        education: false,
+        skills: false,
+        languages: false,
+        projects: false,
+        certificates: false,
+        awards: false,
+    });
+
+    // Selected Items
+    const [selectedEducation, setSelectedEducation] = useState(null);
+    const [selectedExperience, setSelectedExperience] = useState(null);
+    const [selectedSkillGroup, setSelectedSkillGroup] = useState(null);
+    const [selectedProject, setSelectedProject] = useState(null);
+    const [selectedCertificate, setSelectedCertificate] = useState(null);
+    const [selectedAward, setSelectedAward] = useState(null);
+
+    // Calculate completion percentage
+    useEffect(() => {
+        const sections = [
+            user.name, user.email, introduction,
+            experiences.length > 0, educations.length > 0,
+            skills.length > 0, languages.length > 0,
+            projects.length > 0, certificates.length > 0
+        ];
+        const completed = sections.filter(Boolean).length;
+        setCompletionPercentage(Math.round((completed / sections.length) * 100));
+    }, [user, introduction, experiences, educations, skills, languages, projects, certificates]);
+
+    // Modal Helpers
+    const openModal = (modalName) => setModals(prev => ({ ...prev, [modalName]: true }));
+    const closeModal = (modalName) => setModals(prev => ({ ...prev, [modalName]: false }));
+
+    // CV Handlers
+    const handleCVFileChange = (file) => {
+        setCvFile({
+            name: file.name,
+            size: (file.size / 1024 / 1024).toFixed(2),
+            uploadDate: new Date().toLocaleDateString('vi-VN'),
+            file: file
+        });
     };
 
-    const getInitials = (name) => {
-        return name
-            .split(' ')
-            .map(word => word[0])
-            .join('')
-            .toUpperCase()
-            .slice(0, 2);
-    };
-
-    const handleFileSelect = (event) => {
-        const file = event.target.files[0];
-        if (file && file.type === 'application/pdf') {
-            setCvFile({
-                name: file.name,
-                size: (file.size / 1024 / 1024).toFixed(2), // Convert to MB
-                uploadDate: new Date().toLocaleDateString('vi-VN'),
-                file: file
-            });
-        } else {
-            alert('Vui lòng chỉ tải lên file PDF');
-        }
-    };
-
-    const handleDragOver = (e) => {
-        e.preventDefault();
-        setIsDragging(true);
-    };
-
-    const handleDragLeave = (e) => {
-        e.preventDefault();
-        setIsDragging(false);
-    };
-
-    const handleDrop = (e) => {
-        e.preventDefault();
-        setIsDragging(false);
-
-        const file = e.dataTransfer.files[0];
-        if (file && file.type === 'application/pdf') {
-            setCvFile({
-                name: file.name,
-                size: (file.size / 1024 / 1024).toFixed(2),
-                uploadDate: new Date().toLocaleDateString('vi-VN'),
-                file: file
-            });
-        } else {
-            alert('Vui lòng chỉ tải lên file PDF');
-        }
-    };
-
-    const handleDeleteCV = () => {
-        setCvFile(null);
-        if (fileInputRef.current) {
-            fileInputRef.current.value = '';
-        }
-    };
+    const handleDeleteCV = () => setCvFile(null);
 
     const handleViewCV = () => {
-        if (cvFile && cvFile.file) {
+        if (cvFile?.file) {
             const fileURL = URL.createObjectURL(cvFile.file);
             window.open(fileURL, '_blank');
         }
     };
 
-    const handleUploadClick = () => {
-        fileInputRef.current?.click();
+    // Information Handlers
+    const handleSaveInformation = (formData) => {
+        setUser(prev => ({
+            ...prev,
+            name: formData.fullName,
+            email: formData.email,
+            phone: formData.phone,
+            dateOfBirth: formData.dateOfBirth,
+            gender: formData.gender,
+            currentAddress: formData.address,
+            personalLinks: formData.personalLink,
+            ...(formData.title && { title: formData.title }),
+        }));
+        closeModal('information');
+    };
+
+    const handleSaveIntroduction = (formData) => {
+        setIntroduction(formData.introduction || formData.content || '');
+        closeModal('introduction');
+    };
+
+    // Experience Handlers
+    const handleEditExperience = (exp) => {
+        setSelectedExperience(exp);
+        openModal('experience');
+    };
+
+    const handleSaveExperience = (formData) => {
+        const experienceData = {
+            id: selectedExperience?.id || Date.now(),
+            role: formData.jobTitle,
+            company: formData.company,
+            logo: formData.company?.charAt(0).toUpperCase() || 'C',
+            startMonth: formData.startMonth,
+            startYear: formData.startYear,
+            endMonth: formData.endMonth,
+            endYear: formData.endYear,
+            isCurrentlyWorking: formData.isCurrentlyWorking,
+            description: formData.description,
+        };
+
+        if (selectedExperience) {
+            setExperiences(prev => prev.map(exp => exp.id === selectedExperience.id ? experienceData : exp));
+        } else {
+            setExperiences(prev => [...prev, experienceData]);
+        }
+        setSelectedExperience(null);
+        closeModal('experience');
+    };
+
+    const handleDeleteExperience = (id) => {
+        if (window.confirm('Bạn có chắc chắn muốn xóa thông tin công việc này?')) {
+            setExperiences(prev => prev.filter(exp => exp.id !== id));
+        }
+    };
+
+    // Education Handlers
+    const handleEditEducation = (edu) => {
+        setSelectedEducation(edu);
+        openModal('education');
+    };
+
+    const handleSaveEducation = (formData) => {
+        const educationData = {
+            id: selectedEducation?.id || Date.now(),
+            university: formData.school,
+            degree: formData.degree,
+            major: formData.major,
+            startYear: formData.startYear,
+            endYear: formData.isCurrentlyStudying ? 'Present' : formData.endYear,
+            description: formData.description,
+            logo: formData.school?.charAt(0).toUpperCase() || 'U',
+            startMonth: formData.startMonth,
+            endMonth: formData.endMonth,
+            isCurrentlyStudying: formData.isCurrentlyStudying,
+        };
+
+        if (selectedEducation) {
+            setEducations(prev => prev.map(edu => edu.id === selectedEducation.id ? educationData : edu));
+        } else {
+            setEducations(prev => [...prev, educationData]);
+        }
+        setSelectedEducation(null);
+        closeModal('education');
+    };
+
+    const handleDeleteEducation = (id) => {
+        if (window.confirm('Bạn có chắc chắn muốn xóa thông tin học vấn này?')) {
+            setEducations(prev => prev.filter(edu => edu.id !== id));
+        }
+    };
+
+    // Skills Handlers
+    const handleEditSkillGroup = (skillGroup) => {
+        setSelectedSkillGroup(skillGroup);
+        openModal('skills');
+    };
+
+    const handleDeleteSkillGroup = (id) => {
+        if (window.confirm('Bạn có chắc chắn muốn xóa nhóm kỹ năng này?')) {
+            setSkills(prev => prev.filter(skill => skill.id !== id));
+        }
+    };
+
+    // Projects Handlers
+    const handleEditProject = (project) => {
+        setSelectedProject(project);
+        openModal('projects');
+    };
+
+    const handleDeleteProject = (id) => {
+        if (window.confirm('Bạn có chắc chắn muốn xóa dự án này?')) {
+            setProjects(prev => prev.filter(proj => proj.id !== id));
+        }
+    };
+
+    // Certificates Handlers
+    const handleEditCertificate = (cert) => {
+        setSelectedCertificate(cert);
+        openModal('certificates');
+    };
+
+    const handleDeleteCertificate = (id) => {
+        if (window.confirm('Bạn có chắc chắn muốn xóa chứng chỉ này?')) {
+            setCertificates(prev => prev.filter(cert => cert.id !== id));
+        }
+    };
+
+    // Awards Handlers
+    const handleEditAward = (award) => {
+        setSelectedAward(award);
+        openModal('awards');
+    };
+
+    const handleDeleteAward = (id) => {
+        if (window.confirm('Bạn có chắc chắn muốn xóa giải thưởng này?')) {
+            setAwards(prev => prev.filter(award => award.id !== id));
+        }
     };
 
     return (
-        <Box sx={{ bgcolor: '#f8f9fa', minHeight: '100vh', py: 4 }}>
+        <Box sx={{ bgcolor: 'background.default', minHeight: '100vh', py: 4 }}>
             <Container maxWidth="xl">
                 <Box sx={{ display: 'flex', gap: 4, alignItems: 'flex-start' }}>
-                    {/* Sidebar */}
+                    {/* Left Sidebar - Navigation */}
                     <ProfileSidebar user={user} />
 
                     {/* Main Content */}
                     <Box sx={{ flex: 1, maxWidth: 900 }}>
-                        {/* User Info Card */}
-                        <Paper
-                            elevation={0}
-                            sx={{
-                                p: 4,
-                                mb: 3,
-                                borderRadius: 2,
-                                border: '1px solid',
-                                borderColor: 'divider',
-                            }}
-                        >
-                            <Box sx={{ display: 'flex', alignItems: 'flex-start', gap: 3 }}>
-                                <Box sx={{ position: 'relative' }}>
-                                    <Avatar
-                                        sx={{
-                                            width: 80,
-                                            height: 80,
-                                            bgcolor: '#7c4dff',
-                                            fontSize: '2rem',
-                                            fontWeight: 600,
-                                        }}
-                                    >
-                                        {getInitials(user.name)}
-                                    </Avatar>
-                                    <IconButton
-                                        size="small"
-                                        sx={{
-                                            position: 'absolute',
-                                            bottom: -4,
-                                            right: -4,
-                                            bgcolor: 'white',
-                                            border: '2px solid',
-                                            borderColor: 'divider',
-                                            width: 28,
-                                            height: 28,
-                                            '&:hover': {
-                                                bgcolor: 'grey.100',
-                                            },
-                                        }}
-                                    >
-                                        <EditIcon sx={{ fontSize: 14 }} />
-                                    </IconButton>
-                                </Box>
+                        <ProfileHeader user={user} onEdit={() => openModal('information')} />
 
-                                <Box sx={{ flex: 1 }}>
-                                    <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', mb: 2 }}>
-                                        <Box>
-                                            <Typography variant="h5" sx={{ fontWeight: 600, mb: 0.5 }}>
-                                                {user.name}
-                                            </Typography>
-                                            <Typography variant="body2" color="text.secondary">
-                                                Cập nhật chức danh
-                                            </Typography>
-                                        </Box>
-                                        <IconButton
-                                            sx={{
-                                                border: '1px solid',
-                                                borderColor: 'divider',
-                                                color: 'error.main',
-                                            }}
-                                        >
-                                            <EditIcon />
-                                        </IconButton>
-                                    </Box>
+                        <CVUpload
+                            cvFile={cvFile}
+                            onFileChange={handleCVFileChange}
+                            onDelete={handleDeleteCV}
+                            onView={handleViewCV}
+                        />
 
-                                    <Box sx={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 2 }}>
-                                        <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-                                            <EmailIcon sx={{ fontSize: 18, color: 'text.secondary' }} />
-                                            <Typography variant="body2" color="text.secondary">
-                                                {user.email}
-                                            </Typography>
-                                        </Box>
-                                        <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-                                            <PhoneIcon sx={{ fontSize: 18, color: 'text.secondary' }} />
-                                            <Typography variant="body2" color="text.secondary">
-                                                {user.phone}
-                                            </Typography>
-                                        </Box>
-                                        <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-                                            <PersonIcon sx={{ fontSize: 18, color: 'text.secondary' }} />
-                                            <Typography variant="body2" color="text.secondary">
-                                                Ngày sinh
-                                            </Typography>
-                                        </Box>
-                                        <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-                                            <PersonIcon sx={{ fontSize: 18, color: 'text.secondary' }} />
-                                            <Typography variant="body2" color="text.secondary">
-                                                Giới tính
-                                            </Typography>
-                                        </Box>
-                                        <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-                                            <LocationOnIcon sx={{ fontSize: 18, color: 'text.secondary' }} />
-                                            <Typography variant="body2" color="text.secondary">
-                                                Địa chỉ hiện tại
-                                            </Typography>
-                                        </Box>
-                                        <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-                                            <LinkIcon sx={{ fontSize: 18, color: 'text.secondary' }} />
-                                            <Typography variant="body2" color="text.secondary">
-                                                Link cá nhân
-                                            </Typography>
-                                        </Box>
-                                    </Box>
-                                </Box>
-                            </Box>
-                        </Paper>
+                        <IntroductionSection
+                            introduction={introduction}
+                            onEdit={() => openModal('introduction')}
+                        />
 
-                        {/* CV Upload Section */}
-                        <Paper
-                            elevation={0}
-                            sx={{
-                                p: 4,
-                                mb: 3,
-                                borderRadius: 2,
-                                border: '1px solid',
-                                borderColor: 'divider',
-                            }}
-                        >
-                            <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', mb: 3 }}>
-                                <Box>
-                                    <Typography variant="h6" sx={{ fontWeight: 600, mb: 0.5 }}>
-                                        CV đính kèm
-                                    </Typography>
-                                    <Typography variant="body2" color="text.secondary">
-                                        Tải lên CV của bạn để nhà tuyển dụng xem
-                                    </Typography>
-                                </Box>
-                                {cvFile && (
-                                    <Chip
-                                        icon={<CheckCircleIcon />}
-                                        label="Đã tải lên"
-                                        color="success"
-                                        size="small"
-                                    />
-                                )}
-                            </Box>
+                        <ExperienceSection
+                            experiences={experiences}
+                            showAll={showAllExperiences}
+                            onToggleShowAll={() => setShowAllExperiences(!showAllExperiences)}
+                            onEdit={handleEditExperience}
+                            onDelete={handleDeleteExperience}
+                            onAdd={() => { setSelectedExperience(null); openModal('experience'); }}
+                        />
 
-                            {/* Hidden file input */}
-                            <input
-                                ref={fileInputRef}
-                                type="file"
-                                accept=".pdf"
-                                onChange={handleFileSelect}
-                                style={{ display: 'none' }}
-                            />
+                        <EducationSection
+                            educations={educations}
+                            showAll={showAllEducations}
+                            onToggleShowAll={() => setShowAllEducations(!showAllEducations)}
+                            onEdit={handleEditEducation}
+                            onDelete={handleDeleteEducation}
+                            onAdd={() => { setSelectedEducation(null); openModal('education'); }}
+                        />
 
-                            {!cvFile ? (
-                                /* Upload Area */
-                                <Box
-                                    onDragOver={handleDragOver}
-                                    onDragLeave={handleDragLeave}
-                                    onDrop={handleDrop}
-                                    sx={{
-                                        border: '2px dashed',
-                                        borderColor: isDragging ? 'primary.main' : 'divider',
-                                        borderRadius: 2,
-                                        p: 6,
-                                        textAlign: 'center',
-                                        bgcolor: isDragging ? 'primary.50' : 'grey.50',
-                                        cursor: 'pointer',
-                                        transition: 'all 0.3s ease',
-                                        '&:hover': {
-                                            borderColor: 'primary.main',
-                                            bgcolor: 'primary.50',
-                                        },
-                                    }}
-                                    onClick={handleUploadClick}
-                                >
-                                    <CloudUploadIcon
-                                        sx={{
-                                            fontSize: 64,
-                                            color: isDragging ? 'primary.main' : 'text.secondary',
-                                            mb: 2,
-                                        }}
-                                    />
-                                    <Typography variant="h6" sx={{ fontWeight: 600, mb: 1 }}>
-                                        Kéo và thả file CV vào đây
-                                    </Typography>
-                                    <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
-                                        hoặc
-                                    </Typography>
-                                    <Button
-                                        variant="contained"
-                                        startIcon={<CloudUploadIcon />}
-                                        onClick={(e) => {
-                                            e.stopPropagation();
-                                            handleUploadClick();
-                                        }}
-                                        sx={{
-                                            bgcolor: 'error.main',
-                                            color: 'white',
-                                            textTransform: 'none',
-                                            fontWeight: 600,
-                                            px: 4,
-                                            py: 1.5,
-                                            '&:hover': {
-                                                bgcolor: 'error.dark',
-                                            },
-                                        }}
-                                    >
-                                        Chọn file từ máy tính
-                                    </Button>
-                                    <Typography variant="caption" color="text.secondary" sx={{ display: 'block', mt: 2 }}>
-                                        Chỉ hỗ trợ file PDF, tối đa 5MB
-                                    </Typography>
-                                </Box>
-                            ) : (
-                                /* Uploaded File Display */
-                                <Box
-                                    sx={{
-                                        display: 'flex',
-                                        alignItems: 'center',
-                                        gap: 2,
-                                        p: 3,
-                                        bgcolor: 'grey.50',
-                                        borderRadius: 2,
-                                        border: '1px solid',
-                                        borderColor: 'divider',
-                                    }}
-                                >
-                                    <Box
-                                        sx={{
-                                            width: 56,
-                                            height: 56,
-                                            borderRadius: 1,
-                                            bgcolor: 'error.main',
-                                            display: 'flex',
-                                            alignItems: 'center',
-                                            justifyContent: 'center',
-                                            color: 'white',
-                                            flexShrink: 0,
-                                        }}
-                                    >
-                                        <DescriptionIcon sx={{ fontSize: 32 }} />
-                                    </Box>
+                        <SkillsSection
+                            skills={skills}
+                            onEdit={handleEditSkillGroup}
+                            onDelete={handleDeleteSkillGroup}
+                            onAdd={() => { setSelectedSkillGroup(null); openModal('skills'); }}
+                        />
 
-                                    <Box sx={{ flex: 1, minWidth: 0 }}>
-                                        <Typography variant="body1" sx={{ fontWeight: 600, mb: 0.5 }}>
-                                            {cvFile.name}
-                                        </Typography>
-                                        <Box sx={{ display: 'flex', gap: 2, alignItems: 'center' }}>
-                                            <Typography variant="body2" color="text.secondary">
-                                                {cvFile.size} MB
-                                            </Typography>
-                                            <Typography variant="body2" color="text.secondary">
-                                                •
-                                            </Typography>
-                                            <Typography variant="body2" color="text.secondary">
-                                                Tải lên: {cvFile.uploadDate}
-                                            </Typography>
-                                        </Box>
-                                    </Box>
+                        <LanguagesSection
+                            languages={languages}
+                            onEdit={() => openModal('languages')}
+                        />
 
-                                    <Box sx={{ display: 'flex', gap: 1 }}>
-                                        <IconButton
-                                            onClick={handleViewCV}
-                                            sx={{
-                                                border: '1px solid',
-                                                borderColor: 'divider',
-                                                color: 'primary.main',
-                                                '&:hover': {
-                                                    bgcolor: 'primary.50',
-                                                },
-                                            }}
-                                        >
-                                            <VisibilityIcon />
-                                        </IconButton>
-                                        <IconButton
-                                            onClick={handleUploadClick}
-                                            sx={{
-                                                border: '1px solid',
-                                                borderColor: 'divider',
-                                                color: 'text.secondary',
-                                                '&:hover': {
-                                                    bgcolor: 'grey.100',
-                                                },
-                                            }}
-                                        >
-                                            <EditIcon />
-                                        </IconButton>
-                                        <IconButton
-                                            onClick={handleDeleteCV}
-                                            sx={{
-                                                border: '1px solid',
-                                                borderColor: 'divider',
-                                                color: 'error.main',
-                                                '&:hover': {
-                                                    bgcolor: 'error.50',
-                                                },
-                                            }}
-                                        >
-                                            <DeleteIcon />
-                                        </IconButton>
-                                    </Box>
-                                </Box>
-                            )}
-                        </Paper>
+                        <ProjectsSection
+                            projects={projects}
+                            onEdit={handleEditProject}
+                            onDelete={handleDeleteProject}
+                            onAdd={() => { setSelectedProject(null); openModal('projects'); }}
+                        />
 
-                        {/* Profile Sections */}
-                        {profileSections.map((section) => (
-                            <Paper
-                                key={section.id}
-                                elevation={0}
-                                sx={{
-                                    p: 4,
-                                    mb: 3,
-                                    borderRadius: 2,
-                                    border: '1px solid',
-                                    borderColor: 'divider',
-                                    position: 'relative',
-                                }}
-                            >
-                                <Box sx={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between' }}>
-                                    <Box sx={{ flex: 1 }}>
-                                        <Typography variant="h6" sx={{ fontWeight: 600, mb: 1 }}>
-                                            {section.title}
-                                        </Typography>
-                                        <Typography variant="body2" color="text.secondary" sx={{ mb: 3 }}>
-                                            {section.subtitle}
-                                        </Typography>
+                        <CertificatesSection
+                            certificates={certificates}
+                            onEdit={handleEditCertificate}
+                            onDelete={handleDeleteCertificate}
+                            onAdd={() => { setSelectedCertificate(null); openModal('certificates'); }}
+                        />
 
-                                        {section.isEmpty && (
-                                            <Box
-                                                sx={{
-                                                    display: 'flex',
-                                                    alignItems: 'center',
-                                                    justifyContent: 'center',
-                                                    py: 4,
-                                                }}
-                                            >
-                                                <Box
-                                                    sx={{
-                                                        textAlign: 'center',
-                                                        opacity: 0.3,
-                                                    }}
-                                                >
-                                                    <Box
-                                                        component="img"
-                                                        src={`data:image/svg+xml,${encodeURIComponent(`
-                                                            <svg width="120" height="120" viewBox="0 0 120 120" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                                                <circle cx="60" cy="60" r="50" fill="#FFE5E5"/>
-                                                                <path d="M60 35v50M35 60h50" stroke="#FF6B6B" stroke-width="6" stroke-linecap="round"/>
-                                                            </svg>
-                                                        `)}`}
-                                                        alt="Empty state"
-                                                        sx={{ width: 120, height: 120, mb: 2 }}
-                                                    />
-                                                </Box>
-                                            </Box>
-                                        )}
-                                    </Box>
-
-                                    <IconButton
-                                        onClick={() => handleAddSection(section.id)}
-                                        sx={{
-                                            width: 40,
-                                            height: 40,
-                                            border: '1px solid',
-                                            borderColor: 'error.main',
-                                            color: 'error.main',
-                                            '&:hover': {
-                                                bgcolor: 'error.main',
-                                                color: 'white',
-                                            },
-                                        }}
-                                    >
-                                        <ErrorIcon />
-                                    </IconButton>
-                                </Box>
-                            </Paper>
-                        ))}
+                        <AwardsSection
+                            awards={awards}
+                            onEdit={handleEditAward}
+                            onDelete={handleDeleteAward}
+                            onAdd={() => { setSelectedAward(null); openModal('awards'); }}
+                        />
                     </Box>
 
-                    {/* Right Sidebar - Completion Card */}
-                    <Box sx={{ width: 320, position: 'sticky', top: 20 }}>
-                        <Paper
-                            elevation={0}
-                            sx={{
-                                p: 3,
-                                borderRadius: 2,
-                                border: '1px solid',
-                                borderColor: 'divider',
-                            }}
-                        >
-                            <Typography variant="h6" sx={{ fontWeight: 600, mb: 3, textAlign: 'center' }}>
-                                Độ hoàn thiện hồ sơ
-                            </Typography>
-
-                            {/* Circular Progress */}
-                            <Box
-                                sx={{
-                                    display: 'flex',
-                                    justifyContent: 'center',
-                                    alignItems: 'center',
-                                    mb: 3,
-                                    position: 'relative',
-                                }}
-                            >
-                                <Box sx={{ position: 'relative', display: 'inline-flex' }}>
-                                    <Box
-                                        sx={{
-                                            width: 160,
-                                            height: 160,
-                                            borderRadius: '50%',
-                                            border: '12px solid #f0f0f0',
-                                            position: 'relative',
-                                            display: 'flex',
-                                            alignItems: 'center',
-                                            justifyContent: 'center',
-                                        }}
-                                    >
-                                        <Box
-                                            sx={{
-                                                position: 'absolute',
-                                                top: 0,
-                                                left: 0,
-                                                width: '100%',
-                                                height: '100%',
-                                                borderRadius: '50%',
-                                                border: '12px solid transparent',
-                                                borderTopColor: 'error.main',
-                                                transform: 'rotate(-90deg)',
-                                            }}
-                                        />
-                                        <Box sx={{ textAlign: 'center' }}>
-                                            <Typography variant="h3" sx={{ fontWeight: 700, lineHeight: 1 }}>
-                                                {user.profileCompletion}%
-                                            </Typography>
-                                            <Typography variant="caption" color="text.secondary">
-                                                hoàn thành
-                                            </Typography>
-                                        </Box>
-                                    </Box>
-                                </Box>
-                            </Box>
-
-                            {/* Warning Card */}
-                            <Box
-                                sx={{
-                                    bgcolor: '#fff9e6',
-                                    border: '2px solid #ffc107',
-                                    borderRadius: 2,
-                                    p: 2,
-                                    mb: 3,
-                                    position: 'relative',
-                                }}
-                            >
-                                <Box
-                                    sx={{
-                                        position: 'absolute',
-                                        top: -16,
-                                        right: 16,
-                                    }}
-                                >
-                                    <Box
-                                        component="img"
-                                        src={`data:image/svg+xml,${encodeURIComponent(`
-                                            <svg width="48" height="48" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                                <circle cx="24" cy="24" r="20" fill="#FFB84D"/>
-                                                <text x="24" y="32" text-anchor="middle" fill="white" font-size="24" font-weight="bold">!</text>
-                                            </svg>
-                                        `)}`}
-                                        alt="Warning"
-                                        sx={{ width: 48, height: 48 }}
-                                    />
-                                </Box>
-                                <Typography variant="body2" sx={{ lineHeight: 1.6 }}>
-                                    Nâng cấp hồ sơ của bạn lên{' '}
-                                    <Box component="span" sx={{ fontWeight: 700, color: 'error.main' }}>
-                                        70%
-                                    </Box>{' '}
-                                    để tài xỉu CV đánh cho chuyên gia IT.
-                                </Typography>
-                            </Box>
-
-                            {/* Action Buttons */}
-                            <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1.5 }}>
-                                <Button
-                                    fullWidth
-                                    variant="text"
-                                    startIcon={<AddIcon />}
-                                    sx={{
-                                        justifyContent: 'flex-start',
-                                        textTransform: 'none',
-                                        color: 'primary.main',
-                                        fontWeight: 500,
-                                        '&:hover': {
-                                            bgcolor: 'primary.50',
-                                        },
-                                    }}
-                                >
-                                    Thêm Giới thiệu bản thân
-                                </Button>
-                                <Button
-                                    fullWidth
-                                    variant="text"
-                                    startIcon={<AddIcon />}
-                                    sx={{
-                                        justifyContent: 'flex-start',
-                                        textTransform: 'none',
-                                        color: 'primary.main',
-                                        fontWeight: 500,
-                                        '&:hover': {
-                                            bgcolor: 'primary.50',
-                                        },
-                                    }}
-                                >
-                                    Thêm Thông tin cá nhân
-                                </Button>
-                                <Button
-                                    fullWidth
-                                    variant="text"
-                                    startIcon={<AddIcon />}
-                                    sx={{
-                                        justifyContent: 'flex-start',
-                                        textTransform: 'none',
-                                        color: 'primary.main',
-                                        fontWeight: 500,
-                                        '&:hover': {
-                                            bgcolor: 'primary.50',
-                                        },
-                                    }}
-                                >
-                                    Thêm Kinh nghiệm làm việc
-                                </Button>
-                                <Divider sx={{ my: 1 }} />
-                                <Button
-                                    fullWidth
-                                    variant="text"
-                                    sx={{
-                                        justifyContent: 'flex-start',
-                                        textTransform: 'none',
-                                        color: 'text.secondary',
-                                        fontWeight: 500,
-                                        '&:hover': {
-                                            bgcolor: 'grey.100',
-                                        },
-                                    }}
-                                >
-                                    Thêm thông tin khác
-                                </Button>
-                            </Box>
-
-                            {/* View CV Button */}
-                            <Button
-                                fullWidth
-                                variant="contained"
-                                sx={{
-                                    mt: 3,
-                                    bgcolor: 'error.main',
-                                    color: 'white',
-                                    textTransform: 'none',
-                                    fontWeight: 600,
-                                    py: 1.5,
-                                    borderRadius: 2,
-                                    '&:hover': {
-                                        bgcolor: 'error.dark',
-                                    },
-                                }}
-                            >
-                                Xem và Tải CV
-                            </Button>
-                        </Paper>
-                    </Box>
+                    {/* Right Sidebar - Completion */}
+                    <ProfileCompletionCard
+                        completionPercentage={completionPercentage}
+                        onAddIntroduction={() => openModal('introduction')}
+                        onAddExperience={() => { setSelectedExperience(null); openModal('experience'); }}
+                    />
                 </Box>
             </Container>
+
+            {/* Modals */}
+            <InformationModal
+                open={modals.information}
+                onOpenChange={(open) => open ? openModal('information') : closeModal('information')}
+                initialData={user}
+                onSave={handleSaveInformation}
+            />
+
+            <IntroductionModal
+                open={modals.introduction}
+                onOpenChange={(open) => open ? openModal('introduction') : closeModal('introduction')}
+                initialData={{ introduction }}
+                onSave={handleSaveIntroduction}
+            />
+
+            <ExperienceModal
+                open={modals.experience}
+                onOpenChange={(open) => {
+                    if (open) openModal('experience');
+                    else { closeModal('experience'); setSelectedExperience(null); }
+                }}
+                initialData={selectedExperience ? {
+                    jobTitle: selectedExperience.role,
+                    company: selectedExperience.company,
+                    startMonth: selectedExperience.startMonth || '',
+                    startYear: selectedExperience.startYear || '',
+                    endMonth: selectedExperience.endMonth || '',
+                    endYear: selectedExperience.endYear === 'Present' ? '' : selectedExperience.endYear,
+                    isCurrentlyWorking: selectedExperience.isCurrentlyWorking,
+                    description: selectedExperience.description || '',
+                } : null}
+                onSave={handleSaveExperience}
+            />
+
+            <EducationModal
+                open={modals.education}
+                onOpenChange={(open) => {
+                    if (open) openModal('education');
+                    else { closeModal('education'); setSelectedEducation(null); }
+                }}
+                initialData={selectedEducation ? {
+                    school: selectedEducation.university,
+                    degree: selectedEducation.degree,
+                    major: selectedEducation.major,
+                    startMonth: selectedEducation.startMonth || '',
+                    startYear: selectedEducation.startYear,
+                    endMonth: selectedEducation.endMonth || '',
+                    endYear: selectedEducation.endYear === 'Present' ? '' : selectedEducation.endYear,
+                    isCurrentlyStudying: selectedEducation.endYear === 'Present' || selectedEducation.isCurrentlyStudying,
+                    description: selectedEducation.description || '',
+                } : null}
+                onSave={handleSaveEducation}
+            />
+
+            <SkillsModal
+                open={modals.skills}
+                onOpenChange={(open) => {
+                    if (open) openModal('skills');
+                    else { closeModal('skills'); setSelectedSkillGroup(null); }
+                }}
+                initialData={selectedSkillGroup}
+                onSave={(formData) => {
+                    console.log('Skills saved:', formData);
+                    closeModal('skills');
+                }}
+            />
+
+            <LanguagesModal
+                open={modals.languages}
+                onOpenChange={(open) => open ? openModal('languages') : closeModal('languages')}
+                initialData={null}
+                onSave={(formData) => {
+                    console.log('Languages saved:', formData);
+                    closeModal('languages');
+                }}
+            />
+
+            <ProjectsModal
+                open={modals.projects}
+                onOpenChange={(open) => {
+                    if (open) openModal('projects');
+                    else { closeModal('projects'); setSelectedProject(null); }
+                }}
+                initialData={selectedProject}
+                onSave={(formData) => {
+                    console.log('Project saved:', formData);
+                    closeModal('projects');
+                }}
+            />
+
+            <CertificatesModal
+                open={modals.certificates}
+                onOpenChange={(open) => {
+                    if (open) openModal('certificates');
+                    else { closeModal('certificates'); setSelectedCertificate(null); }
+                }}
+                initialData={selectedCertificate}
+                onSave={(formData) => {
+                    console.log('Certificate saved:', formData);
+                    closeModal('certificates');
+                }}
+            />
+
+            <AwardsModal
+                open={modals.awards}
+                onOpenChange={(open) => {
+                    if (open) openModal('awards');
+                    else { closeModal('awards'); setSelectedAward(null); }
+                }}
+                initialData={selectedAward}
+                onSave={(formData) => {
+                    console.log('Award saved:', formData);
+                    closeModal('awards');
+                }}
+            />
         </Box>
     );
 }
-
