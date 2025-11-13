@@ -25,6 +25,7 @@ import {
 import { useTranslation } from "react-i18next";
 import { Link, useNavigate } from "react-router-dom";
 import logo from '../../assets/logo.svg';
+import { TOKEN, USER_NAME } from "../../../settings/localVar";
 
 
 export default function Header() {
@@ -36,8 +37,8 @@ export default function Header() {
   let navigate = useNavigate();
 
   // Check if user is logged in 
-  const isLoggedIn = !!localStorage.getItem('auth_token');
-  const userName = localStorage.getItem('user_name') || 'User';
+  const isLoggedIn = !!localStorage.getItem(TOKEN);
+  const userName = localStorage.getItem(USER_NAME) || 'User';
 
   const handleLangChange = (_e, newLang) => {
     if (newLang) i18n.changeLanguage(newLang);

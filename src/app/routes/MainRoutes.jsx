@@ -3,6 +3,7 @@ import { Home, FindJobs, JobDescription, CompanyDetails, CompanyList, SignIn, Si
 import PageNotFound from "../layouts/PageNotFound";
 import ThemeProvider from "../providers/ThemeProvider";
 import MainLayout from "../layouts/MainLayout";
+import PrivateRoute from "./PrivateRoute";
 
 // Component wrapper cho MainLayout
 function LayoutWrapper() {
@@ -27,7 +28,11 @@ export default function MainRoutes() {
             <Route path="companies" element={<CompanyList />} />
             <Route path="company" element={<CompanyDetails />} />
 
-            <Route path="profile/dashboard" element={<ProfileDashboard />} />
+            <Route path="profile/dashboard" element={
+              <PrivateRoute>
+                <ProfileDashboard />
+              </PrivateRoute>
+            } />
             <Route path="profile/user-profile" element={<Profile />} />
             <Route path="profile/my-jobs" element={<ProfileDashboard />} />
             <Route path="profile/job-invitation" element={<ProfileDashboard />} />

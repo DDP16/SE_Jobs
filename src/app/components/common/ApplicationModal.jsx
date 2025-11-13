@@ -8,12 +8,6 @@ import {
 import { Dialog, DialogContent, DialogTitle } from "@mui/material";
 import {
   X,
-  Smile,
-  Bold,
-  Italic,
-  List,
-  ListOrdered,
-  Link2,
   Paperclip,
 } from "lucide-react";
 
