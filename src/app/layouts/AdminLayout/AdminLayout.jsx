@@ -2,11 +2,7 @@ import { AdminSidebar } from "@/components/admin/AdminSidebar";
 import { TopBar } from "@/components/admin/TopBar";
 import React from "react";
 
-type AdminLayoutProps = {
-  children: React.ReactNode;
-};
-
-const AdminLayout: React.FC<AdminLayoutProps> = ({ children }) => {
+const AdminLayout = ({ children }) => {
   return (
     <div className="min-h-screen flex bg-neutral-100">
       <AdminSidebar />

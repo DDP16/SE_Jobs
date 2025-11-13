@@ -15,6 +15,7 @@ import { Badge } from "@/components/ui/badge";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Box } from "@mui/material";
 import logo from "@/assets/logo.svg";
+import { NavLink } from "./NavLink";
 
 const navigation = [
   { name: "Dashboard", icon: Home, badge: null },
@@ -41,22 +42,28 @@ export const AdminSidebar = () => {
       </div>
       {/* Navigation */}
       <nav className="flex-1 px-3 space-y-1">
-        {navigation.map((item) => (
-          <button
-            key={item.name}
-            className="group w-full flex items-center gap-3 px-3 py-2.5 text-sm text-muted-foreground rounded-md transition-colors relative hover:bg-primary-50 focus:bg-primary-100 active:bg-primary-100"
-          >
-            {/* Vertical bar on hover/active */}
-            <span className="absolute left-0 top-0 h-full w-1 rounded-r bg-transparent group-hover:bg-primary group-active:bg-primary transition-colors"></span>
-            <item.icon className="w-5 h-5" />
-            <span>{item.name}</span>
-            {item.badge && (
-              <Badge className="ml-auto h-5 w-5 flex items-center justify-center p-0 bg-primary text-primary-foreground">
-                {item.badge}
-              </Badge>
-            )}
-          </button>
-        ))}
+        {navigation.map((item) => {
+          let to = "/";
+          if (item.name === "Dashboard") to = "/admin";
+          if (item.name === "Company Profile") to = "/admin/company";
+
+          return (
+            <NavLink
+              key={item.name}
+              to={to}
+              className="group w-full flex items-center gap-3 px-3 py-2.5 text-sm text-muted-foreground rounded-md transition-colors relative hover:bg-primary-50 "
+            >
+              <span className="absolute left-0 top-0 h-full w-1 rounded-r bg-transparent group-hover:bg-primary group-active:bg-primary transition-colors"></span>
+              <item.icon className="w-5 h-5" />
+              <span>{item.name}</span>
+              {item.badge && (
+                <Badge className="ml-auto h-5 w-5 flex items-center justify-center p-0 bg-primary text-primary-foreground">
+                  {item.badge}
+                </Badge>
+              )}
+            </NavLink>
+          );
+        })}
       </nav>
       {/* Settings Section */}
       <div className="px-3 py-4 border-t border-border space-y-1 border-gray-300">

@@ -1,6 +1,6 @@
 import React from "react";
 
-const Dashboard: React.FC = () => {
+const Dashboard = () => {
   return (
     <div className="ml-[212px]">
       <h1 className="text-2xl font-bold mb-4">Admin Dashboard</h1>
