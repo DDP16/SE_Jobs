@@ -9,7 +9,8 @@ import {
   SignUp,
   ProfileDashboard,
   Profile,
-  UserProfileSettings
+  UserProfileSettings,
+  MyJobs
 } from "../pages";
 import PageNotFound from "../layouts/PageNotFound";
 import ThemeProvider from "../providers/ThemeProvider";
@@ -48,7 +49,7 @@ export default function MainRoutes() {
               </PrivateRoute>
             } />
             <Route path="profile/user-profile" element={<Profile />} />
-            <Route path="profile/my-jobs" element={<ProfileDashboard />} />
+            <Route path="profile/my-jobs" element={<MyJobs />} />
             <Route path="profile/job-invitation" element={<ProfileDashboard />} />
             <Route path="profile/email-subscriptions" element={<ProfileDashboard />} />
             <Route path="profile/notifications" element={<ProfileDashboard />} />
