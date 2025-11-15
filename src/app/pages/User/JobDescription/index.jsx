@@ -1,3 +1,3 @@
-import JobDescription from "./jobDescription";
+import JobDescription from "./JobDescription";
 
 export default JobDescription;

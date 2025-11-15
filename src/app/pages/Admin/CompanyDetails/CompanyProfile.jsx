@@ -8,13 +8,13 @@ import { Techstack } from "@/components/admin/Company/Techstack";
 import { WorkingAtCompany } from "@/components/admin/Company/WorkingAtCompany";
 import { Team } from "@/components/admin/Company/Team";
 import { TopBar } from "@/components/admin/TopBar";
-import { OfficeLocations } from "../../components/admin/Company/OfficeLocation";
+import { OfficeLocations } from "../../../components/admin/Company/OfficeLocation";
 
 const CompanyProfile = () => {
   return (
     <div className="min-h-screen bg-background">
       <TopBar />
-      <main className="p-2 pl-10">
+      <main className="p-8">
         <div className="max-w-7xl mx-auto p-6 space-y-2">
           <CompanyHeader />
 

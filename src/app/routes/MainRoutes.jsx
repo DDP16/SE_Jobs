@@ -15,7 +15,8 @@ import ThemeProvider from "../providers/ThemeProvider";
 import MainLayout from "../layouts/MainLayout";
 import AdminLayout from "../layouts/AdminLayout/AdminLayout";
 import Dashboard from "../pages/Admin/Dashboard";
-import CompanyProfile from "@/pages/Admin/CompanyProfile";
+import CompanyProfile from "@/pages/Admin/CompanyDetails/CompanyProfile";
+import ApplicantDetails from "@/pages/Admin/ApplicantDetails/ApplicantDetails";
 
 // Component wrapper cho MainLayout
 function LayoutWrapper() {
@@ -60,6 +61,7 @@ export default function MainRoutes() {
           >
             <Route index element={<Dashboard />} />
             <Route path="company" element={<CompanyProfile />} />
+            <Route path="applicants/:id" element={<ApplicantDetails />} />
           </Route>
         </Routes>
       </BrowserRouter>
