@@ -3,7 +3,7 @@ import {
     uiInput as Input,
     uiButton as Button,
     uiLabel as Label,
-} from "../../components";
+} from "@/components";
 import { Dialog, DialogContent } from "@mui/material";
 import { X, Bold, Italic, Underline, List } from "lucide-react";
 import { FormControl, Select, MenuItem, Checkbox, FormControlLabel } from "@mui/material";
@@ -268,7 +268,7 @@ export default function ExperienceModal({ open, onOpenChange, initialData, onSav
                                 ref={editorRef}
                                 contentEditable
                                 onInput={handleContentChange}
-                                className="min-h-[160px] p-4 border border-t-0 border-neutrals-40 rounded-b-lg focus:outline-none focus:ring-2 focus:ring-primary"
+                                className="min-h-40 p-4 border border-t-0 border-neutrals-40 rounded-b-lg focus:outline-none focus:ring-2 focus:ring-primary"
                                 style={{ whiteSpace: 'pre-wrap', wordBreak: 'break-word' }}
                             />
 

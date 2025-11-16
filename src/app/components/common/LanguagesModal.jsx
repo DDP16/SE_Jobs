@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import {
     uiInput as Input,
     uiButton as Button,
-} from "../../components";
+} from "@/components";
 import { Dialog, DialogContent, Autocomplete, TextField, FormControl, Select, MenuItem, Chip } from "@mui/material";
 import { X, Plus } from "lucide-react";
 

@@ -9,17 +9,21 @@ import {
   SignUp,
   ProfileDashboard,
   Profile,
+  UserProfileSettings,
+  MyJobs,
+  CompanyProfile,
+  CompanyDashboard as Dashboard,
+  CompanySignUp,
+  ApplicantDetails
 } from "../pages";
 import PageNotFound from "../layouts/PageNotFound";
 import ThemeProvider from "../providers/ThemeProvider";
 import MainLayout from "../layouts/MainLayout";
-import AdminLayout from "../layouts/AdminLayout/AdminLayout";
-import Dashboard from "../pages/Admin/Dashboard";
-import CompanyProfile from "@/pages/Admin/CompanyDetails/CompanyProfile";
-import ApplicantDetails from "@/pages/Admin/ApplicantDetails/ApplicantDetails";
+import PrivateRoute from "./PrivateRoute";
+import CompanyLayout from "@/layouts/CompanyLayout/CompanyLayout";
 
 // Component wrapper cho MainLayout
-function LayoutWrapper() {
+function MainLayoutWrapper() {
   return (
     <MainLayout>
       <Outlet />
@@ -34,29 +38,35 @@ export default function MainRoutes() {
         <Routes>
           <Route path="/signin" element={<SignIn />} />
           <Route path="/signup" element={<SignUp />} />
-          <Route path="/" element={<LayoutWrapper />}>
+          <Route path="company/signup" element={<CompanySignUp />} />
+
+          <Route path="/" element={<MainLayoutWrapper />}>
             <Route index element={<Home />} />
             <Route path="jobs" element={<FindJobs />} />
             <Route path="job" element={<JobDescription />} />
             <Route path="companies" element={<CompanyList />} />
             <Route path="company" element={<CompanyDetails />} />
 
-            <Route path="profile/dashboard" element={<ProfileDashboard />} />
+            <Route path="profile/dashboard" element={
+              <PrivateRoute>
+                <ProfileDashboard />
+              </PrivateRoute>
+            } />
             <Route path="profile/user-profile" element={<Profile />} />
-            <Route path="profile/my-jobs" element={<ProfileDashboard />} />
+            <Route path="profile/my-jobs" element={<MyJobs />} />
             <Route path="profile/job-invitation" element={<ProfileDashboard />} />
             <Route path="profile/email-subscriptions" element={<ProfileDashboard />} />
             <Route path="profile/notifications" element={<ProfileDashboard />} />
-            <Route path="profile/settings" element={<ProfileDashboard />} />
+            <Route path="profile/settings" element={<UserProfileSettings />} />
             <Route path="*" element={<PageNotFound />} />
           </Route>
-          {/* Admin routes */}
+          {/* Company routes */}
           <Route
-            path="/admin"
+            path="/company"
             element={
-              <AdminLayout>
+              <CompanyLayout>
                 <Outlet />
-              </AdminLayout>
+              </CompanyLayout>
             }
           >
             <Route index element={<Dashboard />} />

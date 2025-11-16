@@ -1,4 +1,7 @@
 export { default as PerksSection } from './company/PerksSection';
+export { default as TopBar } from './company/TopBar';
+export { default as CompanySidebar } from './company/CompanySidebar';
+export { default as NavLink } from './company/NavLink';
 
 // Common Components
 export { default as Button } from './common/Button';
@@ -37,6 +40,7 @@ export { default as CategorySection } from './sections/CategorySection';
 export { default as JobSection } from './sections/JobSection';
 export { default as CTASection } from './sections/CTASection';
 export { default as JobListSection } from './sections/JobListSection';
+export { default as HotJobTopCVSection } from './sections/HotJobTopCVSection';
 
 // UI
 export { Badge as uiBadge } from './ui/badge';

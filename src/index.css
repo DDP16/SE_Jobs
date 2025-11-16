@@ -116,6 +116,8 @@ All colors MUST be HSL.
   --font-size-h3: 32px;
   --font-size-h4: 24px;
   --font-size-h5: 20px;
+  --font-size-base: 16px;
+  --font-size-body-lg: 18px;
 
   /* === Animations === */
   --animate-gradient: gradient 8s linear infinite;
@@ -152,6 +154,16 @@ body {
   font-family: var(--font-primary);
 }
 
+.body-normal {
+  font-family: var(--font-primary);
+  font-size: var(--font-size-base);
+}
+
+.body-large {
+  font-family: var(--font-primary);
+  font-size: var(--font-size-body-lg);
+}
+
 /* === Utilities Layer === */
 @layer utilities {
   .no-scrollbar::-webkit-scrollbar {
@@ -161,6 +173,25 @@ body {
   .no-scrollbar {
     -ms-overflow-style: none;
     scrollbar-width: none;
+  }
+
+  .custom-scrollbar::-webkit-scrollbar {
+    width: 8px;
+  }
+
+  .custom-scrollbar::-webkit-scrollbar-track {
+    background: #f1f5f9;
+    border-radius: 10px;
+  }
+
+  .custom-scrollbar::-webkit-scrollbar-thumb {
+    background: #cbd5e1;
+    border-radius: 10px;
+    transition: background 0.2s ease;
+  }
+
+  .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+    background: #94a3b8;
   }
 
   input[type="password"]::-webkit-credentials-auto-fill-button,
