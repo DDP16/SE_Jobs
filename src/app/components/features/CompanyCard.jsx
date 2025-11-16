@@ -63,6 +63,19 @@ export default function CompanyCard({
                         <Typography variant="h6" sx={{ fontWeight: 600, mb: 0.5 }}>
                             {name}
                         </Typography>
+                    </Box>
+
+                    {isHiring && (
+                        <Chip
+                            label={jobsCount > 0 ? `${jobsCount} positions` : "No Hiring"}
+                            color="success"
+                            size="small"
+                            sx={{ ml: 1 }}
+                        />
+                    )}
+                </Box>
+
+                <Box sx={{ mb: 2 }}>
                         <Stack direction="row" spacing={1} alignItems="center">
                             <Box sx={{ display: 'flex', alignItems: 'center' }}>
                                 <LocationOn sx={{ fontSize: 16, mr: 0.5, color: 'text.secondary' }} />
@@ -71,19 +84,9 @@ export default function CompanyCard({
                                 </Typography>
                             </Box>
                         </Stack>
-                    </Box>
-
-                    {isHiring && (
-                        <Chip
-                            label={jobsCount > 0 ? `${jobsCount} open positions` : "No Hiring"}
-                            color="success"
-                            size="small"
-                            sx={{ ml: 1 }}
-                        />
-                    )}
                 </Box>
 
-                <Typography
+                {/* <Typography
                     variant="body2"
                     color="text.secondary"
                     sx={{
@@ -95,7 +98,7 @@ export default function CompanyCard({
                     }}
                 >
                     {description}
-                </Typography>
+                </Typography> */}
 
                 {showStats && (
                     <Stack direction="row" spacing={2} sx={{ mb: 2 }}>
@@ -113,24 +116,6 @@ export default function CompanyCard({
                         </Box>
                     </Stack>
                 )}
-
-                {/* {jobsCount > 0 && (
-                    <Box sx={{
-                        display: 'flex',
-                        justifyContent: 'space-between',
-                        alignItems: 'center',
-                        pt: 1,
-                        borderTop: '1px solid',
-                        borderColor: 'divider'
-                    }}>
-                        <Typography variant="body2" color="primary">
-                            {jobsCount} open positions
-                        </Typography>
-                        <Typography variant="caption" color="text.secondary">
-                            View jobs →
-                        </Typography>
-                    </Box>
-                )} */}
             </CardContent>
         </Card>
     );

@@ -43,7 +43,7 @@ export default function CategorySection() {
     return (
         <Box
             sx={{
-                py: 8,
+                py: 4,
                 bgcolor: 'background.default'
             }}
         >
@@ -53,7 +53,7 @@ export default function CategorySection() {
                         display: 'flex',
                         justifyContent: 'space-between',
                         alignItems: 'center',
-                        mb: 6
+                        mb: 3
                     }}
                 >
                     <Typography
@@ -87,8 +87,8 @@ export default function CategorySection() {
                 <Box
                     sx={{
                         display: 'flex',
-                        gap: 3,
-                        mb: 3,
+                        gap: 2,
+                        mb: 2,
                         flexWrap: 'wrap',
                         justifyContent: 'center'
                     }}
@@ -172,8 +172,8 @@ export default function CategorySection() {
                 <Box
                     sx={{
                         display: 'flex',
-                        gap: 3,
-                        mb: 4,
+                        gap: 2,
+                        mb: 0,
                         flexWrap: 'wrap',
                         justifyContent: 'center'
                     }}

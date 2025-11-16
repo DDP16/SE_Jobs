@@ -12,11 +12,11 @@ import { mockPopularSearches } from '../../../mocks/mockData';
 export default function HeroSection({ onSearch }) {
     return (
         <Box
-            className="bg-linear-to-br from-gray-50 to-blue-600 py-12 md:py-20 relative overflow-hidden w-full"
+            className="bg-linear-to-br from-gray-50 to-blue-400 py-12 md:py-20 relative overflow-hidden w-full"
             sx={{
                 bgcolor: 'colors.primary',
                 color: 'text.primary',
-                py: { xs: 3, md: 5 },
+                py: { xs: 2, md: 3 },
                 position: 'relative',
                 overflow: 'hidden',
                 width: '100%'
@@ -37,7 +37,7 @@ export default function HeroSection({ onSearch }) {
                     className="text-center mb-8 md:mb-12 w-full"
                     sx={{
                         textAlign: 'center',
-                        mb: { xs: 2, md: 3 },
+                        mb: { xs: 1.5, md: 2 },
                         width: '100%'
                     }}
                 >
@@ -45,7 +45,7 @@ export default function HeroSection({ onSearch }) {
                         variant="h1"
                         className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold mb-4 md:mb-6 leading-tight text-gray-900"
                         sx={{
-                            mb: { xs: 1, md: 2 },
+                            mb: { xs: 0.75, md: 1 },
                             fontSize: { xs: '1.8rem', sm: '2.2rem', md: '2.8rem' },
                             fontWeight: 700,
                             lineHeight: 1.2,
@@ -58,7 +58,7 @@ export default function HeroSection({ onSearch }) {
                         variant="h5"
                         className="text-lg md:text-xl text-gray-600 mb-6 md:mb-8 max-w-3xl mx-auto leading-relaxed"
                         sx={{
-                            mb: { xs: 2, md: 3 },
+                            mb: { xs: 1.5, md: 2 },
                             opacity: 0.9,
                             maxWidth: { xs: '100%', md: '600px' },
                             mx: 'auto',
@@ -74,7 +74,7 @@ export default function HeroSection({ onSearch }) {
                 <Box
                     className="mb-6 md:mb-8 w-full max-w-4xl mx-auto"
                     sx={{
-                        mb: { xs: 2, md: 3 },
+                        mb: { xs: 1.5, md: 2 },
                         width: '100%',
                         maxWidth: '100%'
                     }}
@@ -94,8 +94,8 @@ export default function HeroSection({ onSearch }) {
                 >
                     <Typography
                         variant="body2"
-                        className="text-gray-600 mb-3 text-sm font-medium"
-                        sx={{ mb: 1, opacity: 0.8 }}
+                        className="text-white mb-3 text-sm font-bold"
+                        sx={{ mb: 1.5, opacity: 1, color: 'black', fontWeight: 600 }}
                     >
                         Popular:
                     </Typography>
@@ -111,15 +111,18 @@ export default function HeroSection({ onSearch }) {
                             <Chip
                                 key={index}
                                 label={search}
-                                variant="outlined"
-                                className="text-gray-700 border-gray-300 hover:bg-blue-50 hover:border-blue-300 transition-all duration-300 hover:scale-105 cursor-pointer"
+                                variant="filled"
+                                className="transition-all duration-300 hover:scale-105 cursor-pointer"
                                 sx={{
-                                    color: 'text.primary',
-                                    borderColor: 'rgba(0, 0, 0, 0.2)',
+                                    bgcolor: 'rgba(255, 255, 255, 0.9)',
+                                    color: '#0041D9',
+                                    fontWeight: 600,
+                                    border: '1px solid rgba(255, 255, 255, 0.3)',
                                     '&:hover': {
-                                        bgcolor: 'rgba(59, 130, 246, 0.1)',
-                                        borderColor: 'rgba(59, 130, 246, 0.3)',
-                                        transform: 'scale(1.05)'
+                                        bgcolor: 'white',
+                                        transform: 'scale(1.05)',
+                                        boxShadow: '0 2px 8px rgba(0, 0, 0, 0.15)',
+                                        color: '#0041D9',
                                     }
                                 }}
                                 clickable

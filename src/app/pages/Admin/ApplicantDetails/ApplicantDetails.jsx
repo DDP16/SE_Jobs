@@ -273,7 +273,7 @@ export default function ApplicantDetails() {
                     <Calendar className="w-16 h-16 text-gray-300 mx-auto mb-4" />
                     <h3 className="text-xl font-semibold text-gray-900 mb-2">Interview Schedule</h3>
                     <p className="text-gray-600 mb-6">No interviews scheduled yet</p>
-                    <button className="px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700">Schedule New Interview</button>
+                    <button className="px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700">Schedule New  Interview</button>
                   </div>
                 )}
               </div>

@@ -76,7 +76,7 @@ export default function JobSection() {
                                 color: 'text.primary'
                             }}
                         >
-                            Latest <span style={{ color: '#0041D9' }}>jobs open</span>
+                            Hot jobs from <span style={{ color: 'green' }}>TopCV</span>
                         </Typography>
                     </Box>
                     <Button
