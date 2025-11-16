@@ -83,10 +83,90 @@ export default function CategorySection() {
                     </Button>
                 </Box>
 
+                {/* Desktop: 2 rows x 4 cards | Mobile/Tablet: Grid 2 columns x 3 rows */}
+                {/* Mobile/Tablet Layout - Grid 2 columns 3 rows */}
+                <Box
+                    sx={{
+                        display: { xs: 'grid', sm: 'grid', md: 'none' },
+                        gridTemplateColumns: {
+                            xs: '1fr',
+                            sm: 'repeat(2, 1fr)'
+                        },
+                        gap: 2
+                    }}
+                >
+                    {mockCategories.slice(0, 6).map((category) => (
+                        <Card
+                            key={category.id}
+                            sx={{
+                                height: '100%',
+                                cursor: 'pointer',
+                                borderRadius: '12px',
+                                boxShadow: '0 1px 3px rgba(0, 0, 0, 0.1)',
+                                transition: 'all 0.2s ease-in-out',
+                                backgroundColor: 'white',
+                                '&:hover': {
+                                    transform: 'translateY(-2px)',
+                                    boxShadow: '0 4px 12px rgba(0, 0, 0, 0.15)'
+                                }
+                            }}
+                        >
+                            <CardContent
+                                sx={{
+                                    textAlign: 'center',
+                                    p: 3,
+                                    height: '100%',
+                                    display: 'flex',
+                                    flexDirection: 'column',
+                                    justifyContent: 'space-between'
+                                }}
+                            >
+                                <Box
+                                    sx={{
+                                        display: 'flex',
+                                        justifyContent: 'center',
+                                        alignItems: 'center',
+                                        mb: 2,
+                                        color: 'primary.main'
+                                    }}
+                                >
+                                    {React.cloneElement(getIcon(category.icon), {
+                                        sx: { fontSize: '2.5rem' }
+                                    })}
+                                </Box>
+                                <Box>
+                                    <Typography
+                                        variant="h6"
+                                        sx={{
+                                            fontWeight: 600,
+                                            mb: 1,
+                                            fontSize: '1.1rem',
+                                            color: 'text.primary'
+                                        }}
+                                    >
+                                        {category.name}
+                                    </Typography>
+                                    <Typography
+                                        variant="body2"
+                                        sx={{
+                                            color: 'text.secondary',
+                                            fontSize: '0.9rem',
+                                            fontWeight: 500
+                                        }}
+                                    >
+                                        {category.count} jobs available →
+                                    </Typography>
+                                </Box>
+                            </CardContent>
+                        </Card>
+                    ))}
+                </Box>
+
+                {/* Desktop Layout - 2 rows x 4 cards */}
                 {/* First Row - 4 cards */}
                 <Box
                     sx={{
-                        display: 'flex',
+                        display: { xs: 'none', md: 'flex' },
                         gap: 2,
                         mb: 2,
                         flexWrap: 'wrap',
@@ -171,7 +251,7 @@ export default function CategorySection() {
                 {/* Second Row - 4 cards */}
                 <Box
                     sx={{
-                        display: 'flex',
+                        display: { xs: 'none', md: 'flex' },
                         gap: 2,
                         mb: 0,
                         flexWrap: 'wrap',

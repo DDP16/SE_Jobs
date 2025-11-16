@@ -8,3 +8,4 @@ export { default as SignUp } from "./Auth/SignUp";
 export { default as ProfileDashboard } from "./User/UserProfile/Dashboard";
 export { default as Profile } from "./User/UserProfile/Profile";
 export { default as MyJobs } from "./User/UserProfile/MyJobs";
+export { default as CompanySignUp } from "./Auth/CompanySignUp";

@@ -18,6 +18,7 @@ import AdminLayout from "../layouts/AdminLayout/AdminLayout";
 import Dashboard from "../pages/Admin/Dashboard";
 import CompanyProfile from "@/pages/Admin/CompanyDetails/CompanyProfile";
 import ApplicantDetails from "@/pages/Admin/ApplicantDetails/ApplicantDetails";
+import CompanySignUp from "@/pages/Auth/CompanySignUp";
 
 // Component wrapper cho MainLayout
 function LayoutWrapper() {
@@ -35,6 +36,8 @@ export default function MainRoutes() {
         <Routes>
           <Route path="/signin" element={<SignIn />} />
           <Route path="/signup" element={<SignUp />} />
+          <Route path="company/signup" element={<CompanySignUp />} />
+
           <Route path="/" element={<LayoutWrapper />}>
             <Route index element={<Home />} />
             <Route path="jobs" element={<FindJobs />} />

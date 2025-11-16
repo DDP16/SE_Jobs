@@ -62,7 +62,7 @@ export default function JobSection() {
             className="py-16 bg-gray-50"
             sx={{ py: 4, bgcolor: 'background.default' }}
         >
-            <Container maxWidth="lg" className="px-4">
+            <Container maxWidth="lg" sx={{ px: { xs: 2, sm: 3, md: 4 } }}>
                 <Box
                     className="flex justify-between items-center mb-8"
                     sx={{ mb: 3 }}
@@ -97,7 +97,7 @@ export default function JobSection() {
                 {/* Job Cards - 2 Rows with Horizontal Scroll */}
                 <Box
                     className="relative mb-8"
-                    sx={{ position: 'relative', mb: 0 }}
+                    sx={{ position: 'relative', mb: 0, mx: { xs: -2, sm: -3, md: -4 } }}
                 >
                     {/* Scroll Buttons - Only show if there are more than 6 jobs */}
                     {latestJobs.length > 6 && (
@@ -107,8 +107,8 @@ export default function JobSection() {
                                 justifyContent: 'space-between',
                                 position: 'absolute',
                                 top: '50%',
-                                left: -20,
-                                right: -20,
+                                left: { md: 16, lg: 24 },
+                                right: { md: 16, lg: 24 },
                                 transform: 'translateY(-50%)',
                                 zIndex: 2,
                                 pointerEvents: 'none'
@@ -154,6 +154,7 @@ export default function JobSection() {
                             overflowX: 'auto',
                             scrollBehavior: 'smooth',
                             pb: 1,
+                            px: { xs: 2, sm: 3, md: 4 },
                             '&::-webkit-scrollbar': {
                                 height: '6px',
                             },
