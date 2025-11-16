@@ -12,15 +12,15 @@ import {
   UserProfileSettings,
   MyJobs,
   CompanyProfile,
-  CompanyDashboard as Dashboard
+  CompanyDashboard as Dashboard,
+  CompanySignUp,
+  ApplicantDetails
 } from "../pages";
 import PageNotFound from "../layouts/PageNotFound";
 import ThemeProvider from "../providers/ThemeProvider";
 import MainLayout from "../layouts/MainLayout";
 import PrivateRoute from "./PrivateRoute";
 import CompanyLayout from "@/layouts/CompanyLayout/CompanyLayout";
-import ApplicantDetails from "@/pages/Admin/ApplicantDetails/ApplicantDetails";
-import CompanySignUp from "@/pages/Auth/CompanySignUp";
 
 // Component wrapper cho MainLayout
 function MainLayoutWrapper() {

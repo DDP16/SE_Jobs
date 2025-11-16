@@ -5,7 +5,7 @@ export default function ApplicantDetails() {
   const [activeTab, setActiveTab] = useState("profile");
   return (
     <div className="bg-gray-50 p-6">
-      <div className="max-w-7xl mx-auto min-h-[100vh]">
+      <div className="max-w-7xl mx-auto min-h-screen">
         {/* Header */}
         <div className="flex items-center justify-between mb-6 mt-12">
           <div className="flex items-center gap-4">
