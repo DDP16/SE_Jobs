@@ -8,7 +8,7 @@ const contacts = [
   { icon: Mail, label: "nomad@gmail.com", color: "text-red-500" },
 ];
 
-export const Contact = () => {
+export default function Contact() {
   return (
     <div className="bg-card border-b border-gray-300 p-2 pb-6">
       <div className="flex items-start justify-between mb-6">

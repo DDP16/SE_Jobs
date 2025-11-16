@@ -1,4 +1,7 @@
 export { default as PerksSection } from './company/PerksSection';
+export { default as TopBar } from './company/TopBar';
+export { default as CompanySidebar } from './company/CompanySidebar';
+export { default as NavLink } from './company/NavLink';
 
 // Common Components
 export { default as Button } from './common/Button';

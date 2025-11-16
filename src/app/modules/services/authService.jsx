@@ -1,174 +1,250 @@
+import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import { get, post } from "../httpHandle";
 import { getToken, saveToken } from "../utils/encryption";
+import { TOKEN, USER_ID, USER_ROLE } from "src/settings/localVar";
 
-export const loginWithEmail = async (email, password) => {
-    const reqData = { email, password };
-    
-    return new Promise((resolve, reject) => {
-        post(
-            "/api/auth/login",
-            reqData,
-            async (res) => {
-                try {
-                    const data = await res.json();
-                    console.log("Login response:", res);
-                    const tokenHeader = res.headers.get("authorization");
-                    if (!tokenHeader) {
-                        reject(new Error("No token in header"));
-                        return;
-                    }
-                    const token = tokenHeader.replace("Bearer ", "");
-                    if (token) {
-                        saveToken(token);
-                        localStorage.setItem("user_id", data.data.user.user_id);
-                        resolve({
-                            status: res.status,
-                            user: data.data.user,
-                            message: "Login successful"
-                        });
-                    } else {
-                        reject(new Error("Invalid token"));
-                    }
-                } catch (error) {
-                    console.error("Login processing error:", error);
-                    reject(error);
-                }
-            },
-            async (res) => {
-                const data = await res.json();
-                reject(data);
-            }
-        );
-    });
+const setAuthStorage = (userId, token, userRole) => {
+  localStorage.setItem(USER_ID, userId);
+  saveToken(token);
+  localStorage.setItem(USER_ROLE, userRole);
 };
 
-export const register = async (email, password, first_name, last_name) => {
-    const reqData = { email, password, first_name, last_name, confirm_password: password };
-    
-    return new Promise((resolve, reject) => {
-        post(
-            "/api/auth/register",
-            reqData,
-            async (res) => {
-                try {
-                    const data = await res.json();
-                    console.log("Register response:", res);
-                    if (res.ok) {
-                        resolve({
-                            status: res.status,
-                            message: data.message || "Registration successful",
-                            success: true,
-                            data: data
-                        });
-                    } else {
-                        reject({
-                            status: res.status,
-                            message: data.message || "Registration failed",
-                            success: false,
-                            data: data
-                        });
-                    }
-                } catch (error) {
-                    console.error("Registration processing error:", error);
-                    reject(error);
-                }
-            },
-            async (res) => {
-                try {
-                    const data = await res.json();
-                    reject({
-                        status: res.status,
-                        message: data.message || "Registration failed",
-                        success: false,
-                        data: data
-                    });
-                } catch (error) {
-                    console.error("Error parsing error response:", error);
-                    reject(new Error("Registration failed"));
-                }
-            }
-        );
-    });
+const getAuthStorage = () => {
+  return {
+    userId: localStorage.getItem(USER_ID),
+    token: getToken(),
+    userRole: localStorage.getItem(USER_ROLE)
+  };
 };
 
-export const getMe = async () => {
-    return new Promise(async (resolve, reject) => {
+const clearAuthStorage = () => {
+  localStorage.removeItem(USER_ID);
+  localStorage.removeItem(TOKEN);
+  localStorage.removeItem(USER_ROLE);
+};
+
+export const loginWithEmail = createAsyncThunk(
+    "auth/loginWithEmail",
+    async ({ email, password }, { rejectWithValue }) => {
+        const reqData = { email, password };
+
+        try {
+            const result = await new Promise((resolve, reject) => {
+                post(
+                    "/api/auth/login",
+                    reqData,
+                    async (res) => {
+                        try {
+                            const data = await res.json();
+                            console.log("Login response:", res);
+                            const tokenHeader = res.headers.get("authorization");
+                            if (!tokenHeader) {
+                                reject("No token in header");
+                                return;
+                            }
+                            const token = tokenHeader.replace("Bearer ", "");
+                            if (token) {
+                                const userId = data.data.user.user_id;
+                                const userRole = data.data.user.role;
+                                setAuthStorage(userId, token, userRole);
+                                resolve({ userId, token, userRole });
+                            } else {
+                                reject("Invalid token");
+                            }
+                        } catch (error) {
+                            console.error("Login processing error:", error);
+                            reject(error.message || "Login processing error");
+                        }
+                    },
+                    async (res) => {
+                        try {
+                            const data = await res.json();
+                            reject(data.message || "Login failed");
+                        } catch (error) {
+                            reject("Login failed");
+                        }
+                    }
+                );
+            });
+            return result;
+        } catch (error) {
+            return rejectWithValue(error);
+        }
+    }
+);
+
+export const register = createAsyncThunk(
+    "auth/register",
+    async ({ email, password, first_name, last_name }, { rejectWithValue }) => {
+        const reqData = {
+            email,
+            password,
+            first_name,
+            last_name,
+            confirm_password: password,
+        };
+
+        try {
+            const result = await new Promise((resolve, reject) => {
+                post(
+                    "/api/auth/register",
+                    reqData,
+                    async (res) => {
+                        try {
+                            const data = await res.json();
+                            console.log("Register response:", res);
+                            if (res.ok) {
+                                resolve(data);
+                            } else {
+                                reject(data.message || "Registration failed");
+                            }
+                        } catch (error) {
+                            console.error("Registration processing error:", error);
+                            reject(error.message || "Registration processing error");
+                        }
+                    },
+                    async (res) => {
+                        try {
+                            const data = await res.json();
+                            reject(data.message || "Registration failed");
+                        } catch (error) {
+                            console.error("Error parsing error response:", error);
+                            reject("Registration failed");
+                        }
+                    }
+                );
+            });
+            return result;
+        } catch (error) {
+            return rejectWithValue(error);
+        }
+    }
+);
+
+export const getMe = createAsyncThunk(
+    "auth/getMe",
+    async (_, { rejectWithValue }) => {
         try {
             const token = await getToken();
             
             if (!token) {
-                reject(new Error("Failed to decrypt token"));
-                return;
+                return rejectWithValue("Failed to decrypt token");
             }
             
-            get(
-                "/api/auth/me",
-                { "Authorization": `Bearer ${token}` },
-                async (res) => {
-                    try {
-                        const data = await res.json();
-                        console.log("GetMe response:", res);
-                        if (res.ok) {
-                            resolve({
-                                status: res.status,
-                                user: data.data || data,
-                                message: "User data fetched successfully",
-                                success: true,
-                                data: data
-                            });
-                        } else {
-                            reject({
-                                status: res.status,
-                                message: data.message || `Failed to fetch user data: ${res.status}`,
-                                success: false,
-                                data: data
-                            });
+            const result = await new Promise((resolve, reject) => {
+                get(
+                    "/api/auth/me",
+                    { "Authorization": `Bearer ${token}` },
+                    async (res) => {
+                        try {
+                            const data = await res.json();
+                            console.log("GetMe response:", res);
+                            if (res.ok) {
+                                resolve(data.data || data);
+                            } else {
+                                reject(data.message || "Failed to fetch user data: " + res.status);
+                            }
+                        } catch (error) {
+                            console.error("GetMe processing error:", error);
+                            reject("Failed to parse response: " + error.message);
                         }
-                    } catch (error) {
-                        console.error("GetMe processing error:", error);
-                        reject(new Error("Failed to parse response: " + error.message));
+                    },
+                    async (res) => {
+                        try {
+                            const data = await res.json();
+                            reject(data.message || "Network error");
+                        } catch (error) {
+                            console.error("Error parsing error response:", error);
+                            reject("Network error: " + error.message);
+                        }
                     }
-                },
-                async (res) => {
-                    try {
-                        const data = await res.json();
-                        reject({
-                            status: res.status,
-                            message: data.message || "Network error",
-                            success: false,
-                            data: data
-                        });
-                    } catch (error) {
-                        console.error("Error parsing error response:", error);
-                        reject(new Error("Network error: " + error.message));
-                    }
-                }
-            );
+                );
+            });
+            return result;
         } catch (error) {
-            reject(new Error("Token decryption error: " + error.message));
+            return rejectWithValue("Token decryption error: " + error.message);
         }
-    });
-};
+    }
+);
 
-export const logout = async () => {
-    return new Promise((resolve, reject) => {
-        try {
-            localStorage.removeItem("auth_token");
-            localStorage.removeItem("user_id");
-            
-            resolve({
-                status: 200,
-                message: "Logout successful",
-                success: true
+const authStorage = getAuthStorage();
+
+const authSlice = createSlice({
+    name: "auth",
+    initialState: {
+        userId: authStorage.userId || null,
+        token: authStorage.token || null,
+        userRole: authStorage.userRole || null,
+        isAuthenticated: !!authStorage.token,
+        user: null,
+        status: "idle", // 'idle' | 'loading' | 'succeeded' | 'failed'
+        error: null,
+    },
+    reducers: {
+        logout: (state) => {
+            state.userId = null;
+            state.token = null;
+            state.userRole = null;
+            state.isAuthenticated = false;
+            state.user = null;
+            state.status = "idle";
+            state.error = null;
+            clearAuthStorage();
+        },
+        clearError: (state) => {
+            state.error = null;
+            state.status = "idle";
+        },
+    },
+    extraReducers: (builder) => {
+        builder
+            .addCase(loginWithEmail.pending, (state) => {
+                state.status = "loading";
+                state.error = null;
+            })
+            .addCase(loginWithEmail.fulfilled, (state, action) => {
+                state.status = "succeeded";
+                state.userId = action.payload.userId;
+                state.token = action.payload.token;
+                state.userRole = action.payload.userRole;
+                state.isAuthenticated = true;
+                state.error = null;
+            })
+            .addCase(loginWithEmail.rejected, (state, action) => {
+                state.status = "failed";
+                state.error = action.payload;
+            })
+            .addCase(register.pending, (state) => {
+                state.status = "loading";
+                state.error = null;
+            })
+            .addCase(register.fulfilled, (state, action) => {
+                state.status = "succeeded";
+                state.error = null;
+            })
+            .addCase(register.rejected, (state, action) => {
+                state.status = "failed";
+                state.error = action.payload;
+            })
+            .addCase(getMe.pending, (state) => {
+                state.status = "loading";
+                state.error = null;
+            })
+            .addCase(getMe.fulfilled, (state, action) => {
+                state.status = "succeeded";
+                state.user = action.payload;
+                state.isAuthenticated = true;
+                state.error = null;
+            })
+            .addCase(getMe.rejected, (state, action) => {
+                state.status = "failed";
+                state.error = action.payload;
             });
-        } catch (error) {
-            console.error("Logout error:", error);
-            reject({
-                status: 500,
-                message: "Logout failed",
-                success: false,
-                error: error.message
-            });
-        }
-    });
-};
+    },
+});
+
+export const { logout, clearError } = authSlice.actions;
+export default authSlice.reducer;
+
+// Export helper functions if needed
+export { setAuthStorage, getAuthStorage, clearAuthStorage };

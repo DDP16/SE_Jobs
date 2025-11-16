@@ -6,8 +6,12 @@ import { uiInput as Input, uiButton as Button, CustomAlert } from "../../../comp
 import { srcAsset } from "../../../lib";
 import { register, validateEmail, validatePassword } from "../../../modules";
 import { useCustomAlert } from "../../../hooks/useCustomAlert";
+import { useDispatch } from "react-redux";
 
 export default function SignUp() {
+  const nav = useNavigate();
+  const dispatch = useDispatch();
+
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [email, setEmail] = useState("");
@@ -20,7 +24,6 @@ export default function SignUp() {
   const [confirmPasswordError, setConfirmPasswordError] = useState("");
   const [firstnameError, setFirstnameError] = useState("");
   const [lastnameError, setLastnameError] = useState("");
-  let nav = useNavigate();
   const { alertConfig, hideAlert, showSuccess, showError, showWarning} = useCustomAlert();
 
   const handleSubmit = async (e) => {
@@ -67,8 +70,8 @@ export default function SignUp() {
 
     if (valid) {
       try {
-        const result = await register(email, password, firstname, lastname);
-        if (result && result.status === 200) {
+        const result = await dispatch(register({ email, password, first_name: firstname, last_name: lastname }));
+        if (register.fulfilled.match(result)) {
           showSuccess("Registration successful! Please sign in.");
           delay(() => {nav("/signin");}, 1000);
         }

@@ -21,7 +21,7 @@ const team = [
   },
 ];
 
-export const Team = () => {
+export default function Team() {
   return (
     <div className="bg-card border-b border-gray-300 p-2 pb-6">
       <div className="flex items-start justify-between mb-6">

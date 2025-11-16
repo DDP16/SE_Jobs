@@ -15,4 +15,4 @@ const NavLink = forwardRef(({ className, activeClassName, pendingClassName, to, 
 
 NavLink.displayName = "NavLink";
 
-export { NavLink };
+export default NavLink;

@@ -9,3 +9,7 @@ export { default as ProfileDashboard } from "./User/UserProfile/Dashboard";
 export { default as Profile } from "./User/UserProfile/Profile";
 export { default as UserProfileSettings } from "./User/UserProfile/Settings";
 export { default as MyJobs } from "./User/UserProfile/MyJobs";
+
+// Company Pages
+export { default as CompanyDashboard } from "./Company/DashBoard";
+export { default as CompanyProfile } from "./Company/CompanyProfile";

@@ -1,21 +1,27 @@
 import { useState } from "react";
 import { motion } from "framer-motion";
 import { Eye, EyeOff } from "lucide-react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import { uiInput as Input, uiButton as Button, CustomAlert } from "../../../components";
 import { srcAsset } from "../../../lib";
 import { validateEmail, validatePassword } from "../../../modules";
 import { loginWithEmail } from "../../../modules";
 import { useCustomAlert } from "../../../hooks/useCustomAlert";
+import { useDispatch } from "react-redux";
 
 export default function SignIn() {
+  const dispatch = useDispatch();
+  const nav = useNavigate();
+  const location = useLocation();
+  const from = location.state?.from || "/";
+
   const [showPassword, setShowPassword] = useState(false);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [emailError, setEmailError] = useState("");
   const [passwordError, setPasswordError] = useState("");
-  let nav = useNavigate();
-  const { alertConfig, hideAlert, showSuccess, showError, showWarning} = useCustomAlert();
+  
+  const { alertConfig, hideAlert, showSuccess, showError} = useCustomAlert();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -40,14 +46,18 @@ export default function SignIn() {
 
     if (valid) {
       try {
-        const result = await loginWithEmail(email, password);
-        if (result && result.status === 200) {
+        const result = await dispatch(loginWithEmail({ email, password }));
+        if (loginWithEmail.fulfilled.match(result)) {
+          console.log("Login successful: ", result.payload);
           showSuccess("Login successful!");
-          nav("/");
+          nav(from);
+        } else {
+          console.error("Login failed: ", result);
+          showError("Login failed: " + (result.payload || "Unknown error"));
         }
       } catch (error) {
-        console.error("Login error:", error);
-        showWarning(error.message || "Login failed");
+        console.error("Error during login:", error);
+        showError("An error occurred during login. Please try again.");
       }
     }
   };

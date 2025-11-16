@@ -2,7 +2,7 @@ import { Bell, Plus, ChevronDown } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "../ui/dropdown-menu";
 
-export const TopBar = () => {
+export default function TopBar() {
   return (
     <header className="fixed top-0 left-[16.66%] right-0 h-16 border-b border-l border-gray-300 bg-neutral-100 z-10 flex items-center justify-between px-6">
       <DropdownMenu>

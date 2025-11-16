@@ -1,7 +1,7 @@
 import { Pencil } from "lucide-react";
 import { ActionButton } from "./ActionButton";
 
-export const CompanyDescription = () => {
+export default function CompanyDescription() {
   return (
     <div className="bg-card border-b border-gray-300 p-2 pb-6">
       <div className="flex items-start justify-between mb-4">

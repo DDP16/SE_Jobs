@@ -1,7 +1,7 @@
 import { Eye, Settings2, Flame, Users, MapPin, Building } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
-export const CompanyHeader = () => {
+export default function CompanyHeader() {
   return (
     <div className="bg-card border-b border-gray-300 p-6 flex">
       <div className="flex items-start justify-between mb-6">

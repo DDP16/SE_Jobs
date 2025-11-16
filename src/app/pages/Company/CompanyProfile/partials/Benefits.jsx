@@ -42,7 +42,7 @@ const benefits = [
   },
 ];
 
-export const Benefits = () => {
+export default function Benefits() {
   return (
     <div className="bg-card border-b border-gray-300 p-6">
       <div className="flex items-start justify-between mb-6">

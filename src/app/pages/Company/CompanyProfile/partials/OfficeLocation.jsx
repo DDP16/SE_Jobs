@@ -11,7 +11,7 @@ const locations = [
   { country: "China", flag: "🇨🇳", isHeadquarters: false },
 ];
 
-export const OfficeLocations = () => {
+export default function OfficeLocations() {
   return (
     <div className="bg-card p-2 pb-6">
       <div className="flex items-start justify-between mb-6">

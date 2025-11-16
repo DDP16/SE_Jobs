@@ -15,7 +15,7 @@ import { Badge } from "@/components/ui/badge";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Box } from "@mui/material";
 import logo from "@/assets/logo.svg";
-import { NavLink } from "./NavLink";
+import NavLink from "./NavLink";
 
 const navigation = [
   { name: "Dashboard", icon: Home, badge: null },
@@ -27,7 +27,7 @@ const navigation = [
   { name: "Employee", icon: User, badge: null },
 ];
 
-export const AdminSidebar = () => {
+export default function CompanySidebar() {
   return (
     <aside className="fixed left-0 top-0 h-screen w-1/6 min-w-[220px] border-r border-border bg-sidebar-background flex flex-col overflow-y-auto border-gray-300">
       {/* Logo */}

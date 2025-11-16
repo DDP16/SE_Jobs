@@ -10,18 +10,18 @@ import {
   ProfileDashboard,
   Profile,
   UserProfileSettings,
-  MyJobs
+  MyJobs,
+  CompanyProfile,
+  CompanyDashboard as Dashboard
 } from "../pages";
 import PageNotFound from "../layouts/PageNotFound";
 import ThemeProvider from "../providers/ThemeProvider";
 import MainLayout from "../layouts/MainLayout";
 import PrivateRoute from "./PrivateRoute";
-import AdminLayout from "../layouts/AdminLayout/AdminLayout";
-import Dashboard from "../pages/Admin/Dashboard";
-import CompanyProfile from "@/pages/Admin/CompanyProfile";
+import CompanyLayout from "@/layouts/CompanyLayout/CompanyLayout";
 
 // Component wrapper cho MainLayout
-function LayoutWrapper() {
+function MainLayoutWrapper() {
   return (
     <MainLayout>
       <Outlet />
@@ -36,7 +36,7 @@ export default function MainRoutes() {
         <Routes>
           <Route path="/signin" element={<SignIn />} />
           <Route path="/signup" element={<SignUp />} />
-          <Route path="/" element={<LayoutWrapper />}>
+          <Route path="/" element={<MainLayoutWrapper />}>
             <Route index element={<Home />} />
             <Route path="jobs" element={<FindJobs />} />
             <Route path="job" element={<JobDescription />} />
@@ -56,13 +56,13 @@ export default function MainRoutes() {
             <Route path="profile/settings" element={<UserProfileSettings />} />
             <Route path="*" element={<PageNotFound />} />
           </Route>
-          {/* Admin routes */}
+          {/* Company routes */}
           <Route
-            path="/admin"
+            path="/company"
             element={
-              <AdminLayout>
+              <CompanyLayout>
                 <Outlet />
-              </AdminLayout>
+              </CompanyLayout>
             }
           >
             <Route index element={<Dashboard />} />

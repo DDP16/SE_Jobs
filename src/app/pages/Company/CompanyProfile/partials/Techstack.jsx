@@ -9,7 +9,7 @@ const techstack = [
   { name: "TypeScript", icon: "/vite.svg" },
 ];
 
-export const Techstack = () => {
+export default function Techstack() {
   return (
     <div className="bg-card border-b border-gray-300 p-2 pb-6">
       <div className="flex items-start justify-between mb-6">

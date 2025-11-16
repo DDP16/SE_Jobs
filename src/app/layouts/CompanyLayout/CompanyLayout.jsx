@@ -1,11 +1,10 @@
-import { AdminSidebar } from "@/components/admin/AdminSidebar";
-import { TopBar } from "@/components/admin/TopBar";
+import { CompanySidebar, TopBar } from "@/components";
 import React from "react";
 
-const AdminLayout = ({ children }) => {
+export default function CompanyLayout({ children }) {
   return (
     <div className="min-h-screen flex bg-neutral-100">
-      <AdminSidebar />
+      <CompanySidebar />
       <div className="flex flex-col flex-1">
         <TopBar />
         <main className="flex-1 p-8">{children}</main>
@@ -13,5 +12,3 @@ const AdminLayout = ({ children }) => {
     </div>
   );
 };
-
-export default AdminLayout;
