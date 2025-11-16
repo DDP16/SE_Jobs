@@ -11,13 +11,28 @@ import JobCard from '../features/JobCard';
 import { mockJobs } from '../../../mocks/mockData';
 
 export default function JobSection() {
-    const latestJobs = mockJobs.slice(0, 12);
+    const latestJobs = mockJobs;
     const scrollContainerRef = React.useRef(null);
+
+    const getScrollAmount = () => {
+        if (!scrollContainerRef.current) return 0;
+
+        const container = scrollContainerRef.current;
+        const firstGroup = container.firstElementChild;
+
+        if (!firstGroup) return 0;
+
+        const groupWidth = firstGroup.offsetWidth;
+        const gap = 16;
+
+        return groupWidth + gap;
+    };
 
     const scrollLeft = () => {
         if (scrollContainerRef.current) {
+            const scrollAmount = getScrollAmount();
             scrollContainerRef.current.scrollBy({
-                left: -480,
+                left: -scrollAmount,
                 behavior: 'smooth'
             });
         }
@@ -25,12 +40,18 @@ export default function JobSection() {
 
     const scrollRight = () => {
         if (scrollContainerRef.current) {
+            const scrollAmount = getScrollAmount();
             scrollContainerRef.current.scrollBy({
-                left: 480,
+                left: scrollAmount,
                 behavior: 'smooth'
             });
         }
     };
+
+    const groupedJobs = [];
+    for (let i = 0; i < latestJobs.length; i += 6) {
+        groupedJobs.push(latestJobs.slice(i, i + 6));
+    }
 
     const handleJobAction = (action, job) => {
         console.log(`${action} job:`, job);
@@ -39,24 +60,24 @@ export default function JobSection() {
     return (
         <Box
             className="py-16 bg-gray-50"
-            sx={{ py: 8, bgcolor: 'background.default' }}
+            sx={{ py: 4, bgcolor: 'background.default' }}
         >
-            <Container maxWidth="lg" className="px-4">
+            <Container maxWidth="lg" sx={{ px: { xs: 2, sm: 3, md: 4 } }}>
                 <Box
                     className="flex justify-between items-center mb-8"
-                    sx={{ mb: 4 }}
+                    sx={{ mb: 3 }}
                 >
                     <Box>
                         <Typography
-                        variant="h2"
-                        sx={{
-                            fontSize: { xs: '2rem', md: '2.5rem' },
-                            fontWeight: 700,
-                            color: 'text.primary'
-                        }}
-                    >
-                        Latest <span style={{ color: '#0041D9' }}>jobs open</span>
-                    </Typography>
+                            variant="h2"
+                            sx={{
+                                fontSize: { xs: '2rem', md: '2.5rem' },
+                                fontWeight: 700,
+                                color: 'text.primary'
+                            }}
+                        >
+                            Latest <span style={{ color: '#0041D9' }}>jobs open</span>
+                        </Typography>
                     </Box>
                     <Button
                         variant="text"
@@ -76,63 +97,64 @@ export default function JobSection() {
                 {/* Job Cards - 2 Rows with Horizontal Scroll */}
                 <Box
                     className="relative mb-8"
-                    sx={{ position: 'relative', mb: 4 }}
+                    sx={{ position: 'relative', mb: 0, mx: { xs: -2, sm: -3, md: -4 } }}
                 >
-                    {/* Scroll Buttons */}
-                    <Box
-                        className="hidden md:flex justify-between absolute top-1/2 -left-5 -right-5 transform -translate-y-1/2 z-10 pointer-events-none"
-                        sx={{
-                            display: { xs: 'none', md: 'flex' },
-                            justifyContent: 'space-between',
-                            position: 'absolute',
-                            top: '50%',
-                            left: -20,
-                            right: -20,
-                            transform: 'translateY(-50%)',
-                            zIndex: 2,
-                            pointerEvents: 'none'
-                        }}
-                    >
-                        <IconButton
-                            onClick={scrollLeft}
-                            className="bg-white shadow-lg pointer-events-auto hover:bg-gray-50 rounded-full transition-all duration-300 hover:scale-110"
+                    {/* Scroll Buttons - Only show if there are more than 6 jobs */}
+                    {latestJobs.length > 6 && (
+                        <Box
                             sx={{
-                                bgcolor: 'white',
-                                boxShadow: 2,
-                                pointerEvents: 'auto',
-                                '&:hover': {
-                                    bgcolor: 'grey.50',
-                                    transform: 'scale(1.1)'
-                                }
+                                display: { xs: 'none', md: 'flex' },
+                                justifyContent: 'space-between',
+                                position: 'absolute',
+                                top: '50%',
+                                left: { md: 16, lg: 24 },
+                                right: { md: 16, lg: 24 },
+                                transform: 'translateY(-50%)',
+                                zIndex: 2,
+                                pointerEvents: 'none'
                             }}
                         >
-                            <ChevronLeft />
-                        </IconButton>
-                        <IconButton
-                            onClick={scrollRight}
-                            className="bg-white shadow-lg pointer-events-auto hover:bg-gray-50 rounded-full transition-all duration-300 hover:scale-110"
-                            sx={{
-                                bgcolor: 'white',
-                                boxShadow: 2,
-                                pointerEvents: 'auto',
-                                '&:hover': {
-                                    bgcolor: 'grey.50',
-                                    transform: 'scale(1.1)'
-                                }
-                            }}
-                        >
-                            <ChevronRight />
-                        </IconButton>
-                    </Box>
+                            <IconButton
+                                onClick={scrollLeft}
+                                sx={{
+                                    bgcolor: 'white',
+                                    boxShadow: 2,
+                                    pointerEvents: 'auto',
+                                    '&:hover': {
+                                        bgcolor: 'grey.50',
+                                        transform: 'scale(1.1)'
+                                    }
+                                }}
+                            >
+                                <ChevronLeft />
+                            </IconButton>
+                            <IconButton
+                                onClick={scrollRight}
+                                sx={{
+                                    bgcolor: 'white',
+                                    boxShadow: 2,
+                                    pointerEvents: 'auto',
+                                    '&:hover': {
+                                        bgcolor: 'grey.50',
+                                        transform: 'scale(1.1)'
+                                    }
+                                }}
+                            >
+                                <ChevronRight />
+                            </IconButton>
+                        </Box>
+                    )}
 
-                    {/* Scroll Container - 2 Rows Layout */}
+                    {/* Scroll Container with Grid Layout */}
                     <Box
                         ref={scrollContainerRef}
-                        className="overflow-x-auto scroll-smooth pb-1 scrollbar-thin scrollbar-track-gray-200 scrollbar-thumb-gray-400 hover:scrollbar-thumb-gray-500"
                         sx={{
+                            display: 'flex',
+                            gap: 2,
                             overflowX: 'auto',
                             scrollBehavior: 'smooth',
                             pb: 1,
+                            px: { xs: 2, sm: 3, md: 4 },
                             '&::-webkit-scrollbar': {
                                 height: '6px',
                             },
@@ -149,93 +171,71 @@ export default function JobSection() {
                             },
                         }}
                     >
-                        {/* Container for 2 rows */}
-                        <Box className="flex flex-col gap-4 min-w-max">
-                            {/* First Row */}
-                            <Box className="flex gap-4">
-                                {latestJobs.slice(0, 6).map((job) => (
-                                    <Box
-                                        key={job.id}
-                                        className="flex-none w-96"
-                                        sx={{
-                                            flex: '0 0 auto',
-                                            width: '384px',
-                                            minWidth: '384px',
-                                        }}
-                                    >
-                                        <JobCard
-                                            job={job}
-                                            onBookmark={(job) => handleJobAction('bookmark', job)}
-                                            onShare={(job) => handleJobAction('share', job)}
-                                            onApply={(job) => handleJobAction('apply', job)}
-                                        />
-                                    </Box>
-                                ))}
+                        {groupedJobs.map((group, groupIndex) => (
+                            <Box
+                                key={groupIndex}
+                                sx={{
+                                    flex: '0 0 auto',
+                                    display: 'flex',
+                                    flexDirection: 'column',
+                                    gap: 2,
+                                    width: 'calc(384px * 3 + 16px * 2)',
+                                    minWidth: 'calc(384px * 3 + 16px * 2)'
+                                }}
+                            >
+                                {/* Upper Row - First 3 jobs */}
+                                <Box
+                                    sx={{
+                                        display: 'flex',
+                                        gap: 2
+                                    }}
+                                >
+                                    {group.slice(0, 3).map((job) => (
+                                        <Box
+                                            key={job.id}
+                                            sx={{
+                                                flex: '0 0 auto',
+                                                width: '384px',
+                                                minWidth: '384px'
+                                            }}
+                                        >
+                                            <JobCard
+                                                job={job}
+                                                onBookmark={(job) => handleJobAction('bookmark', job)}
+                                                onShare={(job) => handleJobAction('share', job)}
+                                                onApply={(job) => handleJobAction('apply', job)}
+                                            />
+                                        </Box>
+                                    ))}
+                                </Box>
+                                {/* Lower Row - Next 3 jobs */}
+                                <Box
+                                    sx={{
+                                        display: 'flex',
+                                        gap: 2
+                                    }}
+                                >
+                                    {group.slice(3, 6).map((job) => (
+                                        <Box
+                                            key={job.id}
+                                            sx={{
+                                                flex: '0 0 auto',
+                                                width: '384px',
+                                                minWidth: '384px'
+                                            }}
+                                        >
+                                            <JobCard
+                                                showDescription={false}
+                                                job={job}
+                                                onBookmark={(job) => handleJobAction('bookmark', job)}
+                                                onShare={(job) => handleJobAction('share', job)}
+                                                onApply={(job) => handleJobAction('apply', job)}
+                                            />
+                                        </Box>
+                                    ))}
+                                </Box>
                             </Box>
-
-                            {/* Second Row */}
-                            <Box className="flex gap-4">
-                                {latestJobs.slice(6, 12).map((job) => (
-                                    <Box
-                                        key={job.id}
-                                        className="flex-none w-96"
-                                        sx={{
-                                            flex: '0 0 auto',
-                                            width: '384px',
-                                            minWidth: '384px',
-                                        }}
-                                    >
-                                        <JobCard
-                                            showDescription={false}
-                                            job={job}
-                                            onBookmark={(job) => handleJobAction('bookmark', job)}
-                                            onShare={(job) => handleJobAction('share', job)}
-                                            onApply={(job) => handleJobAction('apply', job)}
-                                        />
-                                    </Box>
-                                ))}
-                            </Box>
-                        </Box>
-                    </Box>
-
-                    {/* Scroll Indicators */}
-                    <Box
-                        className="flex justify-center gap-2 mt-4 opacity-70"
-                        sx={{
-                            display: 'flex',
-                            justifyContent: 'center',
-                            gap: 1,
-                            mt: 2,
-                            opacity: 0.7
-                        }}
-                    >
-                        <Box
-                            className="w-2 h-2 rounded-full bg-blue-600"
-                            sx={{
-                                width: 8,
-                                height: 8,
-                                borderRadius: '50%',
-                                bgcolor: 'primary.main'
-                            }}
-                        />
-                        <Box
-                            className="w-2 h-2 rounded-full bg-gray-300"
-                            sx={{
-                                width: 8,
-                                height: 8,
-                                borderRadius: '50%',
-                                bgcolor: 'grey.300'
-                            }}
-                        />
-                        <Box
-                            className="w-2 h-2 rounded-full bg-gray-300"
-                            sx={{
-                                width: 8,
-                                height: 8,
-                                borderRadius: '50%',
-                                bgcolor: 'grey.300'
-                            }}
-                        />
+                        ))}
                     </Box>
                 </Box>
 

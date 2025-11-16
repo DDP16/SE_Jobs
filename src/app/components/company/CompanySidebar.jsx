@@ -37,7 +37,6 @@ export default function CompanySidebar() {
           onClick={() => window.location.assign("/")}
         >
           <img src={logo} alt="SE Jobs Logo" width={"60"} style={{ marginRight: "8px", marginLeft: "10px" }} />
-          <h4 className="text-xl font-bold text-foreground mb-0 self-center">SE Jobs</h4>
         </Box>
       </div>
       {/* Navigation */}
@@ -46,6 +45,7 @@ export default function CompanySidebar() {
           let to = "/";
           if (item.name === "Dashboard") to = "/admin";
           if (item.name === "Company Profile") to = "/admin/company";
+          if (item.name === "All Applicants") to = "/admin/applicants/1";
 
           return (
             <NavLink

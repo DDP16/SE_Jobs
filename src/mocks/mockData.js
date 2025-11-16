@@ -242,6 +242,51 @@ export const mockCompanies = [
         Microsoft Việt Nam là nơi bạn có thể phát triển sự nghiệp, học hỏi từ những chuyên gia hàng đầu và đóng góp vào những dự án có tầm ảnh hưởng lớn.`,
         jobsCount: 30,
         isHiring: true
+    },
+    {
+        id: 6,
+        name: "Microsoft",
+        logo: "M",
+        location: "Hồ Chí Minh, Việt Nam",
+        industry: "Công nghệ",
+        size: "1000+ nhân viên",
+        description: `Microsoft là tập đoàn công nghệ đa quốc gia với sứ mệnh giúp mọi người và tổ chức trên hành tinh đạt được nhiều hơn.
+        
+        Từ Windows, Office 365 đến Azure, chúng tôi cung cấp các giải pháp công nghệ toàn diện cho doanh nghiệp và cá nhân. Chúng tôi tin vào sức mạnh của công nghệ để thay đổi thế giới.
+        
+        Microsoft Việt Nam là nơi bạn có thể phát triển sự nghiệp, học hỏi từ những chuyên gia hàng đầu và đóng góp vào những dự án có tầm ảnh hưởng lớn.`,
+        jobsCount: 30,
+        isHiring: true
+    },
+    {
+        id: 7,
+        name: "Microsoft",
+        logo: "M",
+        location: "Hồ Chí Minh, Việt Nam",
+        industry: "Công nghệ",
+        size: "1000+ nhân viên",
+        description: `Microsoft là tập đoàn công nghệ đa quốc gia với sứ mệnh giúp mọi người và tổ chức trên hành tinh đạt được nhiều hơn.
+        
+        Từ Windows, Office 365 đến Azure, chúng tôi cung cấp các giải pháp công nghệ toàn diện cho doanh nghiệp và cá nhân. Chúng tôi tin vào sức mạnh của công nghệ để thay đổi thế giới.
+        
+        Microsoft Việt Nam là nơi bạn có thể phát triển sự nghiệp, học hỏi từ những chuyên gia hàng đầu và đóng góp vào những dự án có tầm ảnh hưởng lớn.`,
+        jobsCount: 30,
+        isHiring: true
+    },
+    {
+        id: 8,
+        name: "Microsoft",
+        logo: "M",
+        location: "Hồ Chí Minh, Việt Nam",
+        industry: "Công nghệ",
+        size: "1000+ nhân viên",
+        description: `Microsoft là tập đoàn công nghệ đa quốc gia với sứ mệnh giúp mọi người và tổ chức trên hành tinh đạt được nhiều hơn.
+        
+        Từ Windows, Office 365 đến Azure, chúng tôi cung cấp các giải pháp công nghệ toàn diện cho doanh nghiệp và cá nhân. Chúng tôi tin vào sức mạnh của công nghệ để thay đổi thế giới.
+        
+        Microsoft Việt Nam là nơi bạn có thể phát triển sự nghiệp, học hỏi từ những chuyên gia hàng đầu và đóng góp vào những dự án có tầm ảnh hưởng lớn.`,
+        jobsCount: 30,
+        isHiring: true
     }
 ];
 

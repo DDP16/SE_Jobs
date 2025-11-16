@@ -7,11 +7,11 @@ import {
     IconButton
 } from '@mui/material';
 import { ArrowForward, ChevronLeft, ChevronRight } from '@mui/icons-material';
-import CompanyCard from '../features/CompanyCard';
-import { mockCompanies } from '../../../mocks/mockData';
+import JobCard from '../features/JobCard';
+import { mockJobs } from '../../../mocks/mockData';
 
-export default function CompanySection() {
-    const featuredCompanies = mockCompanies;
+export default function JobSection() {
+    const latestJobs = mockJobs;
     const scrollContainerRef = React.useRef(null);
 
     const getScrollAmount = () => {
@@ -48,14 +48,21 @@ export default function CompanySection() {
         }
     };
 
-    const groupedCompanies = [];
-    for (let i = 0; i < featuredCompanies.length; i += 6) {
-        groupedCompanies.push(featuredCompanies.slice(i, i + 6));
+    const groupedJobs = [];
+    for (let i = 0; i < latestJobs.length; i += 6) {
+        groupedJobs.push(latestJobs.slice(i, i + 6));
     }
 
+    const handleJobAction = (action, job) => {
+        console.log(`${action} job:`, job);
+    };
+
     return (
-        <Box sx={{ py: 4, bgcolor: 'background.default' }}>
-            <Container maxWidth="lg">
+        <Box
+            className="py-16 bg-gray-50"
+            sx={{ py: 4, bgcolor: 'background.default' }}
+        >
+            <Container maxWidth="lg" sx={{ px: { xs: 2, sm: 3, md: 4 } }}>
                 <Box
                     className="flex justify-between items-center mb-8"
                     sx={{ mb: 3 }}
@@ -69,7 +76,7 @@ export default function CompanySection() {
                                 color: 'text.primary'
                             }}
                         >
-                            Top <span style={{ color: '#0041D9' }}>Companies</span>
+                            Hot jobs from <span style={{ color: 'green' }}>TopCV</span>
                         </Typography>
                     </Box>
                     <Button
@@ -82,31 +89,41 @@ export default function CompanySection() {
                             fontWeight: 500
                         }}
                     >
-                        View All Companies
+                        Show all jobs
                     </Button>
                 </Box>
 
-                <Box sx={{ position: 'relative', mb: 0 }}>
-                    {/* Scroll Buttons - Only show if there are more than 6 companies */}
-                    {featuredCompanies.length > 6 && (
-                        <Box sx={{
-                            display: { xs: 'none', md: 'flex' },
-                            justifyContent: 'space-between',
-                            position: 'absolute',
-                            top: '50%',
-                            left: -20,
-                            right: -20,
-                            transform: 'translateY(-50%)',
-                            zIndex: 2,
-                            pointerEvents: 'none'
-                        }}>
+
+                {/* Job Cards - 2 Rows with Horizontal Scroll */}
+                <Box
+                    className="relative mb-8"
+                    sx={{ position: 'relative', mb: 0, mx: { xs: -2, sm: -3, md: -4 } }}
+                >
+                    {/* Scroll Buttons - Only show if there are more than 6 jobs */}
+                    {latestJobs.length > 6 && (
+                        <Box
+                            sx={{
+                                display: { xs: 'none', md: 'flex' },
+                                justifyContent: 'space-between',
+                                position: 'absolute',
+                                top: '50%',
+                                left: { md: 16, lg: 24 },
+                                right: { md: 16, lg: 24 },
+                                transform: 'translateY(-50%)',
+                                zIndex: 2,
+                                pointerEvents: 'none'
+                            }}
+                        >
                             <IconButton
                                 onClick={scrollLeft}
                                 sx={{
                                     bgcolor: 'white',
                                     boxShadow: 2,
                                     pointerEvents: 'auto',
-                                    '&:hover': { bgcolor: 'grey.50' }
+                                    '&:hover': {
+                                        bgcolor: 'grey.50',
+                                        transform: 'scale(1.1)'
+                                    }
                                 }}
                             >
                                 <ChevronLeft />
@@ -117,7 +134,10 @@ export default function CompanySection() {
                                     bgcolor: 'white',
                                     boxShadow: 2,
                                     pointerEvents: 'auto',
-                                    '&:hover': { bgcolor: 'grey.50' }
+                                    '&:hover': {
+                                        bgcolor: 'grey.50',
+                                        transform: 'scale(1.1)'
+                                    }
                                 }}
                             >
                                 <ChevronRight />
@@ -134,6 +154,7 @@ export default function CompanySection() {
                             overflowX: 'auto',
                             scrollBehavior: 'smooth',
                             pb: 1,
+                            px: { xs: 2, sm: 3, md: 4 },
                             '&::-webkit-scrollbar': {
                                 height: '6px',
                             },
@@ -150,7 +171,7 @@ export default function CompanySection() {
                             },
                         }}
                     >
-                        {groupedCompanies.map((group, groupIndex) => (
+                        {groupedJobs.map((group, groupIndex) => (
                             <Box
                                 key={groupIndex}
                                 sx={{
@@ -158,60 +179,57 @@ export default function CompanySection() {
                                     display: 'flex',
                                     flexDirection: 'column',
                                     gap: 2,
-                                    width: {
-                                        xs: 'calc(280px * 3 + 16px * 2)',
-                                        sm: 'calc(320px * 3 + 16px * 2)',
-                                        md: 'calc(350px * 3 + 16px * 2)'
-                                    },
-                                    minWidth: {
-                                        xs: 'calc(280px * 3 + 16px * 2)',
-                                        sm: 'calc(320px * 3 + 16px * 2)',
-                                        md: 'calc(350px * 3 + 16px * 2)'
-                                    }
+                                    width: 'calc(384px * 3 + 16px * 2)',
+                                    minWidth: 'calc(384px * 3 + 16px * 2)'
                                 }}
                             >
-                                {/* Upper Row - First 3 cards */}
+                                {/* Upper Row - First 3 jobs */}
                                 <Box
                                     sx={{
                                         display: 'flex',
                                         gap: 2
                                     }}
                                 >
-                                    {group.slice(0, 3).map((company) => (
+                                    {group.slice(0, 3).map((job) => (
                                         <Box
-                                            key={company.id}
+                                            key={job.id}
                                             sx={{
                                                 flex: '0 0 auto',
-                                                width: { xs: '280px', sm: '320px', md: '350px' },
-                                                minWidth: { xs: '280px', sm: '320px', md: '350px' }
+                                                width: '384px',
+                                                minWidth: '384px'
                                             }}
                                         >
-                                            <CompanyCard
-                                                company={company}
-                                                onClick={(company) => console.log('Company clicked:', company)}
+                                            <JobCard
+                                                job={job}
+                                                onBookmark={(job) => handleJobAction('bookmark', job)}
+                                                onShare={(job) => handleJobAction('share', job)}
+                                                onApply={(job) => handleJobAction('apply', job)}
                                             />
                                         </Box>
                                     ))}
                                 </Box>
-                                {/* Lower Row - Next 3 cards */}
+                                {/* Lower Row - Next 3 jobs */}
                                 <Box
                                     sx={{
                                         display: 'flex',
                                         gap: 2
                                     }}
                                 >
-                                    {group.slice(3, 6).map((company) => (
+                                    {group.slice(3, 6).map((job) => (
                                         <Box
-                                            key={company.id}
+                                            key={job.id}
                                             sx={{
                                                 flex: '0 0 auto',
-                                                width: { xs: '280px', sm: '320px', md: '350px' },
-                                                minWidth: { xs: '280px', sm: '320px', md: '350px' }
+                                                width: '384px',
+                                                minWidth: '384px'
                                             }}
                                         >
-                                            <CompanyCard
-                                                company={company}
-                                                onClick={(company) => console.log('Company clicked:', company)}
+                                            <JobCard
+                                                showDescription={false}
+                                                job={job}
+                                                onBookmark={(job) => handleJobAction('bookmark', job)}
+                                                onShare={(job) => handleJobAction('share', job)}
+                                                onApply={(job) => handleJobAction('apply', job)}
                                             />
                                         </Box>
                                     ))}
@@ -220,6 +238,7 @@ export default function CompanySection() {
                         ))}
                     </Box>
                 </Box>
+
             </Container>
         </Box>
     );

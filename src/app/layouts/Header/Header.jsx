@@ -23,7 +23,7 @@ import {
   Logout as LogoutIcon
 } from '@mui/icons-material';
 import { useTranslation } from "react-i18next";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate, useLocation } from "react-router-dom";
 import logo from '../../assets/logo.svg';
 import { TOKEN, USER_NAME } from "../../../settings/localVar";
 
@@ -35,6 +35,7 @@ export default function Header() {
   const [mobileMenuAnchor, setMobileMenuAnchor] = useState(null);
   const [userMenuAnchor, setUserMenuAnchor] = useState(null);
   let navigate = useNavigate();
+  const location = useLocation();
 
   // Check if user is logged in 
   const isLoggedIn = !!localStorage.getItem(TOKEN);
@@ -73,6 +74,14 @@ export default function Header() {
     navigate('/');
   };
 
+  // Check if a path is active
+  const isActive = (path) => {
+    if (path === '/') {
+      return location.pathname === '/';
+    }
+    return location.pathname.startsWith(path);
+  };
+
   return (
     <AppBar
       position="static"
@@ -101,17 +110,73 @@ export default function Header() {
             ml: 4,
             // justifyContent: 'center'
           }}>
-            <Button color="inherit" component={Link} to="/">{t('home')}</Button>
-            <Button color="inherit" component={Link} to="/jobs">{t('jobs')}</Button>
-            <Button color="inherit" component={Link} to="/companies">{t('companies')}</Button>
-            <Button color="inherit">{t('contactUs')}</Button>
+            <Button
+              color="inherit"
+              component={Link}
+              to="/"
+              sx={{
+                color: isActive('/') ? 'primary.main' : 'inherit',
+                fontWeight: isActive('/') ? 800 : 600,
+                borderBottom: isActive('/') ? '2px solid' : 'none',
+                borderColor: 'primary.main',
+                borderRadius: 0,
+                pb: isActive('/') ? 0.5 : 0
+              }}
+            >
+              {t('home')}
+            </Button>
+            <Button
+              color="inherit"
+              component={Link}
+              to="/jobs"
+              sx={{
+                color: isActive('/jobs') ? 'primary.main' : 'inherit',
+                fontWeight: isActive('/jobs') ? 800 : 600,
+                borderBottom: isActive('/jobs') ? '2px solid' : 'none',
+                borderColor: 'primary.main',
+                borderRadius: 0,
+                pb: isActive('/jobs') ? 0.5 : 0
+              }}
+            >
+              {t('jobs')}
+            </Button>
+            <Button
+              color="inherit"
+              component={Link}
+              to="/companies"
+              sx={{
+                color: isActive('/companies') ? 'primary.main' : 'inherit',
+                fontWeight: isActive('/companies') ? 800 : 600,
+                borderBottom: isActive('/companies') ? '2px solid' : 'none',
+                borderColor: 'primary.main',
+                borderRadius: 0,
+                pb: isActive('/companies') ? 0.5 : 0
+              }}
+            >
+              {t('companies')}
+            </Button>
+            <Button
+              color="inherit"
+              component={Link}
+              to="/contact-us"
+              sx={{
+                color: isActive('/contact-us') ? 'primary.main' : 'inherit',
+                fontWeight: isActive('/contact-us') ? 800 : 600,
+                borderBottom: isActive('/contact-us') ? '2px solid' : 'none',
+                borderColor: 'primary.main',
+                borderRadius: 0,
+                pb: isActive('/contact-us') ? 0.5 : 0
+              }}
+            >
+              {t('contactUs')}
+            </Button>
           </Box>
         )}
 
         {/* Desktop Actions */}
         {!isMobile && (
           <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
-            <Button color="inherit">{t('forEmployers')}</Button>
+            <Button color="inherit" component={Link} to="/company/signup">{t('forEmployers')}</Button>
 
             {isLoggedIn ? (
               <>
@@ -225,17 +290,50 @@ export default function Header() {
           transformOrigin={{ vertical: 'top', horizontal: 'right' }}
         >
           <MenuItem onClick={handleMobileMenuClose}>
-            <Button color="inherit" component={Link} to="/" sx={{ width: '100%', justifyContent: 'flex-start' }}>
+            <Button
+              color="inherit"
+              component={Link}
+              to="/"
+              sx={{
+                width: '100%',
+                justifyContent: 'flex-start',
+                color: isActive('/') ? 'primary.main' : 'inherit',
+                fontWeight: isActive('/') ? 600 : 400,
+                backgroundColor: isActive('/') ? 'action.selected' : 'transparent'
+              }}
+            >
               {t('home')}
             </Button>
           </MenuItem>
           <MenuItem onClick={handleMobileMenuClose}>
-            <Button color="inherit" component={Link} to="/jobs" sx={{ width: '100%', justifyContent: 'flex-start' }}>
+            <Button
+              color="inherit"
+              component={Link}
+              to="/jobs"
+              sx={{
+                width: '100%',
+                justifyContent: 'flex-start',
+                color: isActive('/jobs') ? 'primary.main' : 'inherit',
+                fontWeight: isActive('/jobs') ? 600 : 400,
+                backgroundColor: isActive('/jobs') ? 'action.selected' : 'transparent'
+              }}
+            >
               {t('jobs')}
             </Button>
           </MenuItem>
           <MenuItem onClick={handleMobileMenuClose}>
-            <Button color="inherit" component={Link} to="/companies" sx={{ width: '100%', justifyContent: 'flex-start' }}>
+            <Button
+              color="inherit"
+              component={Link}
+              to="/companies"
+              sx={{
+                width: '100%',
+                justifyContent: 'flex-start',
+                color: isActive('/companies') ? 'primary.main' : 'inherit',
+                fontWeight: isActive('/companies') ? 600 : 400,
+                backgroundColor: isActive('/companies') ? 'action.selected' : 'transparent'
+              }}
+            >
               {t('companies')}
             </Button>
           </MenuItem>

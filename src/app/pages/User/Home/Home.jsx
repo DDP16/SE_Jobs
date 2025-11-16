@@ -1,5 +1,5 @@
 import React from "react";
-import { HeroSection, CompanySection, CategorySection, JobSection, CTASection } from "../../../components";
+import { HeroSection, CompanySection, CategorySection, JobSection, CTASection, HotJobTopCVSection } from "../../../components";
 
 export default function Home() {
   const handleSearch = (searchParams) => {
@@ -12,6 +12,7 @@ export default function Home() {
       <HeroSection onSearch={handleSearch} />
       <CompanySection />
       <CategorySection />
+      <HotJobTopCVSection />
       <JobSection />
       {/* <CTASection /> */}
     </>
