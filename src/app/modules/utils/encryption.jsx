@@ -10,7 +10,7 @@ export const encryptData = (data) => {
 
 export const decryptData = (data) => {
     const bytes = CryptoJS.AES.decrypt(data, ENCRYPTION_KEY);
-    return JSON.parse(bytes.toString(CryptoJS.enc.Utf8));
+    return bytes.toString(CryptoJS.enc.Utf8);
 };
 
 export const saveToken = (data) => {
@@ -20,7 +20,7 @@ export const saveToken = (data) => {
     localStorage.setItem(TOKEN, enc_data);
 };
 
-export const getToken = async () => {
+export const getToken = () => {
     if (!ENCRYPTION_KEY) throw new Error("No encryption key found");
     const enc_Token = localStorage.getItem(TOKEN);
     if (!enc_Token) {

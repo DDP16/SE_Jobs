@@ -1,79 +1,21 @@
-import { BrowserRouter, Route, Routes, Outlet } from "react-router-dom";
-import {
-  Home,
-  FindJobs,
-  JobDescription,
-  CompanyDetails,
-  CompanyList,
-  SignIn,
-  SignUp,
-  ProfileDashboard,
-  Profile,
-  UserProfileSettings,
-  MyJobs,
-  CompanyProfile,
-  CompanyDashboard as Dashboard,
-  CompanySignUp,
-  ApplicantDetails
-} from "../pages";
-import PageNotFound from "../layouts/PageNotFound";
+import { BrowserRouter, Route, Routes } from "react-router-dom";
 import ThemeProvider from "../providers/ThemeProvider";
-import MainLayout from "../layouts/MainLayout";
-import PrivateRoute from "./PrivateRoute";
-import CompanyLayout from "@/layouts/CompanyLayout/CompanyLayout";
-
-// Component wrapper cho MainLayout
-function MainLayoutWrapper() {
-  return (
-    <MainLayout>
-      <Outlet />
-    </MainLayout>
-  );
-}
+import { useSelector } from "react-redux";
+import CompanyRoutes from "./CompanyRoutes";
+import UserRoutes from "./UserRoutes";
 
 export default function MainRoutes() {
+  const isAuthenticated = useSelector((state) => state.auth.isAuthenticated);
+  const userRole = useSelector((state) => state.auth.userRole);
+
   return (
     <ThemeProvider>
       <BrowserRouter>
-        <Routes>
-          <Route path="/signin" element={<SignIn />} />
-          <Route path="/signup" element={<SignUp />} />
-          <Route path="company/signup" element={<CompanySignUp />} />
-
-          <Route path="/" element={<MainLayoutWrapper />}>
-            <Route index element={<Home />} />
-            <Route path="jobs" element={<FindJobs />} />
-            <Route path="job" element={<JobDescription />} />
-            <Route path="companies" element={<CompanyList />} />
-            <Route path="company" element={<CompanyDetails />} />
-
-            <Route path="profile/dashboard" element={
-              <PrivateRoute>
-                <ProfileDashboard />
-              </PrivateRoute>
-            } />
-            <Route path="profile/user-profile" element={<Profile />} />
-            <Route path="profile/my-jobs" element={<MyJobs />} />
-            <Route path="profile/job-invitation" element={<ProfileDashboard />} />
-            <Route path="profile/email-subscriptions" element={<ProfileDashboard />} />
-            <Route path="profile/notifications" element={<ProfileDashboard />} />
-            <Route path="profile/settings" element={<UserProfileSettings />} />
-            <Route path="*" element={<PageNotFound />} />
-          </Route>
-          {/* Company routes */}
-          <Route
-            path="/company"
-            element={
-              <CompanyLayout>
-                <Outlet />
-              </CompanyLayout>
-            }
-          >
-            <Route index element={<Dashboard />} />
-            <Route path="company" element={<CompanyProfile />} />
-            <Route path="applicants/:id" element={<ApplicantDetails />} />
-          </Route>
-        </Routes>
+        {isAuthenticated && userRole?.toLowerCase() === "company" ? (
+          <CompanyRoutes />
+        ) : (
+          <UserRoutes />
+        )}
       </BrowserRouter>
     </ThemeProvider>
   );

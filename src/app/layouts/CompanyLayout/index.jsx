@@ -1,3 +1,3 @@
-import AdminLayout from "./CompanyLayout";
+import CompanyLayout from "./CompanyLayout";
 
-export default AdminLayout;
+export default CompanyLayout;
