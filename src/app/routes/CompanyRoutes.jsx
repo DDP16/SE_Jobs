@@ -10,7 +10,7 @@ import { Outlet, Route, Routes } from "react-router-dom";
 export default function CompanyRoutes() {
     return (
         <Routes>
-            <Route index element={
+            <Route path="/" element={
                 <CompanyLayout>
                     <Outlet />
                 </CompanyLayout>

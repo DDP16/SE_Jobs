@@ -43,9 +43,9 @@ export default function CompanySidebar() {
       <nav className="flex-1 px-3 space-y-1">
         {navigation.map((item) => {
           let to = "/";
-          if (item.name === "Dashboard") to = "/admin";
-          if (item.name === "Company Profile") to = "/admin/company";
-          if (item.name === "All Applicants") to = "/admin/applicants/1";
+          if (item.name === "Dashboard") to = "/";
+          if (item.name === "Company Profile") to = "/company";
+          if (item.name === "All Applicants") to = "/applicants/1";
 
           return (
             <NavLink
