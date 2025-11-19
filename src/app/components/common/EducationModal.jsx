@@ -76,21 +76,27 @@ export default function EducationModal({ open, onOpenChange, initialData, onSave
             e.major = "Vui lòng nhập ngành học";
         }
 
-        if (!validateYear(formData.startYear)) {
-            e.startYear = "Vui lòng chọn năm bắt đầu";
+        // start year must be a valid year and not in the future
+        const currentYearCheck = new Date().getFullYear();
+        const startValid = validateYear(formData.startYear, 1980, currentYearCheck);
+        if (!startValid) {
+            e.startYear = "Vui lòng chọn năm bắt đầu (không lớn hơn năm hiện tại)";
         }
 
+        // end year must be present when not currently studying
+        let endValid = true;
         if (!formData.isCurrentlyStudying) {
-            if (!validateYear(formData.endYear)) {
+            endValid = validateYear(formData.endYear);
+            if (!endValid) {
                 e.endYear = "Vui lòng chọn năm kết thúc hoặc đánh dấu 'Tôi đang theo học'";
             }
         }
 
-        // validate date order if both years present and not currently studying
-        if (!formData.isCurrentlyStudying && formData.startYear && formData.endYear) {
+        // validate date order only when both start and end are individually valid
+        if (!formData.isCurrentlyStudying && startValid && endValid && formData.startYear && formData.endYear) {
             const ok = validateDateOrder(formData.startYear, formData.startMonth, formData.endYear, formData.endMonth);
             if (!ok) {
-                e.endYear = "Năm/Tháng kết thúc phải sau hoặc bằng thời điểm bắt đầu";
+                e.endYear = "Năm/Tháng kết thúc phải sau thời điểm bắt đầu";
             }
         }
 

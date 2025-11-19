@@ -16,8 +16,8 @@ export const validateRequired = (value) => {
   return value !== undefined && value !== null && String(value).trim() !== "";
 };
 
-// Year validator: numeric and within reasonable bounds (default 1980..currentYear+10)
-export const validateYear = (year, min = 1980, max = new Date().getFullYear() + 10) => {
+// Year validator: numeric and within reasonable bounds (default 2000..currentYear)
+export const validateYear = (year, min = 2000, max = new Date().getFullYear()) => {
   if (year === null || year === undefined || String(year).trim() === "") return false;
   const y = parseInt(String(year).replace(/^0+/, ""), 10);
   return !isNaN(y) && y >= min && y <= max;
