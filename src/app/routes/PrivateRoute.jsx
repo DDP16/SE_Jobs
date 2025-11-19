@@ -1,8 +1,8 @@
 import { Navigate } from "react-router-dom";
-import { TOKEN } from "../../settings/localVar";
+import { AUTHENTICATED } from "../../settings/localVar";
 
 export default function PrivateRoute({ children }) {
-    const isAuthenticated = localStorage.getItem(TOKEN) !== null;
+    const isAuthenticated = localStorage.getItem(AUTHENTICATED);
 
     if (!isAuthenticated) {
         return <Navigate to="/signin" replace />;

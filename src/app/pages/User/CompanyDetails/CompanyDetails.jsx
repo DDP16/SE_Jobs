@@ -41,7 +41,7 @@ export default function CompanyDetails() {
                 }}>
                     <Box sx={{ minWidth: 0 }}>
                         <CompanyOverview company={company} />
-                        <CompanyJobs jobs={companyJobs} company={company} />
+                        {/* <CompanyJobs jobs={companyJobs} company={company} /> */}
                     </Box>
 
                     <Box sx={{ minWidth: 0 }}>
