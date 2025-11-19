@@ -10,11 +10,19 @@ const setAuthStorage = (userId, token, userRole) => {
 };
 
 const getAuthStorage = () => {
-  return {
-    userId: localStorage.getItem(USER_ID),
-    token: getToken(),
-    userRole: localStorage.getItem(USER_ROLE)
-  };
+    let token = null;
+    try {
+        token = getToken();
+    } catch (err) {
+        console.warn("getToken() threw while initializing auth storage:", err);
+        token = null;
+    }
+
+    return {
+        userId: localStorage.getItem(USER_ID),
+        token,
+        userRole: localStorage.getItem(USER_ROLE)
+    };
 };
 
 const clearAuthStorage = () => {

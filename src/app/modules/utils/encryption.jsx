@@ -24,8 +24,18 @@ export const getToken = () => {
     if (!ENCRYPTION_KEY) throw new Error("No encryption key found");
     const enc_Token = localStorage.getItem(TOKEN);
     if (!enc_Token) {
-        throw new Error("No token found");
+        return null;
     }
-    token = decryptData(enc_Token);
-    return token;
+    try {
+        token = decryptData(enc_Token);
+        return token;
+    } catch (err) {
+        console.warn("Failed to decrypt token from localStorage:", err);
+        try {
+            localStorage.removeItem(TOKEN);
+        } catch (e) {
+            // ignore
+        }
+        return null;
+    }
 }
