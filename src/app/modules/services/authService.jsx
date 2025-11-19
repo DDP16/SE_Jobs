@@ -1,33 +1,24 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import { get, post } from "../httpHandle";
-import { getToken, saveToken } from "../utils/encryption";
-import { TOKEN, USER_ID, USER_ROLE } from "src/settings/localVar";
+import { AUTHENTICATED, USER_ID, USER_ROLE } from "src/settings/localVar";
 
-const setAuthStorage = (userId, token, userRole) => {
-  localStorage.setItem(USER_ID, userId);
-  saveToken(token);
-  localStorage.setItem(USER_ROLE, userRole);
+const setAuthStorage = (userId, isAuthenticated, userRole) => {
+    localStorage.setItem(AUTHENTICATED, isAuthenticated);
+    localStorage.setItem(USER_ID, userId);
+    localStorage.setItem(USER_ROLE, userRole);
 };
 
 const getAuthStorage = () => {
-    let token = null;
-    try {
-        token = getToken();
-    } catch (err) {
-        console.warn("getToken() threw while initializing auth storage:", err);
-        token = null;
-    }
-
-    return {
-        userId: localStorage.getItem(USER_ID),
-        token,
-        userRole: localStorage.getItem(USER_ROLE)
-    };
+  return {
+    isAuthenticated: localStorage.getItem(AUTHENTICATED),
+    userId: localStorage.getItem(USER_ID),
+    userRole: localStorage.getItem(USER_ROLE)
+  };
 };
 
 const clearAuthStorage = () => {
+  localStorage.removeItem(AUTHENTICATED);
   localStorage.removeItem(USER_ID);
-  localStorage.removeItem(TOKEN);
   localStorage.removeItem(USER_ROLE);
 };
 
@@ -44,20 +35,15 @@ export const loginWithEmail = createAsyncThunk(
                     async (res) => {
                         try {
                             const data = await res.json();
+                            const isAuthenticated = await res.ok;
                             console.log("Login response:", res);
-                            const tokenHeader = res.headers.get("authorization");
-                            if (!tokenHeader) {
-                                reject("No token in header");
-                                return;
-                            }
-                            const token = tokenHeader.replace("Bearer ", "");
-                            if (token) {
+                            if (isAuthenticated) {
                                 const userId = data.data.user.user_id;
                                 const userRole = data.data.user.role;
-                                setAuthStorage(userId, token, userRole);
-                                resolve({ userId, token, userRole });
+                                setAuthStorage(userId, isAuthenticated, userRole);
+                                resolve({ userId, isAuthenticated, userRole });
                             } else {
-                                reject("Invalid token");
+                                reject("Login failed: " + (data.message || res.status));
                             }
                         } catch (error) {
                             console.error("Login processing error:", error);
@@ -131,47 +117,36 @@ export const register = createAsyncThunk(
 
 export const getMe = createAsyncThunk(
     "auth/getMe",
-    async (_, { rejectWithValue }) => {
-        try {
-            const token = await getToken();
-            
-            if (!token) {
-                return rejectWithValue("Failed to decrypt token");
-            }
-            
-            const result = await new Promise((resolve, reject) => {
-                get(
-                    "/api/auth/me",
-                    { "Authorization": `Bearer ${token}` },
-                    async (res) => {
-                        try {
-                            const data = await res.json();
-                            console.log("GetMe response:", res);
-                            if (res.ok) {
-                                resolve(data.data || data);
-                            } else {
-                                reject(data.message || "Failed to fetch user data: " + res.status);
-                            }
-                        } catch (error) {
-                            console.error("GetMe processing error:", error);
-                            reject("Failed to parse response: " + error.message);
+    async (_, { rejectWithValue }) => {       
+        const result = await new Promise((resolve, reject) => {
+            get(
+                "/api/auth/me",
+                async (res) => {
+                    try {
+                        const data = await res.json();
+                        console.log("GetMe response:", res);
+                        if (res.ok) {
+                            resolve(data.data || data);
+                        } else {
+                            reject(data.message || "Failed to fetch user data: " + res.status);
                         }
-                    },
-                    async (res) => {
-                        try {
-                            const data = await res.json();
-                            reject(data.message || "Network error");
-                        } catch (error) {
-                            console.error("Error parsing error response:", error);
-                            reject("Network error: " + error.message);
-                        }
+                    } catch (error) {
+                        console.error("GetMe processing error:", error);
+                        reject("Failed to parse response: " + error.message);
                     }
-                );
-            });
-            return result;
-        } catch (error) {
-            return rejectWithValue("Token decryption error: " + error.message);
-        }
+                },
+                async (res) => {
+                    try {
+                        const data = await res.json();
+                        reject(data.message || "Network error");
+                    } catch (error) {
+                        console.error("Error parsing error response:", error);
+                        reject("Network error: " + error.message);
+                    }
+                }
+            );
+        });
+        return result;
     }
 );
 
@@ -181,9 +156,8 @@ const authSlice = createSlice({
     name: "auth",
     initialState: {
         userId: authStorage.userId || null,
-        token: authStorage.token || null,
         userRole: authStorage.userRole || null,
-        isAuthenticated: !!authStorage.token,
+        isAuthenticated: authStorage.isAuthenticated || false,
         user: null,
         status: "idle", // 'idle' | 'loading' | 'succeeded' | 'failed'
         error: null,
@@ -191,7 +165,6 @@ const authSlice = createSlice({
     reducers: {
         logout: (state) => {
             state.userId = null;
-            state.token = null;
             state.userRole = null;
             state.isAuthenticated = false;
             state.user = null;
@@ -213,7 +186,6 @@ const authSlice = createSlice({
             .addCase(loginWithEmail.fulfilled, (state, action) => {
                 state.status = "succeeded";
                 state.userId = action.payload.userId;
-                state.token = action.payload.token;
                 state.userRole = action.payload.userRole;
                 state.isAuthenticated = true;
                 state.error = null;

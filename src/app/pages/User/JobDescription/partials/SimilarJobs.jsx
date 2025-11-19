@@ -132,7 +132,7 @@ export default function SimilarJobs() {
                     variant="outline"
                     className="border-accent-yellow text-accent-yellow rounded-4xl px-2.5 py-1.5"
                   >
-                    {job.category}
+                    {job.category} 
                   </Badge>
                   <Badge
                     variant="outline"

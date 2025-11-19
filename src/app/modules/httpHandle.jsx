@@ -5,9 +5,9 @@ const HEADERS = {
   accept: "application/json",
 };
 
-export const get = async (uri, extendHeaders, onSuccess, onFail) => {
+export const get = async (uri, onSuccess, onFail) => {
   const res = await fetch(BE_ENPOINT + uri, {
-    headers: { ...HEADERS, ...extendHeaders },
+    headers: HEADERS,
   });
 
   if (!res.ok) {

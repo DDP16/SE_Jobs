@@ -25,7 +25,9 @@ import {
 import { useTranslation } from "react-i18next";
 import { Link, useNavigate, useLocation } from "react-router-dom";
 import logo from '../../assets/logo.svg';
-import { TOKEN, USER_NAME } from "../../../settings/localVar";
+import { AUTHENTICATED, USER_NAME } from "../../../settings/localVar";
+import { logout } from "@/modules/services/authService";
+import { useDispatch } from "react-redux";
 
 
 export default function Header() {
@@ -36,9 +38,10 @@ export default function Header() {
   const [userMenuAnchor, setUserMenuAnchor] = useState(null);
   let navigate = useNavigate();
   const location = useLocation();
+  const dispatch = useDispatch();
 
   // Check if user is logged in 
-  const isLoggedIn = !!localStorage.getItem(TOKEN);
+  const isLoggedIn = localStorage.getItem(AUTHENTICATED);
   const userName = localStorage.getItem(USER_NAME) || 'User';
 
   const handleLangChange = (_e, newLang) => {
@@ -68,9 +71,10 @@ export default function Header() {
 
   const handleLogout = () => {
     handleUserMenuClose();
-    localStorage.removeItem('auth_token');
-    localStorage.removeItem('user_id');
-    localStorage.removeItem('user_name');
+    // localStorage.removeItem('auth_token');
+    // localStorage.removeItem('user_id');
+    // localStorage.removeItem('user_name');
+    dispatch(logout());
     navigate('/');
   };
 
