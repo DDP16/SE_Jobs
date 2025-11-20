@@ -25,15 +25,15 @@ export default function JobDetails({ job }) {
       className="space-y-8"
     >
       <motion.section variants={itemVariants}>
-        <h3 className="text-2xl font-bold text-foreground mb-4">Description</h3>
+        <h4 className="text-2xl font-bold text-foreground mb-4">Description</h4>
         <p className="text-muted-foreground leading-relaxed">
           {job.description || "Job Description"}
         </p>
       </motion.section>
 
       <motion.section variants={itemVariants}>
-        <h3 className="text-2xl font-bold text-foreground mb-6">Responsibilities</h3>
-        <ul className="space-y-3">
+        <h4 className="text-2xl font-bold text-foreground mb-4">Responsibilities</h4>
+        <ul className="space-y-2">
           {job.responsibilities?.map((item, index) => (
             <li key={index} className="flex gap-3 text-muted-foreground">
               <CircleCheck className="w-5 h-5 text-accent-green shrink-0 mt-0.5" />
@@ -44,8 +44,8 @@ export default function JobDetails({ job }) {
       </motion.section>
 
       <motion.section variants={itemVariants}>
-        <h3 className="text-2xl font-bold text-foreground mb-6">Who You Are</h3>
-        <ul className="space-y-3">
+        <h4 className="text-2xl font-bold text-foreground mb-4">Who You Are</h4>
+        <ul className="space-y-2">
           {job.requirements?.map((item, index) => (
             <li key={index} className="flex gap-3 text-muted-foreground">
               <CircleCheck className="w-5 h-5 text-accent-green shrink-0 mt-0.5" />
@@ -56,8 +56,8 @@ export default function JobDetails({ job }) {
       </motion.section>
 
       <motion.section variants={itemVariants}>
-        <h3 className="text-2xl font-bold text-foreground mb-6">Nice-To-Haves</h3>
-        <ul className="space-y-3">
+        <h4 className="text-2xl font-bold text-foreground mb-4">Nice-To-Haves</h4>
+        <ul className="space-y-2">
           {job.niceToHaves?.map((item, index) => (
             <li key={index} className="flex gap-3 text-muted-foreground">
               <CircleCheck className="w-5 h-5 text-accent-green shrink-0 mt-0.5" />

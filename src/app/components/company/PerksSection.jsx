@@ -52,9 +52,8 @@ export default function PerksSection() {
       initial={{ opacity: 0, y: 40 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.5, delay: 0.4 }}
-      className="my-18 mx-30"
     >
-      <h3 className="text-2xl font-bold text-foreground mb-2">Perks & Benefits</h3>
+      <h4 className="text-2xl font-bold text-foreground mb-2">Perks & Benefits</h4>
       <p className="text-muted-foreground mb-8">This job comes with several perks and benefits</p>
       
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
