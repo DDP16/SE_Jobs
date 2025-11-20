@@ -56,8 +56,6 @@ export default function EducationModal({ open, onOpenChange, initialData, onSave
         }
     }, [initialData, open]);
 
-    const [errors, setErrors] = useState({});
-
     const handleChange = (field, value) => {
         setFormData((prev) => {
             if (field === "isCurrentlyStudying") {
