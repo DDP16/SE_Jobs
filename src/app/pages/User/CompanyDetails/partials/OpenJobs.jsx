@@ -2,7 +2,7 @@ import { ArrowRight } from "lucide-react";
 import { srcAsset } from "../../../../lib";
 import { JobCardSecond } from "@/components";
 
-export default function SimilarJobs() {
+export default function OpenJobs() {
   const jobs = [
     {
       title: "Social Media Assistant",
@@ -89,7 +89,7 @@ export default function SimilarJobs() {
   return (
     <section>
       <div className="flex items-center justify-between mb-6">
-        <h4 className="text-2xl font-bold text-foreground">Similar Jobs</h4>
+        <h4 className="text-2xl font-bold text-foreground">Open Jobs</h4>
         <a
           href="/jobs"
           className="text-primary flex items-center gap-2 hover:underline font-medium"

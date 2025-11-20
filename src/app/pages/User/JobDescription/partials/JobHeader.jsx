@@ -20,12 +20,12 @@ export default function JobHeader({ job }) {
             <img
               src={srcAsset.stripeIcon}
               alt="Stripe Logo"
-              className="w-16 h-16 object-contain"
+              className="w-14 h-14 object-contain"
             />
             <div>
-              <h3 className="text-3xl font-bold text-foreground mb-2">
+              <h4 className="text-3xl font-bold text-foreground mb-2">
                 {job.title || "Job Title"}
-              </h3>
+              </h4>
               <p className="text-muted-foreground">
                 {job.company || "Company Name"} • {job.location || "Location"} •{" "}
                 {job.type || "Job Type"}

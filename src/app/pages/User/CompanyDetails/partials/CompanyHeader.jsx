@@ -61,7 +61,7 @@ export default function CompanyHeader({ company = {} }) {
   return (
     <Box
       sx={{
-        px: { xs: 2, sm: 4, md: 6, lg: 10, xl: 15 },
+        px: { xs: 2, sm: 4, md: 6, lg: 8 },
         py: { xs: 2, md: 3, lg: 4 }
       }}
       className="bg-background-lightBlue"
@@ -81,7 +81,7 @@ export default function CompanyHeader({ company = {} }) {
           <img
             src={srcAsset.nomadIcon}
             alt="Nomad Logo"
-            className="w-16 h-16 sm:w-20 sm:h-20 md:w-30 md:h-30 object-contain flex-shrink-0"
+            className="w-14 h-14 sm:w-20 sm:h-20 md:w-26 md:h-26 object-contain shrink-0"
           />
           <Box sx={{ minWidth: 0, flex: 1 }}>
             <Typography

@@ -71,10 +71,10 @@ export default function JobDescription({
   }
 
   return (
-    <div className="min-h-screen bg-white mx-auto">
-      <div className={`py-10 ${layout !== layoutType.half_width ? "px-30" : ""} bg-background-lightBlue`}>
+    <div className="min-h-screen bg-white mx-auto space-y-12 pb-12">
+      <div className={`pt-10 pb-5 ${layout !== layoutType.half_width ? "px-10 lg:px-25" : ""} bg-background-lightBlue`}>
         {finalConfig.showBreadcrumb && (
-          <div className="mb-6">
+          <div className="mb-5">
             <p className="text-sm text-muted-foreground">
               Home / Companies / {job?.company || "Company"} / {job?.title || "Job Title"}
             </p>
@@ -83,7 +83,7 @@ export default function JobDescription({
         {finalConfig.showJobHeader && <JobHeader job={job} />}
       </div>
 
-      <div className={` grid grid-cols-1 gap-8 py-18 ${layout !== layoutType.half_width ? "px-30 lg:grid-cols-3 md:grid-cols-2" : "px-15 lg:grid-cols-1"}`}>
+      <div className={` grid grid-cols-1 gap-8 ${layout !== layoutType.half_width ? "px-10 lg:px-25 lg:grid-cols-3 md:grid-cols-2" : "px-15 lg:grid-cols-1"}`}>
         <div className="lg:col-span-2">
           {finalConfig.showJobDetails && <JobDetails job={job} />}
         </div>
@@ -92,9 +92,11 @@ export default function JobDescription({
         </div>
       </div>
 
-      {finalConfig.showPerksSection && <PerksSection job={job} />}
-      {finalConfig.showCompanySection && <CompanySection job={job} />}
-      {finalConfig.showSimilarJobs && <SimilarJobs job={job} />}
+      <div className="px-10 lg:px-25 space-y-12">
+        {finalConfig.showPerksSection && <PerksSection job={job} />}
+        {finalConfig.showCompanySection && <CompanySection job={job} />}
+        {finalConfig.showSimilarJobs && <SimilarJobs job={job} />}
+      </div>
     </div>
   );
 }

@@ -5,7 +5,8 @@ import {
     uiButton as Button,
     uiLabel as Label,
 } from "@/components";
-import { Dialog, DialogContent } from "@mui/material";
+import { Dialog, DialogContent, Typography } from "@mui/material";
+import { validateRequired, validateYear, validateMonth, validateDateOrder } from "../../modules/utils/validator";
 import { X } from "lucide-react";
 import { FormControl, Select, MenuItem, Checkbox, FormControlLabel } from "@mui/material";
 
@@ -52,11 +53,59 @@ export default function EducationModal({ open, onOpenChange, initialData, onSave
         }
     }, [initialData, open]);
 
+    const [errors, setErrors] = useState({});
+
     const handleChange = (field, value) => {
         setFormData((prev) => ({ ...prev, [field]: value }));
+        // clear field error when user changes value
+        setErrors((prev) => ({ ...prev, [field]: undefined }));
+    };
+
+    const validate = () => {
+        const e = {};
+
+        if (!validateRequired(formData.school)) {
+            e.school = "Vui lòng nhập tên trường";
+        }
+
+        if (!validateRequired(formData.degree)) {
+            e.degree = "Vui lòng chọn trình độ";
+        }
+
+        if (!validateRequired(formData.major)) {
+            e.major = "Vui lòng nhập ngành học";
+        }
+
+        // start year must be a valid year and not in the future
+        const currentYearCheck = new Date().getFullYear();
+        const startValid = validateYear(formData.startYear, 1980, currentYearCheck);
+        if (!startValid) {
+            e.startYear = "Vui lòng chọn năm bắt đầu (không lớn hơn năm hiện tại)";
+        }
+
+        // end year must be present when not currently studying
+        let endValid = true;
+        if (!formData.isCurrentlyStudying) {
+            endValid = validateYear(formData.endYear);
+            if (!endValid) {
+                e.endYear = "Vui lòng chọn năm kết thúc hoặc đánh dấu 'Tôi đang theo học'";
+            }
+        }
+
+        // validate date order only when both start and end are individually valid
+        if (!formData.isCurrentlyStudying && startValid && endValid && formData.startYear && formData.endYear) {
+            const ok = validateDateOrder(formData.startYear, formData.startMonth, formData.endYear, formData.endMonth);
+            if (!ok) {
+                e.endYear = "Năm/Tháng kết thúc phải sau thời điểm bắt đầu";
+            }
+        }
+
+        setErrors(e);
+        return Object.keys(e).length === 0;
     };
 
     const handleSave = () => {
+        if (!validate()) return;
         // Call onSave callback if provided
         if (onSave) {
             onSave(formData);
@@ -138,13 +187,18 @@ export default function EducationModal({ open, onOpenChange, initialData, onSave
                                 placeholder="Trường *"
                                 className="h-12"
                             />
+                            {errors.school && (
+                                <Typography variant="caption" sx={{ color: 'error.main', mt: 0.5 }}>
+                                    {errors.school}
+                                </Typography>
+                            )}
                         </div>
 
                         {/* Trình độ và Ngành học */}
                         <div className="grid grid-cols-2 gap-4">
                             {/* Trình độ (Degree) */}
                             <div className="space-y-2">
-                                <FormControl fullWidth>
+                                <FormControl fullWidth error={!!errors.degree}>
                                     <Select
                                         value={formData.degree}
                                         onChange={(e) => handleChange("degree", e.target.value)}
@@ -174,17 +228,29 @@ export default function EducationModal({ open, onOpenChange, initialData, onSave
                                             </MenuItem>
                                         ))}
                                     </Select>
+                                    {errors.degree && (
+                                        <Typography variant="caption" sx={{ color: 'error.main', mt: 0.5 }}>
+                                            {errors.degree}
+                                        </Typography>
+                                    )}
                                 </FormControl>
                             </div>
 
                             {/* Ngành học (Major) */}
                             <div className="space-y-2">
-                                <Input
-                                    value={formData.major}
-                                    onChange={(e) => handleChange("major", e.target.value)}
-                                    placeholder="Ngành học *"
-                                    className="h-12"
-                                />
+                                <div>
+                                    <Input
+                                        value={formData.major}
+                                        onChange={(e) => handleChange("major", e.target.value)}
+                                        placeholder="Ngành học *"
+                                        className="h-12"
+                                    />
+                                    {errors.major && (
+                                        <Typography variant="caption" sx={{ color: 'error.main', mt: 0.5 }}>
+                                            {errors.major}
+                                        </Typography>
+                                    )}
+                                </div>
                             </div>
                         </div>
 
@@ -254,7 +320,7 @@ export default function EducationModal({ open, onOpenChange, initialData, onSave
                                             ))}
                                         </Select>
                                     </FormControl>
-                                    <FormControl fullWidth>
+                                    <FormControl fullWidth error={!!errors.startYear}>
                                         <Select
                                             value={formData.startYear}
                                             onChange={(e) => handleChange("startYear", e.target.value)}
@@ -286,6 +352,13 @@ export default function EducationModal({ open, onOpenChange, initialData, onSave
                                         </Select>
                                     </FormControl>
                                 </div>
+                                {errors.startYear && (
+                                    <div className="mt-1">
+                                        <Typography variant="caption" sx={{ color: 'error.main' }}>
+                                            {errors.startYear}
+                                        </Typography>
+                                    </div>
+                                )}
                             </div>
 
                             {/* Đến (To) */}
@@ -294,7 +367,7 @@ export default function EducationModal({ open, onOpenChange, initialData, onSave
                                     Đến <span className="text-primary">*</span>
                                 </Label>
                                 <div className="grid grid-cols-2 gap-2">
-                                    <FormControl fullWidth>
+                                    <FormControl fullWidth error={!!errors.endMonth}>
                                         <Select
                                             value={formData.endMonth}
                                             onChange={(e) => handleChange("endMonth", e.target.value)}
@@ -326,7 +399,7 @@ export default function EducationModal({ open, onOpenChange, initialData, onSave
                                             ))}
                                         </Select>
                                     </FormControl>
-                                    <FormControl fullWidth>
+                                    <FormControl fullWidth error={!!errors.endYear}>
                                         <Select
                                             value={formData.endYear}
                                             onChange={(e) => handleChange("endYear", e.target.value)}
@@ -359,6 +432,20 @@ export default function EducationModal({ open, onOpenChange, initialData, onSave
                                         </Select>
                                     </FormControl>
                                 </div>
+                                {(errors.endMonth || errors.endYear) && (
+                                    <div className="mt-1">
+                                        {errors.endMonth && (
+                                            <Typography variant="caption" sx={{ color: 'error.main' }}>
+                                                {errors.endMonth}
+                                            </Typography>
+                                        )}
+                                        {errors.endYear && (
+                                            <Typography variant="caption" sx={{ color: 'error.main' }}>
+                                                {errors.endYear}
+                                            </Typography>
+                                        )}
+                                    </div>
+                                )}
                             </div>
                         </div>
 

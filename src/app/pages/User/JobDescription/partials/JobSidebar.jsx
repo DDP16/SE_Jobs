@@ -9,9 +9,9 @@ export default function JobSidebar({ job }) {
       transition={{ duration: 0.5, delay: 0.2 }}
       className="space-y-8"
     >
-      <h3 className="text-lg font-bold text-foreground mb-4">
+      <h4 className="text-lg font-bold text-foreground mb-4">
         About this role
-      </h3>
+      </h4>
 
       <div className="space-y-4">
         <div className="flex items-center gap-2 text-sm">
@@ -41,7 +41,7 @@ export default function JobSidebar({ job }) {
 
       <hr className="border-t border-neutrals-20"/>
 
-      <h3 className="text-lg font-bold text-foreground mb-2">Categories</h3>
+      <h4 className="text-lg font-bold text-foreground mb-2">Categories</h4>
       <div className="flex flex-wrap gap-2">
         {job.categories?.map((category, index) => (
           <Badge
@@ -56,7 +56,7 @@ export default function JobSidebar({ job }) {
 
       <hr className="border-t border-neutrals-20"/>
 
-      <h3 className="text-lg font-bold text-foreground mb-2">Required Skills</h3>
+      <h4 className="text-lg font-bold text-foreground mb-2">Required Skills</h4>
       <div className="flex flex-wrap gap-2">
         {job.requiredSkills?.map((skill, index) => (
           <Badge

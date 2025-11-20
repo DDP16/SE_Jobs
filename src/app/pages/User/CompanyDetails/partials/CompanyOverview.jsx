@@ -32,7 +32,6 @@ export default function CompanyOverview({ company = {} }) {
                     border: '1px solid',
                     borderColor: 'divider',
                     borderRadius: 2,
-                    mb: 3,
                     display: 'flex',
                     flexDirection: 'column',
                     gap: 2.5
