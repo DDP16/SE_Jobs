@@ -117,36 +117,75 @@ export const register = createAsyncThunk(
 
 export const getMe = createAsyncThunk(
     "auth/getMe",
-    async (_, { rejectWithValue }) => {       
-        const result = await new Promise((resolve, reject) => {
-            get(
-                "/api/auth/me",
-                async (res) => {
-                    try {
-                        const data = await res.json();
-                        console.log("GetMe response:", res);
-                        if (res.ok) {
-                            resolve(data.data || data);
-                        } else {
-                            reject(data.message || "Failed to fetch user data: " + res.status);
+    async (_, { rejectWithValue }) => {
+        try {
+            const result = await new Promise((resolve, reject) => {
+                get(
+                    "/api/auth/me",
+                    async (res) => {
+                        try {
+                            const data = await res.json();
+                            console.log("GetMe response:", res);
+                            if (res.ok) {
+                                resolve(data.data || data);
+                            } else {
+                                reject(data.message || "Failed to fetch user data: " + res.status);
+                            }
+                        } catch (error) {
+                            reject("Failed to parse response: " + error.message);
                         }
-                    } catch (error) {
-                        console.error("GetMe processing error:", error);
-                        reject("Failed to parse response: " + error.message);
+                    },
+                    async (res) => {
+                        try {
+                            const data = await res.json();
+                            reject(data.message || "Network error");
+                        } catch (error) {
+                            reject("Network error: " + error.message);
+                        }
                     }
-                },
-                async (res) => {
-                    try {
-                        const data = await res.json();
-                        reject(data.message || "Network error");
-                    } catch (error) {
-                        console.error("Error parsing error response:", error);
-                        reject("Network error: " + error.message);
+                );
+            });
+            return result;
+        } catch (error) {
+            return rejectWithValue(error);
+        }
+    }
+);
+
+export const logout = createAsyncThunk(
+    "auth/logout",
+    async (_, { rejectWithValue }) => {
+        try {
+            const result = await new Promise((resolve, reject) => {
+                post(
+                    "/api/auth/logout",
+                    {},
+                    async (res) => {
+                        try {
+                            const data = await res.json();
+                            if (res.ok) {
+                                resolve(data);
+                            } else {
+                                reject(data.message || "Logout failed");
+                            }
+                        } catch (error) {
+                            reject(error.message || "Logout processing error");
+                        }
+                    },
+                    async (res) => {
+                        try {
+                            const data = await res.json();
+                            reject(data.message || "Logout failed");
+                        } catch (error) {
+                            reject("Logout failed");
+                        }
                     }
-                }
-            );
-        });
-        return result;
+                );
+            });
+            return result;
+        } catch (error) {
+            return rejectWithValue(error);
+        }
     }
 );
 
@@ -163,15 +202,6 @@ const authSlice = createSlice({
         error: null,
     },
     reducers: {
-        logout: (state) => {
-            state.userId = null;
-            state.userRole = null;
-            state.isAuthenticated = false;
-            state.user = null;
-            state.status = "idle";
-            state.error = null;
-            clearAuthStorage();
-        },
         clearError: (state) => {
             state.error = null;
             state.status = "idle";
@@ -219,11 +249,28 @@ const authSlice = createSlice({
             .addCase(getMe.rejected, (state, action) => {
                 state.status = "failed";
                 state.error = action.payload;
+            })
+            .addCase(logout.pending, (state) => {
+                state.status = "loading";
+                state.error = null;
+            })
+            .addCase(logout.fulfilled, (state, action) => {
+                state.status = "succeeded";
+                state.userId = null;
+                state.userRole = null;
+                state.isAuthenticated = false;
+                state.user = null;
+                state.error = null;
+                clearAuthStorage();
+            })
+            .addCase(logout.rejected, (state, action) => {
+                state.status = "failed";
+                state.error = action.payload;
             });
     },
 });
 
-export const { logout, clearError } = authSlice.actions;
+export const { clearError } = authSlice.actions;
 export default authSlice.reducer;
 
 // Export helper functions if needed

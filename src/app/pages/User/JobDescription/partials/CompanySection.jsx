@@ -8,18 +8,17 @@ export default function CompanySection({ job }) {
       initial={{ opacity: 0, y: 40 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.5, delay: 0.6 }}
-      className="my-18 mx-30"
     >
-      <div className="grid grid-cols-2 gap-10 items-center h-[250px]">
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-15 items-center">
         <div>
           <div className="flex items-center mb-6 gap-4">
             <img
               src={srcAsset.stripeIcon}
               alt="Stripe Logo"
-              className="w-16 h-16 object-contain"
+              className="w-14 h-14 object-contain"
             />
             <div>
-              <h3 className="text-2xl font-bold text-foreground">{job.company}</h3>
+              <h4 className="text-2xl font-bold text-foreground">{job.company}</h4>
               <a
                 href="#"
                 className="text-primary flex items-center gap-1 hover:underline mt-1"

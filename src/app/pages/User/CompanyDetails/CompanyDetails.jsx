@@ -7,6 +7,7 @@ import CompanyInfo from './partials/CompanyInfo';
 import CompanyJobs from './partials/CompanyJobs';
 import { PerksSection } from "../../../components";
 import { mockCompanies, mockJobs } from '../../../../mocks/mockData';
+import OpenJobs from './partials/OpenJobs';
 
 export default function CompanyDetails() {
     const [searchParams] = useSearchParams();
@@ -33,7 +34,7 @@ export default function CompanyDetails() {
 
             <CompanyHeader company={company} />
 
-            <Box className="px-10 xl:px-30">
+            <Box className="px-8 xl:px-16">
                 <Box sx={{
                     display: 'grid',
                     gridTemplateColumns: { xs: '1fr', md: '2fr 1fr' },
@@ -49,8 +50,11 @@ export default function CompanyDetails() {
                     </Box>
                 </Box>
             </Box>
-
-            <PerksSection company={company} />
+            
+            <div className="px-8 xl:px-16 py-10 space-y-10">
+                <PerksSection company={company} />
+                <OpenJobs company={company} />
+            </div>
         </Box>
     );
 }

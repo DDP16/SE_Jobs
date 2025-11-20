@@ -56,6 +56,8 @@ export default function EducationModal({ open, onOpenChange, initialData, onSave
         }
     }, [initialData, open]);
 
+    const [errors, setErrors] = useState({});
+
     const handleChange = (field, value) => {
         setFormData((prev) => {
             if (field === "isCurrentlyStudying") {
@@ -342,6 +344,13 @@ export default function EducationModal({ open, onOpenChange, initialData, onSave
                                         )}
                                     </FormControl>
                                 </div>
+                                {errors.startYear && (
+                                    <div className="mt-1">
+                                        <Typography variant="caption" sx={{ color: 'error.main' }}>
+                                            {errors.startYear}
+                                        </Typography>
+                                    </div>
+                                )}
                             </div>
 
                             {/* Đến (To) */}

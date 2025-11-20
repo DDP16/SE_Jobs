@@ -8,6 +8,7 @@ const HEADERS = {
 export const get = async (uri, onSuccess, onFail) => {
   const res = await fetch(BE_ENPOINT + uri, {
     headers: HEADERS,
+    credentials: "include",
   });
 
   if (!res.ok) {
@@ -23,6 +24,7 @@ export const post = async (uri, reqData, onSuccess, onFail) => {
   const res = await fetch(BE_ENPOINT + uri, {
     method: "POST",
     headers: HEADERS,
+    credentials: "include",
     body: JSON.stringify(reqData),
   });
 
@@ -38,6 +40,7 @@ export const put = async (uri, reqData, onSuccess, onFail) => {
   const res = await fetch(BE_ENPOINT + uri, {
     method: "PUT",
     headers: HEADERS,
+    credentials: "include",
     body: JSON.stringify(reqData),
   });
 
@@ -54,6 +57,7 @@ export const del = async (uri, onSuccess, onFail) => {
   const res = await fetch(BE_ENPOINT + uri, {
     method: "DELETE",
     headers: HEADERS,
+    credentials: "include",
   });
 
     if (!res.ok) {
