@@ -1,3 +1,14 @@
-export { validateEmail, validatePassword, validateConfirmPassword } from './utils/validator';
+export {
+    validateEmail,
+    validatePassword,
+    validateConfirmPassword,
+    validateExperienceForm,
+    validateEducationForm,
+    validateProjectForm,
+    validateCertificateForm,
+    validateAwardForm,
+    validateSkillGroupForm,
+    validateLanguagesList,
+} from './utils/validator';
 
 export { loginWithEmail, register, getMe } from './services/authService';

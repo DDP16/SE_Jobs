@@ -4,7 +4,8 @@ import {
     uiButton as Button,
     uiLabel as Label,
 } from "@/components";
-import { Dialog, DialogContent, FormControl, Select, MenuItem } from "@mui/material";
+import { validateAwardForm } from "@/modules";
+import { Dialog, DialogContent, FormControl, Select, MenuItem, FormHelperText } from "@mui/material";
 import { X, Bold, Italic, Underline, List, Lightbulb } from "lucide-react";
 
 export default function AwardsModal({ open, onOpenChange, initialData, onSave }) {
@@ -18,6 +19,7 @@ export default function AwardsModal({ open, onOpenChange, initialData, onSave })
     const [charCount, setCharCount] = useState(0);
     const editorRef = useRef(null);
     const maxChars = 2500;
+    const [errors, setErrors] = useState({});
 
     // Update form data when initialData changes
     useEffect(() => {
@@ -34,6 +36,7 @@ export default function AwardsModal({ open, onOpenChange, initialData, onSave })
             if (editorRef.current) {
                 editorRef.current.innerHTML = description;
             }
+            setErrors({});
         } else {
             setFormData({
                 awardName: "",
@@ -46,11 +49,18 @@ export default function AwardsModal({ open, onOpenChange, initialData, onSave })
             if (editorRef.current) {
                 editorRef.current.innerHTML = "";
             }
+            setErrors({});
         }
     }, [initialData, open]);
 
     const handleChange = (field, value) => {
         setFormData((prev) => ({ ...prev, [field]: value }));
+        setErrors((prev) => {
+            if (!prev || Object.keys(prev).length === 0) return prev;
+            const updated = { ...prev };
+            delete updated[field];
+            return updated;
+        });
     };
 
     const handleContentChange = () => {
@@ -79,8 +89,17 @@ export default function AwardsModal({ open, onOpenChange, initialData, onSave })
 
 
     const handleSave = () => {
+        const { isValid, errors: validationErrors, sanitizedData } = validateAwardForm(formData);
+
+        if (!isValid) {
+            setErrors(validationErrors);
+            return;
+        }
+
+        setFormData(sanitizedData);
+
         if (onSave) {
-            onSave(formData);
+            onSave(sanitizedData);
         }
         onOpenChange(false);
     };
@@ -150,8 +169,12 @@ export default function AwardsModal({ open, onOpenChange, initialData, onSave })
                                 value={formData.awardName}
                                 onChange={(e) => handleChange("awardName", e.target.value)}
                                 placeholder="Awards name"
-                                className="h-12"
+                                aria-invalid={Boolean(errors.awardName)}
+                                className={`h-12 ${errors.awardName ? "border-red-500 focus-visible:ring-red-500" : ""}`}
                             />
+                            {errors.awardName && (
+                                <p className="text-sm text-red-500">{errors.awardName}</p>
+                            )}
                         </div>
 
                         {/* Award Organization */}
@@ -164,8 +187,12 @@ export default function AwardsModal({ open, onOpenChange, initialData, onSave })
                                 value={formData.awardOrganization}
                                 onChange={(e) => handleChange("awardOrganization", e.target.value)}
                                 placeholder="Award organization"
-                                className="h-12"
+                                aria-invalid={Boolean(errors.awardOrganization)}
+                                className={`h-12 ${errors.awardOrganization ? "border-red-500 focus-visible:ring-red-500" : ""}`}
                             />
+                            {errors.awardOrganization && (
+                                <p className="text-sm text-red-500">{errors.awardOrganization}</p>
+                            )}
                         </div>
 
                         {/* Issue Date */}
@@ -174,7 +201,7 @@ export default function AwardsModal({ open, onOpenChange, initialData, onSave })
                                 Issue date <span className="text-primary">*</span>
                             </Label>
                             <div className="grid grid-cols-2 gap-2">
-                                <FormControl fullWidth>
+                                <FormControl fullWidth error={Boolean(errors.issueMonth)}>
                                     <Select
                                         value={formData.issueMonth}
                                         onChange={(e) => handleChange("issueMonth", e.target.value)}
@@ -204,8 +231,11 @@ export default function AwardsModal({ open, onOpenChange, initialData, onSave })
                                             </MenuItem>
                                         ))}
                                     </Select>
+                                    {errors.issueMonth && (
+                                        <FormHelperText>{errors.issueMonth}</FormHelperText>
+                                    )}
                                 </FormControl>
-                                <FormControl fullWidth>
+                                <FormControl fullWidth error={Boolean(errors.issueYear)}>
                                     <Select
                                         value={formData.issueYear}
                                         onChange={(e) => handleChange("issueYear", e.target.value)}
@@ -235,6 +265,9 @@ export default function AwardsModal({ open, onOpenChange, initialData, onSave })
                                             </MenuItem>
                                         ))}
                                     </Select>
+                                    {errors.issueYear && (
+                                        <FormHelperText>{errors.issueYear}</FormHelperText>
+                                    )}
                                 </FormControl>
                             </div>
                         </div>

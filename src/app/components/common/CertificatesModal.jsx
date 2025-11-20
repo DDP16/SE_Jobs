@@ -4,7 +4,8 @@ import {
     uiButton as Button,
     uiLabel as Label,
 } from "../../components";
-import { Dialog, DialogContent, FormControl, Select, MenuItem } from "@mui/material";
+import { validateCertificateForm } from "@/modules";
+import { Dialog, DialogContent, FormControl, Select, MenuItem, FormHelperText } from "@mui/material";
 import { X, Bold, Italic, Underline, List } from "lucide-react";
 
 export default function CertificatesModal({ open, onOpenChange, initialData, onSave }) {
@@ -19,6 +20,7 @@ export default function CertificatesModal({ open, onOpenChange, initialData, onS
     const [charCount, setCharCount] = useState(0);
     const editorRef = useRef(null);
     const maxChars = 2500;
+    const [errors, setErrors] = useState({});
 
     // Update form data when initialData changes
     useEffect(() => {
@@ -36,6 +38,7 @@ export default function CertificatesModal({ open, onOpenChange, initialData, onS
             if (editorRef.current) {
                 editorRef.current.innerHTML = description;
             }
+            setErrors({});
         } else {
             setFormData({
                 certificateName: "",
@@ -49,11 +52,18 @@ export default function CertificatesModal({ open, onOpenChange, initialData, onS
             if (editorRef.current) {
                 editorRef.current.innerHTML = "";
             }
+            setErrors({});
         }
     }, [initialData, open]);
 
     const handleChange = (field, value) => {
         setFormData((prev) => ({ ...prev, [field]: value }));
+        setErrors((prev) => {
+            if (!prev || Object.keys(prev).length === 0) return prev;
+            const updated = { ...prev };
+            delete updated[field];
+            return updated;
+        });
     };
 
     const handleContentChange = () => {
@@ -82,8 +92,17 @@ export default function CertificatesModal({ open, onOpenChange, initialData, onS
 
 
     const handleSave = () => {
+        const { isValid, errors: validationErrors, sanitizedData } = validateCertificateForm(formData);
+
+        if (!isValid) {
+            setErrors(validationErrors);
+            return;
+        }
+
+        setFormData(sanitizedData);
+
         if (onSave) {
-            onSave(formData);
+            onSave(sanitizedData);
         }
         onOpenChange(false);
     };
@@ -153,8 +172,12 @@ export default function CertificatesModal({ open, onOpenChange, initialData, onS
                                 value={formData.certificateName}
                                 onChange={(e) => handleChange("certificateName", e.target.value)}
                                 placeholder="Certificate Name *"
-                                className="h-12"
+                                aria-invalid={Boolean(errors.certificateName)}
+                                className={`h-12 ${errors.certificateName ? "border-red-500 focus-visible:ring-red-500" : ""}`}
                             />
+                            {errors.certificateName && (
+                                <p className="text-sm text-red-500">{errors.certificateName}</p>
+                            )}
                         </div>
 
                         {/* Organization */}
@@ -167,8 +190,12 @@ export default function CertificatesModal({ open, onOpenChange, initialData, onS
                                 value={formData.organization}
                                 onChange={(e) => handleChange("organization", e.target.value)}
                                 placeholder="Organization *"
-                                className="h-12"
+                                aria-invalid={Boolean(errors.organization)}
+                                className={`h-12 ${errors.organization ? "border-red-500 focus-visible:ring-red-500" : ""}`}
                             />
+                            {errors.organization && (
+                                <p className="text-sm text-red-500">{errors.organization}</p>
+                            )}
                         </div>
 
                         {/* Issue Date */}
@@ -177,7 +204,7 @@ export default function CertificatesModal({ open, onOpenChange, initialData, onS
                                 Issue date <span className="text-primary">*</span>
                             </Label>
                             <div className="grid grid-cols-2 gap-2">
-                                <FormControl fullWidth>
+                                <FormControl fullWidth error={Boolean(errors.issueMonth)}>
                                     <Select
                                         value={formData.issueMonth}
                                         onChange={(e) => handleChange("issueMonth", e.target.value)}
@@ -207,8 +234,11 @@ export default function CertificatesModal({ open, onOpenChange, initialData, onS
                                             </MenuItem>
                                         ))}
                                     </Select>
+                                    {errors.issueMonth && (
+                                        <FormHelperText>{errors.issueMonth}</FormHelperText>
+                                    )}
                                 </FormControl>
-                                <FormControl fullWidth>
+                                <FormControl fullWidth error={Boolean(errors.issueYear)}>
                                     <Select
                                         value={formData.issueYear}
                                         onChange={(e) => handleChange("issueYear", e.target.value)}
@@ -238,6 +268,9 @@ export default function CertificatesModal({ open, onOpenChange, initialData, onS
                                             </MenuItem>
                                         ))}
                                     </Select>
+                                    {errors.issueYear && (
+                                        <FormHelperText>{errors.issueYear}</FormHelperText>
+                                    )}
                                 </FormControl>
                             </div>
                         </div>
@@ -252,8 +285,12 @@ export default function CertificatesModal({ open, onOpenChange, initialData, onS
                                 value={formData.certificateUrl}
                                 onChange={(e) => handleChange("certificateUrl", e.target.value)}
                                 placeholder="Certificate URL"
-                                className="h-12"
+                                aria-invalid={Boolean(errors.certificateUrl)}
+                                className={`h-12 ${errors.certificateUrl ? "border-red-500 focus-visible:ring-red-500" : ""}`}
                             />
+                            {errors.certificateUrl && (
+                                <p className="text-sm text-red-500">{errors.certificateUrl}</p>
+                            )}
                         </div>
 
                         {/* Description */}

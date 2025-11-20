@@ -5,9 +5,10 @@ import {
     uiButton as Button,
     uiLabel as Label,
 } from "@/components";
+import { validateEducationForm } from "@/modules";
 import { Dialog, DialogContent } from "@mui/material";
 import { X } from "lucide-react";
-import { FormControl, Select, MenuItem, Checkbox, FormControlLabel } from "@mui/material";
+import { FormControl, Select, MenuItem, Checkbox, FormControlLabel, FormHelperText } from "@mui/material";
 
 export default function EducationModal({ open, onOpenChange, initialData, onSave }) {
     const [formData, setFormData] = useState({
@@ -21,6 +22,7 @@ export default function EducationModal({ open, onOpenChange, initialData, onSave
         endYear: initialData?.endYear || "",
         description: initialData?.description || "",
     });
+    const [errors, setErrors] = useState({});
 
     // Update form data when initialData changes
     useEffect(() => {
@@ -36,6 +38,7 @@ export default function EducationModal({ open, onOpenChange, initialData, onSave
                 endYear: initialData?.endYear || "",
                 description: initialData?.description || "",
             });
+            setErrors({});
         } else {
             // Reset form when opening for new entry
             setFormData({
@@ -49,17 +52,53 @@ export default function EducationModal({ open, onOpenChange, initialData, onSave
                 endYear: "",
                 description: "",
             });
+            setErrors({});
         }
     }, [initialData, open]);
 
     const handleChange = (field, value) => {
-        setFormData((prev) => ({ ...prev, [field]: value }));
+        setFormData((prev) => {
+            if (field === "isCurrentlyStudying") {
+                return {
+                    ...prev,
+                    [field]: value,
+                    ...(value ? { endMonth: "", endYear: "" } : {}),
+                };
+            }
+            return { ...prev, [field]: value };
+        });
+
+        setErrors((prev) => {
+            if (!prev || Object.keys(prev).length === 0) return prev;
+            const updated = { ...prev };
+            delete updated[field];
+
+            if (["startMonth", "startYear", "endMonth", "endYear"].includes(field)) {
+                delete updated.dateRange;
+            }
+
+            if (field === "isCurrentlyStudying" && value) {
+                delete updated.endMonth;
+                delete updated.endYear;
+                delete updated.dateRange;
+            }
+
+            return updated;
+        });
     };
 
     const handleSave = () => {
-        // Call onSave callback if provided
+        const { isValid, errors: validationErrors, sanitizedData } = validateEducationForm(formData);
+
+        if (!isValid) {
+            setErrors(validationErrors);
+            return;
+        }
+
+        setFormData(sanitizedData);
+
         if (onSave) {
-            onSave(formData);
+            onSave(sanitizedData);
         }
         onOpenChange(false);
     };
@@ -136,15 +175,19 @@ export default function EducationModal({ open, onOpenChange, initialData, onSave
                                 value={formData.school}
                                 onChange={(e) => handleChange("school", e.target.value)}
                                 placeholder="Trường *"
-                                className="h-12"
+                                aria-invalid={Boolean(errors.school)}
+                                className={`h-12 ${errors.school ? "border-red-500 focus-visible:ring-red-500" : ""}`}
                             />
+                            {errors.school && (
+                                <p className="text-sm text-red-500">{errors.school}</p>
+                            )}
                         </div>
 
                         {/* Trình độ và Ngành học */}
                         <div className="grid grid-cols-2 gap-4">
                             {/* Trình độ (Degree) */}
                             <div className="space-y-2">
-                                <FormControl fullWidth>
+                                <FormControl fullWidth error={Boolean(errors.degree)}>
                                     <Select
                                         value={formData.degree}
                                         onChange={(e) => handleChange("degree", e.target.value)}
@@ -174,6 +217,9 @@ export default function EducationModal({ open, onOpenChange, initialData, onSave
                                             </MenuItem>
                                         ))}
                                     </Select>
+                                    {errors.degree && (
+                                        <FormHelperText>{errors.degree}</FormHelperText>
+                                    )}
                                 </FormControl>
                             </div>
 
@@ -183,8 +229,12 @@ export default function EducationModal({ open, onOpenChange, initialData, onSave
                                     value={formData.major}
                                     onChange={(e) => handleChange("major", e.target.value)}
                                     placeholder="Ngành học *"
-                                    className="h-12"
+                                    aria-invalid={Boolean(errors.major)}
+                                    className={`h-12 ${errors.major ? "border-red-500 focus-visible:ring-red-500" : ""}`}
                                 />
+                                {errors.major && (
+                                    <p className="text-sm text-red-500">{errors.major}</p>
+                                )}
                             </div>
                         </div>
 
@@ -223,7 +273,7 @@ export default function EducationModal({ open, onOpenChange, initialData, onSave
                                     Từ <span className="text-primary">*</span>
                                 </Label>
                                 <div className="grid grid-cols-2 gap-2">
-                                    <FormControl fullWidth>
+                                    <FormControl fullWidth error={Boolean(errors.startMonth)}>
                                         <Select
                                             value={formData.startMonth}
                                             onChange={(e) => handleChange("startMonth", e.target.value)}
@@ -253,8 +303,11 @@ export default function EducationModal({ open, onOpenChange, initialData, onSave
                                                 </MenuItem>
                                             ))}
                                         </Select>
+                                        {errors.startMonth && (
+                                            <FormHelperText>{errors.startMonth}</FormHelperText>
+                                        )}
                                     </FormControl>
-                                    <FormControl fullWidth>
+                                    <FormControl fullWidth error={Boolean(errors.startYear)}>
                                         <Select
                                             value={formData.startYear}
                                             onChange={(e) => handleChange("startYear", e.target.value)}
@@ -284,6 +337,9 @@ export default function EducationModal({ open, onOpenChange, initialData, onSave
                                                 </MenuItem>
                                             ))}
                                         </Select>
+                                        {errors.startYear && (
+                                            <FormHelperText>{errors.startYear}</FormHelperText>
+                                        )}
                                     </FormControl>
                                 </div>
                             </div>
@@ -294,7 +350,7 @@ export default function EducationModal({ open, onOpenChange, initialData, onSave
                                     Đến <span className="text-primary">*</span>
                                 </Label>
                                 <div className="grid grid-cols-2 gap-2">
-                                    <FormControl fullWidth>
+                                    <FormControl fullWidth error={Boolean(errors.endMonth)}>
                                         <Select
                                             value={formData.endMonth}
                                             onChange={(e) => handleChange("endMonth", e.target.value)}
@@ -325,8 +381,11 @@ export default function EducationModal({ open, onOpenChange, initialData, onSave
                                                 </MenuItem>
                                             ))}
                                         </Select>
+                                        {errors.endMonth && (
+                                            <FormHelperText>{errors.endMonth}</FormHelperText>
+                                        )}
                                     </FormControl>
-                                    <FormControl fullWidth>
+                                    <FormControl fullWidth error={Boolean(errors.endYear)}>
                                         <Select
                                             value={formData.endYear}
                                             onChange={(e) => handleChange("endYear", e.target.value)}
@@ -357,8 +416,14 @@ export default function EducationModal({ open, onOpenChange, initialData, onSave
                                                 </MenuItem>
                                             ))}
                                         </Select>
+                                        {errors.endYear && (
+                                            <FormHelperText>{errors.endYear}</FormHelperText>
+                                        )}
                                     </FormControl>
                                 </div>
+                                {errors.dateRange && (
+                                    <p className="text-sm text-red-500">{errors.dateRange}</p>
+                                )}
                             </div>
                         </div>
 

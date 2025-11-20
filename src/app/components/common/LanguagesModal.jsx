@@ -1,8 +1,6 @@
 import { useState, useEffect } from "react";
-import {
-    uiInput as Input,
-    uiButton as Button,
-} from "@/components";
+import { uiButton as Button } from "@/components";
+import { validateLanguagesList } from "@/modules";
 import { Dialog, DialogContent, Autocomplete, TextField, FormControl, Select, MenuItem, Chip } from "@mui/material";
 import { X, Plus } from "lucide-react";
 
@@ -34,6 +32,7 @@ export default function LanguagesModal({ open, onOpenChange, initialData, onSave
     const [selectedLanguages, setSelectedLanguages] = useState([]);
     const [searchLanguage, setSearchLanguage] = useState("");
     const [selectedLevel, setSelectedLevel] = useState("");
+    const [errors, setErrors] = useState({});
 
     // Update selected languages when initialData changes
     useEffect(() => {
@@ -42,8 +41,11 @@ export default function LanguagesModal({ open, onOpenChange, initialData, onSave
         } else if (initialData) {
             // Handle if initialData is an object with languages array
             setSelectedLanguages(initialData.languages || []);
+        } else {
+            setSelectedLanguages([]);
         }
-    }, [initialData]);
+        setErrors({});
+    }, [initialData, open]);
 
     const handleAddLanguage = () => {
         if (!searchLanguage || !selectedLevel) {
@@ -83,6 +85,12 @@ export default function LanguagesModal({ open, onOpenChange, initialData, onSave
         // Reset inputs
         setSearchLanguage("");
         setSelectedLevel("");
+        setErrors((prev) => {
+            if (!prev.languages) return prev;
+            const updated = { ...prev };
+            delete updated.languages;
+            return updated;
+        });
     };
 
     const handleRemoveLanguage = (languageToRemove) => {
@@ -92,8 +100,17 @@ export default function LanguagesModal({ open, onOpenChange, initialData, onSave
     };
 
     const handleSave = () => {
+        const { isValid, errors: validationErrors, sanitizedLanguages } = validateLanguagesList(selectedLanguages);
+
+        if (!isValid) {
+            setErrors(validationErrors);
+            return;
+        }
+
+        setSelectedLanguages(sanitizedLanguages);
+
         if (onSave) {
-            onSave(selectedLanguages);
+            onSave(sanitizedLanguages);
         }
         onOpenChange(false);
     };
@@ -138,6 +155,9 @@ export default function LanguagesModal({ open, onOpenChange, initialData, onSave
                         <span className="text-sm font-medium text-foreground">
                             Danh sách ngôn ngữ ({selectedLanguages.length}/{MAX_LANGUAGES})
                         </span>
+                        {errors.languages && (
+                            <p className="text-sm text-red-500 mt-1">{errors.languages}</p>
+                        )}
                     </div>
 
                     {/* Input Fields Row */}

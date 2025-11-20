@@ -4,7 +4,8 @@ import {
     uiButton as Button,
     uiLabel as Label,
 } from "@/components";
-import { Dialog, DialogContent, FormControl, Select, MenuItem, Checkbox, FormControlLabel } from "@mui/material";
+import { validateProjectForm } from "@/modules";
+import { Dialog, DialogContent, FormControl, Select, MenuItem, Checkbox, FormControlLabel, FormHelperText } from "@mui/material";
 import { X, Bold, Italic, Underline, List, Lightbulb } from "lucide-react";
 
 export default function ProjectsModal({ open, onOpenChange, initialData, onSave }) {
@@ -21,6 +22,7 @@ export default function ProjectsModal({ open, onOpenChange, initialData, onSave 
     const [charCount, setCharCount] = useState(0);
     const editorRef = useRef(null);
     const maxChars = 2500;
+    const [errors, setErrors] = useState({});
 
     // Update form data when initialData changes
     useEffect(() => {
@@ -40,6 +42,7 @@ export default function ProjectsModal({ open, onOpenChange, initialData, onSave 
             if (editorRef.current) {
                 editorRef.current.innerHTML = description;
             }
+            setErrors({});
         } else {
             setFormData({
                 projectName: "",
@@ -55,11 +58,39 @@ export default function ProjectsModal({ open, onOpenChange, initialData, onSave 
             if (editorRef.current) {
                 editorRef.current.innerHTML = "";
             }
+            setErrors({});
         }
     }, [initialData, open]);
 
     const handleChange = (field, value) => {
-        setFormData((prev) => ({ ...prev, [field]: value }));
+        setFormData((prev) => {
+            if (field === "isCurrentlyWorking") {
+                return {
+                    ...prev,
+                    [field]: value,
+                    ...(value ? { endMonth: "", endYear: "" } : {}),
+                };
+            }
+            return { ...prev, [field]: value };
+        });
+
+        setErrors((prev) => {
+            if (!prev || Object.keys(prev).length === 0) return prev;
+            const updated = { ...prev };
+            delete updated[field];
+
+            if (["startMonth", "startYear", "endMonth", "endYear"].includes(field)) {
+                delete updated.dateRange;
+            }
+
+            if (field === "isCurrentlyWorking" && value) {
+                delete updated.endMonth;
+                delete updated.endYear;
+                delete updated.dateRange;
+            }
+
+            return updated;
+        });
     };
 
     const handleContentChange = () => {
@@ -95,8 +126,16 @@ export default function ProjectsModal({ open, onOpenChange, initialData, onSave 
     };
 
     const handleSave = () => {
+        const { isValid, errors: validationErrors, sanitizedData } = validateProjectForm(formData);
+
+        if (!isValid) {
+            setErrors(validationErrors);
+            return;
+        }
+
+        setFormData(sanitizedData);
         if (onSave) {
-            onSave(formData);
+            onSave(sanitizedData);
         }
         onOpenChange(false);
     };
@@ -177,8 +216,12 @@ export default function ProjectsModal({ open, onOpenChange, initialData, onSave 
                                 value={formData.projectName}
                                 onChange={(e) => handleChange("projectName", e.target.value)}
                                 placeholder="Nhập tên dự án"
-                                className="h-12"
+                                aria-invalid={Boolean(errors.projectName)}
+                                className={`h-12 ${errors.projectName ? "border-red-500 focus-visible:ring-red-500" : ""}`}
                             />
+                            {errors.projectName && (
+                                <p className="text-sm text-red-500">{errors.projectName}</p>
+                            )}
                         </div>
 
                         {/* Checkbox - Currently working on this project */}
@@ -216,7 +259,7 @@ export default function ProjectsModal({ open, onOpenChange, initialData, onSave 
                                     Ngày bắt đầu <span className="text-primary">*</span>
                                 </Label>
                                 <div className="grid grid-cols-2 gap-2">
-                                    <FormControl fullWidth>
+                                    <FormControl fullWidth error={Boolean(errors.startMonth)}>
                                         <Select
                                             value={formData.startMonth}
                                             onChange={(e) => handleChange("startMonth", e.target.value)}
@@ -246,8 +289,11 @@ export default function ProjectsModal({ open, onOpenChange, initialData, onSave 
                                                 </MenuItem>
                                             ))}
                                         </Select>
+                                        {errors.startMonth && (
+                                            <FormHelperText>{errors.startMonth}</FormHelperText>
+                                        )}
                                     </FormControl>
-                                    <FormControl fullWidth>
+                                    <FormControl fullWidth error={Boolean(errors.startYear)}>
                                         <Select
                                             value={formData.startYear}
                                             onChange={(e) => handleChange("startYear", e.target.value)}
@@ -277,6 +323,9 @@ export default function ProjectsModal({ open, onOpenChange, initialData, onSave 
                                                 </MenuItem>
                                             ))}
                                         </Select>
+                                        {errors.startYear && (
+                                            <FormHelperText>{errors.startYear}</FormHelperText>
+                                        )}
                                     </FormControl>
                                 </div>
                             </div>
@@ -287,7 +336,7 @@ export default function ProjectsModal({ open, onOpenChange, initialData, onSave 
                                     Ngày kết thúc <span className="text-primary">*</span>
                                 </Label>
                                 <div className="grid grid-cols-2 gap-2">
-                                    <FormControl fullWidth>
+                                    <FormControl fullWidth error={Boolean(errors.endMonth)}>
                                         <Select
                                             value={formData.endMonth}
                                             onChange={(e) => handleChange("endMonth", e.target.value)}
@@ -318,8 +367,11 @@ export default function ProjectsModal({ open, onOpenChange, initialData, onSave 
                                                 </MenuItem>
                                             ))}
                                         </Select>
+                                        {errors.endMonth && (
+                                            <FormHelperText>{errors.endMonth}</FormHelperText>
+                                        )}
                                     </FormControl>
-                                    <FormControl fullWidth>
+                                    <FormControl fullWidth error={Boolean(errors.endYear)}>
                                         <Select
                                             value={formData.endYear}
                                             onChange={(e) => handleChange("endYear", e.target.value)}
@@ -350,8 +402,14 @@ export default function ProjectsModal({ open, onOpenChange, initialData, onSave 
                                                 </MenuItem>
                                             ))}
                                         </Select>
+                                        {errors.endYear && (
+                                            <FormHelperText>{errors.endYear}</FormHelperText>
+                                        )}
                                     </FormControl>
                                 </div>
+                                {errors.dateRange && (
+                                    <p className="text-sm text-red-500">{errors.dateRange}</p>
+                                )}
                             </div>
                         </div>
 
@@ -437,8 +495,12 @@ export default function ProjectsModal({ open, onOpenChange, initialData, onSave 
                                 value={formData.websiteLink}
                                 onChange={(e) => handleChange("websiteLink", e.target.value)}
                                 placeholder="Nhập đường dẫn website"
-                                className="h-12"
+                                aria-invalid={Boolean(errors.websiteLink)}
+                                className={`h-12 ${errors.websiteLink ? "border-red-500 focus-visible:ring-red-500" : ""}`}
                             />
+                            {errors.websiteLink && (
+                                <p className="text-sm text-red-500">{errors.websiteLink}</p>
+                            )}
                         </div>
                     </form>
 
