@@ -16,8 +16,26 @@
     "goBack": "Go Back",
     "searchJobs": "Search Jobs",
     "findYourDreamJob": "Find Your Dream Job",
-    "getStarted": "Get Started"
-    ,
+    "getStarted": "Get Started",
+    "email": "Email Address",
+    "password": "Password",
+    "confirm_password": "Confirm Password",
+    "first_name": "First Name",
+    "last_name": "Last Name",
+
+    "auth": {
+        "sign_in": "Sign in",
+        "sign_up": "Sign up",
+        "no_account": "No Account?",
+        "already_have_account": "Already have an account?",
+        "enter_email": "Enter your Email",
+        "enter_password": "Enter your Password",
+        "enter_first_name": "Enter your First Name",
+        "enter_last_name": "Enter your Last Name",
+        "confirm_password": "Confirm your Password",
+        "forgot_password": "Forgot Password"
+    },
+
     "userActivities": {
         "title": "Your Activities"
     },

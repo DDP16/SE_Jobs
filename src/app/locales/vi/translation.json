@@ -16,8 +16,26 @@
     "goBack": "Quay lại",
     "searchJobs": "Tìm việc làm",
     "findYourDreamJob": "Tìm công việc mơ ước của bạn",
-    "getStarted": "Bắt đầu"
-    ,
+    "getStarted": "Bắt đầu",
+    "email": "Địa chỉ Email",
+    "password": "Mật khẩu",
+    "confirm_password": "Xác nhận mật khẩu",
+    "first_name": "Tên",
+    "last_name": "Họ",
+
+    "auth": {
+        "sign_in": "Đăng nhập",
+        "sign_up": "Đăng ký",
+        "no_account": "Chưa có tài khoản?",
+        "already_have_account": "Đã có tài khoản?",
+        "enter_email": "Nhập email của bạn",
+        "enter_password": "Nhập mật khẩu của bạn",
+        "enter_first_name": "Nhập tên của bạn",
+        "enter_last_name": "Nhập họ của bạn",
+        "confirm_password": "Xác nhận mật khẩu của bạn",
+        "forgot_password": "Quên mật khẩu"
+    },
+
     "userActivities": {
         "title": "Hoạt động của bạn"
     },

@@ -12,6 +12,7 @@ export { DefaultSidebar as SideBar } from './common/SideBar';
 export { default as CustomAlert } from './common/CustomAlert';
 export { default as BorderLinearProgress } from './common/BorderLinearProgress';
 export { default as ProfileSidebar } from './common/SideBar';
+export { default as LangButtonGroup } from './common/LangButtonGroup';
 
 // Modals
 export { default as ApplicationModal } from './common/ApplicationModal';
