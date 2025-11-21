@@ -144,17 +144,14 @@ export default function MyJobs() {
     };
 
     const handleBookmark = (job) => {
-        console.log('Bookmark job:', job);
         // TODO: Implement bookmark functionality
     };
 
     const handleShare = (job) => {
-        console.log('Share job:', job);
         // TODO: Implement share functionality
     };
 
     const handleApply = (job) => {
-        console.log('Apply to job:', job);
         // TODO: Implement apply functionality
     };
 

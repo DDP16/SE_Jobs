@@ -6,8 +6,10 @@ import {
 import { validateSkillGroupForm } from "@/modules";
 import { Dialog, DialogContent, FormControl, Select, MenuItem, Autocomplete, Chip, TextField } from "@mui/material";
 import { X, Lightbulb, Plus } from "lucide-react";
+import { useTranslation } from 'react-i18next';
 
 export default function SkillsModal({ open, onOpenChange, initialData, onSave }) {
+    const { t } = useTranslation();
     const [groupName, setGroupName] = useState(initialData?.groupName || initialData?.name || "Core Skills");
     const [skills, setSkills] = useState(initialData?.skills || []);
     const [skillInput, setSkillInput] = useState("");
@@ -143,14 +145,14 @@ export default function SkillsModal({ open, onOpenChange, initialData, onSave })
                 <div className="sticky top-0 bg-background z-10 p-6 pb-4 border-b border-neutrals-20">
                     <div className="flex items-center justify-between">
                         <span className="text-xl font-bold text-foreground">
-                            Core Skills
+                            {t('modals.skills.title')}
                         </span>
                         <button
                             onClick={() => onOpenChange(false)}
                             className="rounded-full bg-primary/10 p-1.5 hover:bg-primary/20 transition-colors focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2"
                         >
                             <X className="h-5 w-5 text-primary" />
-                            <span className="sr-only">Close</span>
+                            <span className="sr-only">{t('modals.common.close')}</span>
                         </button>
                     </div>
                 </div>
@@ -161,9 +163,9 @@ export default function SkillsModal({ open, onOpenChange, initialData, onSave })
                     <div className="flex items-start gap-2 mb-4 p-3 bg-orange-50 rounded-lg border border-orange-100">
                         <Lightbulb className="h-5 w-5 text-orange-500 shrink-0 mt-0.5" />
                         <div>
-                            <span className="text-sm font-bold text-orange-600">Tips: </span>
+                            <span className="text-sm font-bold text-orange-600">{t('modals.skills.tipsTitle')} </span>
                             <span className="text-sm text-foreground">
-                                Organize your core skills into groups helps recruiters quickly understand your professional capabilities.
+                                {t('modals.skills.tipsText')}
                             </span>
                         </div>
                     </div>
@@ -171,11 +173,11 @@ export default function SkillsModal({ open, onOpenChange, initialData, onSave })
                     <form className="space-y-4">
                         {/* List Skills */}
                         <div className="space-y-2">
-                            <Label className="text-sm font-medium text-foreground">
-                                List skills ({skills.length}/{maxSkills})
-                            </Label>
+                                <Label className="text-sm font-medium text-foreground">
+                                    {t('modals.skills.listCount', { count: skills.length, max: maxSkills })}
+                                </Label>
                             {errors.skills && (
-                                <p className="text-sm text-red-500">{errors.skills}</p>
+                                <p className="text-sm text-red-500">{t(errors.skills)}</p>
                             )}
 
                             {/* Skill Input Row */}
@@ -195,7 +197,7 @@ export default function SkillsModal({ open, onOpenChange, initialData, onSave })
                                         renderInput={(params) => (
                                             <TextField
                                                 {...params}
-                                                placeholder="Search skills"
+                                                placeholder={t('modals.skills.searchPlaceholder')}
                                                 InputProps={{
                                                     ...params.InputProps,
                                                     sx: {
@@ -238,7 +240,7 @@ export default function SkillsModal({ open, onOpenChange, initialData, onSave })
                                             }}
                                         >
                                             <MenuItem value="" disabled>
-                                                Select experience
+                                                {t('modals.skills.selectExperience')}
                                             </MenuItem>
                                             {experienceLevels.map((level) => (
                                                 <MenuItem key={level.value} value={level.value}>
@@ -298,14 +300,14 @@ export default function SkillsModal({ open, onOpenChange, initialData, onSave })
                             variant="outline"
                             className="h-12 px-6 bg-white border border-neutrals-40 text-foreground hover:bg-neutrals-10 hover:border-neutrals-40"
                         >
-                            Cancel
+                            {t('modals.common.cancel')}
                         </Button>
                         <Button
                             type="button"
                             onClick={handleSave}
                             className="h-12 px-6 bg-primary hover:bg-primary/90 text-white font-medium"
                         >
-                            Save
+                            {t('modals.common.save')}
                         </Button>
                     </div>
                 </div>

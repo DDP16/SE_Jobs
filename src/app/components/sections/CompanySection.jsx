@@ -188,7 +188,7 @@ export default function CompanySection() {
                                         >
                                             <CompanyCard
                                                 company={company}
-                                                onClick={(company) => console.log('Company clicked:', company)}
+                                                onClick={() => {}}
                                             />
                                         </Box>
                                     ))}
@@ -211,7 +211,7 @@ export default function CompanySection() {
                                         >
                                             <CompanyCard
                                                 company={company}
-                                                onClick={(company) => console.log('Company clicked:', company)}
+                                                onClick={() => {}}
                                             />
                                         </Box>
                                     ))}

@@ -17,7 +17,7 @@ export default function JobListSection({ onJobSelect, selectedJob }) {
     const jobsPerPage = 10;
 
     const handleJobAction = (action, job) => {
-        console.log(`${action} job:`, job);
+        // debug handler removed
     };
 
     const handlePageChange = (event, page) => {

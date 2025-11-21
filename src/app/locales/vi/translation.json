@@ -43,4 +43,152 @@
         "notifications": "Thông báo",
         "settings": "Cài đặt"
     }
+    ,
+    "modals": {
+        "education": {
+            "title": "Học vấn",
+            "schoolPlaceholder": "Trường *",
+            "degreePlaceholder": "Trình độ *",
+            "majorPlaceholder": "Ngành học *",
+            "currentlyStudying": "Tôi đang theo học tại đây",
+            "from": "Từ",
+            "to": "Đến",
+            "month": "Tháng",
+            "year": "Năm",
+            "otherInfoPlaceholder": "Thông tin chi tiết khác",
+            "cancel": "Huỷ",
+            "save": "Lưu",
+            "errors": {
+                "schoolRequired": "Vui lòng nhập tên trường",
+                "degreeRequired": "Vui lòng chọn trình độ",
+                "majorRequired": "Vui lòng nhập ngành học",
+                "startMonthRequired": "Vui lòng chọn tháng bắt đầu.",
+                "startYearRequired": "Vui lòng chọn năm bắt đầu (không lớn hơn năm hiện tại)",
+                "startYearFuture": "Năm bắt đầu không được lớn hơn năm hiện tại.",
+                "endMonthRequired": "Vui lòng chọn tháng kết thúc.",
+                "endYearRequired": "Vui lòng chọn năm kết thúc hoặc đánh dấu 'Tôi đang theo học'",
+                "endAfterStart": "Năm/Tháng kết thúc phải sau hoặc bằng thời điểm bắt đầu"
+            }
+        },
+        "common": {
+            "month": "Tháng",
+            "year": "Năm",
+            "cancel": "Huỷ",
+            "save": "Lưu",
+            "close": "Đóng",
+            "characters": "ký tự",
+            "tips": "Mẹo"
+        },
+        "skills": {
+            "title": "Kỹ năng chính",
+            "listCount": "Danh sách kỹ năng ({{count}}/{{max}})",
+            "searchPlaceholder": "Tìm kỹ năng",
+            "selectExperience": "Chọn kinh nghiệm",
+            "tipsTitle": "Mẹo:",
+            "tipsText": "Sắp xếp các kỹ năng chính theo nhóm để nhà tuyển dụng nhanh chóng nắm bắt năng lực chuyên môn của bạn.",
+            "cancel": "Huỷ",
+            "save": "Lưu"
+            ,
+            "errors": {
+                "groupNameRequired": "Vui lòng nhập tên nhóm.",
+                "skillsRequired": "Vui lòng thêm ít nhất một kỹ năng.",
+                "skillExperienceRequired": "Mỗi kỹ năng phải có mức kinh nghiệm."
+            }
+        },
+        "experience": {
+            "title": "Kinh nghiệm làm việc",
+            "jobTitlePlaceholder": "Chức danh công việc *",
+            "companyPlaceholder": "Công ty *",
+            "currentlyWorking": "Tôi đang làm việc tại đây",
+            "from": "Từ",
+            "to": "Đến",
+            "tipsTitle": "Mẹo:",
+            "tipsText": "Tóm tắt ngành nghề của công ty, sau đó chi tiết trách nhiệm và thành tựu của bạn. Với dự án, viết ở trường 'Dự án' bên dưới.",
+            "insertTemplateText": "• Tóm tắt dự án: [Tóm tắt ngắn về dự án]\n• Vai trò của bạn: [Vai trò và trách nhiệm]\n• Công nghệ: [Các công nghệ đã sử dụng]\n• Số thành viên: [Số lượng thành viên trong nhóm]",
+            "charactersCounter": "{{count}}/{{max}} ký tự",
+            "errors": {
+                "jobTitleRequired": "Vui lòng nhập chức danh công việc.",
+                "companyRequired": "Vui lòng nhập tên công ty.",
+                "startMonthRequired": "Vui lòng chọn tháng bắt đầu.",
+                "startYearRequired": "Vui lòng chọn năm bắt đầu.",
+                "startYearFuture": "Năm bắt đầu không được lớn hơn năm hiện tại.",
+                "endMonthRequired": "Vui lòng chọn tháng kết thúc.",
+                "endYearRequired": "Vui lòng chọn năm kết thúc.",
+                "dateRange": "Ngày kết thúc phải sau ngày bắt đầu."
+            }
+        },
+        "projects": {
+            "title": "Dự án",
+            "projectNameLabel": "Tên dự án",
+            "projectNamePlaceholder": "Nhập tên dự án",
+            "currentlyWorking": "Tôi vẫn đang làm dự án này",
+            "startDate": "Ngày bắt đầu",
+            "endDate": "Ngày kết thúc",
+            "insertTemplate": "Chèn mẫu sẵn",
+            "descriptionLabel": "Mô tả dự án",
+            "websiteLabel": "Đường dẫn website",
+            "websitePlaceholder": "Nhập đường dẫn website",
+            "tipsText": "Tóm tắt ngành nghề của công ty, sau đó chi tiết trách nhiệm và thành tựu của bạn. Với dự án, viết ở trường 'Dự án' bên dưới.",
+            "errors": {
+                "projectNameRequired": "Vui lòng nhập tên dự án.",
+                "startMonthRequired": "Vui lòng chọn tháng bắt đầu.",
+                "startYearRequired": "Vui lòng chọn năm bắt đầu.",
+                "startYearFuture": "Năm bắt đầu không được lớn hơn năm hiện tại.",
+                "endMonthRequired": "Vui lòng chọn tháng kết thúc.",
+                "endYearRequired": "Vui lòng chọn năm kết thúc.",
+                "dateRange": "Ngày kết thúc phải sau ngày bắt đầu.",
+                "websiteInvalid": "Vui lòng nhập URL hợp lệ (ví dụ: https://example.com)."
+            }
+        },
+        "languages": {
+            "title": "Ngoại ngữ",
+            "listCount": "Danh sách ngôn ngữ ({{count}}/{{max}})",
+            "searchPlaceholder": "Tìm ngôn ngữ",
+            "selectLevel": "Chọn trình độ"
+            ,
+            "errors": {
+                "languagesRequired": "Vui lòng thêm ít nhất một ngoại ngữ.",
+                "languageLevelRequired": "Mỗi ngoại ngữ cần có trình độ tương ứng."
+            }
+        },
+        "certificates": {
+            "title": "Chứng chỉ",
+            "certificateName": "Tên chứng chỉ",
+            "certificateNamePlaceholder": "Tên chứng chỉ *",
+            "organization": "Tổ chức",
+            "organizationPlaceholder": "Tổ chức *",
+            "issueDate": "Ngày cấp",
+            "certificateUrl": "Đường dẫn chứng chỉ",
+            "description": "Mô tả",
+            "errors": {
+                "certificateNameRequired": "Vui lòng nhập tên chứng chỉ.",
+                "organizationRequired": "Vui lòng nhập tổ chức.",
+                "issueMonthRequired": "Vui lòng chọn tháng cấp.",
+                "issueYearRequired": "Vui lòng chọn năm cấp.",
+                "issueYearFuture": "Năm cấp không được lớn hơn năm hiện tại.",
+                "certificateUrlInvalid": "Vui lòng nhập URL hợp lệ (ví dụ: https://example.com)."
+            }
+        },
+        "awards": {
+            "title": "Giải thưởng",
+            "awardName": "Tên giải thưởng",
+            "awardNamePlaceholder": "Tên giải thưởng",
+            "awardOrganization": "Tổ chức trao giải",
+            "issueDate": "Ngày cấp",
+            "description": "Mô tả",
+            "name": "Tên giải thưởng",
+            "namePlaceholder": "Tên giải thưởng",
+            "organization": "Tổ chức trao giải",
+            "organizationPlaceholder": "Tổ chức trao giải",
+            "tipsTitle": "Mẹo",
+            "tipsText": "Mô tả ngắn về lý do trao giải hoặc thành tựu liên quan",
+            "errors": {
+                "awardNameRequired": "Vui lòng nhập tên giải thưởng.",
+                "awardOrganizationRequired": "Vui lòng nhập tổ chức trao giải.",
+                "issueMonthRequired": "Vui lòng chọn tháng cấp.",
+                "issueYearRequired": "Vui lòng chọn năm cấp.",
+                "issueYearFuture": "Năm cấp không được lớn hơn năm hiện tại."
+            }
+        }
+    }
 }

@@ -6,9 +6,11 @@ import {
 } from "@/components";
 import { validateAwardForm } from "@/modules";
 import { Dialog, DialogContent, FormControl, Select, MenuItem, FormHelperText } from "@mui/material";
+import { useTranslation } from 'react-i18next';
 import { X, Bold, Italic, Underline, List, Lightbulb } from "lucide-react";
 
 export default function AwardsModal({ open, onOpenChange, initialData, onSave }) {
+    const { t } = useTranslation();
     const [formData, setFormData] = useState({
         awardName: initialData?.awardName || initialData?.name || "",
         awardOrganization: initialData?.awardOrganization || initialData?.organization || "",
@@ -144,14 +146,14 @@ export default function AwardsModal({ open, onOpenChange, initialData, onSave })
                 <div className="sticky top-0 bg-background z-10 p-6 pb-4 border-b border-neutrals-20">
                     <div className="flex items-center justify-between">
                         <span className="text-xl font-bold text-foreground">
-                            Awards
+                            {t('modals.awards.title')}
                         </span>
                         <button
                             onClick={() => onOpenChange(false)}
                             className="rounded-full bg-primary/10 p-1.5 hover:bg-primary/20 transition-colors focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2"
                         >
                             <X className="h-5 w-5 text-primary" />
-                            <span className="sr-only">Close</span>
+                            <span className="sr-only">{t('modals.common.close')}</span>
                         </button>
                     </div>
                 </div>
@@ -162,43 +164,43 @@ export default function AwardsModal({ open, onOpenChange, initialData, onSave })
                         {/* Award Name */}
                         <div className="space-y-2">
                             <Label htmlFor="awardName" className="text-sm font-medium text-foreground">
-                                Awards name <span className="text-primary">*</span>
+                                {t('modals.awards.name')} <span className="text-primary">*</span>
                             </Label>
                             <Input
                                 id="awardName"
                                 value={formData.awardName}
                                 onChange={(e) => handleChange("awardName", e.target.value)}
-                                placeholder="Awards name"
+                                placeholder={t('modals.awards.namePlaceholder')}
                                 aria-invalid={Boolean(errors.awardName)}
                                 className={`h-12 ${errors.awardName ? "border-red-500 focus-visible:ring-red-500" : ""}`}
                             />
                             {errors.awardName && (
-                                <p className="text-sm text-red-500">{errors.awardName}</p>
+                                <p className="text-sm text-red-500">{t(errors.awardName)}</p>
                             )}
                         </div>
 
                         {/* Award Organization */}
                         <div className="space-y-2">
                             <Label htmlFor="awardOrganization" className="text-sm font-medium text-foreground">
-                                Award organization <span className="text-primary">*</span>
+                                {t('modals.awards.organization')} <span className="text-primary">*</span>
                             </Label>
                             <Input
                                 id="awardOrganization"
                                 value={formData.awardOrganization}
                                 onChange={(e) => handleChange("awardOrganization", e.target.value)}
-                                placeholder="Award organization"
+                                placeholder={t('modals.awards.organizationPlaceholder')}
                                 aria-invalid={Boolean(errors.awardOrganization)}
                                 className={`h-12 ${errors.awardOrganization ? "border-red-500 focus-visible:ring-red-500" : ""}`}
                             />
                             {errors.awardOrganization && (
-                                <p className="text-sm text-red-500">{errors.awardOrganization}</p>
+                                <p className="text-sm text-red-500">{t(errors.awardOrganization)}</p>
                             )}
                         </div>
 
                         {/* Issue Date */}
                         <div className="space-y-2">
                             <Label className="text-sm font-medium text-foreground">
-                                Issue date <span className="text-primary">*</span>
+                                {t('modals.awards.issueDate')} <span className="text-primary">*</span>
                             </Label>
                             <div className="grid grid-cols-2 gap-2">
                                 <FormControl fullWidth error={Boolean(errors.issueMonth)}>
@@ -223,7 +225,7 @@ export default function AwardsModal({ open, onOpenChange, initialData, onSave })
                                         }}
                                     >
                                         <MenuItem value="" disabled>
-                                            Month
+                                            {t('modals.common.month')}
                                         </MenuItem>
                                         {months.map((month) => (
                                             <MenuItem key={month.value} value={month.value}>
@@ -232,7 +234,7 @@ export default function AwardsModal({ open, onOpenChange, initialData, onSave })
                                         ))}
                                     </Select>
                                     {errors.issueMonth && (
-                                        <FormHelperText>{errors.issueMonth}</FormHelperText>
+                                        <FormHelperText>{t(errors.issueMonth)}</FormHelperText>
                                     )}
                                 </FormControl>
                                 <FormControl fullWidth error={Boolean(errors.issueYear)}>
@@ -257,7 +259,7 @@ export default function AwardsModal({ open, onOpenChange, initialData, onSave })
                                         }}
                                     >
                                         <MenuItem value="" disabled>
-                                            Year
+                                            {t('modals.common.year')}
                                         </MenuItem>
                                         {years.map((year) => (
                                             <MenuItem key={year.value} value={year.value}>
@@ -266,7 +268,7 @@ export default function AwardsModal({ open, onOpenChange, initialData, onSave })
                                         ))}
                                     </Select>
                                     {errors.issueYear && (
-                                        <FormHelperText>{errors.issueYear}</FormHelperText>
+                                        <FormHelperText>{t(errors.issueYear)}</FormHelperText>
                                     )}
                                 </FormControl>
                             </div>
@@ -275,16 +277,16 @@ export default function AwardsModal({ open, onOpenChange, initialData, onSave })
                         {/* Description */}
                         <div className="space-y-2">
                             <Label className="text-sm font-medium text-foreground">
-                                Description
+                                {t('modals.awards.description')}
                             </Label>
 
                             {/* Tips Section */}
-                            <div className="flex items-start gap-2 mb-2 p-3 bg-orange-50 rounded-lg border border-orange-100">
+                                <div className="flex items-start gap-2 mb-2 p-3 bg-orange-50 rounded-lg border border-orange-100">
                                 <Lightbulb className="h-5 w-5 text-orange-500 shrink-0 mt-0.5" />
                                 <div>
-                                    <span className="text-sm font-bold text-orange-600">Tips: </span>
+                                    <span className="text-sm font-bold text-orange-600">{t('modals.awards.tipsTitle')}: </span>
                                     <span className="text-sm text-foreground">
-                                        Shortly describe the relevant category (innovation, leadership,...) or the reason for the award.
+                                        {t('modals.awards.tipsText')}
                                     </span>
                                 </div>
                             </div>
@@ -341,7 +343,7 @@ export default function AwardsModal({ open, onOpenChange, initialData, onSave })
 
                                 {/* Character Counter */}
                                 <div className="text-sm text-muted-foreground">
-                                    {charCount}/{maxChars} characters
+                                    {charCount}/{maxChars} {t('modals.common.characters')}
                                 </div>
                             </div>
                         </div>
@@ -355,14 +357,14 @@ export default function AwardsModal({ open, onOpenChange, initialData, onSave })
                             variant="outline"
                             className="h-12 px-6 bg-white border border-neutrals-40 text-foreground hover:bg-neutrals-10 hover:border-neutrals-40"
                         >
-                            Cancel
+                            {t('modals.common.cancel')}
                         </Button>
                         <Button
                             type="button"
                             onClick={handleSave}
                             className="h-12 px-6 bg-primary hover:bg-primary/90 text-white font-medium"
                         >
-                            Save
+                            {t('modals.common.save')}
                         </Button>
                     </div>
                 </div>

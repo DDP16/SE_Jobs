@@ -49,30 +49,30 @@ export const validateExperienceForm = (formData = {}) => {
   const numericStartYear = parseInt(sanitizedData.startYear, 10);
 
   if (!sanitizedData.jobTitle) {
-    errors.jobTitle = 'Job title is required.';
+    errors.jobTitle = 'modals.experience.errors.jobTitleRequired';
   }
 
   if (!sanitizedData.company) {
-    errors.company = 'Company name is required.';
+    errors.company = 'modals.experience.errors.companyRequired';
   }
 
   if (!sanitizedData.startMonth) {
-    errors.startMonth = 'Start month is required.';
+    errors.startMonth = 'modals.experience.errors.startMonthRequired';
   }
 
   if (!sanitizedData.startYear) {
-    errors.startYear = 'Start year is required.';
+    errors.startYear = 'modals.experience.errors.startYearRequired';
   } else if (!Number.isNaN(numericStartYear) && numericStartYear > currentYear) {
-    errors.startYear = 'Start year cannot be in the future.';
+    errors.startYear = 'modals.experience.errors.startYearFuture';
   }
 
   if (!sanitizedData.isCurrentlyWorking) {
     if (!sanitizedData.endMonth) {
-      errors.endMonth = 'End month is required.';
+      errors.endMonth = 'modals.experience.errors.endMonthRequired';
     }
 
     if (!sanitizedData.endYear) {
-      errors.endYear = 'End year is required.';
+      errors.endYear = 'modals.experience.errors.endYearRequired';
     }
   }
 
@@ -80,7 +80,7 @@ export const validateExperienceForm = (formData = {}) => {
   const endDate = sanitizedData.isCurrentlyWorking ? null : buildComparableDate(sanitizedData.endMonth, sanitizedData.endYear);
 
   if (startDate && endDate && startDate > endDate) {
-    errors.dateRange = 'End date must be after the start date.';
+    errors.dateRange = 'modals.experience.errors.dateRange';
   }
 
   return {
@@ -108,26 +108,26 @@ export const validateProjectForm = (formData = {}) => {
   const numericStartYear = parseInt(sanitizedData.startYear, 10);
 
   if (!sanitizedData.projectName) {
-    errors.projectName = 'Project name is required.';
+    errors.projectName = 'modals.projects.errors.projectNameRequired';
   }
 
   if (!sanitizedData.startMonth) {
-    errors.startMonth = 'Start month is required.';
+    errors.startMonth = 'modals.projects.errors.startMonthRequired';
   }
 
   if (!sanitizedData.startYear) {
-    errors.startYear = 'Start year is required.';
+    errors.startYear = 'modals.projects.errors.startYearRequired';
   } else if (!Number.isNaN(numericStartYear) && numericStartYear > currentYear) {
-    errors.startYear = 'Start year cannot be in the future.';
+    errors.startYear = 'modals.projects.errors.startYearFuture';
   }
 
   if (!sanitizedData.isCurrentlyWorking) {
     if (!sanitizedData.endMonth) {
-      errors.endMonth = 'End month is required.';
+      errors.endMonth = 'modals.projects.errors.endMonthRequired';
     }
 
     if (!sanitizedData.endYear) {
-      errors.endYear = 'End year is required.';
+      errors.endYear = 'modals.projects.errors.endYearRequired';
     }
   }
 
@@ -135,7 +135,7 @@ export const validateProjectForm = (formData = {}) => {
   const endDate = sanitizedData.isCurrentlyWorking ? null : buildComparableDate(sanitizedData.endMonth, sanitizedData.endYear);
 
   if (startDate && endDate && startDate > endDate) {
-    errors.dateRange = 'End date must be after the start date.';
+    errors.dateRange = 'modals.projects.errors.dateRange';
   }
 
   if (sanitizedData.websiteLink) {
@@ -149,7 +149,7 @@ export const validateProjectForm = (formData = {}) => {
       new URL(candidate);
       sanitizedData.websiteLink = candidate;
     } catch (_err) {
-      errors.websiteLink = 'Enter a valid URL (e.g. https://example.com).';
+      errors.websiteLink = 'modals.projects.errors.websiteInvalid';
     }
   }
 
@@ -178,34 +178,34 @@ export const validateEducationForm = (formData = {}) => {
   const numericStartYear = parseInt(sanitizedData.startYear, 10);
 
   if (!sanitizedData.school) {
-    errors.school = 'School is required.';
+    errors.school = 'modals.education.errors.schoolRequired';
   }
 
   if (!sanitizedData.degree) {
-    errors.degree = 'Degree is required.';
+    errors.degree = 'modals.education.errors.degreeRequired';
   }
 
   if (!sanitizedData.major) {
-    errors.major = 'Major is required.';
+    errors.major = 'modals.education.errors.majorRequired';
   }
 
   if (!sanitizedData.startMonth) {
-    errors.startMonth = 'Start month is required.';
+    errors.startMonth = 'modals.education.errors.startMonthRequired';
   }
 
   if (!sanitizedData.startYear) {
-    errors.startYear = 'Start year is required.';
+    errors.startYear = 'modals.education.errors.startYearRequired';
   } else if (!Number.isNaN(numericStartYear) && numericStartYear > currentYear) {
-    errors.startYear = 'Start year cannot be in the future.';
+    errors.startYear = 'modals.education.errors.startYearFuture';
   }
 
   if (!sanitizedData.isCurrentlyStudying) {
     if (!sanitizedData.endMonth) {
-      errors.endMonth = 'End month is required.';
+      errors.endMonth = 'modals.education.errors.endMonthRequired';
     }
 
     if (!sanitizedData.endYear) {
-      errors.endYear = 'End year is required.';
+      errors.endYear = 'modals.education.errors.endYearRequired';
     }
   }
 
@@ -213,7 +213,7 @@ export const validateEducationForm = (formData = {}) => {
   const endDate = sanitizedData.isCurrentlyStudying ? null : buildComparableDate(sanitizedData.endMonth, sanitizedData.endYear);
 
   if (startDate && endDate && startDate > endDate) {
-    errors.dateRange = 'End date must be after the start date.';
+    errors.dateRange = 'modals.education.errors.endAfterStart';
   }
 
   return {
@@ -239,21 +239,21 @@ export const validateCertificateForm = (formData = {}) => {
   const numericIssueYear = parseInt(sanitizedData.issueYear, 10);
 
   if (!sanitizedData.certificateName) {
-    errors.certificateName = 'Certificate name is required.';
+    errors.certificateName = 'modals.certificates.errors.certificateNameRequired';
   }
 
   if (!sanitizedData.organization) {
-    errors.organization = 'Organization is required.';
+    errors.organization = 'modals.certificates.errors.organizationRequired';
   }
 
   if (!sanitizedData.issueMonth) {
-    errors.issueMonth = 'Issue month is required.';
+    errors.issueMonth = 'modals.certificates.errors.issueMonthRequired';
   }
 
   if (!sanitizedData.issueYear) {
-    errors.issueYear = 'Issue year is required.';
+    errors.issueYear = 'modals.certificates.errors.issueYearRequired';
   } else if (!Number.isNaN(numericIssueYear) && numericIssueYear > currentYear) {
-    errors.issueYear = 'Issue year cannot be in the future.';
+    errors.issueYear = 'modals.certificates.errors.issueYearFuture';
   }
 
   if (sanitizedData.certificateUrl) {
@@ -265,7 +265,7 @@ export const validateCertificateForm = (formData = {}) => {
       new URL(candidate);
       sanitizedData.certificateUrl = candidate;
     } catch (_err) {
-      errors.certificateUrl = 'Enter a valid URL (e.g. https://example.com).';
+      errors.certificateUrl = 'modals.certificates.errors.certificateUrlInvalid';
     }
   }
 
@@ -291,21 +291,21 @@ export const validateAwardForm = (formData = {}) => {
   const numericIssueYear = parseInt(sanitizedData.issueYear, 10);
 
   if (!sanitizedData.awardName) {
-    errors.awardName = 'Award name is required.';
+    errors.awardName = 'modals.awards.errors.awardNameRequired';
   }
 
   if (!sanitizedData.awardOrganization) {
-    errors.awardOrganization = 'Award organization is required.';
+    errors.awardOrganization = 'modals.awards.errors.awardOrganizationRequired';
   }
 
   if (!sanitizedData.issueMonth) {
-    errors.issueMonth = 'Issue month is required.';
+    errors.issueMonth = 'modals.awards.errors.issueMonthRequired';
   }
 
   if (!sanitizedData.issueYear) {
-    errors.issueYear = 'Issue year is required.';
+    errors.issueYear = 'modals.awards.errors.issueYearRequired';
   } else if (!Number.isNaN(numericIssueYear) && numericIssueYear > currentYear) {
-    errors.issueYear = 'Issue year cannot be in the future.';
+    errors.issueYear = 'modals.awards.errors.issueYearFuture';
   }
 
   return {
@@ -333,13 +333,13 @@ export const validateSkillGroupForm = (formData = {}) => {
   const errors = {};
 
   if (!sanitizedData.groupName) {
-    errors.groupName = 'Group name is required.';
+    errors.groupName = 'modals.skills.errors.groupNameRequired';
   }
 
   if (sanitizedData.skills.length === 0) {
-    errors.skills = 'Please add at least one skill.';
+    errors.skills = 'modals.skills.errors.skillsRequired';
   } else if (sanitizedData.skills.some((skill) => !skill.experience)) {
-    errors.skills = 'Each skill must include an experience level.';
+    errors.skills = 'modals.skills.errors.skillExperienceRequired';
   }
 
   return {
@@ -362,9 +362,9 @@ export const validateLanguagesList = (languages = []) => {
   const errors = {};
 
   if (sanitizedLanguages.length === 0) {
-    errors.languages = 'Please add at least one language.';
+    errors.languages = 'modals.languages.errors.languagesRequired';
   } else if (sanitizedLanguages.some((lang) => !lang.level)) {
-    errors.languages = 'Each language needs an associated level.';
+    errors.languages = 'modals.languages.errors.languageLevelRequired';
   }
 
   return {

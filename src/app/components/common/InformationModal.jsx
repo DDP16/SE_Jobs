@@ -48,9 +48,21 @@ export default function InformationModal({ open, onOpenChange, initialData, onSa
     };
 
     const handleSave = () => {
-        // Call onSave callback if provided
+        // Sanitize form fields before sending to API
+        const sanitized = {
+            fullName: (formData.fullName || '').trim(),
+            title: (formData.title || '').trim(),
+            email: (formData.email || '').trim(),
+            phone: (formData.phone || '').trim(),
+            dateOfBirth: formData.dateOfBirth || '',
+            gender: (formData.gender || '').trim(),
+            province: (formData.province || '').trim(),
+            address: (formData.address || '').trim(),
+            personalLink: (formData.personalLink || '').trim(),
+        };
+
         if (onSave) {
-            onSave(formData);
+            onSave(sanitized);
         }
         onOpenChange(false);
     };
@@ -61,12 +73,12 @@ export default function InformationModal({ open, onOpenChange, initialData, onSa
 
     const handleEditAvatar = () => {
         // Handle avatar edit logic
-        console.log("Edit avatar");
+        // TODO: implement Edit avatar logic
     };
 
     const handleDeleteAvatar = () => {
         // Handle avatar delete logic
-        console.log("Delete avatar");
+        // TODO: implement Delete avatar logic
     };
 
     const getInitials = (name) => {
