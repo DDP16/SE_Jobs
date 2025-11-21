@@ -18,9 +18,12 @@ import {
 } from '@mui/material';
 import {
   Menu as MenuIcon,
-  AccountCircle as AccountCircleIcon,
   Dashboard as DashboardIcon,
-  Logout as LogoutIcon
+  Logout as LogoutIcon,
+  Work as WorkIcon,
+  Notifications as NotificationsIcon,
+  Settings as SettingsIcon,
+  Person as PersonIcon,
 } from '@mui/icons-material';
 import { useTranslation } from "react-i18next";
 import { Link, useNavigate, useLocation } from "react-router-dom";
@@ -58,6 +61,11 @@ export default function Header() {
 
   const handleUserMenuOpen = (event) => {
     setUserMenuAnchor(event.currentTarget);
+  };
+
+  const navigateAndClose = (path) => {
+    handleUserMenuClose();
+    navigate(path);
   };
 
   const handleUserMenuClose = () => {
@@ -100,10 +108,61 @@ export default function Header() {
         px: { xs: 2, md: 3 },
         justifyContent: 'space-between'
       }}>
-        {/* Logo */}
-        <Box sx={{ display: 'flex', alignItems: 'center', cursor: 'pointer' }} onClick={() => window.location.assign('/')}>
-          <img src={logo} alt="SE Jobs Logo" width={isMobile ? "40" : "60"} style={{ marginRight: '8px', marginLeft: '10px' }} />
-        </Box>
+        {/* Header layout: desktop (logo left + nav + actions) or mobile (menu left, logo center, avatar right) */}
+        {isMobile ? (
+          <Box sx={{ display: 'flex', alignItems: 'center', width: '100%', justifyContent: 'space-between' }}>
+            <IconButton
+              edge="start"
+              color="inherit"
+              aria-label="menu"
+              onClick={handleMobileMenuOpen}
+              sx={{ ml: -1 }}
+            >
+              <MenuIcon />
+            </IconButton>
+
+            <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center', flex: 1, pointerEvents: 'none' }} onClick={() => window.location.assign('/')}>
+              <img src={logo} alt="SE Jobs Logo" width="48" style={{ marginRight: '8px' }} />
+            </Box>
+
+            <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+              {isLoggedIn ? (
+                <IconButton
+                  onClick={handleUserMenuOpen}
+                  sx={{
+                    border: '2px solid',
+                    borderColor: 'primary.main',
+                    p: 0.5
+                  }}
+                >
+                  <Avatar
+                    sx={{
+                      width: 32,
+                      height: 32,
+                      bgcolor: 'primary.main',
+                      fontSize: '0.9rem',
+                      fontWeight: 600
+                    }}
+                  >
+                    {userName.charAt(0).toUpperCase()}
+                  </Avatar>
+                </IconButton>
+              ) : (
+                <Button
+                  variant="outlined"
+                  size="small"
+                  onClick={() => navigate('/signin')}
+                >
+                  {t('login')}
+                </Button>
+              )}
+            </Box>
+          </Box>
+        ) : (
+          <Box sx={{ display: 'flex', alignItems: 'center', cursor: 'pointer' }} onClick={() => window.location.assign('/')}>
+            <img src={logo} alt="SE Jobs Logo" width={isMobile ? "40" : "60"} style={{ marginRight: '8px', marginLeft: '10px' }} />
+          </Box>
+        )}
 
         {/* Desktop Navigation */}
         {!isMobile && (
@@ -204,31 +263,7 @@ export default function Header() {
                     {userName.charAt(0).toUpperCase()}
                   </Avatar>
                 </IconButton>
-                <Menu
-                  anchorEl={userMenuAnchor}
-                  open={Boolean(userMenuAnchor)}
-                  onClose={handleUserMenuClose}
-                  transformOrigin={{ horizontal: 'right', vertical: 'top' }}
-                  anchorOrigin={{ horizontal: 'right', vertical: 'bottom' }}
-                  PaperProps={{
-                    elevation: 3,
-                    sx: { mt: 1.5, minWidth: 200 }
-                  }}
-                >
-                  <MenuItem onClick={handleProfileClick}>
-                    <ListItemIcon>
-                      <DashboardIcon fontSize="small" />
-                    </ListItemIcon>
-                    Profile Dashboard
-                  </MenuItem>
-                  <Divider />
-                  <MenuItem onClick={handleLogout}>
-                    <ListItemIcon>
-                      <LogoutIcon fontSize="small" />
-                    </ListItemIcon>
-                    Logout
-                  </MenuItem>
-                </Menu>
+                {/* user menu moved lower so it's available on mobile and desktop */}
               </>
             ) : (
               <>
@@ -273,119 +308,162 @@ export default function Header() {
           </Box>
         )}
 
-        {/* Mobile Menu */}
-        {isMobile && (
-          <IconButton
-            edge="end"
-            color="inherit"
-            aria-label="menu"
-            onClick={handleMobileMenuOpen}
-          >
-            <MenuIcon />
-          </IconButton>
-        )}
+        {/* Mobile Menu button is rendered in the mobile header layout above (left side). */}
 
         {/* Mobile Menu Dropdown */}
         <Menu
           anchorEl={mobileMenuAnchor}
           open={Boolean(mobileMenuAnchor)}
           onClose={handleMobileMenuClose}
-          anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
-          transformOrigin={{ vertical: 'top', horizontal: 'right' }}
+          anchorOrigin={{ vertical: 'bottom', horizontal: 'left' }}
+          transformOrigin={{ vertical: 'top', horizontal: 'left' }}
+          PaperProps={{
+            sx: {
+              mt: 1,
+              minWidth: 200,
+              // compact menu items and smaller text for mobile
+              '& .MuiMenuItem-root': {
+                fontSize: '0.95rem',
+                py: 1.25,
+              },
+            },
+          }}
         >
-          <MenuItem onClick={handleMobileMenuClose}>
-            <Button
-              color="inherit"
-              component={Link}
-              to="/"
-              sx={{
-                width: '100%',
-                justifyContent: 'flex-start',
-                color: isActive('/') ? 'primary.main' : 'inherit',
-                fontWeight: isActive('/') ? 600 : 400,
-                backgroundColor: isActive('/') ? 'action.selected' : 'transparent'
-              }}
-            >
-              {t('home')}
-            </Button>
+          <MenuItem
+            component={Link}
+            to="/"
+            onClick={handleMobileMenuClose}
+            selected={isActive('/')}
+            sx={{ justifyContent: 'flex-start' }}
+          >
+            {t('home')}
           </MenuItem>
-          <MenuItem onClick={handleMobileMenuClose}>
-            <Button
-              color="inherit"
-              component={Link}
-              to="/jobs"
-              sx={{
-                width: '100%',
-                justifyContent: 'flex-start',
-                color: isActive('/jobs') ? 'primary.main' : 'inherit',
-                fontWeight: isActive('/jobs') ? 600 : 400,
-                backgroundColor: isActive('/jobs') ? 'action.selected' : 'transparent'
-              }}
-            >
-              {t('jobs')}
-            </Button>
+
+          <MenuItem
+            component={Link}
+            to="/jobs"
+            onClick={handleMobileMenuClose}
+            selected={isActive('/jobs')}
+            sx={{ justifyContent: 'flex-start' }}
+          >
+            {t('jobs')}
           </MenuItem>
-          <MenuItem onClick={handleMobileMenuClose}>
-            <Button
-              color="inherit"
-              component={Link}
-              to="/companies"
-              sx={{
-                width: '100%',
-                justifyContent: 'flex-start',
-                color: isActive('/companies') ? 'primary.main' : 'inherit',
-                fontWeight: isActive('/companies') ? 600 : 400,
-                backgroundColor: isActive('/companies') ? 'action.selected' : 'transparent'
-              }}
-            >
-              {t('companies')}
-            </Button>
+
+          <MenuItem
+            component={Link}
+            to="/companies"
+            onClick={handleMobileMenuClose}
+            selected={isActive('/companies')}
+            sx={{ justifyContent: 'flex-start' }}
+          >
+            {t('companies')}
           </MenuItem>
-          <MenuItem onClick={handleMobileMenuClose}>
-            <Button color="inherit" sx={{ width: '100%', justifyContent: 'flex-start' }}>
-              {t('contactUs')}
-            </Button>
+
+          <MenuItem onClick={handleMobileMenuClose} sx={{ justifyContent: 'flex-start' }}>
+            {t('contactUs')}
           </MenuItem>
-          <MenuItem onClick={handleMobileMenuClose}>
-            <Button color="inherit" sx={{ width: '100%', justifyContent: 'flex-start' }}>
-              {t('forEmployers')}
-            </Button>
+
+          <MenuItem onClick={handleMobileMenuClose} sx={{ justifyContent: 'flex-start' }}>
+            {t('forEmployers')}
           </MenuItem>
-          <MenuItem onClick={handleMobileMenuClose}>
-            <Button variant="outlined" sx={{ width: '100%', justifyContent: 'center' }}>
+
+          {!isLoggedIn && (
+            <MenuItem onClick={() => { handleMobileMenuClose(); navigate('/signin'); }} sx={{ justifyContent: 'center' }}>
               {t('login')}
-            </Button>
-          </MenuItem>
-          <MenuItem onClick={handleMobileMenuClose}>
-            <Button variant="contained" color="primary" sx={{ width: '100%', justifyContent: 'center' }}>
+            </MenuItem>
+          )}
+
+          {!isLoggedIn && (
+            <MenuItem onClick={() => { handleMobileMenuClose(); navigate('/signup'); }} sx={{ justifyContent: 'center' }}>
               {t('register')}
-            </Button>
-          </MenuItem>
-          <MenuItem onClick={handleMobileMenuClose}>
-            <Box sx={{ width: '100%', display: 'flex', justifyContent: 'center', mt: 1 }}>
-              <ToggleButtonGroup
-                exclusive
-                size="small"
-                value={i18n.language?.startsWith('vi') ? 'vi' : 'en'}
-                onChange={handleLangChange}
-                aria-label="Language switcher"
-                sx={{
-                  '& .MuiToggleButton-root': {
-                    border: 'none',
-                    padding: '4px 8px',
-                    minWidth: '32px',
-                    '&.Mui-selected': {
-                      backgroundColor: 'transparent',
-                      color: 'primary.main',
-                      fontWeight: 600,
-                    },
+            </MenuItem>
+          )}
+
+          <MenuItem sx={{ display: 'flex', justifyContent: 'center', mt: 1 }}>
+            <ToggleButtonGroup
+              exclusive
+              size="small"
+              value={i18n.language?.startsWith('vi') ? 'vi' : 'en'}
+              onChange={handleLangChange}
+              aria-label="Language switcher"
+              sx={{
+                '& .MuiToggleButton-root': {
+                  border: 'none',
+                  padding: '4px 8px',
+                  minWidth: '32px',
+                  '&.Mui-selected': {
+                    backgroundColor: 'transparent',
+                    color: 'primary.main',
+                    fontWeight: 600,
                   },
-                }}
-              >
-                <ToggleButton value="en" aria-label="Switch to English">EN</ToggleButton>
-                <ToggleButton value="vi" aria-label="Switch to Vietnamese">VI</ToggleButton>
-              </ToggleButtonGroup>
-            </Box>
+                },
+              }}
+            >
+              <ToggleButton value="en" aria-label="Switch to English">EN</ToggleButton>
+              <ToggleButton value="vi" aria-label="Switch to Vietnamese">VI</ToggleButton>
+            </ToggleButtonGroup>
+          </MenuItem>
+        </Menu>
+
+        {/* User Menu (available on both mobile and desktop) */}
+        <Menu
+          anchorEl={userMenuAnchor}
+          open={Boolean(userMenuAnchor)}
+          onClose={handleUserMenuClose}
+          transformOrigin={{ horizontal: 'right', vertical: 'top' }}
+          anchorOrigin={{ horizontal: 'right', vertical: 'bottom' }}
+          PaperProps={{
+            elevation: 3,
+            sx: {
+              mt: 1.5,
+              minWidth: 200,
+              '& .MuiMenuItem-root': {
+                fontSize: '0.95rem',
+                py: 0.75,
+              },
+            },
+          }}
+        >
+          <MenuItem onClick={() => navigateAndClose('/profile/dashboard')}>
+            <ListItemIcon>
+              <DashboardIcon fontSize="small" />
+            </ListItemIcon>
+            Profile Dashboard
+          </MenuItem>
+          <Divider />
+          <MenuItem onClick={() => navigateAndClose('/profile/user-profile')}>
+            <ListItemIcon>
+              <PersonIcon fontSize="small" />
+            </ListItemIcon>
+            Profile
+          </MenuItem>
+          <Divider />
+          <MenuItem onClick={() => navigateAndClose('/profile/my-jobs')}>
+            <ListItemIcon>
+              <WorkIcon fontSize="small" />
+            </ListItemIcon>
+            My Jobs
+          </MenuItem>
+          <Divider />
+          <MenuItem onClick={() => navigateAndClose('/profile/notifications')}>
+            <ListItemIcon>
+              <NotificationsIcon fontSize="small" />
+            </ListItemIcon>
+            Notifications
+          </MenuItem>
+          <Divider />
+          <MenuItem onClick={() => navigateAndClose('/profile/settings')}>
+            <ListItemIcon>
+              <SettingsIcon fontSize="small" />
+            </ListItemIcon>
+            Settings
+          </MenuItem>
+          <Divider />
+          <MenuItem onClick={handleLogout}>
+            <ListItemIcon>
+              <LogoutIcon fontSize="small" />
+            </ListItemIcon>
+            Logout
           </MenuItem>
         </Menu>
       </Toolbar>
