@@ -54,7 +54,7 @@ export default function JobSection() {
     }
 
     const handleJobAction = (action, job) => {
-        console.log(`${action} job:`, job);
+        // debug handler removed
     };
 
     return (

@@ -1,18 +1,21 @@
 import { useState, useEffect } from "react";
 import {
-    uiInput as Input,
     uiButton as Button,
     uiLabel as Label,
 } from "@/components";
-import { Dialog, DialogContent, FormControl, Select, MenuItem, Autocomplete, Chip } from "@mui/material";
+import { validateSkillGroupForm } from "@/modules";
+import { Dialog, DialogContent, FormControl, Select, MenuItem, Autocomplete, Chip, TextField } from "@mui/material";
 import { X, Lightbulb, Plus } from "lucide-react";
+import { useTranslation } from 'react-i18next';
 
 export default function SkillsModal({ open, onOpenChange, initialData, onSave }) {
+    const { t } = useTranslation();
     const [groupName, setGroupName] = useState(initialData?.groupName || initialData?.name || "Core Skills");
     const [skills, setSkills] = useState(initialData?.skills || []);
-    const [selectedSkill, setSelectedSkill] = useState("");
+    const [skillInput, setSkillInput] = useState("");
     const [selectedExperience, setSelectedExperience] = useState("");
     const maxSkills = 20;
+    const [errors, setErrors] = useState({});
 
     // Sample skills for autocomplete (in real app, this would come from API)
     const availableSkills = [
@@ -65,27 +68,34 @@ export default function SkillsModal({ open, onOpenChange, initialData, onSave })
             setGroupName("Core Skills");
             setSkills([]);
         }
-        setSelectedSkill("");
+        setSkillInput("");
         setSelectedExperience("");
+        setErrors({});
     }, [initialData, open]);
 
     const handleAddSkill = () => {
-        if (selectedSkill && selectedExperience && skills.length < maxSkills) {
-            // Check if skill already exists
-            const skillExists = skills.some(
-                (skill) => skill.name.toLowerCase() === selectedSkill.toLowerCase()
-            );
+        const normalizedSkill = (skillInput || "").trim();
+        if (!normalizedSkill || !selectedExperience || skills.length >= maxSkills) return;
 
-            if (!skillExists) {
-                const newSkill = {
-                    id: Date.now(),
-                    name: selectedSkill,
-                    experience: selectedExperience,
-                };
-                setSkills((prev) => [...prev, newSkill]);
-                setSelectedSkill("");
-                setSelectedExperience("");
-            }
+        const skillExists = skills.some(
+            (skill) => skill.name.toLowerCase() === normalizedSkill.toLowerCase()
+        );
+
+        if (!skillExists) {
+            const newSkill = {
+                id: Date.now(),
+                name: normalizedSkill,
+                experience: selectedExperience,
+            };
+            setSkills((prev) => [...prev, newSkill]);
+            setSkillInput("");
+            setSelectedExperience("");
+            setErrors((prev) => {
+                if (!prev.skills) return prev;
+                const updated = { ...prev };
+                delete updated.skills;
+                return updated;
+            });
         }
     };
 
@@ -94,11 +104,25 @@ export default function SkillsModal({ open, onOpenChange, initialData, onSave })
     };
 
     const handleSave = () => {
+        const normalizedGroupName = "Core Skills";
+        const { isValid, errors: validationErrors, sanitizedData } = validateSkillGroupForm({
+            groupName: normalizedGroupName,
+            skills,
+        });
+
+        if (!isValid) {
+            setErrors(validationErrors);
+            return;
+        }
+
+        setGroupName(sanitizedData.groupName);
+        setSkills(sanitizedData.skills);
+
         if (onSave) {
             onSave({
-                groupName: groupName,
-                name: groupName,
-                skills: skills,
+                groupName: sanitizedData.groupName,
+                name: sanitizedData.groupName,
+                skills: sanitizedData.skills,
             });
         }
         onOpenChange(false);
@@ -121,14 +145,14 @@ export default function SkillsModal({ open, onOpenChange, initialData, onSave })
                 <div className="sticky top-0 bg-background z-10 p-6 pb-4 border-b border-neutrals-20">
                     <div className="flex items-center justify-between">
                         <span className="text-xl font-bold text-foreground">
-                            Core Skills
+                            {t('modals.skills.title')}
                         </span>
                         <button
                             onClick={() => onOpenChange(false)}
                             className="rounded-full bg-primary/10 p-1.5 hover:bg-primary/20 transition-colors focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2"
                         >
                             <X className="h-5 w-5 text-primary" />
-                            <span className="sr-only">Close</span>
+                            <span className="sr-only">{t('modals.common.close')}</span>
                         </button>
                     </div>
                 </div>
@@ -139,33 +163,22 @@ export default function SkillsModal({ open, onOpenChange, initialData, onSave })
                     <div className="flex items-start gap-2 mb-4 p-3 bg-orange-50 rounded-lg border border-orange-100">
                         <Lightbulb className="h-5 w-5 text-orange-500 shrink-0 mt-0.5" />
                         <div>
-                            <span className="text-sm font-bold text-orange-600">Tips: </span>
+                            <span className="text-sm font-bold text-orange-600">{t('modals.skills.tipsTitle')} </span>
                             <span className="text-sm text-foreground">
-                                Organize your core skills into groups helps recruiters quickly understand your professional capabilities.
+                                {t('modals.skills.tipsText')}
                             </span>
                         </div>
                     </div>
 
                     <form className="space-y-4">
-                        {/* Group Name */}
-                        <div className="space-y-2">
-                            <Label htmlFor="groupName" className="text-sm font-medium text-foreground">
-                                Group name <span className="text-primary">*</span>
-                            </Label>
-                            <Input
-                                id="groupName"
-                                value={groupName}
-                                onChange={(e) => setGroupName(e.target.value)}
-                                placeholder="Core Skills"
-                                className="h-12"
-                            />
-                        </div>
-
                         {/* List Skills */}
                         <div className="space-y-2">
-                            <Label className="text-sm font-medium text-foreground">
-                                List skills ({skills.length}/{maxSkills})
-                            </Label>
+                                <Label className="text-sm font-medium text-foreground">
+                                    {t('modals.skills.listCount', { count: skills.length, max: maxSkills })}
+                                </Label>
+                            {errors.skills && (
+                                <p className="text-sm text-red-500">{t(errors.skills)}</p>
+                            )}
 
                             {/* Skill Input Row */}
                             <div className="grid grid-cols-12 gap-2">
@@ -173,25 +186,35 @@ export default function SkillsModal({ open, onOpenChange, initialData, onSave })
                                     <Autocomplete
                                         freeSolo
                                         options={availableSkills}
-                                        value={selectedSkill}
-                                        onChange={(event, newValue) => {
-                                            setSelectedSkill(newValue || "");
+                                        value={skillInput}
+                                        inputValue={skillInput}
+                                        onChange={(_, newValue) => {
+                                            setSkillInput(newValue || "");
                                         }}
-                                        onInputChange={(event, newInputValue) => {
-                                            setSelectedSkill(newInputValue);
+                                        onInputChange={(_, newInputValue) => {
+                                            setSkillInput(newInputValue || "");
                                         }}
                                         renderInput={(params) => (
-                                            <Input
+                                            <TextField
                                                 {...params}
-                                                placeholder="Search skills"
-                                                className="h-12"
+                                                placeholder={t('modals.skills.searchPlaceholder')}
+                                                InputProps={{
+                                                    ...params.InputProps,
+                                                    sx: {
+                                                        height: "48px",
+                                                        "& .MuiOutlinedInput-notchedOutline": {
+                                                            borderColor: "var(--color-neutrals-40)",
+                                                        },
+                                                        "&:hover .MuiOutlinedInput-notchedOutline": {
+                                                            borderColor: "var(--color-primary)",
+                                                        },
+                                                        "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
+                                                            borderColor: "var(--color-primary)",
+                                                        },
+                                                    },
+                                                }}
                                             />
                                         )}
-                                        sx={{
-                                            "& .MuiOutlinedInput-root": {
-                                                padding: "0 !important",
-                                            },
-                                        }}
                                     />
                                 </div>
                                 <div className="col-span-5">
@@ -217,7 +240,7 @@ export default function SkillsModal({ open, onOpenChange, initialData, onSave })
                                             }}
                                         >
                                             <MenuItem value="" disabled>
-                                                Select experience
+                                                {t('modals.skills.selectExperience')}
                                             </MenuItem>
                                             {experienceLevels.map((level) => (
                                                 <MenuItem key={level.value} value={level.value}>
@@ -231,7 +254,7 @@ export default function SkillsModal({ open, onOpenChange, initialData, onSave })
                                     <Button
                                         type="button"
                                         onClick={handleAddSkill}
-                                        disabled={!selectedSkill || !selectedExperience || skills.length >= maxSkills}
+                                        disabled={!skillInput?.trim?.() || !selectedExperience || skills.length >= maxSkills}
                                         className="h-12 w-full bg-primary hover:bg-primary/90 text-white font-medium"
                                     >
                                         <Plus className="h-5 w-5" />
@@ -277,14 +300,14 @@ export default function SkillsModal({ open, onOpenChange, initialData, onSave })
                             variant="outline"
                             className="h-12 px-6 bg-white border border-neutrals-40 text-foreground hover:bg-neutrals-10 hover:border-neutrals-40"
                         >
-                            Cancel
+                            {t('modals.common.cancel')}
                         </Button>
                         <Button
                             type="button"
                             onClick={handleSave}
                             className="h-12 px-6 bg-primary hover:bg-primary/90 text-white font-medium"
                         >
-                            Save
+                            {t('modals.common.save')}
                         </Button>
                     </div>
                 </div>

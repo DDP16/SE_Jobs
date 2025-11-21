@@ -67,7 +67,7 @@ export default function JobDescription({
   const jobId = searchParams.get("id");
   if (jobId && !job) {
     job = mockJobs.find(j => j.id.toString() === jobId);
-    console.log("JobDescription - jobId:", jobId, "job:", job);
+    // debug: job lookup when job prop not provided
   }
 
   return (

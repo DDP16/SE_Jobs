@@ -25,7 +25,7 @@ export default function EducationSection({ educations, showAll, onToggleShowAll,
             </Typography>
           )}
         </Typography>
-        <IconButton onClick={onAdd} size="small" sx={{ color: 'error.main', '&:hover': { bgcolor: 'error.lighter' } }}>
+        <IconButton onClick={onAdd} size="small" sx={{ color: 'primary.main', '&:hover': { bgcolor: 'primary.lighter' } }}>
           <AddIcon sx={{ fontSize: 18 }} />
         </IconButton>
       </Box>
@@ -44,7 +44,7 @@ export default function EducationSection({ educations, showAll, onToggleShowAll,
                   <IconButton
                     onClick={() => onEdit(edu)}
                     size="small"
-                    sx={{ p: 0.5, color: 'error.main', '&:hover': { bgcolor: 'error.lighter' } }}
+                    sx={{ p: 0.5, color: 'primary.main', '&:hover': { bgcolor: 'primary.lighter' } }}
                   >
                     <EditIcon sx={{ fontSize: 18 }} />
                   </IconButton>

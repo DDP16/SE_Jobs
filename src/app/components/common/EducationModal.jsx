@@ -5,10 +5,11 @@ import {
     uiButton as Button,
     uiLabel as Label,
 } from "@/components";
+import { validateEducationForm } from "@/modules";
 import { Dialog, DialogContent, Typography } from "@mui/material";
-import { validateRequired, validateYear, validateMonth, validateDateOrder } from "../../modules/utils/validator";
 import { X } from "lucide-react";
-import { FormControl, Select, MenuItem, Checkbox, FormControlLabel } from "@mui/material";
+import { FormControl, Select, MenuItem, Checkbox, FormControlLabel, FormHelperText } from "@mui/material";
+import { useTranslation } from 'react-i18next';
 
 export default function EducationModal({ open, onOpenChange, initialData, onSave }) {
     const [formData, setFormData] = useState({
@@ -22,6 +23,8 @@ export default function EducationModal({ open, onOpenChange, initialData, onSave
         endYear: initialData?.endYear || "",
         description: initialData?.description || "",
     });
+    const [errors, setErrors] = useState({});
+    const { t } = useTranslation();
 
     // Update form data when initialData changes
     useEffect(() => {
@@ -37,6 +40,7 @@ export default function EducationModal({ open, onOpenChange, initialData, onSave
                 endYear: initialData?.endYear || "",
                 description: initialData?.description || "",
             });
+            setErrors({});
         } else {
             // Reset form when opening for new entry
             setFormData({
@@ -50,65 +54,53 @@ export default function EducationModal({ open, onOpenChange, initialData, onSave
                 endYear: "",
                 description: "",
             });
+            setErrors({});
         }
     }, [initialData, open]);
 
-    const [errors, setErrors] = useState({});
-
     const handleChange = (field, value) => {
-        setFormData((prev) => ({ ...prev, [field]: value }));
-        // clear field error when user changes value
-        setErrors((prev) => ({ ...prev, [field]: undefined }));
-    };
-
-    const validate = () => {
-        const e = {};
-
-        if (!validateRequired(formData.school)) {
-            e.school = "Vui lòng nhập tên trường";
-        }
-
-        if (!validateRequired(formData.degree)) {
-            e.degree = "Vui lòng chọn trình độ";
-        }
-
-        if (!validateRequired(formData.major)) {
-            e.major = "Vui lòng nhập ngành học";
-        }
-
-        // start year must be a valid year and not in the future
-        const currentYearCheck = new Date().getFullYear();
-        const startValid = validateYear(formData.startYear, 1980, currentYearCheck);
-        if (!startValid) {
-            e.startYear = "Vui lòng chọn năm bắt đầu (không lớn hơn năm hiện tại)";
-        }
-
-        // end year must be present when not currently studying
-        let endValid = true;
-        if (!formData.isCurrentlyStudying) {
-            endValid = validateYear(formData.endYear);
-            if (!endValid) {
-                e.endYear = "Vui lòng chọn năm kết thúc hoặc đánh dấu 'Tôi đang theo học'";
+        setFormData((prev) => {
+            if (field === "isCurrentlyStudying") {
+                return {
+                    ...prev,
+                    [field]: value,
+                    ...(value ? { endMonth: "", endYear: "" } : {}),
+                };
             }
-        }
+            return { ...prev, [field]: value };
+        });
 
-        // validate date order only when both start and end are individually valid
-        if (!formData.isCurrentlyStudying && startValid && endValid && formData.startYear && formData.endYear) {
-            const ok = validateDateOrder(formData.startYear, formData.startMonth, formData.endYear, formData.endMonth);
-            if (!ok) {
-                e.endYear = "Năm/Tháng kết thúc phải sau thời điểm bắt đầu";
+        setErrors((prev) => {
+            if (!prev || Object.keys(prev).length === 0) return prev;
+            const updated = { ...prev };
+            delete updated[field];
+
+            if (["startMonth", "startYear", "endMonth", "endYear"].includes(field)) {
+                delete updated.dateRange;
             }
-        }
 
-        setErrors(e);
-        return Object.keys(e).length === 0;
+            if (field === "isCurrentlyStudying" && value) {
+                delete updated.endMonth;
+                delete updated.endYear;
+                delete updated.dateRange;
+            }
+
+            return updated;
+        });
     };
 
     const handleSave = () => {
-        if (!validate()) return;
-        // Call onSave callback if provided
+        const { isValid, errors: validationErrors, sanitizedData } = validateEducationForm(formData);
+
+        if (!isValid) {
+            setErrors(validationErrors);
+            return;
+        }
+
+        setFormData(sanitizedData);
+
         if (onSave) {
-            onSave(formData);
+            onSave(sanitizedData);
         }
         onOpenChange(false);
     };
@@ -164,7 +156,7 @@ export default function EducationModal({ open, onOpenChange, initialData, onSave
                 <div className="sticky top-0 bg-background z-10 p-6 pb-4 border-b border-neutrals-20">
                     <div className="flex items-center justify-between">
                         <span className="text-xl font-bold text-foreground">
-                            Học vấn
+                            {t('modals.education.title')}
                         </span>
                         <button
                             onClick={() => onOpenChange(false)}
@@ -184,13 +176,12 @@ export default function EducationModal({ open, onOpenChange, initialData, onSave
                             <Input
                                 value={formData.school}
                                 onChange={(e) => handleChange("school", e.target.value)}
-                                placeholder="Trường *"
-                                className="h-12"
+                                placeholder={t('modals.education.schoolPlaceholder')}
+                                aria-invalid={Boolean(errors.school)}
+                                className={`h-12 ${errors.school ? "border-red-500 focus-visible:ring-red-500" : ""}`}
                             />
                             {errors.school && (
-                                <Typography variant="caption" sx={{ color: 'error.main', mt: 0.5 }}>
-                                    {errors.school}
-                                </Typography>
+                                <p className="text-sm text-red-500">{t(errors.school)}</p>
                             )}
                         </div>
 
@@ -198,7 +189,7 @@ export default function EducationModal({ open, onOpenChange, initialData, onSave
                         <div className="grid grid-cols-2 gap-4">
                             {/* Trình độ (Degree) */}
                             <div className="space-y-2">
-                                <FormControl fullWidth error={!!errors.degree}>
+                                <FormControl fullWidth error={Boolean(errors.degree)}>
                                     <Select
                                         value={formData.degree}
                                         onChange={(e) => handleChange("degree", e.target.value)}
@@ -220,7 +211,7 @@ export default function EducationModal({ open, onOpenChange, initialData, onSave
                                         }}
                                     >
                                         <MenuItem value="" disabled>
-                                            Trình độ *
+                                            {t('modals.education.degreePlaceholder')}
                                         </MenuItem>
                                         {degreeOptions.map((degree) => (
                                             <MenuItem key={degree} value={degree}>
@@ -229,28 +220,23 @@ export default function EducationModal({ open, onOpenChange, initialData, onSave
                                         ))}
                                     </Select>
                                     {errors.degree && (
-                                        <Typography variant="caption" sx={{ color: 'error.main', mt: 0.5 }}>
-                                            {errors.degree}
-                                        </Typography>
+                                        <FormHelperText>{t(errors.degree)}</FormHelperText>
                                     )}
                                 </FormControl>
                             </div>
 
                             {/* Ngành học (Major) */}
                             <div className="space-y-2">
-                                <div>
                                     <Input
-                                        value={formData.major}
-                                        onChange={(e) => handleChange("major", e.target.value)}
-                                        placeholder="Ngành học *"
-                                        className="h-12"
-                                    />
-                                    {errors.major && (
-                                        <Typography variant="caption" sx={{ color: 'error.main', mt: 0.5 }}>
-                                            {errors.major}
-                                        </Typography>
-                                    )}
-                                </div>
+                                    value={formData.major}
+                                    onChange={(e) => handleChange("major", e.target.value)}
+                                    placeholder={t('modals.education.majorPlaceholder')}
+                                    aria-invalid={Boolean(errors.major)}
+                                    className={`h-12 ${errors.major ? "border-red-500 focus-visible:ring-red-500" : ""}`}
+                                />
+                                {errors.major && (
+                                    <p className="text-sm text-red-500">{t(errors.major)}</p>
+                                )}
                             </div>
                         </div>
 
@@ -271,7 +257,7 @@ export default function EducationModal({ open, onOpenChange, initialData, onSave
                                         }}
                                     />
                                 }
-                                label="Tôi đang theo học tại đây"
+                                label={t('modals.education.currentlyStudying')}
                                 sx={{
                                     "& .MuiFormControlLabel-label": {
                                         fontSize: "14px",
@@ -286,10 +272,10 @@ export default function EducationModal({ open, onOpenChange, initialData, onSave
                             {/* Từ (From) */}
                             <div className="space-y-2">
                                 <Label className="text-sm font-medium text-foreground">
-                                    Từ <span className="text-primary">*</span>
+                                    {t('modals.education.from')} <span className="text-primary">*</span>
                                 </Label>
                                 <div className="grid grid-cols-2 gap-2">
-                                    <FormControl fullWidth>
+                                    <FormControl fullWidth error={Boolean(errors.startMonth)}>
                                         <Select
                                             value={formData.startMonth}
                                             onChange={(e) => handleChange("startMonth", e.target.value)}
@@ -311,7 +297,7 @@ export default function EducationModal({ open, onOpenChange, initialData, onSave
                                             }}
                                         >
                                             <MenuItem value="" disabled>
-                                                Tháng
+                                                {t('modals.education.month')}
                                             </MenuItem>
                                             {months.map((month) => (
                                                 <MenuItem key={month.value} value={month.value}>
@@ -319,8 +305,11 @@ export default function EducationModal({ open, onOpenChange, initialData, onSave
                                                 </MenuItem>
                                             ))}
                                         </Select>
+                                        {errors.startMonth && (
+                                            <FormHelperText>{t(errors.startMonth)}</FormHelperText>
+                                        )}
                                     </FormControl>
-                                    <FormControl fullWidth error={!!errors.startYear}>
+                                    <FormControl fullWidth error={Boolean(errors.startYear)}>
                                         <Select
                                             value={formData.startYear}
                                             onChange={(e) => handleChange("startYear", e.target.value)}
@@ -342,7 +331,7 @@ export default function EducationModal({ open, onOpenChange, initialData, onSave
                                             }}
                                         >
                                             <MenuItem value="" disabled>
-                                                Năm
+                                                {t('modals.education.year')}
                                             </MenuItem>
                                             {years.map((year) => (
                                                 <MenuItem key={year.value} value={year.value}>
@@ -350,24 +339,21 @@ export default function EducationModal({ open, onOpenChange, initialData, onSave
                                                 </MenuItem>
                                             ))}
                                         </Select>
+                                        {errors.startYear && (
+                                            <FormHelperText>{t(errors.startYear)}</FormHelperText>
+                                        )}
                                     </FormControl>
                                 </div>
-                                {errors.startYear && (
-                                    <div className="mt-1">
-                                        <Typography variant="caption" sx={{ color: 'error.main' }}>
-                                            {errors.startYear}
-                                        </Typography>
-                                    </div>
-                                )}
+                                {/* startYear error already displayed via FormHelperText above; avoid duplicate messages */}
                             </div>
 
                             {/* Đến (To) */}
                             <div className="space-y-2">
                                 <Label className="text-sm font-medium text-foreground">
-                                    Đến <span className="text-primary">*</span>
+                                    {t('modals.education.to')} <span className="text-primary">*</span>
                                 </Label>
                                 <div className="grid grid-cols-2 gap-2">
-                                    <FormControl fullWidth error={!!errors.endMonth}>
+                                    <FormControl fullWidth error={Boolean(errors.endMonth)}>
                                         <Select
                                             value={formData.endMonth}
                                             onChange={(e) => handleChange("endMonth", e.target.value)}
@@ -390,7 +376,7 @@ export default function EducationModal({ open, onOpenChange, initialData, onSave
                                             }}
                                         >
                                             <MenuItem value="" disabled>
-                                                Tháng
+                                                {t('modals.education.month')}
                                             </MenuItem>
                                             {months.map((month) => (
                                                 <MenuItem key={month.value} value={month.value}>
@@ -398,8 +384,11 @@ export default function EducationModal({ open, onOpenChange, initialData, onSave
                                                 </MenuItem>
                                             ))}
                                         </Select>
+                                        {errors.endMonth && (
+                                            <FormHelperText>{t(errors.endMonth)}</FormHelperText>
+                                        )}
                                     </FormControl>
-                                    <FormControl fullWidth error={!!errors.endYear}>
+                                    <FormControl fullWidth error={Boolean(errors.endYear)}>
                                         <Select
                                             value={formData.endYear}
                                             onChange={(e) => handleChange("endYear", e.target.value)}
@@ -422,7 +411,7 @@ export default function EducationModal({ open, onOpenChange, initialData, onSave
                                             }}
                                         >
                                             <MenuItem value="" disabled>
-                                                Năm
+                                                {t('modals.education.year')}
                                             </MenuItem>
                                             {years.map((year) => (
                                                 <MenuItem key={year.value} value={year.value}>
@@ -430,21 +419,13 @@ export default function EducationModal({ open, onOpenChange, initialData, onSave
                                                 </MenuItem>
                                             ))}
                                         </Select>
+                                        {errors.endYear && (
+                                            <FormHelperText>{t(errors.endYear)}</FormHelperText>
+                                        )}
                                     </FormControl>
                                 </div>
-                                {(errors.endMonth || errors.endYear) && (
-                                    <div className="mt-1">
-                                        {errors.endMonth && (
-                                            <Typography variant="caption" sx={{ color: 'error.main' }}>
-                                                {errors.endMonth}
-                                            </Typography>
-                                        )}
-                                        {errors.endYear && (
-                                            <Typography variant="caption" sx={{ color: 'error.main' }}>
-                                                {errors.endYear}
-                                            </Typography>
-                                        )}
-                                    </div>
+                                {errors.dateRange && (
+                                    <p className="text-sm text-red-500">{t(errors.dateRange)}</p>
                                 )}
                             </div>
                         </div>
@@ -454,7 +435,7 @@ export default function EducationModal({ open, onOpenChange, initialData, onSave
                             <Textarea
                                 value={formData.description}
                                 onChange={(e) => handleChange("description", e.target.value)}
-                                placeholder="Thông tin chi tiết khác"
+                                placeholder={t('modals.education.otherInfoPlaceholder')}
                                 className="min-h-[100px] resize-y"
                             />
                         </div>
@@ -468,14 +449,14 @@ export default function EducationModal({ open, onOpenChange, initialData, onSave
                             variant="outline"
                             className="h-12 px-6 bg-white border border-neutrals-40 text-foreground hover:bg-neutrals-10 hover:border-neutrals-40"
                         >
-                            Huỷ
+                            {t('modals.education.cancel')}
                         </Button>
                         <Button
                             type="button"
                             onClick={handleSave}
                             className="h-12 px-6 bg-primary hover:bg-primary/90 text-white font-medium"
                         >
-                            Lưu
+                            {t('modals.education.save')}
                         </Button>
                     </div>
                 </div>

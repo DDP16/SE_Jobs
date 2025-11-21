@@ -4,10 +4,13 @@ import {
     uiButton as Button,
     uiLabel as Label,
 } from "@/components";
-import { Dialog, DialogContent, FormControl, Select, MenuItem, Checkbox, FormControlLabel } from "@mui/material";
+import { validateProjectForm } from "@/modules";
+import { Dialog, DialogContent, FormControl, Select, MenuItem, Checkbox, FormControlLabel, FormHelperText } from "@mui/material";
+import { useTranslation } from 'react-i18next';
 import { X, Bold, Italic, Underline, List, Lightbulb } from "lucide-react";
 
 export default function ProjectsModal({ open, onOpenChange, initialData, onSave }) {
+    const { t } = useTranslation();
     const [formData, setFormData] = useState({
         projectName: initialData?.projectName || initialData?.name || "",
         isCurrentlyWorking: initialData?.isCurrentlyWorking || initialData?.isCurrentlyWorkingOnThisProject || false,
@@ -21,6 +24,7 @@ export default function ProjectsModal({ open, onOpenChange, initialData, onSave 
     const [charCount, setCharCount] = useState(0);
     const editorRef = useRef(null);
     const maxChars = 2500;
+    const [errors, setErrors] = useState({});
 
     // Update form data when initialData changes
     useEffect(() => {
@@ -40,6 +44,7 @@ export default function ProjectsModal({ open, onOpenChange, initialData, onSave 
             if (editorRef.current) {
                 editorRef.current.innerHTML = description;
             }
+            setErrors({});
         } else {
             setFormData({
                 projectName: "",
@@ -55,11 +60,39 @@ export default function ProjectsModal({ open, onOpenChange, initialData, onSave 
             if (editorRef.current) {
                 editorRef.current.innerHTML = "";
             }
+            setErrors({});
         }
     }, [initialData, open]);
 
     const handleChange = (field, value) => {
-        setFormData((prev) => ({ ...prev, [field]: value }));
+        setFormData((prev) => {
+            if (field === "isCurrentlyWorking") {
+                return {
+                    ...prev,
+                    [field]: value,
+                    ...(value ? { endMonth: "", endYear: "" } : {}),
+                };
+            }
+            return { ...prev, [field]: value };
+        });
+
+        setErrors((prev) => {
+            if (!prev || Object.keys(prev).length === 0) return prev;
+            const updated = { ...prev };
+            delete updated[field];
+
+            if (["startMonth", "startYear", "endMonth", "endYear"].includes(field)) {
+                delete updated.dateRange;
+            }
+
+            if (field === "isCurrentlyWorking" && value) {
+                delete updated.endMonth;
+                delete updated.endYear;
+                delete updated.dateRange;
+            }
+
+            return updated;
+        });
     };
 
     const handleContentChange = () => {
@@ -87,7 +120,7 @@ export default function ProjectsModal({ open, onOpenChange, initialData, onSave 
     };
 
     const handleInsertTemplate = () => {
-        const template = `• Mô tả dự án: [Mô tả ngắn gọn về dự án]\n• Vai trò của bạn: [Vai trò và trách nhiệm]\n• Công nghệ sử dụng: [Danh sách công nghệ]\n• Số thành viên: [Số lượng thành viên trong team]`;
+        const template = t('modals.projects.insertTemplateText');
         if (editorRef.current) {
             editorRef.current.innerText = template;
             handleContentChange();
@@ -95,8 +128,16 @@ export default function ProjectsModal({ open, onOpenChange, initialData, onSave 
     };
 
     const handleSave = () => {
+        const { isValid, errors: validationErrors, sanitizedData } = validateProjectForm(formData);
+
+        if (!isValid) {
+            setErrors(validationErrors);
+            return;
+        }
+
+        setFormData(sanitizedData);
         if (onSave) {
-            onSave(formData);
+            onSave(sanitizedData);
         }
         onOpenChange(false);
     };
@@ -141,7 +182,7 @@ export default function ProjectsModal({ open, onOpenChange, initialData, onSave 
                 <div className="sticky top-0 bg-background z-10 p-6 pb-4 border-b border-neutrals-20">
                     <div className="flex items-center justify-between">
                         <span className="text-xl font-bold text-foreground">
-                            Dự án nổi bật
+                            {t('modals.projects.title')}
                         </span>
                         <button
                             onClick={() => onOpenChange(false)}
@@ -156,29 +197,31 @@ export default function ProjectsModal({ open, onOpenChange, initialData, onSave 
                 {/* Content */}
                 <div className="p-6">
                     {/* Tips Section */}
-                    <div className="flex items-start gap-2 mb-4 p-3 bg-orange-50 rounded-lg border border-orange-100">
+                    {/* <div className="flex items-start gap-2 mb-4 p-3 bg-orange-50 rounded-lg border border-orange-100">
                         <Lightbulb className="h-5 w-5 text-orange-500 shrink-0 mt-0.5" />
                         <div>
-                            <span className="text-sm font-bold text-orange-600">Tips: </span>
-                            <span className="text-sm text-foreground">
-                                Thể hiện dự án liên quan đến kỹ năng và khả năng của bạn, và đảm bảo bao gồm mô tả dự án, vai trò của bạn, công nghệ sử dụng và số thành viên.
-                            </span>
+                            <span className="text-sm font-bold text-orange-600">{t('modals.common.tips')} </span>
+                            <span className="text-sm text-foreground">{t('modals.projects.tipsText')}</span>
                         </div>
-                    </div>
+                    </div> */}
 
                     <form className="space-y-4">
                         {/* Project Name */}
                         <div className="space-y-2">
                             <Label htmlFor="projectName" className="text-sm font-medium text-foreground">
-                                Tên dự án <span className="text-primary">*</span>
+                                {t('modals.projects.projectNameLabel')} <span className="text-primary">*</span>
                             </Label>
                             <Input
                                 id="projectName"
                                 value={formData.projectName}
                                 onChange={(e) => handleChange("projectName", e.target.value)}
-                                placeholder="Nhập tên dự án"
-                                className="h-12"
+                                placeholder={t('modals.projects.projectNamePlaceholder')}
+                                aria-invalid={Boolean(errors.projectName)}
+                                className={`h-12 ${errors.projectName ? "border-red-500 focus-visible:ring-red-500" : ""}`}
                             />
+                            {errors.projectName && (
+                                <p className="text-sm text-red-500">{t(errors.projectName)}</p>
+                            )}
                         </div>
 
                         {/* Checkbox - Currently working on this project */}
@@ -198,7 +241,7 @@ export default function ProjectsModal({ open, onOpenChange, initialData, onSave 
                                         }}
                                     />
                                 }
-                                label="Tôi vẫn đang làm dự án này"
+                                label={t('modals.projects.currentlyWorking')}
                                 sx={{
                                     "& .MuiFormControlLabel-label": {
                                         fontSize: "14px",
@@ -213,10 +256,10 @@ export default function ProjectsModal({ open, onOpenChange, initialData, onSave 
                             {/* Start Date */}
                             <div className="space-y-2">
                                 <Label className="text-sm font-medium text-foreground">
-                                    Ngày bắt đầu <span className="text-primary">*</span>
+                                    {t('modals.projects.startDate')} <span className="text-primary">*</span>
                                 </Label>
                                 <div className="grid grid-cols-2 gap-2">
-                                    <FormControl fullWidth>
+                                    <FormControl fullWidth error={Boolean(errors.startMonth)}>
                                         <Select
                                             value={formData.startMonth}
                                             onChange={(e) => handleChange("startMonth", e.target.value)}
@@ -237,17 +280,18 @@ export default function ProjectsModal({ open, onOpenChange, initialData, onSave 
                                                 },
                                             }}
                                         >
-                                            <MenuItem value="" disabled>
-                                                Tháng
-                                            </MenuItem>
+                                            <MenuItem value="" disabled>{t('modals.common.month')}</MenuItem>
                                             {months.map((month) => (
                                                 <MenuItem key={month.value} value={month.value}>
                                                     {month.label}
                                                 </MenuItem>
                                             ))}
                                         </Select>
+                                        {errors.startMonth && (
+                                            <FormHelperText>{t(errors.startMonth)}</FormHelperText>
+                                        )}
                                     </FormControl>
-                                    <FormControl fullWidth>
+                                    <FormControl fullWidth error={Boolean(errors.startYear)}>
                                         <Select
                                             value={formData.startYear}
                                             onChange={(e) => handleChange("startYear", e.target.value)}
@@ -268,15 +312,16 @@ export default function ProjectsModal({ open, onOpenChange, initialData, onSave 
                                                 },
                                             }}
                                         >
-                                            <MenuItem value="" disabled>
-                                                Năm
-                                            </MenuItem>
+                                            <MenuItem value="" disabled>{t('modals.common.year')}</MenuItem>
                                             {years.map((year) => (
                                                 <MenuItem key={year.value} value={year.value}>
                                                     {year.label}
                                                 </MenuItem>
                                             ))}
                                         </Select>
+                                        {errors.startYear && (
+                                            <FormHelperText>{t(errors.startYear)}</FormHelperText>
+                                        )}
                                     </FormControl>
                                 </div>
                             </div>
@@ -284,10 +329,10 @@ export default function ProjectsModal({ open, onOpenChange, initialData, onSave 
                             {/* End Date */}
                             <div className="space-y-2">
                                 <Label className="text-sm font-medium text-foreground">
-                                    Ngày kết thúc <span className="text-primary">*</span>
+                                    {t('modals.projects.endDate')} <span className="text-primary">*</span>
                                 </Label>
                                 <div className="grid grid-cols-2 gap-2">
-                                    <FormControl fullWidth>
+                                    <FormControl fullWidth error={Boolean(errors.endMonth)}>
                                         <Select
                                             value={formData.endMonth}
                                             onChange={(e) => handleChange("endMonth", e.target.value)}
@@ -318,8 +363,11 @@ export default function ProjectsModal({ open, onOpenChange, initialData, onSave 
                                                 </MenuItem>
                                             ))}
                                         </Select>
+                                        {errors.endMonth && (
+                                            <FormHelperText>{t(errors.endMonth)}</FormHelperText>
+                                        )}
                                     </FormControl>
-                                    <FormControl fullWidth>
+                                    <FormControl fullWidth error={Boolean(errors.endYear)}>
                                         <Select
                                             value={formData.endYear}
                                             onChange={(e) => handleChange("endYear", e.target.value)}
@@ -350,8 +398,14 @@ export default function ProjectsModal({ open, onOpenChange, initialData, onSave 
                                                 </MenuItem>
                                             ))}
                                         </Select>
+                                        {errors.endYear && (
+                                            <FormHelperText>{t(errors.endYear)}</FormHelperText>
+                                        )}
                                     </FormControl>
                                 </div>
+                                {errors.dateRange && (
+                                    <p className="text-sm text-red-500">{t(errors.dateRange)}</p>
+                                )}
                             </div>
                         </div>
 
@@ -359,14 +413,14 @@ export default function ProjectsModal({ open, onOpenChange, initialData, onSave 
                         <div className="space-y-2">
                             <div className="flex items-center justify-between">
                                 <Label className="text-sm font-medium text-foreground">
-                                    Mô tả dự án
+                                    {t('modals.projects.descriptionLabel')}
                                 </Label>
                                 <button
                                     type="button"
                                     onClick={handleInsertTemplate}
                                     className="text-sm text-primary hover:text-primary/80 transition-colors font-medium"
                                 >
-                                    Chèn mẫu sẵn
+                                    {t('modals.projects.insertTemplate')}
                                 </button>
                             </div>
 
@@ -422,7 +476,7 @@ export default function ProjectsModal({ open, onOpenChange, initialData, onSave 
 
                                 {/* Character Counter */}
                                 <div className="text-sm text-muted-foreground">
-                                    {charCount}/{maxChars} ký tự
+                                    {charCount}/{maxChars} {t('modals.common.characters')}
                                 </div>
                             </div>
                         </div>
@@ -430,15 +484,19 @@ export default function ProjectsModal({ open, onOpenChange, initialData, onSave 
                         {/* Website Link */}
                         <div className="space-y-2">
                             <Label htmlFor="websiteLink" className="text-sm font-medium text-foreground">
-                                Đường dẫn website
+                                {t('modals.projects.websiteLabel')}
                             </Label>
                             <Input
                                 id="websiteLink"
                                 value={formData.websiteLink}
                                 onChange={(e) => handleChange("websiteLink", e.target.value)}
-                                placeholder="Nhập đường dẫn website"
-                                className="h-12"
+                                placeholder={t('modals.projects.websitePlaceholder')}
+                                aria-invalid={Boolean(errors.websiteLink)}
+                                className={`h-12 ${errors.websiteLink ? "border-red-500 focus-visible:ring-red-500" : ""}`}
                             />
+                            {errors.websiteLink && (
+                                <p className="text-sm text-red-500">{t(errors.websiteLink)}</p>
+                            )}
                         </div>
                     </form>
 
@@ -450,14 +508,14 @@ export default function ProjectsModal({ open, onOpenChange, initialData, onSave 
                             variant="outline"
                             className="h-12 px-6 bg-white border border-neutrals-40 text-foreground hover:bg-neutrals-10 hover:border-neutrals-40"
                         >
-                            Huỷ
+                            {t('modals.common.cancel')}
                         </Button>
                         <Button
                             type="button"
                             onClick={handleSave}
                             className="h-12 px-6 bg-primary hover:bg-primary/90 text-white font-medium"
                         >
-                            Lưu
+                            {t('modals.common.save')}
                         </Button>
                     </div>
                 </div>

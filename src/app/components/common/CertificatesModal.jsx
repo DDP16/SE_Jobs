@@ -4,10 +4,13 @@ import {
     uiButton as Button,
     uiLabel as Label,
 } from "../../components";
-import { Dialog, DialogContent, FormControl, Select, MenuItem } from "@mui/material";
+import { validateCertificateForm } from "@/modules";
+import { Dialog, DialogContent, FormControl, Select, MenuItem, FormHelperText } from "@mui/material";
+import { useTranslation } from 'react-i18next';
 import { X, Bold, Italic, Underline, List } from "lucide-react";
 
 export default function CertificatesModal({ open, onOpenChange, initialData, onSave }) {
+    const { t } = useTranslation();
     const [formData, setFormData] = useState({
         certificateName: initialData?.certificateName || initialData?.name || "",
         organization: initialData?.organization || "",
@@ -19,6 +22,7 @@ export default function CertificatesModal({ open, onOpenChange, initialData, onS
     const [charCount, setCharCount] = useState(0);
     const editorRef = useRef(null);
     const maxChars = 2500;
+    const [errors, setErrors] = useState({});
 
     // Update form data when initialData changes
     useEffect(() => {
@@ -36,6 +40,7 @@ export default function CertificatesModal({ open, onOpenChange, initialData, onS
             if (editorRef.current) {
                 editorRef.current.innerHTML = description;
             }
+            setErrors({});
         } else {
             setFormData({
                 certificateName: "",
@@ -49,11 +54,18 @@ export default function CertificatesModal({ open, onOpenChange, initialData, onS
             if (editorRef.current) {
                 editorRef.current.innerHTML = "";
             }
+            setErrors({});
         }
     }, [initialData, open]);
 
     const handleChange = (field, value) => {
         setFormData((prev) => ({ ...prev, [field]: value }));
+        setErrors((prev) => {
+            if (!prev || Object.keys(prev).length === 0) return prev;
+            const updated = { ...prev };
+            delete updated[field];
+            return updated;
+        });
     };
 
     const handleContentChange = () => {
@@ -82,8 +94,17 @@ export default function CertificatesModal({ open, onOpenChange, initialData, onS
 
 
     const handleSave = () => {
+        const { isValid, errors: validationErrors, sanitizedData } = validateCertificateForm(formData);
+
+        if (!isValid) {
+            setErrors(validationErrors);
+            return;
+        }
+
+        setFormData(sanitizedData);
+
         if (onSave) {
-            onSave(formData);
+            onSave(sanitizedData);
         }
         onOpenChange(false);
     };
@@ -128,7 +149,7 @@ export default function CertificatesModal({ open, onOpenChange, initialData, onS
                 <div className="sticky top-0 bg-background z-10 p-6 pb-4 border-b border-neutrals-20">
                     <div className="flex items-center justify-between">
                         <span className="text-xl font-bold text-foreground">
-                            Certificates
+                            {t('modals.certificates.title')}
                         </span>
                         <button
                             onClick={() => onOpenChange(false)}
@@ -146,38 +167,46 @@ export default function CertificatesModal({ open, onOpenChange, initialData, onS
                         {/* Certificate Name */}
                         <div className="space-y-2">
                             <Label htmlFor="certificateName" className="text-sm font-medium text-foreground">
-                                Certificate Name <span className="text-primary">*</span>
+                                {t('modals.certificates.certificateName')} <span className="text-primary">*</span>
                             </Label>
                             <Input
                                 id="certificateName"
                                 value={formData.certificateName}
                                 onChange={(e) => handleChange("certificateName", e.target.value)}
-                                placeholder="Certificate Name *"
-                                className="h-12"
+                                placeholder={t('modals.certificates.certificateNamePlaceholder')}
+                                aria-invalid={Boolean(errors.certificateName)}
+                                className={`h-12 ${errors.certificateName ? "border-red-500 focus-visible:ring-red-500" : ""}`}
                             />
+                            {errors.certificateName && (
+                                <p className="text-sm text-red-500">{t(errors.certificateName)}</p>
+                            )}
                         </div>
 
                         {/* Organization */}
                         <div className="space-y-2">
                             <Label htmlFor="organization" className="text-sm font-medium text-foreground">
-                                Organization <span className="text-primary">*</span>
+                                {t('modals.certificates.organization')} <span className="text-primary">*</span>
                             </Label>
                             <Input
                                 id="organization"
                                 value={formData.organization}
                                 onChange={(e) => handleChange("organization", e.target.value)}
-                                placeholder="Organization *"
-                                className="h-12"
+                                placeholder={t('modals.certificates.organizationPlaceholder')}
+                                aria-invalid={Boolean(errors.organization)}
+                                className={`h-12 ${errors.organization ? "border-red-500 focus-visible:ring-red-500" : ""}`}
                             />
+                            {errors.organization && (
+                                <p className="text-sm text-red-500">{t(errors.organization)}</p>
+                            )}
                         </div>
 
                         {/* Issue Date */}
                         <div className="space-y-2">
                             <Label className="text-sm font-medium text-foreground">
-                                Issue date <span className="text-primary">*</span>
+                                {t('modals.certificates.issueDate')} <span className="text-primary">*</span>
                             </Label>
                             <div className="grid grid-cols-2 gap-2">
-                                <FormControl fullWidth>
+                                <FormControl fullWidth error={Boolean(errors.issueMonth)}>
                                     <Select
                                         value={formData.issueMonth}
                                         onChange={(e) => handleChange("issueMonth", e.target.value)}
@@ -198,17 +227,18 @@ export default function CertificatesModal({ open, onOpenChange, initialData, onS
                                             },
                                         }}
                                     >
-                                        <MenuItem value="" disabled>
-                                            Month
-                                        </MenuItem>
+                                        <MenuItem value="" disabled>{t('modals.common.month')}</MenuItem>
                                         {months.map((month) => (
                                             <MenuItem key={month.value} value={month.value}>
                                                 {month.label}
                                             </MenuItem>
                                         ))}
                                     </Select>
+                                    {errors.issueMonth && (
+                                        <FormHelperText>{t(errors.issueMonth)}</FormHelperText>
+                                    )}
                                 </FormControl>
-                                <FormControl fullWidth>
+                                <FormControl fullWidth error={Boolean(errors.issueYear)}>
                                     <Select
                                         value={formData.issueYear}
                                         onChange={(e) => handleChange("issueYear", e.target.value)}
@@ -229,15 +259,16 @@ export default function CertificatesModal({ open, onOpenChange, initialData, onS
                                             },
                                         }}
                                     >
-                                        <MenuItem value="" disabled>
-                                            Year
-                                        </MenuItem>
+                                        <MenuItem value="" disabled>{t('modals.common.year')}</MenuItem>
                                         {years.map((year) => (
                                             <MenuItem key={year.value} value={year.value}>
                                                 {year.label}
                                             </MenuItem>
                                         ))}
                                     </Select>
+                                    {errors.issueYear && (
+                                        <FormHelperText>{t(errors.issueYear)}</FormHelperText>
+                                    )}
                                 </FormControl>
                             </div>
                         </div>
@@ -245,21 +276,25 @@ export default function CertificatesModal({ open, onOpenChange, initialData, onS
                         {/* Certificate URL */}
                         <div className="space-y-2">
                             <Label htmlFor="certificateUrl" className="text-sm font-medium text-foreground">
-                                Certificate URL
+                                {t('modals.certificates.certificateUrl')}
                             </Label>
                             <Input
                                 id="certificateUrl"
                                 value={formData.certificateUrl}
                                 onChange={(e) => handleChange("certificateUrl", e.target.value)}
                                 placeholder="Certificate URL"
-                                className="h-12"
+                                aria-invalid={Boolean(errors.certificateUrl)}
+                                className={`h-12 ${errors.certificateUrl ? "border-red-500 focus-visible:ring-red-500" : ""}`}
                             />
+                            {errors.certificateUrl && (
+                                <p className="text-sm text-red-500">{t(errors.certificateUrl)}</p>
+                            )}
                         </div>
 
                         {/* Description */}
                         <div className="space-y-2">
                             <Label className="text-sm font-medium text-foreground">
-                                Description
+                                {t('modals.certificates.description')}
                             </Label>
 
                             {/* Rich Text Editor */}
@@ -314,7 +349,7 @@ export default function CertificatesModal({ open, onOpenChange, initialData, onS
 
                                 {/* Character Counter */}
                                 <div className="text-sm text-muted-foreground">
-                                    {charCount}/{maxChars} characters
+                                    {charCount}/{maxChars} {t('modals.common.characters')}
                                 </div>
                             </div>
                         </div>
@@ -328,14 +363,14 @@ export default function CertificatesModal({ open, onOpenChange, initialData, onS
                             variant="outline"
                             className="h-12 px-6 bg-white border border-neutrals-40 text-foreground hover:bg-neutrals-10 hover:border-neutrals-40"
                         >
-                            Cancel
+                            {t('modals.common.cancel')}
                         </Button>
                         <Button
                             type="button"
                             onClick={handleSave}
                             className="h-12 px-6 bg-primary hover:bg-primary/90 text-white font-medium"
                         >
-                            Save
+                            {t('modals.common.save')}
                         </Button>
                     </div>
                 </div>

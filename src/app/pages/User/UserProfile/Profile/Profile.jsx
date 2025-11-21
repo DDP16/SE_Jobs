@@ -1,12 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import { Container, Box } from '@mui/material';
-import { 
-    InformationModal, 
-    IntroductionModal, 
-    ExperienceModal, 
+import {
+    InformationModal,
+    IntroductionModal,
+    ExperienceModal,
     EducationModal,
-    LanguagesModal, 
-    ProjectsModal, 
+    LanguagesModal,
+    ProjectsModal,
     SkillsModal,
     CertificatesModal,
     AwardsModal,
@@ -210,6 +210,24 @@ export default function Profile() {
         openModal('skills');
     };
 
+    const handleSaveSkillGroup = (formData) => {
+        const skillGroupData = {
+            id: selectedSkillGroup?.id || Date.now(),
+            groupName: formData.groupName || formData.name || 'Core Skills',
+            name: formData.groupName || formData.name || 'Core Skills',
+            skills: formData.skills || [],
+        };
+
+        if (selectedSkillGroup) {
+            setSkills(prev => prev.map(group => group.id === selectedSkillGroup.id ? skillGroupData : group));
+        } else {
+            setSkills(prev => [...prev, skillGroupData]);
+        }
+
+        setSelectedSkillGroup(null);
+        closeModal('skills');
+    };
+
     const handleDeleteSkillGroup = (id) => {
         if (window.confirm('Bạn có chắc chắn muốn xóa nhóm kỹ năng này?')) {
             setSkills(prev => prev.filter(skill => skill.id !== id));
@@ -327,12 +345,14 @@ export default function Profile() {
                         />
                     </Box>
 
-                    {/* Right Sidebar - Completion */}
-                    <ProfileCompletionCard
-                        completionPercentage={completionPercentage}
-                        onAddIntroduction={() => openModal('introduction')}
-                        onAddExperience={() => { setSelectedExperience(null); openModal('experience'); }}
-                    />
+                    {/* Right Sidebar - Completion (hidden on small screens) */}
+                    <Box sx={{ display: { xs: 'none', md: 'block' } }}>
+                        <ProfileCompletionCard
+                            completionPercentage={completionPercentage}
+                            onAddIntroduction={() => openModal('introduction')}
+                            onAddExperience={() => { setSelectedExperience(null); openModal('experience'); }}
+                        />
+                    </Box>
                 </Box>
             </Container>
 
@@ -397,10 +417,7 @@ export default function Profile() {
                     else { closeModal('skills'); setSelectedSkillGroup(null); }
                 }}
                 initialData={selectedSkillGroup}
-                onSave={(formData) => {
-                    console.log('Skills saved:', formData);
-                    closeModal('skills');
-                }}
+                onSave={handleSaveSkillGroup}
             />
 
             <LanguagesModal

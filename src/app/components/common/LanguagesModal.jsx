@@ -1,8 +1,7 @@
 import { useState, useEffect } from "react";
-import {
-    uiInput as Input,
-    uiButton as Button,
-} from "@/components";
+import { uiButton as Button } from "@/components";
+import { useTranslation } from 'react-i18next';
+import { validateLanguagesList } from "@/modules";
 import { Dialog, DialogContent, Autocomplete, TextField, FormControl, Select, MenuItem, Chip } from "@mui/material";
 import { X, Plus } from "lucide-react";
 
@@ -31,9 +30,11 @@ const LANGUAGE_LEVELS = [
 const MAX_LANGUAGES = 5;
 
 export default function LanguagesModal({ open, onOpenChange, initialData, onSave }) {
+    const { t } = useTranslation();
     const [selectedLanguages, setSelectedLanguages] = useState([]);
     const [searchLanguage, setSearchLanguage] = useState("");
     const [selectedLevel, setSelectedLevel] = useState("");
+    const [errors, setErrors] = useState({});
 
     // Update selected languages when initialData changes
     useEffect(() => {
@@ -42,8 +43,11 @@ export default function LanguagesModal({ open, onOpenChange, initialData, onSave
         } else if (initialData) {
             // Handle if initialData is an object with languages array
             setSelectedLanguages(initialData.languages || []);
+        } else {
+            setSelectedLanguages([]);
         }
-    }, [initialData]);
+        setErrors({});
+    }, [initialData, open]);
 
     const handleAddLanguage = () => {
         if (!searchLanguage || !selectedLevel) {
@@ -83,6 +87,12 @@ export default function LanguagesModal({ open, onOpenChange, initialData, onSave
         // Reset inputs
         setSearchLanguage("");
         setSelectedLevel("");
+        setErrors((prev) => {
+            if (!prev.languages) return prev;
+            const updated = { ...prev };
+            delete updated.languages;
+            return updated;
+        });
     };
 
     const handleRemoveLanguage = (languageToRemove) => {
@@ -92,8 +102,18 @@ export default function LanguagesModal({ open, onOpenChange, initialData, onSave
     };
 
     const handleSave = () => {
+        const { isValid, errors: validationErrors, sanitizedLanguages } = validateLanguagesList(selectedLanguages);
+
+        if (!isValid) {
+            setErrors(validationErrors);
+            return;
+        }
+
+        setSelectedLanguages(sanitizedLanguages);
+
         if (onSave) {
-            onSave(selectedLanguages);
+            // Pass a named object to keep payload consistent for API (e.g. { languages: [...] })
+            onSave({ languages: sanitizedLanguages });
         }
         onOpenChange(false);
     };
@@ -119,7 +139,7 @@ export default function LanguagesModal({ open, onOpenChange, initialData, onSave
                 <div className="sticky top-0 bg-background z-10 p-6 pb-4 border-b border-neutrals-20">
                     <div className="flex items-center justify-between">
                         <span className="text-xl font-bold text-foreground">
-                            Ngoại ngữ
+                            {t('modals.languages.title')}
                         </span>
                         <button
                             onClick={() => onOpenChange(false)}
@@ -136,8 +156,11 @@ export default function LanguagesModal({ open, onOpenChange, initialData, onSave
                     {/* Language List Header */}
                     <div className="mb-4">
                         <span className="text-sm font-medium text-foreground">
-                            Danh sách ngôn ngữ ({selectedLanguages.length}/{MAX_LANGUAGES})
+                            {t('modals.languages.listCount', { count: selectedLanguages.length, max: MAX_LANGUAGES })}
                         </span>
+                        {errors.languages && (
+                            <p className="text-sm text-red-500 mt-1">{t(errors.languages)}</p>
+                        )}
                     </div>
 
                     {/* Input Fields Row */}
@@ -157,7 +180,7 @@ export default function LanguagesModal({ open, onOpenChange, initialData, onSave
                                 renderInput={(params) => (
                                     <TextField
                                         {...params}
-                                        placeholder="Tìm ngôn ngữ"
+                                        placeholder={t('modals.languages.searchPlaceholder')}
                                         sx={{
                                             "& .MuiOutlinedInput-root": {
                                                 height: "48px",
@@ -202,7 +225,7 @@ export default function LanguagesModal({ open, onOpenChange, initialData, onSave
                                     }}
                                 >
                                     <MenuItem value="" disabled>
-                                        Chọn trình độ
+                                        {t('modals.languages.selectLevel')}
                                     </MenuItem>
                                     {LANGUAGE_LEVELS.map((level) => (
                                         <MenuItem key={level} value={level}>
@@ -257,14 +280,14 @@ export default function LanguagesModal({ open, onOpenChange, initialData, onSave
                             variant="outline"
                             className="h-12 px-6 bg-white border border-neutrals-40 text-foreground hover:bg-neutrals-10 hover:border-neutrals-40"
                         >
-                            Huỷ
+                            {t('modals.common.cancel')}
                         </Button>
                         <Button
                             type="button"
                             onClick={handleSave}
                             className="h-12 px-6 bg-primary hover:bg-primary/90 text-white font-medium"
                         >
-                            Lưu
+                            {t('modals.common.save')}
                         </Button>
                     </div>
                 </div>

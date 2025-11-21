@@ -8,7 +8,7 @@ export function SkillsSection({ skills, onEdit, onDelete, onAdd }) {
     <Box sx={{ bgcolor: 'background.paper', p: 4, borderRadius: 2, border: 1, borderColor: 'divider', mb: 2 }}>
       <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', mb: 3 }}>
         <Typography variant="h6" sx={{ fontWeight: 600 }}>Kỹ năng</Typography>
-        <IconButton onClick={onAdd} size="small" sx={{ color: 'error.main', '&:hover': { bgcolor: 'error.lighter' } }}>
+        <IconButton onClick={onAdd} size="small" sx={{ color: 'primary.main', '&:hover': { bgcolor: 'primary.lighter' } }}>
           <AddIcon sx={{ fontSize: 18 }} />
         </IconButton>
       </Box>
@@ -26,7 +26,7 @@ export function SkillsSection({ skills, onEdit, onDelete, onAdd }) {
                 <IconButton
                   onClick={() => onEdit(skillGroup)}
                   size="small"
-                  sx={{ p: 0.5, color: 'error.main', '&:hover': { bgcolor: 'error.lighter' } }}
+                  sx={{ p: 0.5, color: 'primary.main', '&:hover': { bgcolor: 'primary.lighter' } }}
                 >
                   <EditIcon sx={{ fontSize: 18 }} />
                 </IconButton>
@@ -61,7 +61,7 @@ export function LanguagesSection({ languages, onEdit }) {
     <Box sx={{ bgcolor: 'background.paper', p: 4, borderRadius: 2, border: 1, borderColor: 'divider', mb: 2 }}>
       <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', mb: 3 }}>
         <Typography variant="h6" sx={{ fontWeight: 600 }}>Ngoại ngữ</Typography>
-        <IconButton onClick={onEdit} size="small" sx={{ color: 'error.main', '&:hover': { bgcolor: 'error.lighter' } }}>
+        <IconButton onClick={onEdit} size="small" sx={{ color: 'primary.main', '&:hover': { bgcolor: 'primary.lighter' } }}>
           <AddIcon sx={{ fontSize: 18 }} />
         </IconButton>
       </Box>
@@ -97,7 +97,7 @@ export function ProjectsSection({ projects, onEdit, onDelete, onAdd }) {
     <Box sx={{ bgcolor: 'background.paper', p: 4, borderRadius: 2, border: 1, borderColor: 'divider', mb: 2 }}>
       <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', mb: 3 }}>
         <Typography variant="h6" sx={{ fontWeight: 600 }}>Dự án nổi bật</Typography>
-        <IconButton onClick={onAdd} size="small" sx={{ color: 'error.main', '&:hover': { bgcolor: 'error.lighter' } }}>
+        <IconButton onClick={onAdd} size="small" sx={{ color: 'primary.main', '&:hover': { bgcolor: 'primary.lighter' } }}>
           <AddIcon sx={{ fontSize: 18 }} />
         </IconButton>
       </Box>
@@ -115,7 +115,7 @@ export function ProjectsSection({ projects, onEdit, onDelete, onAdd }) {
                 <IconButton
                   onClick={() => onEdit(project)}
                   size="small"
-                  sx={{ p: 0.5, color: 'error.main', '&:hover': { bgcolor: 'error.lighter' } }}
+                  sx={{ p: 0.5, color: 'primary.main', '&:hover': { bgcolor: 'primary.lighter' } }}
                 >
                   <EditIcon sx={{ fontSize: 18 }} />
                 </IconButton>
@@ -169,7 +169,7 @@ export function CertificatesSection({ certificates, onEdit, onDelete, onAdd }) {
     <Box sx={{ bgcolor: 'background.paper', p: 4, borderRadius: 2, border: 1, borderColor: 'divider', mb: 2 }}>
       <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', mb: 3 }}>
         <Typography variant="h6" sx={{ fontWeight: 600 }}>Chứng chỉ</Typography>
-        <IconButton onClick={onAdd} size="small" sx={{ color: 'error.main', '&:hover': { bgcolor: 'error.lighter' } }}>
+        <IconButton onClick={onAdd} size="small" sx={{ color: 'primary.main', '&:hover': { bgcolor: 'primary.lighter' } }}>
           <AddIcon sx={{ fontSize: 18 }} />
         </IconButton>
       </Box>
@@ -187,7 +187,7 @@ export function CertificatesSection({ certificates, onEdit, onDelete, onAdd }) {
                 <IconButton
                   onClick={() => onEdit(cert)}
                   size="small"
-                  sx={{ p: 0.5, color: 'error.main', '&:hover': { bgcolor: 'error.lighter' } }}
+                  sx={{ p: 0.5, color: 'primary.main', '&:hover': { bgcolor: 'primary.lighter' } }}
                 >
                   <EditIcon sx={{ fontSize: 18 }} />
                 </IconButton>
@@ -240,7 +240,7 @@ export function AwardsSection({ awards, onEdit, onDelete, onAdd }) {
     <Box sx={{ bgcolor: 'background.paper', p: 4, borderRadius: 2, border: 1, borderColor: 'divider', mb: 2 }}>
       <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', mb: 3 }}>
         <Typography variant="h6" sx={{ fontWeight: 600 }}>Giải thưởng</Typography>
-        <IconButton onClick={onAdd} size="small" sx={{ color: 'error.main', '&:hover': { bgcolor: 'error.lighter' } }}>
+        <IconButton onClick={onAdd} size="small" sx={{ color: 'primary.main', '&:hover': { bgcolor: 'primary.lighter' } }}>
           <AddIcon sx={{ fontSize: 18 }} />
         </IconButton>
       </Box>
@@ -258,7 +258,7 @@ export function AwardsSection({ awards, onEdit, onDelete, onAdd }) {
                 <IconButton
                   onClick={() => onEdit(award)}
                   size="small"
-                  sx={{ p: 0.5, color: 'error.main', '&:hover': { bgcolor: 'error.lighter' } }}
+                  sx={{ p: 0.5, color: 'primary.main', '&:hover': { bgcolor: 'primary.lighter' } }}
                 >
                   <EditIcon sx={{ fontSize: 18 }} />
                 </IconButton>

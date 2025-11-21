@@ -43,4 +43,153 @@
         "notifications": "Notifications",
         "settings": "Settings"
     }
+    ,
+    "modals": {
+        "education": {
+            "title": "Education",
+            "schoolPlaceholder": "School *",
+            "degreePlaceholder": "Degree *",
+            "majorPlaceholder": "Major *",
+            "currentlyStudying": "I'm currently studying here",
+            "from": "From",
+            "to": "To",
+            "month": "Month",
+            "year": "Year",
+            "otherInfoPlaceholder": "Other details",
+            "cancel": "Cancel",
+            "save": "Save",
+            "errors": {
+                "schoolRequired": "Please enter school name",
+                "degreeRequired": "Please choose a degree",
+                "majorRequired": "Please enter major",
+                "startMonthRequired": "Start month is required.",
+                "startYearRequired": "Please choose a start year (not greater than current year)",
+                "startYearFuture": "Start year cannot be in the future.",
+                "endMonthRequired": "End month is required.",
+                "endYearRequired": "Please choose an end year or mark 'I'm currently studying'",
+                "endAfterStart": "End year/month must be after or equal to start"
+            }
+        },
+        "common": {
+            "month": "Month",
+            "year": "Year",
+            "cancel": "Cancel",
+            "save": "Save",
+            "close": "Close",
+            "characters": "characters",
+            "tips": "Tips:"
+        },
+        "skills": {
+            "title": "Core Skills",
+            "listCount": "List skills ({{count}}/{{max}})",
+            "searchPlaceholder": "Search skills",
+            "selectExperience": "Select experience",
+            "tipsTitle": "Tips:",
+            "tipsText": "Organize your core skills into groups to help recruiters quickly understand your professional capabilities.",
+            "cancel": "Cancel",
+            "save": "Save"
+            ,
+            "errors": {
+                "groupNameRequired": "Group name is required.",
+                "skillsRequired": "Please add at least one skill.",
+                "skillExperienceRequired": "Each skill must include an experience level."
+            }
+        },
+        "experience": {
+            "title": "Work Experience",
+            "jobTitlePlaceholder": "Job title *",
+            "companyPlaceholder": "Company *",
+            "currentlyWorking": "I'm currently working here",
+            "from": "From",
+            "to": "To",
+            "tipsTitle": "Tips:",
+            "tipsText": "Brief the company's industry, then detail your responsibilities and achievements. For projects, write on the 'Project' field below.",
+            "charactersCounter": "{{count}}/{{max}} characters",
+            "errors": {
+                "jobTitleRequired": "Job title is required.",
+                "companyRequired": "Company name is required.",
+                "startMonthRequired": "Start month is required.",
+                "startYearRequired": "Start year is required.",
+                "startYearFuture": "Start year cannot be in the future.",
+                "endMonthRequired": "End month is required.",
+                "endYearRequired": "End year is required.",
+                "dateRange": "End date must be after the start date."
+            }
+        },
+        "projects": {
+            "title": "Projects",
+            "projectNameLabel": "Project name",
+            "projectNamePlaceholder": "Enter project name",
+            "currentlyWorking": "I'm still working on this project",
+            "startDate": "Start date",
+            "endDate": "End date",
+            "insertTemplate": "Insert template",
+            "descriptionLabel": "Project Description",
+            "websiteLabel": "Website link",
+            "websitePlaceholder": "Enter website link",
+            "tipsText": "Brief the company's industry, then detail your responsibilities and achievements. For projects, write on the 'Project' field below.",
+            "insertTemplateText": "• Project summary: [Short project summary]\n• Your role: [Role and responsibilities]\n• Technologies: [Technologies used]\n• Team size: [Number of team members]",
+            "errors": {
+                "projectNameRequired": "Project name is required.",
+                "startMonthRequired": "Start month is required.",
+                "startYearRequired": "Start year is required.",
+                "startYearFuture": "Start year cannot be in the future.",
+                "endMonthRequired": "End month is required.",
+                "endYearRequired": "End year is required.",
+                "dateRange": "End date must be after the start date.",
+                "websiteInvalid": "Enter a valid URL (e.g. https://example.com)."
+            }
+        },
+        "languages": {
+            "title": "Languages",
+            "listCount": "Language list ({{count}}/{{max}})",
+            "searchPlaceholder": "Search language",
+            "selectLevel": "Select level"
+            ,
+            "errors": {
+                "languagesRequired": "Please add at least one language.",
+                "languageLevelRequired": "Each language needs an associated level."
+            }
+        },
+        "certificates": {
+            "title": "Certificates",
+            "certificateName": "Certificate Name",
+            "certificateNamePlaceholder": "Certificate Name *",
+            "organization": "Organization",
+            "organizationPlaceholder": "Organization *",
+            "issueDate": "Issue date",
+            "certificateUrl": "Certificate URL",
+            "description": "Description"
+            ,
+            "errors": {
+                "certificateNameRequired": "Certificate name is required.",
+                "organizationRequired": "Organization is required.",
+                "issueMonthRequired": "Issue month is required.",
+                "issueYearRequired": "Issue year is required.",
+                "issueYearFuture": "Issue year cannot be in the future.",
+                "certificateUrlInvalid": "Enter a valid URL (e.g. https://example.com)."
+            }
+        },
+        "awards": {
+            "title": "Awards",
+            "awardName": "Award name",
+            "awardNamePlaceholder": "Award name",
+            "awardOrganization": "Award organization",
+            "issueDate": "Issue date",
+            "description": "Description",
+            "name": "Award name",
+            "namePlaceholder": "Award name",
+            "organization": "Award organization",
+            "organizationPlaceholder": "Award organization",
+            "tipsTitle": "Tips:",
+            "tipsText": "Briefly describe the reason for the award or the relevant achievement",
+            "errors": {
+                "awardNameRequired": "Award name is required.",
+                "awardOrganizationRequired": "Award organization is required.",
+                "issueMonthRequired": "Issue month is required.",
+                "issueYearRequired": "Issue year is required.",
+                "issueYearFuture": "Issue year cannot be in the future."
+            }
+        }
+    }
 }
