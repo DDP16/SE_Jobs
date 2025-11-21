@@ -345,12 +345,14 @@ export default function Profile() {
                         />
                     </Box>
 
-                    {/* Right Sidebar - Completion */}
-                    <ProfileCompletionCard
-                        completionPercentage={completionPercentage}
-                        onAddIntroduction={() => openModal('introduction')}
-                        onAddExperience={() => { setSelectedExperience(null); openModal('experience'); }}
-                    />
+                    {/* Right Sidebar - Completion (hidden on small screens) */}
+                    <Box sx={{ display: { xs: 'none', md: 'block' } }}>
+                        <ProfileCompletionCard
+                            completionPercentage={completionPercentage}
+                            onAddIntroduction={() => openModal('introduction')}
+                            onAddExperience={() => { setSelectedExperience(null); openModal('experience'); }}
+                        />
+                    </Box>
                 </Box>
             </Container>
 

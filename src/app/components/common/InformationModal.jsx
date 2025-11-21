@@ -166,7 +166,7 @@ export default function InformationModal({ open, onOpenChange, initialData, onSa
                                     {/* Title/Position */}
                                     <div className="space-y-2">
                                         <Label htmlFor="title" className="text-sm font-medium text-foreground">
-                                            Chức danh <span className="text-primary">*</span>
+                                            Chức danh <span className="text-primary"></span>
                                         </Label>
                                         <Input
                                             id="title"

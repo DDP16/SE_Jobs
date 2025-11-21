@@ -15,23 +15,6 @@ export default function ProfileHeader({ user, onEdit }) {
           <Avatar sx={{ width: 80, height: 80, bgcolor: 'primary.main', fontSize: '2rem', fontWeight: 600 }}>
             {getInitials(user.name)}
           </Avatar>
-          <IconButton
-            size="small"
-            onClick={onEdit}
-            sx={{
-              position: 'absolute',
-              bottom: -4,
-              right: -4,
-              bgcolor: 'background.paper',
-              border: '2px solid',
-              borderColor: 'divider',
-              width: 28,
-              height: 28,
-              '&:hover': { bgcolor: 'grey.100' }
-            }}
-          >
-            <EditIcon sx={{ fontSize: 14 }} />
-          </IconButton>
         </Box>
 
         {/* User Info */}
@@ -46,8 +29,8 @@ export default function ProfileHeader({ user, onEdit }) {
               sx={{ 
                 border: '1px solid', 
                 borderColor: 'divider',
-                color: 'error.main',
-                '&:hover': { bgcolor: 'error.lighter' }
+                color: 'primary.main',
+                '&:hover': { bgcolor: 'primary.lighter' }
               }}
             >
               <EditIcon />

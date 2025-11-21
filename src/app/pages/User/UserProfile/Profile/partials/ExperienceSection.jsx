@@ -25,7 +25,7 @@ export default function ExperienceSection({ experiences, showAll, onToggleShowAl
             </Typography>
           )}
         </Typography>
-        <IconButton onClick={onAdd} size="small" sx={{ color: 'error.main', '&:hover': { bgcolor: 'error.lighter' } }}>
+        <IconButton onClick={onAdd} size="small" sx={{ color: 'primary.main', '&:hover': { bgcolor: 'primary.lighter' } }}>
           <AddIcon sx={{ fontSize: 18 }} />
         </IconButton>
       </Box>
