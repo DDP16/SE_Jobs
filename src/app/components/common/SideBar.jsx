@@ -25,8 +25,6 @@ export default function ProfileSidebar({ user }) {
         { icon: <DashboardIcon />, text: t('sidebar.dashboard'), path: '/profile/dashboard' },
         { icon: <PersonIcon />, text: t('sidebar.profile'), path: '/profile/user-profile' },
         { icon: <WorkIcon />, text: t('sidebar.myJobs'), path: '/profile/my-jobs' },
-        // { icon: <InboxIcon />, text: 'Job Invitation', path: '/profile/job-invitation', badge: 0 },
-        // { icon: <MailIcon />, text: 'Email Subscriptions', path: '/profile/email-subscriptions' },
         { icon: <NotificationsIcon />, text: t('sidebar.notifications'), path: '/profile/notifications' },
         { icon: <SettingsIcon />, text: t('sidebar.settings'), path: '/profile/settings' },
     ];
