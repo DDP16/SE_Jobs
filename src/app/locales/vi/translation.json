@@ -22,6 +22,8 @@
     "confirm_password": "Xác nhận mật khẩu",
     "first_name": "Tên",
     "last_name": "Họ",
+    "save": "Lưu",
+    "apply": "Ứng tuyển",
 
     "auth": {
         "sign_in": "Đăng nhập",
@@ -47,12 +49,53 @@
     "profile": {
         "updateProfile": "Cập nhật hồ sơ"
     },
+    "setting": {
+        "my_account": "Tài khoản của tôi",
+        "notifications": "Thông báo",
+        "basic_information": "Thông tin cơ bản",
+        "description_account_tab": "Đây là thông tin đăng nhập mà bạn có thể cập nhật bất cứ lúc nào.",
+        "update_email": "Cập nhật email",
+        "description_update_email": "Cập nhật địa chỉ email của bạn để đảm bảo nó an toàn và bảo mật.",
+        "email_verified": "Địa chỉ email của bạn đã được xác minh.",
+        "enter_new_email": "Nhập email mới của bạn",
+        "new_password": "Mật khẩu mới",
+        "old_password": "Mật khẩu cũ",
+        "description_new_password": "Quản lý mật khẩu của bạn để đảm bảo nó an toàn và bảo mật.",
+        "enter_old_password": "Nhập mật khẩu cũ của bạn",
+        "enter_new_password": "Nhập mật khẩu mới của bạn",
+        "password_requirements": "Tối thiểu 8 ký tự",
+        "change_password": "Đổi mật khẩu",
+        "account_type": "Loại tài khoản",
+        "description_account_type": "Bạn có thể cập nhật loại tài khoản của mình",
+        "job_seeker": "Người tìm việc",
+        "job_seeker_description": "Tìm kiếm việc làm",
+        "employer": "Nhà tuyển dụng",
+        "employer_description": "Tuyển dụng, tìm kiếm ứng viên hoặc đăng tin tuyển dụng",
+        "close_account": "Đóng tài khoản",
+        "description_notifications_tab": "Đây là các tùy chọn thông báo mà bạn có thể cập nhật bất cứ lúc nào.",
+        "description_notifications": "Tùy chỉnh các cài đặt thông báo ưa thích của bạn",
+        "applications": "Ứng tuyển",
+        "applications_description": "Đây là các thông báo cho các công việc mà bạn đã ứng tuyển",
+        "jobs": "Việc làm",
+        "jobs_description": "Đây là các thông báo cho các vị trí việc làm phù hợp với hồ sơ của bạn",
+        "recommendations": "Đề xuất",
+        "recommendations_description": "Đây là các thông báo cho các đề xuất cá nhân hóa từ các nhà tuyển dụng của chúng tôi"
+    },
     "dashboard": {
         "recentApplicationsHistory": "Recent Applications History",
         "viewAllApplicationsHistory": "Xem toàn bộ lịch sử ứng tuyển",
         "dateApplied": "Ngày ứng tuyển"
-    }
-    ,
+    },
+    "job": {
+        "description": "Mô tả",
+        "no_description": "Không có mô tả công việc",
+        "responsibilities": "Trách nhiệm",
+        "no_responsibilities": "Không có trách nhiệm nào được liệt kê.",
+        "who_you_are": "Yêu cầu",
+        "no_requirements": "Không có yêu cầu nào được liệt kê.",
+        "nice_to_haves": "Những điều nên có",
+        "no_nice_to_haves": "Không có điều nên có nào được liệt kê."
+    },
     "sidebar": {
         "welcome": "Xin chào",
         "dashboard": "Dashboard",

@@ -44,7 +44,7 @@ export default function Header() {
   const dispatch = useDispatch();
 
   // Check if user is logged in 
-  const isLoggedIn = localStorage.getItem(AUTHENTICATED);
+  const isLoggedIn = localStorage.getItem(AUTHENTICATED) === 'true';
   const userName = localStorage.getItem(USER_NAME) || 'User';
 
   const handleLangChange = (_e, newLang) => {

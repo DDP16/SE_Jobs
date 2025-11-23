@@ -22,6 +22,8 @@
     "confirm_password": "Confirm Password",
     "first_name": "First Name",
     "last_name": "Last Name",
+    "save": "Save",
+    "apply": "Apply",
 
     "auth": {
         "sign_in": "Sign in",
@@ -47,12 +49,53 @@
     "profile": {
         "updateProfile": "Update Profile"
     },
+    "setting": {
+        "my_account": "My Account",
+        "notifications": "Notifications",
+        "basic_information": "Basic Information",
+        "description_account_tab": "This is login information that you can update anytime.",
+        "update_email": "Update Email",
+        "description_update_email": "Update your email address to make sure it is safe and secure.",
+        "email_verified": "Your email address is verified.",
+        "enter_new_email": "Enter your new email",
+        "new_password": "New Password",
+        "old_password": "Old Password",
+        "description_new_password": "Manage your password to make sure it is safe and secure.",
+        "enter_old_password": "Enter your old password",
+        "enter_new_password": "Enter your new password",
+        "password_requirements": "Minimum 8 characters",
+        "change_password": "Change Password",
+        "account_type": "Account Type",
+        "description_account_type": "You can update your account type",
+        "job_seeker": "Job Seeker",
+        "job_seeker_description": "Looking for a job",
+        "employer": "Employer",
+        "employer_description": "Hiring, sourcing candidates, or posting a jobs",
+        "close_account": "Close Account",
+        "description_notifications_tab": "These are notification preferences that you can update anytime.",
+        "description_notifications": "Customize your preferred notification settings",
+        "applications": "Applications",
+        "applications_description": "These are notifications for jobs that you have applied to",
+        "jobs": "Jobs",
+        "jobs_description": "These are notifications for job openings that suit your profile",
+        "recommendations": "Recommendations",
+        "recommendations_description": "These are notifications for personalized recommendations from our recruiters"
+    },
     "dashboard": {
         "recentApplicationsHistory": "Recent Applications History",
         "viewAllApplicationsHistory": "View all applications history",
         "dateApplied": "Date Applied"
-    }
-    ,
+    },
+    "job": {
+        "description": "Description",
+        "no_description": "No job description",
+        "responsibilities": "Responsibilities",
+        "no_responsibilities": "No responsibilities listed.",
+        "who_you_are": "Who You Are",
+        "no_requirements": "No requirements listed.",
+        "nice_to_haves": "Nice-To-Haves",
+        "no_nice_to_haves": "No nice-to-haves listed."
+    },
     "sidebar": {
         "welcome": "Welcome",
         "dashboard": "Dashboard",

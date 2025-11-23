@@ -3,8 +3,10 @@ import { Share2 } from "lucide-react";
 import { ApplicationModal, uiButton as Button } from "../../../../components";
 import { srcAsset } from "../../../../lib";
 import { useState } from "react";
+import { useTranslation } from "react-i18next";
 
 export default function JobHeader({ job }) {
+  const { t } = useTranslation();
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   return (
@@ -40,7 +42,7 @@ export default function JobHeader({ job }) {
               className="bg-primary hover:bg-primary/90 text-white px-8"
               onClick={() => setIsModalOpen(true)}
             >
-              Apply
+              {t("apply")}
             </Button>
           </div>
         </div>
