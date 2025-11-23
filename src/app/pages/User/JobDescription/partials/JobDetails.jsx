@@ -2,6 +2,14 @@ import { motion } from "framer-motion";
 import { CircleCheck } from "lucide-react";
 
 export default function JobDetails({ job }) {
+  if (!job) {
+    return (
+      <div className="space-y-8">
+        <p className="text-muted-foreground">Loading job details...</p>
+      </div>
+    );
+  }
+
   const containerVariants = {
     hidden: { opacity: 0 },
     visible: {
@@ -27,7 +35,7 @@ export default function JobDetails({ job }) {
       <motion.section variants={itemVariants}>
         <h4 className="text-2xl font-bold text-foreground mb-4">Description</h4>
         <p className="text-muted-foreground leading-relaxed">
-          {job.description || "Job Description"}
+          {job?.description || "Job Description"}
         </p>
       </motion.section>
 

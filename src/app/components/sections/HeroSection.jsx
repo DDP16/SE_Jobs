@@ -66,7 +66,7 @@ export default function HeroSection({ onSearch }) {
                             px: { xs: 1, md: 0 }
                         }}
                     >
-                        Find your next career at companies like HubSpot, Nike, and Dropbox
+                        Tìm cơ hội thực tập và việc làm đúng với đam mê của bạn.
                     </Typography>
                 </Box>
 

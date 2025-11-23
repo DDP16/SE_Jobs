@@ -4,8 +4,14 @@ import { ApplicationModal, uiButton as Button } from "../../../../components";
 import { srcAsset } from "../../../../lib";
 import { useState } from "react";
 
-export default function JobHeader({ job }) {
+export default function JobHeader({ job = {} }) {
   const [isModalOpen, setIsModalOpen] = useState(false);
+
+  // Transform API data format to component format if needed
+  const jobTitle = job.title || "Job Title";
+  const jobCompany = job.company?.name || job.company || "Company Name";
+  const jobLocation = job.location || job.company_branches?.location || "Location";
+  const jobType = job.working_time || job.type || "Job Type";
 
   return (
     <>
@@ -18,17 +24,16 @@ export default function JobHeader({ job }) {
         <div className="flex items-center justify-between">
           <div className="flex gap-6">
             <img
-              src={srcAsset.stripeIcon}
-              alt="Stripe Logo"
+              src={job.company?.logo}
+              alt={job.company?.name}
               className="w-14 h-14 object-contain"
             />
             <div>
               <h4 className="text-3xl font-bold text-foreground mb-2">
-                {job.title || "Job Title"}
+                {jobTitle}
               </h4>
               <p className="text-muted-foreground">
-                {job.company || "Company Name"} • {job.location || "Location"} •{" "}
-                {job.type || "Job Type"}
+                {jobCompany} • {jobLocation} • {jobType}
               </p>
             </div>
           </div>

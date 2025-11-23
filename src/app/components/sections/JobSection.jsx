@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import {
     Box,
     Container,
@@ -9,10 +9,59 @@ import {
 import { ArrowForward, ChevronLeft, ChevronRight } from '@mui/icons-material';
 import JobCard from '../features/JobCard';
 import { mockJobs } from '../../../mocks/mockData';
+import { useSelector, useDispatch } from 'react-redux';
+import { getJobs, getJobById } from '../../modules/services/jobsService';
+import { useNavigate } from 'react-router-dom';
 
 export default function JobSection() {
-    const latestJobs = mockJobs;
+    const latestJobs = useSelector(state => state.jobs.jobs);
+    const dispatch = useDispatch();
+    const navigate = useNavigate();
+    useEffect(() => {
+        dispatch(getJobs({ page: 1, limit: 10 }));
+    }, [dispatch]);
     const scrollContainerRef = React.useRef(null);
+
+    // Transform API data to JobCard format
+    const transformJobData = (job) => {
+        if (!job) return null;
+
+        // Format salary
+        let salary = "Negotiable";
+        if (job.salary_text) {
+            salary = job.salary_text;
+        } else if (job.salary_from || job.salary_to) {
+            const from = job.salary_from || 0;
+            const to = job.salary_to || 0;
+            const currency = job.salary_currency || "";
+            if (from && to) {
+                salary = `${from} - ${to} ${currency}`;
+            } else if (from) {
+                salary = `From ${from} ${currency}`;
+            } else if (to) {
+                salary = `Up to ${to} ${currency}`;
+            }
+        }
+
+        return {
+            id: job.id || job.external_id,
+            title: job.title || "Job Title",
+            company: job.company?.name || "Company Name", // If API includes company object
+            location: job.location || job.company_branches?.location || "Location",
+            type: job.working_time || job.type || "Full-time",
+            salary: salary,
+            description: job.description || "",
+            categories: job.categories || [],
+            logo: job.company?.logo || job.logo || (job.title ? job.title.charAt(0).toUpperCase() : "J"),
+            isFeatured: job.is_hot || job.is_diamond || false,
+            applied: job.applied || 0,
+            capacity: job.capacity || 10,
+            // Keep original data for reference
+            ...job
+        };
+    };
+
+    const transformedJobs = latestJobs.map(transformJobData).filter(Boolean);
 
     const getScrollAmount = () => {
         if (!scrollContainerRef.current) return 0;
@@ -49,12 +98,27 @@ export default function JobSection() {
     };
 
     const groupedJobs = [];
-    for (let i = 0; i < latestJobs.length; i += 6) {
-        groupedJobs.push(latestJobs.slice(i, i + 6));
+    for (let i = 0; i < transformedJobs.length; i += 6) {
+        groupedJobs.push(transformedJobs.slice(i, i + 6));
     }
 
     const handleJobAction = (action, job) => {
-        // debug handler removed
+        switch (action) {
+            case 'bookmark':
+                // TODO: Implement bookmark functionality
+                console.log('Bookmark job:', job);
+                break;
+            case 'share':
+                // TODO: Implement share functionality
+                console.log('Share job:', job);
+                break;
+            case 'click':
+                navigate(`/job?id=${job.id}`);
+                dispatch(getJobById(job.id));
+                break;
+            default:
+                break;
+        }
     };
 
     return (
@@ -100,7 +164,7 @@ export default function JobSection() {
                     sx={{ position: 'relative', mb: 0, mx: { xs: -2, sm: -3, md: -4 } }}
                 >
                     {/* Scroll Buttons - Only show if there are more than 6 jobs */}
-                    {latestJobs.length > 6 && (
+                    {transformedJobs.length > 6 && (
                         <Box
                             sx={{
                                 display: { xs: 'none', md: 'flex' },
@@ -204,6 +268,7 @@ export default function JobSection() {
                                                 onBookmark={(job) => handleJobAction('bookmark', job)}
                                                 onShare={(job) => handleJobAction('share', job)}
                                                 onApply={(job) => handleJobAction('apply', job)}
+                                                onClick={(job) => handleJobAction('click', job)}
                                             />
                                         </Box>
                                     ))}
@@ -230,6 +295,7 @@ export default function JobSection() {
                                                 onBookmark={(job) => handleJobAction('bookmark', job)}
                                                 onShare={(job) => handleJobAction('share', job)}
                                                 onApply={(job) => handleJobAction('apply', job)}
+                                                onClick={(job) => handleJobAction('click', job)}
                                             />
                                         </Box>
                                     ))}
