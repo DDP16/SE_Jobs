@@ -11,4 +11,4 @@ export {
     validateLanguagesList,
 } from './utils/validator';
 
-export { loginWithEmail, register, getMe } from './services/authService';
+export { loginWithEmail, register, getMe, logout } from './services/authService';

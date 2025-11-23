@@ -31,6 +31,8 @@ import logo from '../../assets/logo.svg';
 import { AUTHENTICATED, USER_NAME } from "../../../settings/localVar";
 import { logout } from "@/modules/services/authService";
 import { useDispatch } from "react-redux";
+import { CustomAlert } from "../../components";
+import { useCustomAlert } from "../../hooks/useCustomAlert";
 
 
 export default function Header() {
@@ -42,6 +44,7 @@ export default function Header() {
   let navigate = useNavigate();
   const location = useLocation();
   const dispatch = useDispatch();
+  const { alertConfig, hideAlert, showSuccess, showError } = useCustomAlert();
 
   // Check if user is logged in 
   const isLoggedIn = localStorage.getItem(AUTHENTICATED);
@@ -77,13 +80,22 @@ export default function Header() {
     navigate('/profile/dashboard');
   };
 
-  const handleLogout = () => {
+  const handleLogout = async () => {
     handleUserMenuClose();
-    // localStorage.removeItem('auth_token');
-    // localStorage.removeItem('user_id');
-    // localStorage.removeItem('user_name');
-    dispatch(logout());
-    navigate('/');
+    try {
+      const result = await dispatch(logout());
+      if (logout.fulfilled.match(result)) {
+        console.log("Logout successful: ", result.payload);
+        showSuccess("Logout successful!");
+        navigate('/');
+      } else {
+        console.error("Logout failed: ", result);
+        showError("Logout failed: " + (result.payload || "Unknown error"));
+      }
+    } catch (error) {
+      console.error("Error during logout:", error);
+      showError("An error occurred during logout. Please try again.");
+    }
   };
 
   // Check if a path is active
@@ -467,6 +479,10 @@ export default function Header() {
           </MenuItem>
         </Menu>
       </Toolbar>
+      <CustomAlert
+        {...alertConfig}
+        onClose={hideAlert}
+      />
     </AppBar>
   );
 }

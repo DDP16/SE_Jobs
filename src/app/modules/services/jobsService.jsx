@@ -1,158 +1,152 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import api from "../AxiosInstance";
+import { Exposure } from "@mui/icons-material";
 
-const apiBaseUrl = "/api/users";
+const apiBaseUrl = "/api/jobs";
 
-export const getUsers = createAsyncThunk(
-    "user/getUsers",
+export const getJobs = createAsyncThunk(
+    "jobs/getJobs",
     async ({ page, limit }, { rejectWithValue }) => {
         try {
             const response = await api.get(`${apiBaseUrl}/`, {
                 params: { page: page, limit: limit },
+                // withCredentials: true,
+            });
+            return response.data;
+        } catch (error) {
+            return rejectWithValue(error.response?.data?.message || "Something went wrong");
+        }
+    });
+
+export const getJobById = createAsyncThunk(
+    "jobs/getJobById",
+    async (jobId, { rejectWithValue }) => {
+        try {
+            const response = await api.get(`${apiBaseUrl}/${jobId}`, {
+                // withCredentials: true,
+            });
+            return response.data;
+        } catch (error) {
+            return rejectWithValue(error.response?.data?.message || "Something went wrong");
+        }
+    });
+
+export const createJob = createAsyncThunk(
+    "jobs/createJob",
+    async (jobData, { rejectWithValue }) => {
+        try {
+            const response = await api.post(`${apiBaseUrl}/`, jobData, {
                 withCredentials: true,
             });
             return response.data;
         } catch (error) {
             return rejectWithValue(error.response?.data?.message || "Something went wrong");
         }
-    }
-);
+    });
 
-export const getUserById = createAsyncThunk(
-    "user/getUserById",
-    async (userId, { rejectWithValue }) => {
+export const updateJob = createAsyncThunk(
+    "jobs/updateJob",
+    async ({ jobId, jobData }, { rejectWithValue }) => {
         try {
-            const response = await api.get(`${apiBaseUrl}/${userId}`, {
+            const response = await api.put(`${apiBaseUrl}/${jobId}`, jobData, {
                 withCredentials: true,
             });
             return response.data;
         } catch (error) {
             return rejectWithValue(error.response?.data?.message || "Something went wrong");
         }
-    }
-);
+    });
 
-export const createUser = createAsyncThunk(
-    "user/createUser",
-    async (userData, { rejectWithValue }) => {
+export const deleteJob = createAsyncThunk(
+    "jobs/deleteJob",
+    async (jobId, { rejectWithValue }) => {
         try {
-            const response = await api.post(`${apiBaseUrl}/`, userData, {
+            const response = await api.delete(`${apiBaseUrl}/${jobId}`, {
                 withCredentials: true,
             });
             return response.data;
         } catch (error) {
             return rejectWithValue(error.response?.data?.message || "Something went wrong");
         }
-    }
-);
-
-export const updateUser = createAsyncThunk(
-    "user/updateUser",
-    async ({ userId, userData }, { rejectWithValue }) => {
-        try {
-            const response = await api.put(`${apiBaseUrl}/${userId}`, userData, {
-                withCredentials: true,
-            });
-            return response.data;
-        } catch (error) {
-            return rejectWithValue(error.response?.data?.message || "Something went wrong");
-        }
-    }
-);
-
-export const deleteUser = createAsyncThunk(
-    "user/deleteUser",
-    async (userId, { rejectWithValue }) => {
-        try {
-            const response = await api.delete(`${apiBaseUrl}/${userId}`, {
-                withCredentials: true,
-            });
-            return { response: response.data, userId };
-        } catch (error) {
-            return rejectWithValue(error.response?.data?.message || "Something went wrong");
-        }
-    }
-);
+    });
 
 const initialState = {
-    user: null,
-    userItems: [],
-    status: "idle", // 'idle' | 'loading' | 'succeeded' | 'failed'
+    job: null,
+    jobs: [],
+    status: "idle",
     error: null,
 }
 
-const userSlice = createSlice({
-    name: "user",
+const jobsSlice = createSlice({
+    name: "jobs",
     initialState,
     reducers: {},
     extraReducers: (builder) => {
         builder
-            .addCase(getUsers.pending, (state) => {
+            .addCase(getJobs.pending, (state) => {
                 state.status = "loading";
                 state.error = null;
             })
-            .addCase(getUsers.fulfilled, (state, action) => {
+            .addCase(getJobs.fulfilled, (state, action) => {
                 state.status = "succeeded";
-                state.userItems = action.payload.data;
+                state.jobs = action.payload.data;
             })
-            .addCase(getUsers.rejected, (state, action) => {
+            .addCase(getJobs.rejected, (state, action) => {
                 state.status = "failed";
                 state.error = action.payload;
             })
-            .addCase(getUserById.pending, (state) => {
+            .addCase(getJobById.pending, (state) => {
                 state.status = "loading";
                 state.error = null;
             })
-            .addCase(getUserById.fulfilled, (state, action) => {
+            .addCase(getJobById.fulfilled, (state, action) => {
                 state.status = "succeeded";
-                state.user = action.payload.data;
+                state.job = action.payload.data;
             })
-            .addCase(getUserById.rejected, (state, action) => {
+            .addCase(getJobById.rejected, (state, action) => {
                 state.status = "failed";
                 state.error = action.payload;
             })
-            .addCase(createUser.pending, (state) => {
+            .addCase(createJob.pending, (state) => {
                 state.status = "loading";
                 state.error = null;
             })
-            .addCase(createUser.fulfilled, (state, action) => {
+            .addCase(createJob.fulfilled, (state, action) => {
                 state.status = "succeeded";
-                state.user = action.payload.data;
-                state.userItems.push(action.payload.data);
+                state.jobs.push(action.payload.data);
             })
-            .addCase(createUser.rejected, (state, action) => {
+            .addCase(createJob.rejected, (state, action) => {
                 state.status = "failed";
                 state.error = action.payload;
             })
-            .addCase(updateUser.pending, (state) => {
+            .addCase(updateJob.pending, (state) => {
                 state.status = "loading";
                 state.error = null;
             })
-            .addCase(updateUser.fulfilled, (state, action) => {
+            .addCase(updateJob.fulfilled, (state, action) => {
                 state.status = "succeeded";
-                state.user = action.payload.data;
-                const index = state.userItems.findIndex(user => user.user_id === action.payload.data.user_id);
+                const index = state.jobs.findIndex(job => job.job_id === action.payload.data.job_id);
                 if (index !== -1) {
-                    state.userItems[index] = action.payload.data;
+                    state.jobs[index] = action.payload.data;
                 }
-            })
-            .addCase(updateUser.rejected, (state, action) => {
+            })  
+            .addCase(updateJob.rejected, (state, action) => {
                 state.status = "failed";
                 state.error = action.payload;
             })
-            .addCase(deleteUser.pending, (state) => {
+            .addCase(deleteJob.pending, (state) => {
                 state.status = "loading";
                 state.error = null;
             })
-            .addCase(deleteUser.fulfilled, (state, action) => {
+            .addCase(deleteJob.fulfilled, (state, action) => {
                 state.status = "succeeded";
-                state.userItems = state.userItems.filter(user => user.user_id !== action.payload.userId);
+                state.jobs = state.jobs.filter(job => job.job_id !== action.payload.response.jobId);
             })
-            .addCase(deleteUser.rejected, (state, action) => {
+            .addCase(deleteJob.rejected, (state, action) => {
                 state.status = "failed";
                 state.error = action.payload;
             });
     },
 });
 
-export default userSlice.reducer;
+export default jobsSlice.reducer;

@@ -3,7 +3,7 @@ import axios from "axios";
 //   getAuthFromCookies,
 //   clearAuthCookies,
 // } from "../CookieHelper/CookieHelper";
-import { message } from "antd";
+// import { message } from "antd";
 import { BE_ENPOINT } from "src/settings/localVar";
 
 const productURL = "";
