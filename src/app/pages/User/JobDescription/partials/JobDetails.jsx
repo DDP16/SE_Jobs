@@ -2,10 +2,27 @@ import { motion } from "framer-motion";
 import { CircleCheck } from "lucide-react";
 
 export default function JobDetails({ job }) {
-  if (!job) {
+  const jobStatus = useSelector(state => state.jobs.status);
+  const jobError = useSelector(state => state.jobs.error);
+
+  if (jobStatus === "loading" && !job) {
     return (
       <div className="space-y-8">
         <p className="text-muted-foreground">Loading job details...</p>
+      </div>
+    );
+  }
+  if (jobStatus === "failed" && jobError) {
+    return (
+      <div className="space-y-8">
+        <p className="text-destructive">{jobError || "Failed to load job details."}</p>
+      </div>
+    );
+  }
+  if (!job) {
+    return (
+      <div className="space-y-8">
+        <p className="text-muted-foreground">Job not found.</p>
       </div>
     );
   }

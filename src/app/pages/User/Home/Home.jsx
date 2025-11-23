@@ -10,10 +10,10 @@ export default function Home() {
   return (
     <>
       <HeroSection onSearch={handleSearch} />
-      <CompanySection />
-      <CategorySection />
-      <HotJobTopCVSection />
       <JobSection />
+      <HotJobTopCVSection />
+      <CategorySection />
+      <CompanySection />
       {/* <CTASection /> */}
     </>
   );
