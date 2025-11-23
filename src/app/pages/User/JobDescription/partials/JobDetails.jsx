@@ -4,6 +4,13 @@ import { useTranslation } from "react-i18next";
 
 export default function JobDetails({ job }) {
   const { t } = useTranslation();
+  if (!job) {
+    return (
+      <div className="space-y-8">
+        <p className="text-muted-foreground">Loading job details...</p>
+      </div>
+    );
+  }
 
   const containerVariants = {
     hidden: { opacity: 0 },
@@ -30,7 +37,7 @@ export default function JobDetails({ job }) {
       <motion.section variants={itemVariants}>
         <h4 className="text-2xl font-bold text-foreground mb-4">{t("job.description")}</h4>
         <p className="text-muted-foreground leading-relaxed">
-          {job.description || t("job.no_description")}
+          {job?.description || t("job.no_description")}
         </p>
       </motion.section>
 

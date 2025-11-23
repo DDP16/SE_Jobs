@@ -7,6 +7,9 @@ import SimilarJobs from "./partials/SimilarJobs";
 import { layoutType } from "../../../lib";
 import { mockJobs } from "../../../../mocks/mockData";
 import { useSearchParams } from "react-router-dom";
+import { useSelector, useDispatch } from "react-redux";
+import { getJobById } from "../../../modules/services/jobsService";
+import { useEffect } from "react";
 
 export default function JobDescription({
   job,
@@ -29,14 +32,14 @@ export default function JobDescription({
       showSimilarJobs: true,
     },
     [layoutType.compact]: {
-      showBreadcrumb: false, 
+      showBreadcrumb: false,
       showJobSidebar: true,
       showPerksSection: false,
       showCompanySection: false,
       showSimilarJobs: false,
     },
     [layoutType.half_width]: {
-      showBreadcrumb: false, 
+      showBreadcrumb: false,
       showJobSidebar: true,
       showPerksSection: false,
       showCompanySection: false,
@@ -65,9 +68,25 @@ export default function JobDescription({
 
   const [searchParams] = useSearchParams();
   const jobId = searchParams.get("id");
-  if (jobId && !job) {
-    job = mockJobs.find(j => j.id.toString() === jobId);
-    // debug: job lookup when job prop not provided
+  const dispatch = useDispatch();
+
+  // Get job from Redux store
+  const jobFromStore = useSelector(state => state.jobs.job);
+
+  // Fetch job from API if jobId exists and job prop is not provided
+  useEffect(() => {
+    if (jobId && !job) {
+      dispatch(getJobById(jobId));
+    }
+  }, [jobId, job, dispatch]);
+
+  // Use job prop if provided, otherwise use job from Redux store, fallback to mockJobs
+  if (!job) {
+    if (jobFromStore) {
+      job = jobFromStore;
+    } else if (jobId) {
+      job = mockJobs.find(j => j.id.toString() === jobId);
+    }
   }
 
   return (
@@ -76,7 +95,7 @@ export default function JobDescription({
         {finalConfig.showBreadcrumb && (
           <div className="mb-5">
             <p className="text-sm text-muted-foreground">
-              Home / Companies / {job?.company || "Company"} / {job?.title || "Job Title"}
+              Home / Companies / {typeof job?.company === 'string' ? job.company : job?.company?.name || "Company"} / {job?.title || "Job Title"}
             </p>
           </div>
         )}

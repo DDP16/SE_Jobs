@@ -3,6 +3,14 @@ import { ArrowRight } from "lucide-react";
 import { srcAsset } from "../../../../lib";
 
 export default function CompanySection({ job }) {
+  // Handle both old format (string) and new format (object)
+  const companyName = typeof job?.company === 'string'
+    ? job.company
+    : job?.company?.name || "Company Name";
+
+  const companyLogo = job?.company?.logo;
+  const companyDescription = job?.company?.description || job?.description || "Job Description";
+
   return (
     <motion.section
       initial={{ opacity: 0, y: 40 }}
@@ -13,23 +21,23 @@ export default function CompanySection({ job }) {
         <div>
           <div className="flex items-center mb-6 gap-4">
             <img
-              src={srcAsset.stripeIcon}
-              alt="Stripe Logo"
+              src={companyLogo}
+              alt={`${companyName} Logo`}
               className="w-14 h-14 object-contain"
             />
             <div>
-              <h4 className="text-2xl font-bold text-foreground">{job.company}</h4>
+              <h4 className="text-2xl font-bold text-foreground">{companyName}</h4>
               <a
                 href="#"
                 className="text-primary flex items-center gap-1 hover:underline mt-1"
               >
-                Read more about {job.company}
+                Read more about {companyName}
                 <ArrowRight className="w-4 h-4" />
               </a>
             </div>
           </div>
           <p className="text-muted-foreground leading-relaxed mb-6">
-            {job.description || "Job Description"}
+             {companyDescription}
           </p>
         </div>
 
