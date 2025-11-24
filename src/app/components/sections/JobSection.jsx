@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useRef } from 'react';
 import {
     Box,
     Container,
@@ -8,7 +8,6 @@ import {
 } from '@mui/material';
 import { ArrowForward, ChevronLeft, ChevronRight } from '@mui/icons-material';
 import JobCard from '../features/JobCard';
-import { mockJobs } from '../../../mocks/mockData';
 import { useSelector, useDispatch } from 'react-redux';
 import { getJobs, getJobById } from '../../modules/services/jobsService';
 import { useNavigate } from 'react-router-dom';
@@ -17,10 +16,45 @@ export default function JobSection() {
     const latestJobs = useSelector(state => state.jobs.jobs);
     const dispatch = useDispatch();
     const navigate = useNavigate();
+    const scrollContainerRef = useRef(null);
+
     useEffect(() => {
         dispatch(getJobs({ page: 1, limit: 10 }));
     }, [dispatch]);
-    const scrollContainerRef = React.useRef(null);
+
+    const getScrollAmount = () => {
+        if (!scrollContainerRef.current) return 0;
+
+        const container = scrollContainerRef.current;
+        const firstGroup = container.firstElementChild;
+
+        if (!firstGroup) return 0;
+
+        const groupWidth = firstGroup.offsetWidth;
+        const gap = 16;
+
+        return groupWidth + gap;
+    };
+
+    const scrollLeft = () => {
+        if (scrollContainerRef.current) {
+            const scrollAmount = getScrollAmount();
+            scrollContainerRef.current.scrollBy({
+                left: -scrollAmount,
+                behavior: 'smooth'
+            });
+        }
+    };
+
+    const scrollRight = () => {
+        if (scrollContainerRef.current) {
+            const scrollAmount = getScrollAmount();
+            scrollContainerRef.current.scrollBy({
+                left: scrollAmount,
+                behavior: 'smooth'
+            });
+        }
+    };
 
     // Transform API data to JobCard format
     const transformJobData = (job) => {
@@ -63,40 +97,7 @@ export default function JobSection() {
 
     const transformedJobs = latestJobs.map(transformJobData).filter(Boolean);
 
-    const getScrollAmount = () => {
-        if (!scrollContainerRef.current) return 0;
-
-        const container = scrollContainerRef.current;
-        const firstGroup = container.firstElementChild;
-
-        if (!firstGroup) return 0;
-
-        const groupWidth = firstGroup.offsetWidth;
-        const gap = 16;
-
-        return groupWidth + gap;
-    };
-
-    const scrollLeft = () => {
-        if (scrollContainerRef.current) {
-            const scrollAmount = getScrollAmount();
-            scrollContainerRef.current.scrollBy({
-                left: -scrollAmount,
-                behavior: 'smooth'
-            });
-        }
-    };
-
-    const scrollRight = () => {
-        if (scrollContainerRef.current) {
-            const scrollAmount = getScrollAmount();
-            scrollContainerRef.current.scrollBy({
-                left: scrollAmount,
-                behavior: 'smooth'
-            });
-        }
-    };
-
+    // Group jobs into groups of 6 (2 rows x 3 columns)
     const groupedJobs = [];
     for (let i = 0; i < transformedJobs.length; i += 6) {
         groupedJobs.push(transformedJobs.slice(i, i + 6));
@@ -156,7 +157,6 @@ export default function JobSection() {
                         Show all jobs
                     </Button>
                 </Box>
-
 
                 {/* Job Cards - 2 Rows with Horizontal Scroll */}
                 <Box
@@ -266,9 +266,7 @@ export default function JobSection() {
                                             <JobCard
                                                 job={job}
                                                 onBookmark={(job) => handleJobAction('bookmark', job)}
-                                                onShare={(job) => handleJobAction('share', job)}
-                                                onApply={(job) => handleJobAction('apply', job)}
-                                                onClick={(job) => handleJobAction('click', job)}
+                                                onClick={() => handleJobAction('click', job)}
                                             />
                                         </Box>
                                     ))}
@@ -290,12 +288,9 @@ export default function JobSection() {
                                             }}
                                         >
                                             <JobCard
-                                                showDescription={false}
                                                 job={job}
                                                 onBookmark={(job) => handleJobAction('bookmark', job)}
-                                                onShare={(job) => handleJobAction('share', job)}
-                                                onApply={(job) => handleJobAction('apply', job)}
-                                                onClick={(job) => handleJobAction('click', job)}
+                                                onClick={() => handleJobAction('click', job)}
                                             />
                                         </Box>
                                     ))}
