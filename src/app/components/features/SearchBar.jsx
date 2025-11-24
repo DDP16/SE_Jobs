@@ -1,14 +1,16 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
     Box,
     Paper,
     InputAdornment,
-    IconButton,
-    Divider
+    Divider,
+    Autocomplete
 } from '@mui/material';
 import { Search, LocationOn } from '@mui/icons-material';
 import Input from '../common/Input';
 import Button from '../common/Button';
+import { useSelector, useDispatch } from 'react-redux';
+import { getProvinces } from '../../modules/services/addressService';
 
 export default function SearchBar({
     onSearch,
@@ -17,10 +19,20 @@ export default function SearchBar({
     showLocation = true,
     fullWidth = true
 }) {
+    const provinces = useSelector(state => state.address.provinces);
+    const dispatch = useDispatch();
     const [keyword, setKeyword] = useState('');
-    const [location, setLocation] = useState('');
+    const [location, setLocation] = useState('Tất cả thành phố');
+
+    useEffect(() => {
+        dispatch(getProvinces());
+    }, [dispatch]);
 
     const handleSearch = () => {
+        if (location === 'Tất cả thành phố') {
+            onSearch({ keyword, location: '' });
+            return;
+        }
         onSearch({ keyword, location });
     };
 
@@ -29,6 +41,25 @@ export default function SearchBar({
             handleSearch();
         }
     };
+
+    // Normalize provinces shape to an array of objects or strings
+    const provinceList = React.useMemo(() => {
+        if (!provinces) return [];
+        if (Array.isArray(provinces)) return provinces;
+        if (Array.isArray(provinces.data)) return provinces.data;
+        if (Array.isArray(provinces.provinces)) return provinces.provinces;
+        return [];
+    }, [provinces]);
+
+    // build option strings and ensure default 'Tất cả thành phố' is present
+    const optionStrings = (provinceList || []).map(p =>
+        typeof p === 'string' ? p : (p.name || p.title || p.province_name || '')
+    ).filter(Boolean);
+
+    const options = React.useMemo(() => {
+        const arr = ['Tất cả thành phố', ...optionStrings];
+        return Array.from(new Set(arr));
+    }, [optionStrings]);
 
     return (
         <Paper
@@ -77,16 +108,34 @@ export default function SearchBar({
                         minWidth: { xs: '100%', md: 200 },
                         width: { xs: '100%', md: 'auto' }
                     }}>
-                        <Input
-                            placeholder={locationPlaceholder}
+                        <Autocomplete
+                            freeSolo
+                            options={options}
                             value={location}
-                            onChange={(e) => setLocation(e.target.value)}
-                            onKeyPress={handleKeyPress}
-                            startAdornment={
-                                <InputAdornment position="start">
-                                    <LocationOn color="action" />
-                                </InputAdornment>
-                            }
+                            onChange={(event, newValue) => setLocation(newValue || '')}
+                            onInputChange={(event, newInput) => setLocation(newInput)}
+                            disableClearable={false}
+                            renderInput={(params) => (
+                                <Input
+                                    {...params}
+                                    placeholder={locationPlaceholder}
+                                    onKeyPress={handleKeyPress}
+                                    variant="outlined"
+                                    fullWidth
+                                    InputProps={{
+                                        // keep Autocomplete's InputProps (clear button, etc.) and add our start adornment
+                                        ...params.InputProps,
+                                        startAdornment: (
+                                            <InputAdornment position="start">
+                                                <LocationOn color="action" />
+                                            </InputAdornment>
+                                        ),
+                                    }}
+                                    inputProps={{
+                                        ...params.inputProps
+                                    }}
+                                />
+                            )}
                         />
                     </Box>
                 </>

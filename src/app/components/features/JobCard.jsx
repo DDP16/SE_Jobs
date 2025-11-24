@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import {
     Box,
     Typography,
@@ -10,35 +10,86 @@ import {
     Stack,
     Paper,
     Divider,
-    Portal
+    Portal,
+    useTheme,
+    useMediaQuery
 } from '@mui/material';
-import {
-    BookmarkBorder,
-    Bookmark,
-    Share,
-    MoreVert
-} from '@mui/icons-material';
+import { BookmarkBorder, Bookmark } from '@mui/icons-material';
 import Badge from '../common/Badge';
 import Button from '../common/Button';
 
 export default function JobCard({
     job = {},
     onBookmark,
-    onShare,
-    onApply,
     onClick,
     isBookmarked = false,
-    showActions = false,
-    variant = "card",
-    showDescription = false,
-    showApplyButton = true
+    showPopup = true
 }) {
     const [isHovered, setIsHovered] = useState(false);
     const [hoverTimeout, setHoverTimeout] = useState(null);
+    const [popupPosition, setPopupPosition] = useState({ top: '50%', left: '50%', transform: 'translate(-50%, -50%)' });
+    const cardRef = useRef(null);
 
-    // Extract data with support for both old and new API formats
+    const theme = useTheme();
+    const isSmall = useMediaQuery(theme.breakpoints.down('md'));
+
+    // Popup timing configuration
+    const openDelay = 300;
+    const closeDelay = 300;
+    const calculatePopupPosition = () => {
+        if (!cardRef.current) {
+            return { top: '50%', left: '50%', transform: 'translate(-50%, -50%)' };
+        }
+
+        const cardRect = cardRef.current.getBoundingClientRect();
+        const popupWidth = 420;
+        const popupHeight = Math.min(window.innerHeight * 0.7, 600);
+        const padding = 16;
+        const gap = 8; 
+
+        let left, top;
+        
+        // Calculate available space on both sides
+        const spaceOnRight = window.innerWidth - cardRect.right - padding;
+        const spaceOnLeft = cardRect.left - padding;
+        
+        // Prefer right side, fallback to left, then center
+        if (spaceOnRight >= popupWidth + gap) {
+            // Show on right side, close to card
+            left = cardRect.right + gap;
+        } else if (spaceOnLeft >= popupWidth + gap) {
+            // Show on left side, close to card
+            left = cardRect.left - popupWidth - gap;
+        } else if (spaceOnRight > spaceOnLeft) {
+            // Not enough space, but more space on right - position flush right
+            left = cardRect.right + gap;
+            // Clamp to ensure it doesn't go off screen
+            if (left + popupWidth > window.innerWidth - padding) {
+                left = window.innerWidth - popupWidth - padding;
+            }
+        } else {
+            // More space on left - position flush left
+            left = cardRect.left - popupWidth - gap;
+            // Clamp to ensure it doesn't go off screen
+            if (left < padding) {
+                left = padding;
+            }
+        }
+        
+        // Vertically align with top of card, then clamp to viewport
+        top = cardRect.top;
+        const maxTop = window.innerHeight - popupHeight - padding;
+        if (top > maxTop) {
+            top = maxTop;
+        }
+        if (top < padding) {
+            top = padding;
+        }
+
+        return { top: `${top}px`, left: `${left}px`, transform: 'none' };
+    };
+
     const {
-        id,
         title = "Job Title",
         company: companyData,
         location,
@@ -56,31 +107,24 @@ export default function JobCard({
         niceToHaves = [],
         working_time,
         job_deadline,
-        job_deadline_at,
-        categories = [],
         logo,
         isFeatured,
         is_diamond,
         is_job_flash_active,
         is_hot,
         created_at,
-        createdAt,
-        applied = 0,
-        capacity = 10
+        createdAt
     } = job;
 
-    // Handle nested company object (new API format)
     const companyName = typeof companyData === 'string'
         ? companyData
         : companyData?.name || "Company Name";
 
-    // Get logo URL or use first letter of company name
     const companyLogoUrl = logo || companyData?.logo;
     const companyLogoInitial = (companyName && companyName !== "Company Name" && companyName.length > 0)
         ? companyName.charAt(0).toUpperCase()
-        : "C";
+        : "SE";
 
-    // Handle salary (new API format)
     const displaySalary = salary_text || salary ||
         (salary_from && salary_to
             ? `${salary_from} - ${salary_to} ${salary_currency || ''}`.trim()
@@ -88,154 +132,31 @@ export default function JobCard({
                 ? `${salary_from} ${salary_currency || ''}`.trim()
                 : "Salary not specified");
 
-    // Handle featured status: check if job was created within last 7 days
     const getIsJobFeatured = () => {
-        // First check if created_at exists and calculate days difference
         const jobCreatedAt = created_at || createdAt;
         if (jobCreatedAt) {
             const createdDate = new Date(jobCreatedAt);
             const now = new Date();
             const diffTime = Math.abs(now - createdDate);
             const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
-            if (diffDays < 7) {
-                return true;
-            }
+            if (diffDays < 7) return true;
         }
-
-        // Fallback to old logic if no created_at
-        if (isFeatured !== undefined) {
-            return isFeatured;
-        }
+        if (isFeatured !== undefined) return isFeatured;
         return is_diamond || is_job_flash_active || is_hot || false;
     };
 
     const isJobFeatured = getIsJobFeatured();
 
     const handleCardClick = (e) => {
-        // Don't trigger card click if clicking on buttons or interactive elements
-        if (e.target.closest('button') || e.target.closest('a') || e.target.closest('[role="button"]')) {
-            return;
-        }
+        if (e.target.closest('button') || e.target.closest('a') || e.target.closest('[role="button"]')) return;
         onClick?.(job);
     };
 
-    if (variant === "list") {
-        return (
-            <Card
-                onClick={handleCardClick}
-                sx={{
-                    display: 'flex',
-                    flexDirection: 'row',
-                    alignItems: 'center',
-                    p: 3,
-                    mb: 2,
-                    borderRadius: '12px',
-                    boxShadow: '0 1px 3px rgba(0, 0, 0, 0.1)',
-                    transition: 'all 0.2s ease-in-out',
-                    cursor: onClick ? 'pointer' : 'default',
-                    '&:hover': {
-                        boxShadow: '0 4px 12px rgba(0, 0, 0, 0.15)',
-                        transform: 'translateY(-1px)'
-                    }
-                }}
-            >
-                {/* Company Logo */}
-                <Avatar
-                    src={companyLogoUrl}
-                    sx={{
-                        width: 60,
-                        height: 60,
-                        mr: 3,
-                        bgcolor: 'primary.main',
-                        color: 'white',
-                        fontSize: '1.5rem',
-                        fontWeight: 600
-                    }}
-                >
-                    {companyLogoInitial}
-                </Avatar>
-
-                {/* Job Info */}
-                <Box sx={{ flexGrow: 1 }}>
-                    <Stack direction="row" justifyContent="space-between" alignItems="flex-start" sx={{ mb: 1 }}>
-                        <Box>
-                            <Typography
-                                variant="subtitle1"
-                                sx={{
-                                    fontWeight: 600,
-                                    mb: 0.5,
-                                    fontSize: '0.95rem',
-                                    wordWrap: 'break-word',
-                                    overflowWrap: 'break-word'
-                                }}
-                            >
-                                {title}
-                            </Typography>
-                            <Typography variant="body2" sx={{ color: 'text.secondary', mb: 1 }}>
-                                {companyName}{location ? ` • ${location}` : ''}
-                            </Typography>
-                            <Typography variant="body2" sx={{ color: 'text.secondary', mb: 1 }}>
-                                {location ? ` • ${location}` : ''}
-                            </Typography>
-                        </Box>
-                        <Stack direction="row" spacing={1}>
-                            {type && <Chip label={type} size="small" variant="outlined" />}
-                            {isJobFeatured && (
-                                <Chip
-                                    label="Featured"
-                                    size="small"
-                                    color="warning"
-                                    sx={{
-                                        bgcolor: 'warning.main',
-                                        color: 'white',
-                                        fontWeight: 600,
-                                        fontSize: '0.75rem',
-                                        height: '24px'
-                                    }}
-                                />
-                            )}
-                        </Stack>
-                    </Stack>
-
-                    {showDescription && (
-                        <Typography variant="body2" sx={{ color: 'text.secondary', mb: 2 }}>
-                            {description.length > 150 ? `${description.substring(0, 150)}...` : description}
-                        </Typography>
-                    )}
-
-                    <Stack direction="row" justifyContent="space-between" alignItems="center">
-                        <Stack direction="row" spacing={1} flexWrap="wrap" useFlexGap>
-                            {displayCategories.slice(0, 3).map((tag, index) => (
-                                <Chip key={`category-${tag}-${index}`} label={tag} size="small" variant="outlined" />
-                            ))}
-                        </Stack>
-                        <Stack direction="row" spacing={1}>
-                            {showActions && (
-                                <Typography variant="body2" sx={{ color: 'primary.main', fontWeight: 600 }}>
-                                    {displaySalary}
-                                </Typography>
-                            )}
-                            {showApplyButton && (
-                                <Button
-                                    variant="contained"
-                                    size="small"
-                                    onClick={() => onApply?.(job)}
-                                    sx={{ textTransform: 'none' }}
-                                >
-                                    Apply Now
-                                </Button>
-                            )}
-                        </Stack>
-                    </Stack>
-                </Box>
-            </Card>
-        );
-    }
 
     return (
         <Box sx={{ position: 'relative' }}>
             <Card
-                className="h-full w-full flex flex-col relative bg-white rounded-lg shadow-sm hover:shadow-md transition-all duration-200 hover:-translate-y-1 border border-gray-100"
+                ref={cardRef}
                 onClick={handleCardClick}
                 sx={{
                     height: '100%',
@@ -258,7 +179,6 @@ export default function JobCard({
                     }
                 }}
             >
-                {/* Featured badge ở góc trên bên phải */}
                 {isJobFeatured && (
                     <Box
                         className="featured-badge"
@@ -287,18 +207,36 @@ export default function JobCard({
                     </Box>
                 )}
 
-                <CardContent
-                    className="grow p-4"
-                    sx={{ flexGrow: 1, p: 1.25 }}
+                <IconButton
+                    size="small"
+                    onClick={(e) => {
+                        e.stopPropagation();
+                        onBookmark?.(job);
+                    }}
+                    sx={{
+                        position: 'absolute',
+                        bottom: 8,
+                        right: 8,
+                        zIndex: 1,
+                        bgcolor: 'background.paper',
+                        boxShadow: '0 2px 8px rgba(0,0,0,0.1)',
+                        transition: 'all 0.2s ease-in-out',
+                        '&:hover': {
+                            bgcolor: 'primary.main',
+                            color: 'white',
+                            transform: 'scale(1.1)',
+                            boxShadow: '0 4px 12px rgba(0,0,0,0.15)'
+                        },
+                        color: isBookmarked ? 'primary.main' : 'text.secondary'
+                    }}
                 >
-                    <Box
-                        className="flex items-start"
-                        sx={{ display: 'flex', alignItems: 'flex-start', gap: 1.25 }}
-                    >
-                        {/* Avatar bên trái */}
+                    {isBookmarked ? <Bookmark fontSize="small" /> : <BookmarkBorder fontSize="small" />}
+                </IconButton>
+
+                <CardContent sx={{ flexGrow: 1, p: 1.25 }}>
+                    <Box sx={{ display: 'flex', alignItems: 'flex-start', gap: 1.25 }}>
                         <Avatar
                             src={companyLogoUrl}
-                            className="w-12 h-12 bg-blue-600 text-white font-bold"
                             variant="square"
                             sx={{
                                 bgcolor: 'primary.main',
@@ -313,68 +251,89 @@ export default function JobCard({
                             {companyLogoInitial}
                         </Avatar>
 
-                        {/* Tất cả data bên phải */}
-                        <Box
-                            className="grow min-w-0"
-                            sx={{ flexGrow: 1, minWidth: 0, flex: 1 }}
-                        >
-                            <Typography
-                                variant="subtitle1"
-                                className="font-semibold mb-1 text-gray-900 leading-tight"
-                                onMouseEnter={() => {
-                                    if (hoverTimeout) clearTimeout(hoverTimeout);
-                                    setIsHovered(true);
-                                }}
-                                onMouseLeave={() => {
-                                    const timeout = setTimeout(() => {
-                                        setIsHovered(false);
-                                    }, 300);
-                                    setHoverTimeout(timeout);
-                                }}
-                                sx={{
-                                    fontWeight: 600,
-                                    mb: 0.25,
-                                    fontSize: '0.95rem',
-                                    wordWrap: 'break-word',
-                                    overflowWrap: 'break-word',
-                                    pr: isJobFeatured ? 10 : 0,
-                                    lineHeight: 1.3,
-                                    cursor: 'pointer',
-                                    position: 'relative',
-                                    color: 'text.primary',
-                                    transition: 'all 0.2s ease-in-out',
-                                    '&:hover': {
-                                        color: 'primary.main',
-                                        textDecoration: 'underline',
-                                        textDecorationColor: 'primary.main',
-                                        textUnderlineOffset: '3px',
-                                        transform: 'translateX(2px)'
+                        <Box sx={{ flexGrow: 1, minWidth: 0, flex: 1 }}>
+                            <Box
+                                sx={{ display: 'flex', alignItems: 'center', gap: 0.5 }}
+                                {...(showPopup && !isSmall && {
+                                    onMouseEnter: () => {
+                                        if (hoverTimeout) clearTimeout(hoverTimeout);
+                                        const timeout = setTimeout(() => {
+                                            try {
+                                                if (!cardRef.current) return;
+                                                const position = calculatePopupPosition();
+                                                setPopupPosition(position);
+                                                setIsHovered(true);
+                                            } catch (err) {
+                                                console.error('JobCard hover error:', err);
+                                            }
+                                        }, openDelay);
+                                        setHoverTimeout(timeout);
+                                    },
+                                    onMouseLeave: () => {
+                                        if (hoverTimeout) clearTimeout(hoverTimeout);
+                                        const timeout = setTimeout(() => {
+                                            setIsHovered(false);
+                                        }, closeDelay);
+                                        setHoverTimeout(timeout);
+                                    },
+                                    onFocus: () => {
+                                        if (hoverTimeout) clearTimeout(hoverTimeout);
+                                        const timeout = setTimeout(() => {
+                                            try {
+                                                if (!cardRef.current) return;
+                                                const position = calculatePopupPosition();
+                                                setPopupPosition(position);
+                                                setIsHovered(true);
+                                            } catch (err) {
+                                                console.error('JobCard focus error:', err);
+                                            }
+                                        }, openDelay);
+                                        setHoverTimeout(timeout);
+                                    },
+                                    onBlur: () => {
+                                        if (hoverTimeout) clearTimeout(hoverTimeout);
+                                        const timeout = setTimeout(() => setIsHovered(false), closeDelay);
+                                        setHoverTimeout(timeout);
                                     }
-                                }}
+                                })}
                             >
-                                {title}
-                            </Typography>
+                                <Typography
+                                    variant="subtitle1"
+                                    sx={{
+                                        fontWeight: 600,
+                                        mb: 0.25,
+                                        fontSize: '0.95rem',
+                                        wordWrap: 'break-word',
+                                        overflowWrap: 'break-word',
+                                        pr: isJobFeatured ? 10 : 0,
+                                        lineHeight: 1.3,
+                                        cursor: showPopup ? 'pointer' : 'default',
+                                        position: 'relative',
+                                        color: 'text.primary',
+                                        transition: 'all 0.2s ease-in-out',
+                                        ...(showPopup && {
+                                            '&:hover': {
+                                                color: 'primary.main'
+                                            }
+                                        })
+                                    }}
+                                >
+                                    {title}
+                                </Typography>
+                            </Box>
                             <Typography
                                 variant="body2"
                                 color="text.secondary"
-                                className="text-gray-600 mb-2 text-sm"
                                 sx={{ mb: 0.75, fontSize: '0.875rem', lineHeight: 1.2 }}
                             >
                                 {companyName}
                             </Typography>
 
-                            {/* Working hours và Salary badges nằm ngang */}
-                            <Stack
-                                direction="row"
-                                spacing={0.5}
-                                className="mb-2 flex-wrap gap-1"
-                                sx={{ mb: 0.75, flexWrap: 'wrap', gap: 0.5 }}
-                            >
+                            <Stack direction="row" spacing={0.5} sx={{ mb: 0.75, flexWrap: 'wrap', gap: 0.5 }}>
                                 {type && <Badge label={type} color="secondary" size="small" />}
                                 <Badge label={displaySalary} color="success" size="small" />
                             </Stack>
 
-                            {/* Location badge ở dưới cùng */}
                             {location && (
                                 <Badge
                                     label={location}
@@ -388,61 +347,9 @@ export default function JobCard({
 
                 </CardContent>
 
-                {showActions && (
-                    <Box
-                        className="p-4 pt-3 flex justify-between items-center border-t border-gray-100"
-                        sx={{ p: 2, pt: 1.5, display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}
-                    >
-                        <Button
-                            variant="outlined"
-                            size="small"
-                            className="border-blue-600 text-blue-600 hover:bg-blue-600 hover:text-white transition-colors duration-200 text-sm px-4 py-2"
-                            sx={{
-                                fontSize: '0.875rem',
-                                minWidth: 'auto',
-                                px: 2,
-                                py: 1,
-                                textTransform: 'none',
-                                fontWeight: 500
-                            }}
-                            onClick={() => onApply?.(job)}
-                        >
-                            Apply Now
-                        </Button>
-
-                        <Box className="flex items-center gap-1">
-                            <IconButton
-                                size="small"
-                                onClick={() => onBookmark?.(job)}
-                                color={isBookmarked ? 'primary' : 'default'}
-                                className={`transition-colors duration-200 ${isBookmarked ? 'text-blue-600' : 'text-gray-400 hover:text-blue-600'
-                                    }`}
-                                sx={{ padding: '6px' }}
-                            >
-                                {isBookmarked ? <Bookmark /> : <BookmarkBorder />}
-                            </IconButton>
-                            <IconButton
-                                size="small"
-                                onClick={() => onShare?.(job)}
-                                className="text-gray-400 hover:text-blue-600 transition-colors duration-200"
-                                sx={{ padding: '6px' }}
-                            >
-                                <Share />
-                            </IconButton>
-                            <IconButton
-                                size="small"
-                                className="text-gray-400 hover:text-blue-600 transition-colors duration-200"
-                                sx={{ padding: '6px' }}
-                            >
-                                <MoreVert />
-                            </IconButton>
-                        </Box>
-                    </Box>
-                )}
             </Card>
 
-            {/* Popup hiển thị khi hover vào title */}
-            {isHovered && (
+            {showPopup && isHovered && !isSmall && (
                 <Portal>
                     <Paper
                         onMouseEnter={() => {
@@ -450,33 +357,37 @@ export default function JobCard({
                             setIsHovered(true);
                         }}
                         onMouseLeave={() => {
-                            setIsHovered(false);
+                            if (hoverTimeout) clearTimeout(hoverTimeout);
+                            const timeout = setTimeout(() => setIsHovered(false), closeDelay);
+                            setHoverTimeout(timeout);
                         }}
-                        elevation={24}
+                        elevation={8}
                         sx={{
                             position: 'fixed',
-                            bottom: 'auto',
-                            top: '50%',
-                            left: '50%',
-                            transform: 'translate(-50%, -50%)',
-                            p: 3,
+                            top: popupPosition.top,
+                            left: popupPosition.left,
+                            transform: popupPosition.transform,
+                            p: 2.5,
                             zIndex: 9999,
                             bgcolor: 'background.paper',
                             borderRadius: 2,
-                            minWidth: '400px',
-                            maxWidth: '500px',
-                            maxHeight: '80vh',
+                            border: '1px solid',
+                            borderColor: 'divider',
+                            minWidth: '350px',
+                            maxWidth: '450px',
+                            maxHeight: '70vh',
                             overflowY: 'auto',
-                            boxShadow: '0 12px 48px rgba(0,0,0,0.2)',
-                            animation: 'fadeIn 0.2s ease-in-out',
+                            boxShadow: '0 8px 24px rgba(0,0,0,0.15)',
+                            animation: 'fadeIn 0.15s ease-out',
+                            touchAction: 'pan-y',
                             '@keyframes fadeIn': {
                                 from: {
                                     opacity: 0,
-                                    transform: 'translate(-50%, -45%)'
+                                    transform: `${popupPosition.transform} translateY(-8px)`
                                 },
                                 to: {
                                     opacity: 1,
-                                    transform: 'translate(-50%, -50%)'
+                                    transform: popupPosition.transform
                                 }
                             }
                         }}
@@ -618,13 +529,7 @@ export default function JobCard({
                             </>
                         )}
 
-                        {/* Button details */}
-                        <Box
-                            sx={{
-                                position: 'sticky',
-                                zIndex: 15
-                            }}
-                        >
+                        <Box sx={{ position: 'sticky', bottom: 0, mt: 2, pt: 2, borderTop: '1px solid', borderColor: 'divider' }}>
                             <Button
                                 variant="contained"
                                 fullWidth
