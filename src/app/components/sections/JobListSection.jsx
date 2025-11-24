@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useMemo, useRef, useState } from 'react';
 import {
     Box,
     Typography,
@@ -6,11 +6,13 @@ import {
     Button,
     Pagination,
     PaginationItem,
-    CircularProgress
+    CircularProgress,
 } from '@mui/material';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
 import JobCard from '../features/JobCard';
+import { useSelector } from 'react-redux';
+import { mockJobs } from '../../../mocks/mockData';
 
 const transformJobData = (job) => {
     if (!job) return null;
@@ -52,26 +54,97 @@ export default function JobListSection({
     onJobSelect,
     selectedJob
 }) {
-    const currentPage = pagination?.page || 1;
-    const jobsPerPage = pagination?.limit || 10;
-    const totalJobs = total ?? pagination?.total ?? jobs.length;
-    const totalPages = pagination?.total_pages || Math.max(1, Math.ceil((totalJobs || 1) / jobsPerPage));
+    const jobsSlice = useSelector((state) => state.jobs) || {};
+    const storeJobs = jobsSlice?.jobs ?? jobsSlice?.data ?? [];
+    const storePagination = jobsSlice?.pagination;
+    const storeStatus = jobsSlice?.status;
+
+    const fallbackJobs = useMemo(() => {
+        if (Array.isArray(jobs) && jobs.length > 0) return jobs;
+        if (Array.isArray(storeJobs) && storeJobs.length > 0) return storeJobs;
+        if (Array.isArray(storeJobs?.data)) return storeJobs.data;
+        return mockJobs;
+    }, [jobs, storeJobs]);
+
+    const jobsList = useMemo(
+        () => (Array.isArray(fallbackJobs) ? fallbackJobs.map(transformJobData).filter(Boolean) : []),
+        [fallbackJobs]
+    );
+
+    const derivedPagination = pagination || storePagination || null;
+    const jobsPerPage = derivedPagination?.limit || 10;
+    const [currentPage, setCurrentPage] = useState(derivedPagination?.page || 1);
+
+    useEffect(() => {
+        if (derivedPagination?.page) {
+            setCurrentPage(derivedPagination.page);
+        }
+    }, [derivedPagination?.page]);
+
+    const totalJobs = total ?? derivedPagination?.total ?? jobsList.length;
+    const totalPages = derivedPagination?.total_pages || Math.max(1, Math.ceil((totalJobs || 1) / jobsPerPage));
+    const manualPagination = !derivedPagination;
+
+    const startIndex = (currentPage - 1) * jobsPerPage;
+    const currentJobs = manualPagination
+        ? jobsList.slice(startIndex, startIndex + jobsPerPage)
+        : jobsList;
+    const displayStart = totalJobs === 0 ? 0 : startIndex + 1;
+    const displayEnd = totalJobs === 0 ? 0 : Math.min(startIndex + currentJobs.length, totalJobs);
+
+    const showPagination = totalPages > 1;
+    const loadingState = isLoading || storeStatus === 'loading';
+    const showNoResults = !loadingState && currentJobs.length === 0;
+
+    const itemRefs = useRef({});
 
     const handleJobAction = (action, job) => {
-        // debug handler removed
+        // placeholder for future actions (bookmark, share, etc.)
     };
 
+    useEffect(() => {
+        itemRefs.current = {};
+    }, [currentJobs]);
+
     const handlePageChange = (event, page) => {
+        setCurrentPage(page);
         onPageChange?.(page);
         window.scrollTo({ top: 0, behavior: 'smooth' });
     };
 
-    const startIndex = (currentPage - 1) * jobsPerPage;
-    const endIndex = startIndex + jobsPerPage;
-    const transformedJobs = jobs.map(transformJobData).filter(Boolean);
+    useEffect(() => {
+        if (!selectedJob || !jobsList.length) return;
 
-    const showPagination = totalPages > 1;
-    const showNoResults = !isLoading && transformedJobs.length === 0;
+        const selectedId = selectedJob?.id ?? selectedJob?.job_id ?? selectedJob?.jobId ?? selectedJob?._id;
+        if (!selectedId) return;
+
+        const idx = jobsList.findIndex(
+            (j) =>
+                j.id === selectedId ||
+                j.job_id === selectedId ||
+                j.jobId === selectedId ||
+                j._id === selectedId
+        );
+
+        if (idx === -1) return;
+
+        if (manualPagination) {
+            const targetPage = Math.floor(idx / jobsPerPage) + 1;
+            if (targetPage !== currentPage) {
+                setCurrentPage(targetPage);
+                return;
+            }
+        }
+
+        const t = setTimeout(() => {
+            const el = itemRefs.current[selectedId];
+            if (el && typeof el.scrollIntoView === 'function') {
+                el.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+            }
+        }, 120);
+
+        return () => clearTimeout(t);
+    }, [selectedJob, jobsList, manualPagination, jobsPerPage, currentPage]);
 
     return (
         <Box sx={{ flexGrow: 1, minWidth: 0 }}>
@@ -84,39 +157,53 @@ export default function JobListSection({
 
             {/* Job List */}
             <Stack spacing={2} sx={{ mb: 5 }}>
-                {isLoading && (
+                {loadingState && (
                     <Box sx={{ display: 'flex', justifyContent: 'center', py: 4 }}>
                         <CircularProgress />
                     </Box>
                 )}
 
-                {!isLoading && transformedJobs.map((job) => (
-                    <Box
-                        key={job.id}
-                        onClick={() => onJobSelect?.(job)}
-                        sx={{
-                            cursor: 'pointer',
-                            border: selectedJob?.id === job.id ? '2px solid' : '1px solid',
-                            borderColor: selectedJob?.id === job.id ? 'primary.main' : 'transparent',
-                            borderRadius: 2,
-                            transition: 'all 0.2s ease-in-out',
-                            '&:hover': {
-                                borderColor: 'primary.light',
-                                transform: 'translateY(-1px)',
-                                boxShadow: 2
-                            }
-                        }}
-                    >
-                        <JobCard
-                            job={job}
-                            showDescription={false}
-                            showActions={false}
-                            onBookmark={(jobItem) => handleJobAction('bookmark', jobItem)}
-                            variant="list"
-                            showPopup={false}
-                        />
-                    </Box>
-                ))}
+                {!loadingState && currentJobs.map((job, index) => {
+                    const keyId =
+                        job.id ?? job.job_id ?? job.jobId ?? job._id ?? `job-${index}`;
+                    const selectedId =
+                        selectedJob?.id ??
+                        selectedJob?.job_id ??
+                        selectedJob?.jobId ??
+                        selectedJob?._id;
+                    const isSelected = selectedId === keyId;
+
+                    return (
+                        <Box
+                            key={keyId}
+                            ref={(el) => {
+                                if (keyId) itemRefs.current[keyId] = el;
+                            }}
+                            onClick={() => onJobSelect?.(job)}
+                            sx={{
+                                cursor: 'pointer',
+                                border: isSelected ? '2px solid' : '1px solid',
+                                borderColor: isSelected ? 'primary.main' : 'transparent',
+                                borderRadius: 2,
+                                transition: 'all 0.2s ease-in-out',
+                                '&:hover': {
+                                    borderColor: 'primary.light',
+                                    transform: 'translateY(-1px)',
+                                    boxShadow: 2
+                                }
+                            }}
+                        >
+                            <JobCard
+                                job={job}
+                                showDescription={false}
+                                showActions={false}
+                                onBookmark={(jobItem) => handleJobAction('bookmark', jobItem)}
+                                variant="list"
+                                showPopup={false}
+                            />
+                        </Box>
+                    );
+                })}
             </Stack>
 
             {/* Pagination */}
@@ -125,7 +212,7 @@ export default function JobListSection({
                     <Stack direction={{ xs: 'column', sm: 'row' }} spacing={2} alignItems="center" justifyContent="space-between">
                         {/* Page info */}
                         <Typography variant="body2" sx={{ color: 'text.secondary', fontSize: '14px' }}>
-                            Showing <strong>{totalJobs === 0 ? 0 : startIndex + 1}-{Math.min(endIndex, totalJobs)}</strong> of <strong>{totalJobs}</strong> jobs
+                            Showing <strong>{displayStart}-{displayEnd}</strong> of <strong>{totalJobs}</strong> jobs
                         </Typography>
 
                         {/* Pagination */}

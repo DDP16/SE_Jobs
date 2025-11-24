@@ -1,4 +1,4 @@
-import React, { useState, useMemo, useCallback, useEffect } from "react";
+import React, { useState, useRef, useEffect, useMemo, useCallback, useEffect } from "react";
 import { Container, Box, Stack, useMediaQuery } from '@mui/material';
 import { useTheme } from '@mui/material/styles';
 import { useNavigate, useLocation } from 'react-router-dom';
@@ -6,14 +6,6 @@ import { useDispatch, useSelector } from 'react-redux';
 import { JobListSection, HeroSection, FilterDialog, FilterToolbar } from "../../../components";
 import JobDescription from "../JobDescription";
 import { layoutType } from "../../../lib";
-import { getJobs } from "../../../modules/services/jobsService";
-
-const DEFAULT_QUERY = {
-    page: 1,
-    limit: 10,
-    sort_by: "job_posted_at",
-    order: "desc",
-};
 
 export default function FindJobs() {
     const [selectedJob, setSelectedJob] = useState(null);
@@ -23,88 +15,11 @@ export default function FindJobs() {
     const theme = useTheme();
     const isSmall = useMediaQuery(theme.breakpoints.down('md'));
     const navigate = useNavigate();
-    const location = useLocation();
-    const dispatch = useDispatch();
-    const { jobs, pagination, status } = useSelector((state) => state.jobs);
-    const isLoadingJobs = status === "loading";
 
-    const queryParams = useMemo(() => {
-        const searchParams = new URLSearchParams(location.search);
-        const parsed = { ...DEFAULT_QUERY };
-
-        const pageParam = parseInt(searchParams.get("page") || "", 10);
-        if (!Number.isNaN(pageParam) && pageParam > 0) {
-            parsed.page = pageParam;
-        }
-
-        const limitParam = parseInt(searchParams.get("limit") || "", 10);
-        if (!Number.isNaN(limitParam) && limitParam > 0) {
-            parsed.limit = limitParam;
-        }
-
-        const sortByParam = searchParams.get("sort_by");
-        if (sortByParam) {
-            parsed.sort_by = sortByParam;
-        }
-
-        const orderParam = searchParams.get("order");
-        if (orderParam) {
-            parsed.order = orderParam;
-        }
-
-        const titleParam = searchParams.get("title") || searchParams.get("keyword");
-        if (titleParam) {
-            parsed.title = titleParam;
-        }
-
-        const locationParam = searchParams.get("location");
-        if (locationParam) {
-            parsed.location = locationParam;
-        }
-
-        return parsed;
-    }, [location.search]);
-
-    const updateQueryParams = useCallback((nextParams) => {
-        const merged = {
-            ...DEFAULT_QUERY,
-            ...nextParams,
-        };
-
-        const sanitizedEntries = Object.entries(merged).filter(
-            ([, value]) => value !== undefined && value !== null && value !== ""
-        );
-        const searchString = new URLSearchParams(Object.fromEntries(sanitizedEntries)).toString();
-
-        navigate({
-            pathname: location.pathname,
-            search: searchString ? `?${searchString}` : "",
-        });
-    }, [navigate, location.pathname]);
-
-    useEffect(() => {
-        dispatch(getJobs(queryParams));
-    }, [dispatch, queryParams]);
-
-    useEffect(() => {
-        setSelectedJob(null);
-    }, [queryParams]);
-
-    const combinedPagination = pagination || {
-        page: queryParams.page,
-        limit: queryParams.limit,
-        total: 0,
-        total_pages: 0,
+    const handleSearch = (searchParams) => {
+        console.log('Search params:', searchParams);
+        // TODO: Implement search functionality
     };
-
-    const handleSearch = useCallback(({ keyword, location: jobLocation }) => {
-        updateQueryParams({
-            ...queryParams,
-            page: 1,
-            title: keyword?.trim() || undefined,
-            location: jobLocation?.trim() || undefined,
-        });
-    }, [queryParams, updateQueryParams]);
 
     const handleFilter = (filterParams) => {
         console.log('Filter params:', filterParams);
@@ -125,6 +40,18 @@ export default function FindJobs() {
         }
         setSelectedJob(job);
     };
+
+    // when selectedJob changes, scroll job description container to top
+    useEffect(() => {
+        if (selectedJob && jobDescRef.current) {
+            try {
+                jobDescRef.current.scrollTo({ top: 0, behavior: 'smooth' });
+            } catch (e) {
+                // fallback for non-scrollable elements
+                jobDescRef.current.scrollTop = 0;
+            }
+        }
+    }, [selectedJob]);
 
     const openFilter = () => {
         setFocusSection(null);
@@ -198,22 +125,28 @@ export default function FindJobs() {
                     direction={{ xs: 'column', md: 'row' }}
                     spacing={{ xs: 3, md: 4 }}
                     className="pb-6 md:pb-8 items-start"
+                    sx={{
+                        // keep the two columns aligned and allow independent scrolling
+                        alignItems: 'stretch'
+                    }}
                 >
                     {/* Middle - Job List */}
                     <Box className="flex-1 md:w-96 min-w-0">
-                        <JobListSection
-                            jobs={jobs}
-                            pagination={combinedPagination}
-                            total={combinedPagination.total}
-                            isLoading={isLoadingJobs}
-                            onPageChange={handlePageChange}
-                            onJobSelect={handleJobSelect}
-                            selectedJob={selectedJob}
-                        />
+                        <JobListSection onJobSelect={handleJobSelect} selectedJob={selectedJob} />
                     </Box>
 
                     {/* Right - Job Description (hidden on small screens) */}
-                    <Box className={`flex-1 min-w-0 hidden md:block`}>
+                    <Box
+                        ref={jobDescRef}
+                        className={`flex-1 min-w-0 hidden md:block`}
+                        sx={{
+                            overflow: 'auto',
+                            maxHeight: { xs: '50vh', md: '72vh' },
+                            // hide native scrollbars but keep scrolling functional
+                            scrollbarWidth: 'none', // Firefox
+                            '&::-webkit-scrollbar': { width: 0, height: 0 }, // WebKit
+                        }}
+                    >
                         {selectedJob ? (
                             <JobDescription
                                 job={selectedJob}
