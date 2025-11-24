@@ -1,5 +1,6 @@
 import { motion } from "framer-motion";
 import { CircleCheck } from "lucide-react";
+import { useSelector } from "react-redux";
 
 export default function JobDetails({ job }) {
   const jobStatus = useSelector(state => state.jobs.status);

@@ -10,9 +10,11 @@ import {
     Stack,
     Paper,
     Divider,
-    Portal
+    Portal,
+    useTheme,
+    useMediaQuery
 } from '@mui/material';
-import { BookmarkBorder, Bookmark, InfoOutlined } from '@mui/icons-material';
+import { BookmarkBorder, Bookmark } from '@mui/icons-material';
 import Badge from '../common/Badge';
 import Button from '../common/Button';
 
@@ -28,80 +30,63 @@ export default function JobCard({
     const [popupPosition, setPopupPosition] = useState({ top: '50%', left: '50%', transform: 'translate(-50%, -50%)' });
     const cardRef = useRef(null);
 
-    useEffect(() => {
-        if (isHovered) {
-            const scrollY = window.scrollY;
-            const scrollbarWidth = window.innerWidth - document.documentElement.clientWidth;
+    const theme = useTheme();
+    const isSmall = useMediaQuery(theme.breakpoints.down('md'));
 
-            document.body.style.position = 'fixed';
-            document.body.style.top = `-${scrollY}px`;
-            document.body.style.left = '0';
-            document.body.style.right = '0';
-            document.body.style.paddingRight = `${scrollbarWidth}px`;
-            document.body.style.overflow = 'hidden';
-
-            return () => {
-                document.body.style.position = '';
-                document.body.style.top = '';
-                document.body.style.left = '';
-                document.body.style.right = '';
-                document.body.style.paddingRight = '';
-                document.body.style.overflow = '';
-                window.scrollTo(0, scrollY);
-            };
-        }
-    }, [isHovered]);
-
+    // Popup timing configuration
+    const openDelay = 300;
+    const closeDelay = 300;
     const calculatePopupPosition = () => {
         if (!cardRef.current) {
             return { top: '50%', left: '50%', transform: 'translate(-50%, -50%)' };
         }
 
         const cardRect = cardRef.current.getBoundingClientRect();
-        const popupWidth = 450;
+        const popupWidth = 420;
         const popupHeight = Math.min(window.innerHeight * 0.7, 600);
-        const padding = 20;
-        const offset = 15;
+        const padding = 16;
+        const gap = 8; 
 
         let left, top;
-        const transform = 'translateY(-50%)';
-
-        const spaceOnRight = window.innerWidth - cardRect.right;
-        const spaceOnLeft = cardRect.left;
-
-        // Calculate potential positions
-        const rightPosition = cardRect.right + offset;
-        const leftPosition = cardRect.left - offset - popupWidth;
-
-        // Check if positions are valid (within screen bounds)
-        const canFitOnRight = rightPosition + popupWidth <= window.innerWidth - padding;
-        const canFitOnLeft = leftPosition >= padding;
-
-        if (canFitOnRight || (spaceOnRight >= spaceOnLeft)) {
-            // Show on right side
-            left = rightPosition;
-            // Ensure it doesn't overflow
+        
+        // Calculate available space on both sides
+        const spaceOnRight = window.innerWidth - cardRect.right - padding;
+        const spaceOnLeft = cardRect.left - padding;
+        
+        // Prefer right side, fallback to left, then center
+        if (spaceOnRight >= popupWidth + gap) {
+            // Show on right side, close to card
+            left = cardRect.right + gap;
+        } else if (spaceOnLeft >= popupWidth + gap) {
+            // Show on left side, close to card
+            left = cardRect.left - popupWidth - gap;
+        } else if (spaceOnRight > spaceOnLeft) {
+            // Not enough space, but more space on right - position flush right
+            left = cardRect.right + gap;
+            // Clamp to ensure it doesn't go off screen
             if (left + popupWidth > window.innerWidth - padding) {
                 left = window.innerWidth - popupWidth - padding;
             }
-        } else if (canFitOnLeft) {
-            // Show on left side - only if it truly fits
-            left = leftPosition;
         } else {
-            // Not enough space on either side - center it
-            left = Math.max(padding, (window.innerWidth - popupWidth) / 2);
+            // More space on left - position flush left
+            left = cardRect.left - popupWidth - gap;
+            // Clamp to ensure it doesn't go off screen
+            if (left < padding) {
+                left = padding;
+            }
+        }
+        
+        // Vertically align with top of card, then clamp to viewport
+        top = cardRect.top;
+        const maxTop = window.innerHeight - popupHeight - padding;
+        if (top > maxTop) {
+            top = maxTop;
+        }
+        if (top < padding) {
+            top = padding;
         }
 
-        // Vertical positioning
-        top = cardRect.top + cardRect.height / 2;
-        const halfHeight = popupHeight / 2;
-        if (top - halfHeight < padding) {
-            top = halfHeight + padding;
-        } else if (top + halfHeight > window.innerHeight - padding) {
-            top = window.innerHeight - halfHeight - padding;
-        }
-
-        return { top: `${top}px`, left: `${left}px`, transform };
+        return { top: `${top}px`, left: `${left}px`, transform: 'none' };
     };
 
     const {
@@ -269,21 +254,45 @@ export default function JobCard({
                         <Box sx={{ flexGrow: 1, minWidth: 0, flex: 1 }}>
                             <Box
                                 sx={{ display: 'flex', alignItems: 'center', gap: 0.5 }}
-                                {...(showPopup && {
+                                {...(showPopup && !isSmall && {
                                     onMouseEnter: () => {
                                         if (hoverTimeout) clearTimeout(hoverTimeout);
                                         const timeout = setTimeout(() => {
-                                            const position = calculatePopupPosition();
-                                            setPopupPosition(position);
-                                            setIsHovered(true);
-                                        }, 600);
+                                            try {
+                                                if (!cardRef.current) return;
+                                                const position = calculatePopupPosition();
+                                                setPopupPosition(position);
+                                                setIsHovered(true);
+                                            } catch (err) {
+                                                console.error('JobCard hover error:', err);
+                                            }
+                                        }, openDelay);
                                         setHoverTimeout(timeout);
                                     },
                                     onMouseLeave: () => {
                                         if (hoverTimeout) clearTimeout(hoverTimeout);
                                         const timeout = setTimeout(() => {
                                             setIsHovered(false);
-                                        }, 200);
+                                        }, closeDelay);
+                                        setHoverTimeout(timeout);
+                                    },
+                                    onFocus: () => {
+                                        if (hoverTimeout) clearTimeout(hoverTimeout);
+                                        const timeout = setTimeout(() => {
+                                            try {
+                                                if (!cardRef.current) return;
+                                                const position = calculatePopupPosition();
+                                                setPopupPosition(position);
+                                                setIsHovered(true);
+                                            } catch (err) {
+                                                console.error('JobCard focus error:', err);
+                                            }
+                                        }, openDelay);
+                                        setHoverTimeout(timeout);
+                                    },
+                                    onBlur: () => {
+                                        if (hoverTimeout) clearTimeout(hoverTimeout);
+                                        const timeout = setTimeout(() => setIsHovered(false), closeDelay);
                                         setHoverTimeout(timeout);
                                     }
                                 })}
@@ -311,18 +320,6 @@ export default function JobCard({
                                 >
                                     {title}
                                 </Typography>
-                                {/* <InfoOutlined
-                                    sx={{
-                                        fontSize: '1rem',
-                                        color: 'text.secondary',
-                                        opacity: 0.6,
-                                        transition: 'all 0.2s',
-                                        '&:hover': {
-                                            opacity: 1,
-                                            color: 'primary.main'
-                                        }
-                                    }}
-                                /> */}
                             </Box>
                             <Typography
                                 variant="body2"
@@ -352,7 +349,7 @@ export default function JobCard({
 
             </Card>
 
-            {showPopup && isHovered && (
+            {showPopup && isHovered && !isSmall && (
                 <Portal>
                     <Paper
                         onMouseEnter={() => {
@@ -360,7 +357,9 @@ export default function JobCard({
                             setIsHovered(true);
                         }}
                         onMouseLeave={() => {
-                            setIsHovered(false);
+                            if (hoverTimeout) clearTimeout(hoverTimeout);
+                            const timeout = setTimeout(() => setIsHovered(false), closeDelay);
+                            setHoverTimeout(timeout);
                         }}
                         elevation={8}
                         sx={{
