@@ -1,10 +1,11 @@
-import React, { useState } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import { Container, Box, Stack, useMediaQuery } from '@mui/material';
 import { useTheme } from '@mui/material/styles';
 import { useNavigate } from 'react-router-dom';
 import { JobListSection, HeroSection, FilterDialog, FilterToolbar } from "../../../components";
 import JobDescription from "../JobDescription";
 import { layoutType } from "../../../lib";
+
 
 export default function FindJobs() {
     const [selectedJob, setSelectedJob] = useState(null);
@@ -14,6 +15,7 @@ export default function FindJobs() {
     const theme = useTheme();
     const isSmall = useMediaQuery(theme.breakpoints.down('md'));
     const navigate = useNavigate();
+    const jobDescRef = useRef(null);
 
     const handleSearch = (searchParams) => {
         console.log('Search params:', searchParams);
@@ -32,6 +34,18 @@ export default function FindJobs() {
         }
         setSelectedJob(job);
     };
+
+    // when selectedJob changes, scroll job description container to top
+    useEffect(() => {
+        if (selectedJob && jobDescRef.current) {
+            try {
+                jobDescRef.current.scrollTo({ top: 0, behavior: 'smooth' });
+            } catch (e) {
+                // fallback for non-scrollable elements
+                jobDescRef.current.scrollTop = 0;
+            }
+        }
+    }, [selectedJob]);
 
     const openFilter = () => {
         setFocusSection(null);
@@ -105,14 +119,37 @@ export default function FindJobs() {
                     direction={{ xs: 'column', md: 'row' }}
                     spacing={{ xs: 3, md: 4 }}
                     className="pb-6 md:pb-8 items-start"
+                    sx={{
+                        // keep the two columns aligned and allow independent scrolling
+                        alignItems: 'stretch'
+                    }}
                 >
                     {/* Middle - Job List */}
-                    <Box className="flex-1 md:w-96 min-w-0">
+                    <Box
+                        className="flex-1 md:w-96 min-w-0"
+                        sx={{
+                            overflow: 'auto',
+                            maxHeight: { xs: '50vh', md: '72vh' },
+                            // hide native scrollbars but keep scrolling functional
+                            // scrollbarWidth: 'none', // Firefox
+                            '&::-webkit-scrollbar': { width: 0, height: 0 }, // WebKit
+                        }}
+                    >
                         <JobListSection onJobSelect={handleJobSelect} selectedJob={selectedJob} />
                     </Box>
 
                     {/* Right - Job Description (hidden on small screens) */}
-                    <Box className={`flex-1 min-w-0 hidden md:block`}>
+                    <Box
+                        ref={jobDescRef}
+                        className={`flex-1 min-w-0 hidden md:block`}
+                        sx={{
+                            overflow: 'auto',
+                            maxHeight: { xs: '50vh', md: '72vh' },
+                            // hide native scrollbars but keep scrolling functional
+                            scrollbarWidth: 'none', // Firefox
+                            '&::-webkit-scrollbar': { width: 0, height: 0 }, // WebKit
+                        }}
+                    >
                         {selectedJob ? (
                             <JobDescription
                                 job={selectedJob}
