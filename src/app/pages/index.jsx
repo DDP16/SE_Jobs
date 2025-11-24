@@ -15,3 +15,7 @@ export { default as CompanyDashboard } from "./Company/DashBoard";
 export { default as CompanyProfile } from "./Company/CompanyProfile";
 export { default as ApplicantDetails } from "./Company/ApplicantDetails";
 export { default as CompanySignUp } from "./Auth/CompanySignUp";
+
+// Admin Pages
+export { default as AdminDashboard } from "./Admin/Dashboard";
+export { default as UsersPage } from "./Admin/UsersPage";
