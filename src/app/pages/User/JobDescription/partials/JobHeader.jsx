@@ -26,7 +26,7 @@ export default function JobHeader({ job = {} }) {
         <div className="flex items-center justify-between">
           <div className="flex gap-6">
             <img
-              src={job.company?.logo}
+              src={job.company?.logo || job.logo}
               alt={job.company?.name}
               className="w-14 h-14 object-contain"
             />

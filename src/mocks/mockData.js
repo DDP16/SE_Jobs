@@ -1,3 +1,4 @@
+import { srcAsset } from "@/lib";
 import { create } from "zustand";
 
 // Mock data for development
@@ -36,7 +37,8 @@ export const mockJobs = [
         applied: 5,
         capacity: 10,
         dueDate: "2024-07-31",
-        createdAt: "2024-07-01"
+        createdAt: "2024-07-01",
+        logo: srcAsset.stripeIcon
     },
     {
         id: 2,

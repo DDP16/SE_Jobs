@@ -11,21 +11,21 @@ export default function JobDetails({ job }) {
   if (jobStatus === "loading" && !job) {
     return (
       <div className="space-y-8">
-        <p className="text-muted-foreground">Loading job details...</p>
+        <p className="text-muted-foreground">{t("job.loading")}</p>
       </div>
     );
   }
   if (jobStatus === "failed" && jobError) {
     return (
       <div className="space-y-8">
-        <p className="text-destructive">{jobError || "Failed to load job details."}</p>
+        <p className="text-destructive">{jobError || t("job.error")}</p>
       </div>
     );
   }
   if (!job) {
     return (
       <div className="space-y-8">
-        <p className="text-muted-foreground">Job not found.</p>
+        <p className="text-muted-foreground">{t("job.not_found")}</p>
       </div>
     );
   }

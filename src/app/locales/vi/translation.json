@@ -1,4 +1,5 @@
 {
+    "languageDate": "vi-VN",
     "welcome": "Chào mừng đến với SE Jobs",
     "home": "Trang chủ",
     "jobs": "Việc làm",
@@ -24,6 +25,9 @@
     "last_name": "Họ",
     "save": "Lưu",
     "apply": "Ứng tuyển",
+    "applied": "Đã có {{count}} ứng tuyển",
+    "of": "trong tổng số",
+    "capacity": "vị trí",
 
     "auth": {
         "sign_in": "Đăng nhập",
@@ -87,6 +91,9 @@
         "dateApplied": "Ngày ứng tuyển"
     },
     "job": {
+        "loading": "Đang tải chi tiết công việc...",
+        "error": "Tải chi tiết công việc thất bại.",
+        "not_found": "Không tìm thấy công việc.",
         "description": "Mô tả",
         "no_description": "Không có mô tả công việc",
         "responsibilities": "Trách nhiệm",
@@ -94,7 +101,49 @@
         "who_you_are": "Yêu cầu",
         "no_requirements": "Không có yêu cầu nào được liệt kê.",
         "nice_to_haves": "Những điều nên có",
-        "no_nice_to_haves": "Không có điều nên có nào được liệt kê."
+        "no_nice_to_haves": "Không có điều nên có nào được liệt kê.",
+        "about_this_role": "Về vị trí này",
+        "apply_before": "Hạn nộp hồ sơ",
+        "posted_on": "Ngày đăng",
+        "job_type": "Loại công việc",
+        "salary": "Mức lương",
+        "categories": "Danh mục",
+        "no_categories_listed": "Không có danh mục nào được liệt kê.",
+        "required_skills": "Kỹ năng yêu cầu",
+        "no_skills_listed": "Không có kỹ năng nào được liệt kê.",
+        "similar_jobs": "Việc làm tương tự",
+        "show_all_jobs": "Xem tất cả việc làm"
+    },
+    "company": {
+        "perks_benefits": {
+            "title": "Phúc lợi & Quyền lợi",
+            "description": "Công việc này đi kèm với nhiều phúc lợi và quyền lợi"
+        },
+        "read_more_about": "Tìm hiểu thêm về {{companyName}}",
+        "header": {
+            "founded": "Thành lập",
+            "employees": "Nhân viên",
+            "location": "Địa điểm",
+            "locations": "{{count}} quốc gia",
+            "industry": "Ngành nghề",
+            "jobs_count": "{{count}} việc làm",
+            "following": "Đang theo dõi",
+            "follow_company": "Theo dõi công ty"
+        },
+        "info": {
+            "title": "Thông tin công ty",
+            "field": "Lĩnh vực",
+            "company_size": "Quy mô công ty",
+            "location": "Địa điểm"
+        },
+        "overview": {
+            "title": "Giới thiệu công ty",
+            "contact": "Liên hệ"
+        },
+        "open_jobs": {
+            "title": "Việc làm đang tuyển",
+            "show_all": "Xem tất cả việc làm"
+        }
     },
     "sidebar": {
         "welcome": "Xin chào",

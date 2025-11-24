@@ -1,4 +1,5 @@
 {
+    "languageDate": "en-US",
     "welcome": "Welcome to SE Jobs",
     "home": "Home",
     "jobs": "Jobs",
@@ -24,6 +25,9 @@
     "last_name": "Last Name",
     "save": "Save",
     "apply": "Apply",
+    "applied": "{{count}} applied",
+    "of": "of",
+    "capacity": "capacity",
 
     "auth": {
         "sign_in": "Sign in",
@@ -87,6 +91,9 @@
         "dateApplied": "Date Applied"
     },
     "job": {
+        "loading": "Loading job details...",
+        "error": "Failed to load job details.",
+        "not_found": "Job not found.",
         "description": "Description",
         "no_description": "No job description",
         "responsibilities": "Responsibilities",
@@ -94,7 +101,49 @@
         "who_you_are": "Who You Are",
         "no_requirements": "No requirements listed.",
         "nice_to_haves": "Nice-To-Haves",
-        "no_nice_to_haves": "No nice-to-haves listed."
+        "no_nice_to_haves": "No nice-to-haves listed.",
+        "about_this_role": "About this role",
+        "apply_before": "Apply Before",
+        "posted_on": "Job Posted On",
+        "job_type": "Job Type",
+        "salary": "Salary",
+        "categories": "Categories",
+        "no_categories_listed": "No categories listed.",
+        "required_skills": "Required Skills",
+        "no_skills_listed": "No skills listed.",
+        "similar_jobs": "Similar Jobs",
+        "show_all_jobs": "Show all jobs"
+    },
+    "company": {
+        "perks_benefits": {
+            "title": "Perks & Benefits",
+            "description": "This job comes with several perks and benefits"
+        },
+        "read_more_about": "Read more about {{companyName}}",
+        "header": {
+            "founded": "Founded",
+            "employees": "Employees",
+            "location": "Location",
+            "locations": "{{count}} countries",
+            "industry": "Industry",
+            "jobs_count": "{{count}} jobs",
+            "following": "Following",
+            "follow_company": "Follow Company"
+        },
+        "info": {
+            "title": "Company Information",
+            "field": "Industry",
+            "company_size": "Company Size",
+            "location": "Location"
+        },
+        "overview": {
+            "title": "Company Overview",
+            "contact": "Contact"
+        },
+        "open_jobs": {
+            "title": "Open Jobs",
+            "show_all": "Show all jobs"
+        }
     },
     "sidebar": {
         "welcome": "Welcome",
