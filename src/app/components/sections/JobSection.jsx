@@ -19,7 +19,7 @@ export default function JobSection() {
     const scrollContainerRef = useRef(null);
 
     useEffect(() => {
-        dispatch(getJobs({ page: 1, limit: 10 }));
+        dispatch(getJobs({ page: 1, limit: 10, sort_by: "job_posted_at", order: "desc" }));
     }, [dispatch]);
 
     const getScrollAmount = () => {

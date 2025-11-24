@@ -1,49 +1,96 @@
-import React, { useState } from 'react';
+import React from 'react';
 import {
     Box,
     Typography,
     Stack,
     Button,
     Pagination,
-    PaginationItem
+    PaginationItem,
+    CircularProgress
 } from '@mui/material';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
 import JobCard from '../features/JobCard';
-import { mockJobs } from '../../../mocks/mockData';
 
-export default function JobListSection({ onJobSelect, selectedJob }) {
-    const [currentPage, setCurrentPage] = useState(1);
-    const jobsPerPage = 10;
+const transformJobData = (job) => {
+    if (!job) return null;
+
+    const salaryText = (() => {
+        if (job.salary_text) return job.salary_text;
+        if (job.salary_from || job.salary_to) {
+            const from = job.salary_from || 0;
+            const to = job.salary_to || 0;
+            const currency = job.salary_currency || "";
+            if (from && to) return `${from} - ${to} ${currency}`.trim();
+            if (from) return `From ${from} ${currency}`.trim();
+            if (to) return `Up to ${to} ${currency}`.trim();
+        }
+        return "Negotiable";
+    })();
+
+    return {
+        id: job.id || job.job_id || job.external_id || job.slug || job.title,
+        title: job.title || "Job Title",
+        company: job.company?.name || job.company_name || job.company || "Company Name",
+        location: job.location || job.company_branches?.location || job.company_branches?.address || job.address || "Location",
+        type: job.working_time || job.type || "Full-time",
+        salary: salaryText,
+        description: job.description || "",
+        categories: job.categories || [],
+        logo: job.company?.logo || job.logo || (job.title ? job.title.charAt(0).toUpperCase() : "J"),
+        isFeatured: job.is_hot || job.is_diamond || job.isFeatured || false,
+        ...job,
+    };
+};
+
+export default function JobListSection({
+    jobs = [],
+    pagination,
+    total,
+    isLoading = false,
+    onPageChange,
+    onJobSelect,
+    selectedJob
+}) {
+    const currentPage = pagination?.page || 1;
+    const jobsPerPage = pagination?.limit || 10;
+    const totalJobs = total ?? pagination?.total ?? jobs.length;
+    const totalPages = pagination?.total_pages || Math.max(1, Math.ceil((totalJobs || 1) / jobsPerPage));
 
     const handleJobAction = (action, job) => {
         // debug handler removed
     };
 
     const handlePageChange = (event, page) => {
-        setCurrentPage(page);
-        // Scroll to top of job list
+        onPageChange?.(page);
         window.scrollTo({ top: 0, behavior: 'smooth' });
     };
 
-    // Calculate pagination
     const startIndex = (currentPage - 1) * jobsPerPage;
     const endIndex = startIndex + jobsPerPage;
-    const currentJobs = mockJobs.slice(startIndex, endIndex);
-    const totalPages = Math.ceil(mockJobs.length / jobsPerPage);
+    const transformedJobs = jobs.map(transformJobData).filter(Boolean);
+
+    const showPagination = totalPages > 1;
+    const showNoResults = !isLoading && transformedJobs.length === 0;
 
     return (
         <Box sx={{ flexGrow: 1, minWidth: 0 }}>
             {/* Header */}
             <Box className="bg-white rounded-xl p-4 md:p-5 shadow-sm border border-gray-100" sx={{ mb: 3 }}>
                 <Typography variant="h6" sx={{ fontWeight: 600, fontSize: '18px', color: 'text.primary' }}>
-                    {mockJobs.length} {mockJobs.length === 1 ? 'job' : 'jobs'} found
+                    {totalJobs} {totalJobs === 1 ? 'job' : 'jobs'} found
                 </Typography>
             </Box>
 
             {/* Job List */}
             <Stack spacing={2} sx={{ mb: 5 }}>
-                {currentJobs.map((job) => (
+                {isLoading && (
+                    <Box sx={{ display: 'flex', justifyContent: 'center', py: 4 }}>
+                        <CircularProgress />
+                    </Box>
+                )}
+
+                {!isLoading && transformedJobs.map((job) => (
                     <Box
                         key={job.id}
                         onClick={() => onJobSelect?.(job)}
@@ -64,7 +111,7 @@ export default function JobListSection({ onJobSelect, selectedJob }) {
                             job={job}
                             showDescription={false}
                             showActions={false}
-                            onBookmark={(job) => handleJobAction('bookmark', job)}
+                            onBookmark={(jobItem) => handleJobAction('bookmark', jobItem)}
                             variant="list"
                             showPopup={false}
                         />
@@ -73,12 +120,12 @@ export default function JobListSection({ onJobSelect, selectedJob }) {
             </Stack>
 
             {/* Pagination */}
-            {totalPages > 1 && (
+            {showPagination && (
                 <Box className="bg-white rounded-xl p-4 md:p-5 shadow-sm border border-gray-100" sx={{ mt: 4 }}>
                     <Stack direction={{ xs: 'column', sm: 'row' }} spacing={2} alignItems="center" justifyContent="space-between">
                         {/* Page info */}
                         <Typography variant="body2" sx={{ color: 'text.secondary', fontSize: '14px' }}>
-                            Showing <strong>{startIndex + 1}-{Math.min(endIndex, mockJobs.length)}</strong> of <strong>{mockJobs.length}</strong> jobs
+                            Showing <strong>{totalJobs === 0 ? 0 : startIndex + 1}-{Math.min(endIndex, totalJobs)}</strong> of <strong>{totalJobs}</strong> jobs
                         </Typography>
 
                         {/* Pagination */}
@@ -130,7 +177,7 @@ export default function JobListSection({ onJobSelect, selectedJob }) {
             )}
 
             {/* No Results */}
-            {mockJobs.length === 0 && (
+            {showNoResults && (
                 <Box sx={{ textAlign: 'center', py: 8 }}>
                     <Typography variant="h6" sx={{ mb: 2, color: 'text.secondary' }}>
                         No jobs found

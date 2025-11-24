@@ -1,29 +1,122 @@
-import React, { useState } from "react";
+import React, { useState, useMemo, useCallback, useEffect } from "react";
 import { Container, Box, Stack, useMediaQuery } from '@mui/material';
 import { useTheme } from '@mui/material/styles';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
+import { useDispatch, useSelector } from 'react-redux';
 import { JobListSection, HeroSection, FilterDialog, FilterToolbar } from "../../../components";
 import JobDescription from "../JobDescription";
 import { layoutType } from "../../../lib";
+import { getJobs } from "../../../modules/services/jobsService";
+
+const DEFAULT_QUERY = {
+    page: 1,
+    limit: 10,
+    sort_by: "job_posted_at",
+    order: "desc",
+};
 
 export default function FindJobs() {
     const [selectedJob, setSelectedJob] = useState(null);
     const [isFilterOpen, setIsFilterOpen] = useState(false);
-    const [appliedFilters, setAppliedFilters] = useState(null);
+    const [appliedFilters, setAppliedFilters] = useState({});
     const [focusSection, setFocusSection] = useState(null);
     const theme = useTheme();
     const isSmall = useMediaQuery(theme.breakpoints.down('md'));
     const navigate = useNavigate();
+    const location = useLocation();
+    const dispatch = useDispatch();
+    const { jobs, pagination, status } = useSelector((state) => state.jobs);
+    const isLoadingJobs = status === "loading";
 
-    const handleSearch = (searchParams) => {
-        console.log('Search params:', searchParams);
-        // TODO: Implement search functionality
+    const queryParams = useMemo(() => {
+        const searchParams = new URLSearchParams(location.search);
+        const parsed = { ...DEFAULT_QUERY };
+
+        const pageParam = parseInt(searchParams.get("page") || "", 10);
+        if (!Number.isNaN(pageParam) && pageParam > 0) {
+            parsed.page = pageParam;
+        }
+
+        const limitParam = parseInt(searchParams.get("limit") || "", 10);
+        if (!Number.isNaN(limitParam) && limitParam > 0) {
+            parsed.limit = limitParam;
+        }
+
+        const sortByParam = searchParams.get("sort_by");
+        if (sortByParam) {
+            parsed.sort_by = sortByParam;
+        }
+
+        const orderParam = searchParams.get("order");
+        if (orderParam) {
+            parsed.order = orderParam;
+        }
+
+        const titleParam = searchParams.get("title") || searchParams.get("keyword");
+        if (titleParam) {
+            parsed.title = titleParam;
+        }
+
+        const locationParam = searchParams.get("location");
+        if (locationParam) {
+            parsed.location = locationParam;
+        }
+
+        return parsed;
+    }, [location.search]);
+
+    const updateQueryParams = useCallback((nextParams) => {
+        const merged = {
+            ...DEFAULT_QUERY,
+            ...nextParams,
+        };
+
+        const sanitizedEntries = Object.entries(merged).filter(
+            ([, value]) => value !== undefined && value !== null && value !== ""
+        );
+        const searchString = new URLSearchParams(Object.fromEntries(sanitizedEntries)).toString();
+
+        navigate({
+            pathname: location.pathname,
+            search: searchString ? `?${searchString}` : "",
+        });
+    }, [navigate, location.pathname]);
+
+    useEffect(() => {
+        dispatch(getJobs(queryParams));
+    }, [dispatch, queryParams]);
+
+    useEffect(() => {
+        setSelectedJob(null);
+    }, [queryParams]);
+
+    const combinedPagination = pagination || {
+        page: queryParams.page,
+        limit: queryParams.limit,
+        total: 0,
+        total_pages: 0,
     };
+
+    const handleSearch = useCallback(({ keyword, location: jobLocation }) => {
+        updateQueryParams({
+            ...queryParams,
+            page: 1,
+            title: keyword?.trim() || undefined,
+            location: jobLocation?.trim() || undefined,
+        });
+    }, [queryParams, updateQueryParams]);
 
     const handleFilter = (filterParams) => {
         console.log('Filter params:', filterParams);
         // TODO: Implement filter functionality
     };
+
+    const handlePageChange = useCallback((page) => {
+        updateQueryParams({
+            ...queryParams,
+            page,
+        });
+    }, [queryParams, updateQueryParams]);
 
     const handleJobSelect = (job) => {
         if (isSmall) {
@@ -81,7 +174,7 @@ export default function FindJobs() {
 
     const activeFilterCount = (() => {
         if (!appliedFilters) return 0;
-        const { levels = [], workingModels = [], salary, jobDomains = [], companyIndustries = [] } = appliedFilters;
+        const { levels = [], workingModels = [], salary, jobDomains = [], companyIndustries = [] } = appliedFilters || {};
         const countChips = levels.length + workingModels.length + jobDomains.length + companyIndustries.length;
         const salaryActive = salary && (salary.min !== 500 || salary.max !== 10000) ? 1 : 0;
         return countChips + salaryActive;
@@ -108,7 +201,15 @@ export default function FindJobs() {
                 >
                     {/* Middle - Job List */}
                     <Box className="flex-1 md:w-96 min-w-0">
-                        <JobListSection onJobSelect={handleJobSelect} selectedJob={selectedJob} />
+                        <JobListSection
+                            jobs={jobs}
+                            pagination={combinedPagination}
+                            total={combinedPagination.total}
+                            isLoading={isLoadingJobs}
+                            onPageChange={handlePageChange}
+                            onJobSelect={handleJobSelect}
+                            selectedJob={selectedJob}
+                        />
                     </Box>
 
                     {/* Right - Job Description (hidden on small screens) */}
