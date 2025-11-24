@@ -10,7 +10,7 @@ import { ArrowForward, ChevronLeft, ChevronRight } from '@mui/icons-material';
 import JobCard from '../features/JobCard';
 import { mockJobs } from '../../../mocks/mockData';
 
-export default function JobSection() {
+export default function HotJobTopCVSection() {
     const latestJobs = mockJobs;
     const scrollContainerRef = React.useRef(null);
 
