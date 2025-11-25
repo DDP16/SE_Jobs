@@ -15,7 +15,7 @@ import { mockJobs } from '../../../mocks/mockData';
 
 export default function JobListSection({ onJobSelect, selectedJob }) {
     const [currentPage, setCurrentPage] = useState(1);
-    const jobsPerPage = 5;
+    const jobsPerPage = 10;
     const itemRefs = useRef({});
 
     const jobsState = useSelector(state => state.jobs?.jobs ?? state.jobs?.data ?? state.jobs);
@@ -92,7 +92,6 @@ export default function JobListSection({ onJobSelect, selectedJob }) {
                 </Typography>
             </Box>
 
-            {/* Job List */}
             <Stack spacing={2} sx={{ mb: 5 }}>
                 {currentJobs.map((job) => {
                     const keyId = job.id ?? job.job_id ?? job.jobId ?? job._id;
