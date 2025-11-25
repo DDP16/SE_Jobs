@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect, useMemo, useCallback } from "react";
-import { Container, Box, Stack, useMediaQuery } from '@mui/material';
+import { Container, Box, Stack, useMediaQuery, CircularProgress, Typography } from '@mui/material';
 import { useTheme } from '@mui/material/styles';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
@@ -182,14 +182,25 @@ export default function FindJobs() {
                 >
                     {/* Middle - Job List */}
                     <Box className="flex-1 md:w-96 min-w-0">
-                        <JobListSection
-                            jobs={jobs}
-                            pagination={pagination}
-                            isLoading={status === 'loading'}
-                            onPageChange={handlePageChange}
-                            onJobSelect={handleJobSelect}
-                            selectedJob={selectedJob}
-                        />
+                        {status === 'loading' && jobs.length === 0 ? (
+                            <Box className="bg-white rounded-xl p-8 shadow-sm border border-gray-100">
+                                <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 2, py: 8 }}>
+                                    <CircularProgress size={48} />
+                                    <Typography variant="body1" sx={{ color: 'text.secondary', fontWeight: 500 }}>
+                                        Đang tìm kiếm công việc...
+                                    </Typography>
+                                </Box>
+                            </Box>
+                        ) : (
+                            <JobListSection
+                                jobs={jobs}
+                                pagination={pagination}
+                                isLoading={status === 'loading'}
+                                onPageChange={handlePageChange}
+                                onJobSelect={handleJobSelect}
+                                selectedJob={selectedJob}
+                            />
+                        )}
                     </Box>
 
                     {/* Right - Job Description (hidden on small screens) */}

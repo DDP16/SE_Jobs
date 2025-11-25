@@ -9,7 +9,7 @@ import {
 import SearchBar from '../features/SearchBar';
 import { mockPopularSearches } from '../../../mocks/mockData';
 
-export default function HeroSection({ onSearch }) {
+export default function HeroSection({ onSearch, initialKeyword = '', initialLocation = '' }) {
     return (
         <Box
             className="bg-linear-to-br from-gray-50 to-blue-400 py-12 md:py-20 relative overflow-hidden w-full"
@@ -84,6 +84,8 @@ export default function HeroSection({ onSearch }) {
                         placeholder="Job title, keywords, or company"
                         locationPlaceholder="City, state, or remote"
                         fullWidth
+                        initialKeyword={initialKeyword}
+                        initialLocation={initialLocation}
                     />
                 </Box>
 

@@ -21,7 +21,7 @@ export default function FilterDialog({
     onApply,
     maxWidth = 'md',
     focusSection = null, // 'level', 'workingModel', 'salary', 'jobDomain', 'companyIndustry'
-    // Option sources (can be injected from parent later)
+    initialFilters = {},
     levelOptions,
     workingModelOptions,
     jobDomainOptions,
@@ -71,6 +71,23 @@ export default function FilterDialog({
     const [selectedDomains, setSelectedDomains] = useState([]);
     const [searchIndustry, setSearchIndustry] = useState('');
     const [selectedIndustries, setSelectedIndustries] = useState([]);
+
+    // Initialize dialog state from parent-provided filters when opening
+    useEffect(() => {
+        if (!open) return;
+
+        if (initialFilters) {
+            setSelectedLevels(initialFilters.levels || []);
+            setSelectedWorkingModels(initialFilters.workingModels || []);
+            setSelectedDomains(initialFilters.jobDomains || []);
+            setSelectedIndustries(initialFilters.companyIndustries || []);
+            if (initialFilters.salary && typeof initialFilters.salary.min === 'number' && typeof initialFilters.salary.max === 'number') {
+                setSalaryRange([initialFilters.salary.min, initialFilters.salary.max]);
+            } else {
+                setSalaryRange([salaryMin, salaryMax]);
+            }
+        }
+    }, [open, initialFilters, salaryMin, salaryMax]);
 
     const filteredDomains = useMemo(
         () => defaultJobDomains.filter((d) => d.toLowerCase().includes(searchDomain.toLowerCase())),
