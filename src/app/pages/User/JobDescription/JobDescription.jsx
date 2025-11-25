@@ -208,13 +208,13 @@ export default function JobDescription({
   return (
     <div className="min-h-screen bg-white mx-auto space-y-12 pb-12">
       <div className={`pt-10 pb-5 ${layout !== layoutType.half_width ? "px-10 lg:px-25" : ""} bg-background-lightBlue`}>
-        {finalConfig.showBreadcrumb && (
+        {/* {finalConfig.showBreadcrumb && (
           <div className="mb-5">
             <p className="text-sm text-muted-foreground">
               Home / Companies / {typeof job?.company === 'string' ? job.company : job?.company?.name || "Company"} / {job?.title || "Job Title"}
             </p>
           </div>
-        )}
+        )} */}
         {finalConfig.showJobHeader && <JobHeader job={job} />}
       </div>
 
