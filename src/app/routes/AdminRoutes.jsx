@@ -1,5 +1,5 @@
 import { Navigate, Outlet, Route, Routes } from "react-router-dom";
-import { AdminDashboard as Dashboard, UsersPage } from "@/pages";
+import { CompaniesPage, CompanyDetailPage, AdminDashboard as Dashboard, JobsPage, SettingsPage, StudentDetailPage, StudentsPage, UsersPage } from "@/pages";
 import AdminLayout from "@/layouts/AdminLayout";
 import PageNotFound from "@/layouts/PageNotFound";
 
@@ -14,6 +14,12 @@ export default function AdminRoutes() {
         <Route index element={<Navigate to="dashboard" replace />} />
         <Route path="dashboard" element={<Dashboard />} />
         <Route path="users" element={<UsersPage />} />
+        <Route path="students" element={<StudentsPage />} />
+        <Route path="students/:id" element={<StudentDetailPage />} />
+        <Route path="companies" element={<CompaniesPage />} />
+        <Route path="companies/:id" element={<CompanyDetailPage />} />
+        <Route path="jobs" element={<JobsPage />} />
+        <Route path="settings" element={<SettingsPage />} />
         <Route path="*" element={<PageNotFound />} />
       </Route>
     </Routes>

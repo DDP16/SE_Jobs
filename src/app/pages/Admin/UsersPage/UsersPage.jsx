@@ -135,12 +135,12 @@ export default function UsersPage() {
                   </TableCell>
                   <TableCell className="text-gray-600">{user.email}</TableCell>
                   <TableCell className="text-center">
-                    <Badge variant="secondary" className={getRoleBadgeColor(user.role)}>
+                    <Badge variant="secondary" className={getRoleBadgeColor(user.role) + " px-4 py-1"}>
                       {user.role}
                     </Badge>
                   </TableCell>
                   <TableCell className="text-center">
-                    <Badge className={`${user.status === 'Active' ? 'bg-green-100 text-green-700' : 'bg-gray-100'}`}>
+                    <Badge className={`${user.status === 'Active' ? 'bg-green-400 text-white border-2 border-accent-green/50' : 'bg-gray-100'} px-4 py-1`}>
                       {user.status}
                     </Badge>
                   </TableCell>
