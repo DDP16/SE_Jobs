@@ -19,7 +19,7 @@ export default function Home() {
     }
 
     navigate({
-      pathname: "/find-jobs",
+      pathname: "/jobs",
       search: params.toString() ? `?${params.toString()}` : "",
     });
   }, [navigate]);

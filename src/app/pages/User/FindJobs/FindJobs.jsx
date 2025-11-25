@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect, useMemo, useCallback, useEffect } from "react";
+import React, { useState, useRef, useEffect, useMemo, useCallback } from "react";
 import { Container, Box, Stack, useMediaQuery } from '@mui/material';
 import { useTheme } from '@mui/material/styles';
 import { useNavigate, useLocation } from 'react-router-dom';
@@ -6,6 +6,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { JobListSection, HeroSection, FilterDialog, FilterToolbar } from "../../../components";
 import JobDescription from "../JobDescription";
 import { layoutType } from "../../../lib";
+import { getJobs } from "../../../modules/services/jobsService";
 
 export default function FindJobs() {
     const [selectedJob, setSelectedJob] = useState(null);
@@ -15,11 +16,61 @@ export default function FindJobs() {
     const theme = useTheme();
     const isSmall = useMediaQuery(theme.breakpoints.down('md'));
     const navigate = useNavigate();
+    const location = useLocation();
+    const dispatch = useDispatch();
+    const jobDescRef = useRef(null);
+    const { jobs = [], pagination, status } = useSelector((state) => state.jobs || {});
 
-    const handleSearch = (searchParams) => {
-        console.log('Search params:', searchParams);
-        // TODO: Implement search functionality
-    };
+    const queryParams = useMemo(() => {
+        const params = new URLSearchParams(location.search);
+        return {
+            page: Number(params.get('page')) || 1,
+            title: params.get('title') || '',
+            location: params.get('location') || '',
+        };
+    }, [location.search]);
+
+    const updateQueryParams = useCallback(
+        (nextParams) => {
+            const params = new URLSearchParams();
+            Object.entries(nextParams).forEach(([key, value]) => {
+                if (value === undefined || value === null || value === '') return;
+                if (key === 'page' && Number(value) <= 1) return;
+                params.set(key, value);
+            });
+
+            const searchString = params.toString();
+            navigate({
+                pathname: location.pathname,
+                search: searchString ? `?${searchString}` : '',
+            });
+        },
+        [navigate, location.pathname]
+    );
+
+    const { page: currentPage = 1, title: currentTitle = '', location: currentLocation = '' } = queryParams;
+
+    useEffect(() => {
+        dispatch(
+            getJobs({
+                page: currentPage,
+                title: currentTitle || undefined,
+                location: currentLocation || undefined,
+            })
+        );
+    }, [dispatch, currentPage, currentTitle, currentLocation]);
+
+    const handleSearch = useCallback(
+        ({ keyword, location }) => {
+            updateQueryParams({
+                ...queryParams,
+                page: 1,
+                title: keyword?.trim(),
+                location: location?.trim(),
+            });
+        },
+        [queryParams, updateQueryParams]
+    );
 
     const handleFilter = (filterParams) => {
         console.log('Filter params:', filterParams);
@@ -41,7 +92,6 @@ export default function FindJobs() {
         setSelectedJob(job);
     };
 
-    // when selectedJob changes, scroll job description container to top
     useEffect(() => {
         if (selectedJob && jobDescRef.current) {
             try {
@@ -132,7 +182,14 @@ export default function FindJobs() {
                 >
                     {/* Middle - Job List */}
                     <Box className="flex-1 md:w-96 min-w-0">
-                        <JobListSection onJobSelect={handleJobSelect} selectedJob={selectedJob} />
+                        <JobListSection
+                            jobs={jobs}
+                            pagination={pagination}
+                            isLoading={status === 'loading'}
+                            onPageChange={handlePageChange}
+                            onJobSelect={handleJobSelect}
+                            selectedJob={selectedJob}
+                        />
                     </Box>
 
                     {/* Right - Job Description (hidden on small screens) */}
