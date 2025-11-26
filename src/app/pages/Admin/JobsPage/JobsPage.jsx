@@ -173,11 +173,11 @@ export default function JobsPage() {
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-gray-900 mb-1">Job Management</h1>
+          <h3 className="text-gray-900 mb-1 font-semibold">Job Management</h3>
           <p className="text-gray-600">Manage job listings, categories, and applications</p>
         </div>
-        <Button onClick={() => setIsAddDialogOpen(true)} className="bg-blue-600 hover:bg-blue-700">
-          <Plus className="w-4 h-4 mr-2" />
+        <Button onClick={() => setIsAddDialogOpen(true)} className="bg-primary/90 hover:bg-primary text-white hover:scale-105 rounded-lg transition-all">
+          <Plus className="w-4 h-4" />
           Post New Job
         </Button>
       </div>
@@ -196,7 +196,7 @@ export default function JobsPage() {
             </div>
             <Select value={categoryFilter} onValueChange={setCategoryFilter}>
               <SelectTrigger className="w-56">
-                <Filter className="w-4 h-4 mr-2" />
+                <Filter className="w-4 h-4" />
                 <SelectValue placeholder="Category" />
               </SelectTrigger>
               <SelectContent>
@@ -220,18 +220,19 @@ export default function JobsPage() {
           </div>
         </div>
 
+        <div className='px-4'>
         <Table>
           <TableHeader>
             <TableRow>
               <TableHead>Job Title</TableHead>
               <TableHead>Company</TableHead>
-              <TableHead>Category</TableHead>
-              <TableHead>Level</TableHead>
+              <TableHead className="text-center">Category</TableHead>
+              <TableHead className="text-center">Level</TableHead>
               <TableHead>Location</TableHead>
               <TableHead>Salary Range</TableHead>
-              <TableHead>Applications</TableHead>
-              <TableHead>Tags</TableHead>
-              <TableHead>Status</TableHead>
+              <TableHead className="text-center">Applications</TableHead>
+              <TableHead className="text-center">Tags</TableHead>
+              <TableHead className="text-center">Status</TableHead>
               <TableHead className="text-right">Actions</TableHead>
             </TableRow>
           </TableHeader>
@@ -245,12 +246,12 @@ export default function JobsPage() {
                   </div>
                 </TableCell>
                 <TableCell className="text-gray-600">{job.company}</TableCell>
-                <TableCell>
+                <TableCell className="text-center">
                   <Badge variant="secondary" className="bg-blue-50 text-blue-700">
                     {job.category}
                   </Badge>
                 </TableCell>
-                <TableCell>
+                <TableCell className="text-center">
                   <Badge variant="secondary" className="bg-purple-50 text-purple-700">
                     {job.level}
                   </Badge>
@@ -267,13 +268,13 @@ export default function JobsPage() {
                     {job.salaryFrom.toLocaleString()} - {job.salaryTo.toLocaleString()} {job.salaryCurrency}
                   </div>
                 </TableCell>
-                <TableCell>
+                <TableCell className="text-center">
                   <Badge variant="secondary" className="bg-green-50 text-green-700">
                     {job.applications}
                   </Badge>
                 </TableCell>
-                <TableCell>
-                  <div className="flex gap-1">
+                <TableCell className="text-center">
+                  <div className="flex gap-1 justify-center">
                     {job.isDiamond && (
                       <Diamond className="w-4 h-4 text-cyan-600" fill="currentColor" />
                     )}
@@ -285,8 +286,8 @@ export default function JobsPage() {
                     )}
                   </div>
                 </TableCell>
-                <TableCell>
-                  <Badge variant={job.status === 'Active' ? 'default' : 'secondary'}>
+                <TableCell className="text-center">
+                  <Badge className={`${job.status === 'Active' ? 'bg-green-400 text-white border-2 border-accent-green/50' : 'bg-gray-100'} px-4 py-1`}>
                     {job.status}
                   </Badge>
                 </TableCell>
@@ -297,7 +298,7 @@ export default function JobsPage() {
                         <MoreVertical className="w-4 h-4" />
                       </Button>
                     </DropdownMenuTrigger>
-                    <DropdownMenuContent align="end">
+                    <DropdownMenuContent className="bg-white" align="end">
                       <DropdownMenuItem onClick={() => {
                         setSelectedJob(job);
                         setIsViewDialogOpen(true);
@@ -320,6 +321,7 @@ export default function JobsPage() {
             ))}
           </TableBody>
         </Table>
+        </div>
       </div>
 
       {/* Add Job Dialog */}
@@ -477,10 +479,10 @@ export default function JobsPage() {
             </div>
           </div>
           <DialogFooter>
-            <Button variant="outline" onClick={() => setIsAddDialogOpen(false)}>
+            <Button className="hover:scale-105 rounded-lg transition-all" variant="outline" onClick={() => setIsAddDialogOpen(false)}>
               Cancel
             </Button>
-            <Button className="bg-blue-600 hover:bg-blue-700">
+            <Button className="bg-primary/90 hover:bg-primary text-white hover:scale-105 rounded-lg transition-all">
               Post Job
             </Button>
           </DialogFooter>
@@ -578,10 +580,10 @@ export default function JobsPage() {
             </div>
           )}
           <DialogFooter>
-            <Button variant="outline" onClick={() => setIsViewDialogOpen(false)}>
+            <Button className="hover:scale-105 rounded-lg transition-all" variant="outline" onClick={() => setIsViewDialogOpen(false)}>
               Close
             </Button>
-            <Button className="bg-blue-600 hover:bg-blue-700">
+            <Button className="bg-primary/90 hover:bg-primary text-white hover:scale-105 rounded-lg transition-all">
               <Edit className="w-4 h-4 mr-2" />
               Edit Job
             </Button>

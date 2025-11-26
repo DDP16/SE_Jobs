@@ -128,11 +128,11 @@ export default function CompaniesPage() {
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-gray-900 mb-1">Company Management</h1>
+          <h3 className="text-gray-900 mb-1 font-semibold">Company Management</h3>
           <p className="text-gray-600">Manage companies, branches, and job postings</p>
         </div>
-        <Button className="bg-blue-600 hover:bg-blue-700">
-          <Plus className="w-4 h-4 mr-2" />
+        <Button className="bg-primary/90 hover:bg-primary text-white hover:scale-105 rounded-lg transition-all">
+          <Plus className="w-4 h-4" />
           Add Company
         </Button>
       </div>
@@ -150,8 +150,8 @@ export default function CompaniesPage() {
               />
             </div>
             <Select value={typeFilter} onValueChange={setTypeFilter}>
-              <SelectTrigger className="w-56">
-                <Filter className="w-4 h-4 mr-2" />
+              <SelectTrigger className="w-45">
+                <Filter className="w-4 h-4" />
                 <SelectValue placeholder="Filter by type" />
               </SelectTrigger>
               <SelectContent>
@@ -166,16 +166,17 @@ export default function CompaniesPage() {
           </div>
         </div>
 
+        <div className='px-4'>
         <Table>
           <TableHeader>
             <TableRow>
               <TableHead>Company</TableHead>
               <TableHead>Contact</TableHead>
-              <TableHead>Employee Count</TableHead>
-              <TableHead>Branches</TableHead>
-              <TableHead>Active Jobs</TableHead>
-              <TableHead>Types</TableHead>
-              <TableHead>Status</TableHead>
+              <TableHead className="text-center">Employee Count</TableHead>
+              <TableHead className="text-center">Branches</TableHead>
+              <TableHead className="text-center">Active Jobs</TableHead>
+              <TableHead className="text-center">Types</TableHead>
+              <TableHead className="text-center">Status</TableHead>
               <TableHead className="text-right">Actions</TableHead>
             </TableRow>
           </TableHeader>
@@ -196,18 +197,18 @@ export default function CompaniesPage() {
                     <div className="text-gray-500">{company.phone}</div>
                   </div>
                 </TableCell>
-                <TableCell className="text-gray-600">{company.employeeCount}</TableCell>
-                <TableCell>
+                <TableCell className="text-gray-600 text-center">{company.employeeCount}</TableCell>
+                <TableCell className="text-center">
                   <Badge variant="secondary" className="bg-blue-50 text-blue-700">
                     {company.branches}
                   </Badge>
                 </TableCell>
-                <TableCell>
+                <TableCell className="text-center">
                   <Badge variant="secondary" className="bg-green-50 text-green-700">
                     {company.activeJobs}
                   </Badge>
                 </TableCell>
-                <TableCell>
+                <TableCell className="text-center">
                   <div className="flex flex-wrap gap-1">
                     {company.types.slice(0, 2).map((type, index) => (
                       <Badge key={index} variant="secondary" className="bg-purple-50 text-purple-700 text-xs">
@@ -216,8 +217,8 @@ export default function CompaniesPage() {
                     ))}
                   </div>
                 </TableCell>
-                <TableCell>
-                  <Badge variant={company.status === 'Active' ? 'default' : 'secondary'}>
+                <TableCell className="text-center">
+                  <Badge className={`${company.status === 'Active' ? 'bg-green-400 text-white border-2 border-accent-green/50' : 'bg-gray-100'} px-4 py-1`}>
                     {company.status}
                   </Badge>
                 </TableCell>
@@ -228,7 +229,7 @@ export default function CompaniesPage() {
                         <MoreVertical className="w-4 h-4" />
                       </Button>
                     </DropdownMenuTrigger>
-                    <DropdownMenuContent align="end">
+                    <DropdownMenuContent className="bg-white" align="end">
                       <DropdownMenuItem asChild>
                         <Link to={`/companies/${company.id}`}>
                           <Eye className="w-4 h-4 mr-2" />
@@ -250,6 +251,7 @@ export default function CompaniesPage() {
             ))}
           </TableBody>
         </Table>
+        </div>
       </div>
     </div>
   );

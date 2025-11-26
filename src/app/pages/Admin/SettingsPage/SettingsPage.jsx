@@ -15,7 +15,7 @@ export default function SettingsPage() {
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-gray-900 mb-1">Settings</h1>
+        <h3 className="text-gray-900 mb-1 font-semibold">Settings</h3>
         <p className="text-gray-600">Manage system settings and preferences</p>
       </div>
 
@@ -49,7 +49,7 @@ export default function SettingsPage() {
                 defaultValue="University Job Recruitment Management System"
               />
             </div>
-            <Button className="bg-blue-600 hover:bg-blue-700">
+            <Button className="bg-primary/90 hover:bg-primary text-white hover:scale-105 rounded-lg transition-all">
               Save Changes
             </Button>
           </CardContent>

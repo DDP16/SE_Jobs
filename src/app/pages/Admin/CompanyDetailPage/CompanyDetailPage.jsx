@@ -137,7 +137,7 @@ export default function CompanyDetailPage() {
               <Building2 className="w-10 h-10 text-blue-600" />
             </div>
             <div>
-              <h1 className="text-gray-900 mb-1">{mockCompany.name}</h1>
+              <h3 className="text-gray-900 mb-1 font-semibold">{mockCompany.name}</h3>
               <p className="text-gray-600 mb-3">{mockCompany.employeeCount} employees</p>
               <div className="flex flex-wrap gap-4 text-sm text-gray-600">
                 <div className="flex items-center gap-1">
@@ -157,8 +157,8 @@ export default function CompanyDetailPage() {
               </div>
             </div>
           </div>
-          <Button className="bg-blue-600 hover:bg-blue-700">
-            <Edit className="w-4 h-4 mr-2" />
+          <Button className="bg-primary/90 hover:bg-primary text-white hover:scale-105 rounded-lg transition-all">
+            <Edit className="w-4 h-4" />
             Edit Company
           </Button>
         </div>
@@ -257,8 +257,8 @@ export default function CompanyDetailPage() {
           <Card>
             <CardHeader className="flex flex-row items-center justify-between">
               <CardTitle>Company Branches</CardTitle>
-              <Button size="sm" className="bg-blue-600 hover:bg-blue-700">
-                <Plus className="w-4 h-4 mr-2" />
+              <Button size="sm" className="bg-primary/90 hover:bg-primary text-white hover:scale-105 rounded-lg transition-all">
+                <Plus className="w-4 h-4" />
                 Add Branch
               </Button>
             </CardHeader>
@@ -309,8 +309,8 @@ export default function CompanyDetailPage() {
           <Card>
             <CardHeader className="flex flex-row items-center justify-between">
               <CardTitle>Active Job Listings</CardTitle>
-              <Button size="sm" className="bg-blue-600 hover:bg-blue-700">
-                <Plus className="w-4 h-4 mr-2" />
+              <Button size="sm" className="bg-primary/90 hover:bg-primary text-white hover:scale-105 rounded-lg transition-all">
+                <Plus className="w-4 h-4" />
                 Post New Job
               </Button>
             </CardHeader>
@@ -375,8 +375,8 @@ export default function CompanyDetailPage() {
           <Card>
             <CardHeader className="flex flex-row items-center justify-between">
               <CardTitle>Company Types</CardTitle>
-              <Button size="sm" className="bg-blue-600 hover:bg-blue-700">
-                <Plus className="w-4 h-4 mr-2" />
+              <Button size="sm" className="bg-primary/90 hover:bg-primary text-white hover:scale-105 rounded-lg transition-all">
+                <Plus className="w-4 h-4" />
                 Add Type
               </Button>
             </CardHeader>
