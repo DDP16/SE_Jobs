@@ -1,30 +1,26 @@
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { Plus, Search, Filter, MoreVertical, Eye, Edit, Trash2, FileText } from 'lucide-react';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Badge } from '@/components/ui/badge';
 import {
+  Button,
+  Input,
+  Badge,
   Table,
   TableBody,
   TableCell,
   TableHead,
   TableHeader,
   TableRow,
-} from '@/components/ui/table';
-import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
-} from '@/components/ui/dropdown-menu';
-import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from '@/components/ui/select';
+} from "@/components/ui";
 
 const mockStudents = [
   { id: 1, name: 'John Doe', email: 'john.doe@university.edu', major: 'Computer Science', year: 'Senior', gpa: 3.8, cvCount: 3, status: 'Active' },
@@ -99,9 +95,9 @@ export default function StudentsPage() {
                 <TableHead>Email</TableHead>
                 <TableHead>Major</TableHead>
                 <TableHead>Year</TableHead>
-                <TableHead>GPA</TableHead>
-                <TableHead>CVs</TableHead>
-                <TableHead>Status</TableHead>
+                <TableHead className="text-center">GPA</TableHead>
+                <TableHead className="text-center">CVs</TableHead>
+                <TableHead className="text-center">Status</TableHead>
                 <TableHead className="text-right">Actions</TableHead>
               </TableRow>
             </TableHeader>
@@ -119,18 +115,18 @@ export default function StudentsPage() {
                   <TableCell className="text-gray-600">{student.email}</TableCell>
                   <TableCell>{student.major}</TableCell>
                   <TableCell>{student.year}</TableCell>
-                  <TableCell>
+                  <TableCell className="text-center">
                     <Badge variant="secondary" className="bg-blue-50 text-blue-700">
                       {student.gpa}
                     </Badge>
                   </TableCell>
-                  <TableCell>
+                  <TableCell className="text-center">
                     <div className="flex items-center gap-1">
                       <FileText className="w-4 h-4 text-gray-400" />
                       <span className="text-gray-600">{student.cvCount}</span>
                     </div>
                   </TableCell>
-                  <TableCell>
+                  <TableCell className="text-center">
                     <Badge className={`${student.status === 'Active' ? 'bg-green-400 text-white border-2 border-accent-green/50' : 'bg-gray-100'} px-4 py-1`}>
                       {student.status}
                     </Badge>

@@ -1,7 +1,8 @@
 import { motion } from "framer-motion";
-import { uiBadge as Badge, BorderLinearProgress } from "../../../../components";
+import { BorderLinearProgress } from "@/components";
 import { useSelector } from "react-redux";
 import { useTranslation } from "react-i18next";
+import { Badge } from "@/components/ui";
 
 export default function JobSidebar({ job }) {
   const { t } = useTranslation();

@@ -1,10 +1,10 @@
 import { useState, useEffect } from "react";
 import {
-    uiInput as Input,
-    uiTextarea as Textarea,
-    uiButton as Button,
-    uiLabel as Label,
-} from "@/components";
+    Input,
+    Textarea,
+    Button,
+    Label,
+} from "@/components/ui";
 import { validateEducationForm } from "@/modules";
 import { Dialog, DialogContent, Typography } from "@mui/material";
 import { X } from "lucide-react";

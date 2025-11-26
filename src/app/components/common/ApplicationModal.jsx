@@ -1,10 +1,10 @@
 import { useState } from "react";
 import {
-  uiInput as Input,
-  uiTextarea as Textarea,
-  uiButton as Button,
-  uiLabel as Label,
-} from "@/components";
+  Input,
+  Textarea,
+  Button,
+  Label,
+} from "@/components/ui";
 import { Dialog, DialogContent, DialogTitle } from "@mui/material";
 import {
   X,

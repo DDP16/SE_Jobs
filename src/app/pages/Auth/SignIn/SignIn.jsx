@@ -2,13 +2,14 @@ import { useState } from "react";
 import { motion } from "framer-motion";
 import { Eye, EyeOff } from "lucide-react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
-import { uiInput as Input, uiButton as Button, CustomAlert, LangButtonGroup } from "../../../components";
+import { CustomAlert, LangButtonGroup } from "@/components";
 import { srcAsset } from "../../../lib";
 import { validateEmail, validatePassword } from "../../../modules";
 import { loginWithEmail } from "../../../modules";
 import { useCustomAlert } from "../../../hooks/useCustomAlert";
 import { useDispatch } from "react-redux";
 import { useTranslation } from "react-i18next";
+import { Button, Input } from "@/components/ui";
 
 export default function SignIn() {
   const dispatch = useDispatch();

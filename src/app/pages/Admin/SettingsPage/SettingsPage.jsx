@@ -1,9 +1,15 @@
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
-import { Separator } from '@/components/ui/separator';
-import { Switch } from '@/components/ui/switch';
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+  Button,
+  Input,
+  Label,
+  Separator,
+  Switch,
+} from "@/components/ui";
 
 export default function SettingsPage() {
   return (
@@ -29,12 +35,19 @@ export default function SettingsPage() {
               </div>
               <div className="space-y-2">
                 <Label htmlFor="adminEmail">Admin Email</Label>
-                <Input id="adminEmail" type="email" defaultValue="admin@university.edu" />
+                <Input
+                  id="adminEmail"
+                  type="email"
+                  defaultValue="admin@university.edu"
+                />
               </div>
             </div>
             <div className="space-y-2">
               <Label htmlFor="systemDesc">System Description</Label>
-              <Input id="systemDesc" defaultValue="University Job Recruitment Management System" />
+              <Input
+                id="systemDesc"
+                defaultValue="University Job Recruitment Management System"
+              />
             </div>
             <Button className="bg-blue-600 hover:bg-blue-700">
               Save Changes
@@ -122,7 +135,12 @@ export default function SettingsPage() {
             <Separator />
             <div className="space-y-2">
               <Label htmlFor="jobExpiry">Default Job Expiry (days)</Label>
-              <Input id="jobExpiry" type="number" defaultValue="30" className="max-w-xs" />
+              <Input
+                id="jobExpiry"
+                type="number"
+                defaultValue="30"
+                className="max-w-xs"
+              />
             </div>
           </CardContent>
         </Card>
@@ -157,7 +175,12 @@ export default function SettingsPage() {
             <Separator />
             <div className="space-y-2">
               <Label htmlFor="maxCV">Maximum CV per Student</Label>
-              <Input id="maxCV" type="number" defaultValue="5" className="max-w-xs" />
+              <Input
+                id="maxCV"
+                type="number"
+                defaultValue="5"
+                className="max-w-xs"
+              />
             </div>
           </CardContent>
         </Card>
@@ -192,7 +215,12 @@ export default function SettingsPage() {
             <Separator />
             <div className="space-y-2">
               <Label htmlFor="sessionTime">Session Timeout (minutes)</Label>
-              <Input id="sessionTime" type="number" defaultValue="30" className="max-w-xs" />
+              <Input
+                id="sessionTime"
+                type="number"
+                defaultValue="30"
+                className="max-w-xs"
+              />
             </div>
           </CardContent>
         </Card>

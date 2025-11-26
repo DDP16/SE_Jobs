@@ -1,9 +1,10 @@
 import { motion } from "framer-motion";
 import { Share2 } from "lucide-react";
-import { ApplicationModal, uiButton as Button } from "../../../../components";
+import { ApplicationModal } from "@/components";
 import { srcAsset } from "../../../../lib";
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
+import { Button } from "@/components/ui";
 
 export default function JobHeader({ job = {} }) {
   const { t } = useTranslation();

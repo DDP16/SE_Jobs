@@ -2,7 +2,7 @@ import { useState } from "react";
 import { delay, motion } from "framer-motion";
 import { Eye, EyeOff } from "lucide-react";
 import { Link, useNavigate } from "react-router-dom";
-import { uiInput as Input, uiButton as Button, CustomAlert, LangButtonGroup } from "../../../components";
+import { CustomAlert, LangButtonGroup } from "@/components";
 import { srcAsset } from "../../../lib";
 import { register, validateEmail, validatePassword } from "../../../modules";
 import { useCustomAlert } from "../../../hooks/useCustomAlert";
@@ -27,6 +27,7 @@ import {
   LocationOn as LocationOnIcon,
   Error as ErrorIcon
 } from "@mui/icons-material";
+import { Button, Input } from "@/components/ui";
 
 export default function CompanySignUp() {
   const [showPassword, setShowPassword] = useState(false);

@@ -1,5 +1,5 @@
 import { Users, GraduationCap, Building2, Briefcase, TrendingUp, UserCheck, FileText, Clock } from 'lucide-react';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui';
 
 const stats = [
   {

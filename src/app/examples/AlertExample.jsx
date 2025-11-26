@@ -1,7 +1,7 @@
 import React from 'react';
 import CustomAlert from '../components/common/CustomAlert';
 import { useCustomAlert } from '../hooks/useCustomAlert';
-import { Button } from '../components/ui/button';
+import { Button } from '@/components/ui';
 
 // Example: Using CustomAlert with useCustomAlert hook
 export default function AlertExample() {

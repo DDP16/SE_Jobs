@@ -1,15 +1,17 @@
 import { Search, Bell, ChevronDown } from 'lucide-react';
-import { Input } from '../ui/input';
-import { Button } from '../ui/button';
-import { Avatar, AvatarFallback, AvatarImage } from '../ui/avatar';
 import {
+  Input,
+  Button,
+  Avatar,
+  AvatarFallback,
+  AvatarImage,
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from '../ui/dropdown-menu';
+} from '../ui';
 
 export default function Topbar() {
   return (

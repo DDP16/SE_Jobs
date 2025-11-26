@@ -14,18 +14,24 @@ import {
   Edit,
   Trash2
 } from 'lucide-react';
-import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Badge } from '@/components/ui/badge';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import {
+  Button,
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle,
+  Badge,
+  Tabs,
+  TabsContent,
+  TabsList,
+  TabsTrigger,
   Table,
   TableBody,
   TableCell,
   TableHead,
   TableHeader,
   TableRow,
-} from '@/components/ui/table';
+} from "@/components/ui";
 
 const mockStudent = {
   id: 1,
@@ -116,7 +122,7 @@ export default function StudentDetailPage() {
               {mockStudent.name.split(' ').map(n => n[0]).join('')}
             </div>
             <div>
-              <h1 className="text-gray-900 mb-1">{mockStudent.name}</h1>
+              <h3 className="text-gray-900 mb-1 font-semibold">{mockStudent.name}</h3>
               <p className="text-gray-600 mb-3">{mockStudent.major} • {mockStudent.year}</p>
               <div className="flex flex-wrap gap-4 text-sm text-gray-600">
                 <div className="flex items-center gap-1">
@@ -134,8 +140,8 @@ export default function StudentDetailPage() {
               </div>
             </div>
           </div>
-          <Button className="bg-blue-600 hover:bg-blue-700">
-            <Edit className="w-4 h-4 mr-2" />
+          <Button className="bg-primary/90 hover:bg-primary text-white hover:scale-105 rounded-lg transition-all">
+            <Edit className="w-4 h-4" />
             Edit Profile
           </Button>
         </div>
@@ -205,10 +211,6 @@ export default function StudentDetailPage() {
           <Card>
             <CardHeader className="flex flex-row items-center justify-between">
               <CardTitle>Social Links</CardTitle>
-              <Button size="sm" variant="outline">
-                <Plus className="w-4 h-4 mr-2" />
-                Add Link
-              </Button>
             </CardHeader>
             <CardContent>
               <div className="space-y-3">
@@ -242,8 +244,8 @@ export default function StudentDetailPage() {
           <Card>
             <CardHeader className="flex flex-row items-center justify-between">
               <CardTitle>CVs & Resumes</CardTitle>
-              <Button size="sm" className="bg-blue-600 hover:bg-blue-700">
-                <Plus className="w-4 h-4 mr-2" />
+              <Button size="sm" className="bg-primary/90 hover:bg-primary text-white hover:scale-105 rounded-lg transition-all">
+                <Plus className="w-4 h-4" />
                 Upload CV
               </Button>
             </CardHeader>
@@ -290,8 +292,8 @@ export default function StudentDetailPage() {
           <Card>
             <CardHeader className="flex flex-row items-center justify-between">
               <CardTitle>Work Experience</CardTitle>
-              <Button size="sm" className="bg-blue-600 hover:bg-blue-700">
-                <Plus className="w-4 h-4 mr-2" />
+              <Button size="sm" className="bg-primary/90 hover:bg-primary text-white hover:scale-105 rounded-lg transition-all">
+                <Plus className="w-4 h-4" />
                 Add Experience
               </Button>
             </CardHeader>
@@ -329,8 +331,8 @@ export default function StudentDetailPage() {
           <Card>
             <CardHeader className="flex flex-row items-center justify-between">
               <CardTitle>Portfolio Projects</CardTitle>
-              <Button size="sm" className="bg-blue-600 hover:bg-blue-700">
-                <Plus className="w-4 h-4 mr-2" />
+              <Button size="sm" className="bg-primary/90 hover:bg-primary text-white hover:scale-105 rounded-lg transition-all">
+                <Plus className="w-4 h-4" />
                 Add Project
               </Button>
             </CardHeader>
@@ -368,8 +370,8 @@ export default function StudentDetailPage() {
           <Card>
             <CardHeader className="flex flex-row items-center justify-between">
               <CardTitle>Education History</CardTitle>
-              <Button size="sm" className="bg-blue-600 hover:bg-blue-700">
-                <Plus className="w-4 h-4 mr-2" />
+              <Button size="sm" className="bg-primary/90 hover:bg-primary text-white hover:scale-105 rounded-lg transition-all">
+                <Plus className="w-4 h-4" />
                 Add Education
               </Button>
             </CardHeader>
