@@ -1,6 +1,7 @@
 import { ArrowRight } from "lucide-react";
 import { srcAsset } from "../../../../lib";
 import { JobCardSecond } from "@/components";
+import { useTranslation } from "react-i18next";
 
 export default function SimilarJobs() {
   const jobs = [
@@ -86,15 +87,17 @@ export default function SimilarJobs() {
     },
   ];
 
+  const { t } = useTranslation();
+
   return (
     <section>
       <div className="flex items-center justify-between mb-6">
-        <h4 className="text-2xl font-bold text-foreground">Similar Jobs</h4>
+        <h4 className="text-2xl font-bold text-foreground">{t("job.similar_jobs")}</h4>
         <a
           href="/jobs"
           className="text-primary flex items-center gap-2 hover:underline font-medium"
         >
-          Show all jobs
+          {t("job.show_all_jobs")}
           <ArrowRight className="w-5 h-5" />
         </a>
       </div>

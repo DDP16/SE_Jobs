@@ -9,8 +9,10 @@ import {
   People,
 } from "@mui/icons-material";
 import { srcAsset } from "../../../../lib";
+import { useTranslation } from "react-i18next";
 
 export default function CompanyHeader({ company = {} }) {
+  const { t } = useTranslation();
   const [isFollowing, setIsFollowing] = useState(false);
   const {
     name = "Company Name",
@@ -24,7 +26,7 @@ export default function CompanyHeader({ company = {} }) {
   } = company;
 
   const formatFoundedDate = (date) => {
-    return date.toLocaleDateString("en-US", {
+    return date.toLocaleDateString(t("languageDate"), {
       year: "numeric",
       month: "long",
       day: "numeric",
@@ -34,22 +36,22 @@ export default function CompanyHeader({ company = {} }) {
   const stats = [
     {
       icon: <CalendarToday sx={{ fontSize: 20, color: "primary.main" }} />,
-      label: "Founded",
+      label: t("company.header.founded"),
       value: formatFoundedDate(founded),
     },
     {
       icon: <People sx={{ fontSize: 20, color: "primary.main" }} />,
-      label: "Employees",
+      label: t("company.header.employees"),
       value: `${employees.toLocaleString()}+`,
     },
     {
       icon: <LocationOn sx={{ fontSize: 20, color: "primary.main" }} />,
-      label: "Location",
-      value: `${locationCount} countries`,
+      label: t("company.header.location"),
+      value: t("company.header.locations", { count: locationCount }),
     },
     {
       icon: <Business sx={{ fontSize: 20, color: "primary.main" }} />,
-      label: "Industry",
+      label: t("company.header.industry"),
       value: industry,
     },
   ];
@@ -124,7 +126,7 @@ export default function CompanyHeader({ company = {} }) {
                     •
                   </Typography>
                   <Chip
-                    label={`${jobsCount} việc làm`}
+                    label={t("company.header.jobs_count", { count: jobsCount })}
                     size="small"
                     color="primary"
                     sx={{ fontWeight: 600, height: { xs: 20, sm: 24 }, fontSize: { xs: "0.65rem", sm: "0.75rem" } }}
@@ -158,7 +160,7 @@ export default function CompanyHeader({ company = {} }) {
                     w-8 h-8 sm:w-9 sm:h-9 lg:w-10 lg:h-10 
                     flex items-center 
                     justify-center
-                    flex-shrink-0"
+                    shrink-0"
                   >
                     {React.cloneElement(stat.icon, {
                       sx: { fontSize: { xs: 16, sm: 18, lg: 20 }, color: "primary.main" }
@@ -218,7 +220,7 @@ export default function CompanyHeader({ company = {} }) {
               fontSize: { xs: "0.875rem", sm: "1rem" }
             }}
           >
-            {isFollowing ? "Đang theo dõi" : "Theo dõi công ty"}
+            {isFollowing ? t("company.header.following") : t("company.header.follow_company")}
           </Button>
         </Box>
       </Box>

@@ -1,7 +1,10 @@
 import { motion } from "framer-motion";
 import { Umbrella, Mountain, Stethoscope, Video, Coffee, Bus, HandHeart } from "lucide-react";
+import { useTranslation } from "react-i18next";
 
 export default function PerksSection() {
+  const { t } = useTranslation();
+
   const perks = [
     {
       icon: Stethoscope,
@@ -53,8 +56,8 @@ export default function PerksSection() {
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.5, delay: 0.4 }}
     >
-      <h4 className="text-2xl font-bold text-foreground mb-2">Perks & Benefits</h4>
-      <p className="text-muted-foreground mb-8">This job comes with several perks and benefits</p>
+      <h4 className="text-2xl font-bold text-foreground mb-2">{t("company.perks_benefits.title")}</h4>
+      <p className="text-muted-foreground mb-8">{t("company.perks_benefits.description")}</p>
       
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
         {perks.map((perk, index) => (

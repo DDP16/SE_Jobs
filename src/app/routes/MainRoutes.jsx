@@ -3,6 +3,7 @@ import ThemeProvider from "../providers/ThemeProvider";
 import { useSelector } from "react-redux";
 import CompanyRoutes from "./CompanyRoutes";
 import UserRoutes from "./UserRoutes";
+import AdminRoutes from "./AdminRoutes";
 import { Role } from "@/lib/enums";
 
 export default function MainRoutes() {
@@ -12,7 +13,9 @@ export default function MainRoutes() {
   return (
     <ThemeProvider>
       <BrowserRouter>
-        {isAuthenticated && userRole?.toLowerCase() === Role.EMPLOYER.toLowerCase() ? (
+        {isAuthenticated && userRole?.toLowerCase() === Role.ADMIN.toLowerCase() ? (
+          <AdminRoutes />
+        ) : isAuthenticated && userRole?.toLowerCase() === Role.EMPLOYER.toLowerCase() ? (
           <CompanyRoutes />
         ) : (
           <UserRoutes />

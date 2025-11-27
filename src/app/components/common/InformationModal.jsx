@@ -1,9 +1,9 @@
 import { useState, useEffect } from "react";
 import {
-    uiInput as Input,
-    uiButton as Button,
-    uiLabel as Label,
-} from "@/components";
+    Input,
+    Button,
+    Label,
+} from "@/components/ui";
 import { Dialog, DialogContent } from "@mui/material";
 import {
     X,
