@@ -1,6 +1,5 @@
 import { Plus, Pencil, ArrowRight } from "lucide-react";
-import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
+import { Button, Badge } from "@/components/ui";
 import { ActionButton } from "./ActionButton";
 
 const locations = [

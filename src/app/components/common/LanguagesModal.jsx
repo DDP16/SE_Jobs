@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { uiButton as Button } from "@/components";
+import { Button } from "@/components/ui";
 import { useTranslation } from 'react-i18next';
 import { validateLanguagesList } from "@/modules";
 import { Dialog, DialogContent, Autocomplete, TextField, FormControl, Select, MenuItem, Chip } from "@mui/material";

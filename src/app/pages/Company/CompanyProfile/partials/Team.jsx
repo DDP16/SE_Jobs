@@ -1,6 +1,5 @@
 import { Plus, Pencil, ArrowRight, Instagram, Linkedin } from "lucide-react";
-import { Button } from "@/components/ui/button";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Button, Avatar, AvatarFallback, AvatarImage } from "@/components/ui";
 import { ActionButton } from "./ActionButton";
 
 const team = [

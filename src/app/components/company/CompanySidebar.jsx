@@ -10,9 +10,7 @@ import {
   HelpCircle,
   LogOut,
 } from "lucide-react";
-import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Avatar, AvatarFallback, AvatarImage, Badge, Button } from "../ui";
 import { Box } from "@mui/material";
 import logo from "@/assets/logo.svg";
 import NavLink from "./NavLink";

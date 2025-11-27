@@ -1,8 +1,8 @@
 import { useState, useEffect } from "react";
 import {
-    uiButton as Button,
-    uiLabel as Label,
-} from "@/components";
+    Button,
+    Label,
+} from "@/components/ui";
 import { validateSkillGroupForm } from "@/modules";
 import { Dialog, DialogContent, FormControl, Select, MenuItem, Autocomplete, Chip, TextField } from "@mui/material";
 import { X, Lightbulb, Plus } from "lucide-react";

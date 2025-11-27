@@ -10,8 +10,10 @@ import {
     People,
     LocationOn
 } from '@mui/icons-material';
+import { useTranslation } from 'react-i18next';
 
 export default function CompanyInfo({ company = {} }) {
+    const { t } = useTranslation();
     const {
         industry = 'Công nghệ',
         size = '10-50 nhân viên',
@@ -21,17 +23,17 @@ export default function CompanyInfo({ company = {} }) {
     const infoItems = [
         {
             icon: Business,
-            label: 'Lĩnh vực',
+            label: t('company.info.field'),
             value: industry
         },
         {
             icon: People,
-            label: 'Quy mô công ty',
+            label: t('company.info.company_size'),
             value: size
         },
         {
             icon: LocationOn,
-            label: 'Địa điểm',
+            label: t('company.info.location'),
             value: location
         }
     ];
@@ -48,7 +50,7 @@ export default function CompanyInfo({ company = {} }) {
                 }}
             >
                 <Typography variant="h6" sx={{ fontWeight: 700, mb: 2 }}>
-                    Thông tin công ty
+                    {t('company.info.title')}
                 </Typography>
 
                 {/* Company Details */}

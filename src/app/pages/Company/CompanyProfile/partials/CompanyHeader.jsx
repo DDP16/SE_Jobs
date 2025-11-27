@@ -1,5 +1,5 @@
 import { Eye, Settings2, Flame, Users, MapPin, Building } from "lucide-react";
-import { Button } from "@/components/ui/button";
+import { Button } from "@/components/ui";
 
 export default function CompanyHeader() {
   return (

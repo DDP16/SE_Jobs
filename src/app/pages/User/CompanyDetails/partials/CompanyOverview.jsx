@@ -1,8 +1,10 @@
 import React from 'react';
 import { Box, Typography, Paper, Button, Stack, Grid } from '@mui/material';
 import { Link } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
 
 export default function CompanyOverview({ company = {} }) {
+    const { t } = useTranslation();
     const {
         description = `Chúng tôi là một công ty công nghệ hàng đầu, tập trung vào đổi mới và xuất sắc. 
                       Sứ mệnh của chúng tôi là tạo ra các giải pháp tạo sự khác biệt trong cuộc sống mọi người.
@@ -41,7 +43,7 @@ export default function CompanyOverview({ company = {} }) {
                     variant="h6"
                     sx={{ fontWeight: 700 }}
                 >
-                    Giới thiệu công ty
+                    {t('company.overview.title')}
                 </Typography>
                 <Typography
                     variant="body2"
@@ -57,7 +59,7 @@ export default function CompanyOverview({ company = {} }) {
                     variant="h6"
                     sx={{ fontWeight: 700 }}
                 >
-                    Liên hệ
+                    {t('company.overview.contact')}
                 </Typography>
                 <Grid container spacing={2}>
                     {contact.map((link, index) => (

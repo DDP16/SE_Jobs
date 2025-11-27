@@ -1,14 +1,15 @@
 import { motion } from "framer-motion";
 import { ArrowRight } from "lucide-react";
 import { srcAsset } from "../../../../lib";
+import { useTranslation } from "react-i18next";
 
 export default function CompanySection({ job }) {
-  // Handle both old format (string) and new format (object)
+  const { t } = useTranslation();
   const companyName = typeof job?.company === 'string'
     ? job.company
     : job?.company?.name || "Company Name";
 
-  const companyLogo = job?.company?.logo;
+  const companyLogo = job?.company?.logo || job.logo;
   const companyDescription = job?.company?.description || job?.description || "Job Description";
 
   return (
@@ -31,7 +32,7 @@ export default function CompanySection({ job }) {
                 href="#"
                 className="text-primary flex items-center gap-1 hover:underline mt-1"
               >
-                Read more about {companyName}
+                {t("company.read_more_about", { companyName })}
                 <ArrowRight className="w-4 h-4" />
               </a>
             </div>
