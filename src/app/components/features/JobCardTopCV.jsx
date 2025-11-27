@@ -105,6 +105,14 @@ export default function JobCardTopCV({
         salary_currency: job.salary?.currency,
         // Deadline
         job_deadline: job.deadline,
+        // original posting url
+        url: job.url,
+        // timestamps and publish info
+        updatedAt: job.updatedAt || job.updated_at,
+        publish: job.publish,
+        experience: job.experience,
+        // all locations array (TopCV uses `locations`)
+        locations: Array.isArray(job.locations) ? job.locations : (job.location ? [job.location] : []),
         // Description & details (if you later map them from API)
         description: job.description,
         responsibilities: job.responsibilities || [],
@@ -129,13 +137,14 @@ export default function JobCardTopCV({
         title = "Job Title",
         company: companyData,
         location,
+        locations: locationsArr = [],
         type,
         salary,
         salary_text,
         salary_from,
         salary_to,
         salary_currency,
-        description = "Job description...",
+        description,
         responsibilities = [],
         requirements = [],
         requirement = [],
@@ -143,6 +152,10 @@ export default function JobCardTopCV({
         niceToHaves = [],
         working_time,
         job_deadline,
+        url: jobUrl,
+        updatedAt,
+        publish,
+        experience,
         logo,
         isFeatured,
         is_diamond,
@@ -185,6 +198,21 @@ export default function JobCardTopCV({
 
     const handleCardClick = (e) => {
         if (e.target.closest('button') || e.target.closest('a') || e.target.closest('[role="button"]')) return;
+        // If the job has an external URL (TopCV), open it in a new tab.
+        if (jobUrl) {
+            try {
+                window.open(jobUrl, '_blank', 'noopener');
+            } catch (err) {
+                // fallback
+                const a = document.createElement('a');
+                a.href = jobUrl;
+                a.target = '_blank';
+                a.rel = 'noopener noreferrer';
+                a.click();
+            }
+            return;
+        }
+
         onClick?.(job);
     };
 
@@ -200,7 +228,7 @@ export default function JobCardTopCV({
                     display: 'flex',
                     flexDirection: 'column',
                     position: 'relative',
-                    minHeight: '140px',
+                    minHeight: '160px',
                     minWidth: '260px',
                     maxWidth: '100%',
                     cursor: onClick ? 'pointer' : 'default',
@@ -339,8 +367,11 @@ export default function JobCardTopCV({
                                         fontWeight: 600,
                                         mb: 0.25,
                                         fontSize: '0.95rem',
-                                        wordWrap: 'break-word',
-                                        overflowWrap: 'break-word',
+                                        // Clamp title to max 2 lines for consistent card heights
+                                        display: '-webkit-box',
+                                        WebkitLineClamp: 2,
+                                        WebkitBoxOrient: 'vertical',
+                                        overflow: 'hidden',
                                         pr: isJobFeatured ? 10 : 0,
                                         lineHeight: 1.3,
                                         cursor: showPopup ? 'pointer' : 'default',
@@ -356,6 +387,7 @@ export default function JobCardTopCV({
                                 >
                                     {title}
                                 </Typography>
+                                
                             </Box>
                             <Typography
                                 variant="body2"
@@ -365,18 +397,37 @@ export default function JobCardTopCV({
                                 {companyName}
                             </Typography>
 
+                            {/* meta row: updated, publish, experience */}
+                            {/* <Typography variant="caption" sx={{ color: 'text.secondary', display: 'block', mb: 1 }}>
+                                {updatedAt ? `Cập nhật: ${updatedAt}` : ''}
+                                {publish ? (updatedAt ? ' • ' : '') + `Đã đăng: ${publish}` : ''}
+                                {experience ? (updatedAt || publish ? ' • ' : '') + `Kinh nghiệm: ${experience}` : ''}
+                            </Typography> */}
+
                             <Stack direction="row" spacing={0.5} sx={{ mb: 0.75, flexWrap: 'wrap', gap: 0.5 }}>
                                 {type && <Badge label={type} color="secondary" size="small" />}
                                 <Badge label={displaySalary} color="success" size="small" />
                             </Stack>
 
-                            {location && (
-                                <Badge
-                                    label={location}
-                                    variant="outlined"
-                                    size="small"
-                                    sx={{ mt: 0 }}
-                                />
+                            {/* show all locations if available */}
+                            {Array.isArray(locationsArr) && locationsArr.length > 0 ? (
+                                <Stack direction="row" spacing={0.5} sx={{ mt: 0.5, flexWrap: 'wrap', gap: 0.5 }}>
+                                    {locationsArr.slice(0, 3).map((loc, idx) => (
+                                        <Chip key={idx} label={loc} size="small" variant="outlined" sx={{ fontSize: '0.75rem', height: '24px' }} />
+                                    ))}
+                                    {locationsArr.length > 3 && (
+                                        <Chip label={`+${locationsArr.length - 3} thêm`} size="small" variant="outlined" sx={{ fontSize: '0.75rem', height: '24px' }} />
+                                    )}
+                                </Stack>
+                            ) : (
+                                location && (
+                                    <Badge
+                                        label={location}
+                                        variant="outlined"
+                                        size="small"
+                                        sx={{ mt: 0 }}
+                                    />
+                                )
                             )}
                         </Box>
                     </Box>
@@ -428,12 +479,44 @@ export default function JobCardTopCV({
                             }
                         }}
                     >
-                        <Typography variant="h6" sx={{ fontWeight: 600, mb: 1.5, fontSize: '1.1rem' }}>
-                            {title}
-                        </Typography>
-                        <Typography variant="body2" sx={{ color: 'text.secondary', mb: 1.5, fontSize: '0.9rem' }}>
-                            {companyName}
-                        </Typography>
+                        <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5, mb: 1 }}>
+                            <Avatar src={companyLogoUrl} variant="square" sx={{ width: 56, height: 56, borderRadius: 1 }}>
+                                {companyLogoInitial}
+                            </Avatar>
+                            <Box sx={{ minWidth: 0 }}>
+                                <Typography
+                                    component={jobUrl ? 'a' : 'div'}
+                                    href={jobUrl || undefined}
+                                    target={jobUrl ? '_blank' : undefined}
+                                    rel={jobUrl ? 'noopener noreferrer' : undefined}
+                                    variant="h6"
+                                    sx={{
+                                        fontWeight: 600,
+                                        mb: 0.25,
+                                        fontSize: '1.05rem',
+                                        color: 'text.primary',
+                                        textDecoration: jobUrl ? 'underline' : 'none',
+                                        cursor: jobUrl ? 'pointer' : 'default',
+                                        display: '-webkit-box',
+                                        WebkitLineClamp: 2,
+                                        WebkitBoxOrient: 'vertical',
+                                        overflow: 'hidden'
+                                    }}
+                                >
+                                    {title}
+                                </Typography>
+
+                                    <Typography variant="body2" sx={{ color: 'text.secondary', fontSize: '0.9rem', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+                                        {companyName}
+                                    </Typography>
+
+                                {/* {job?.id && (
+                                    <Typography variant="caption" sx={{ color: 'text.secondary', display: 'block', mt: 0.25 }}>
+                                        ID: {job.id}
+                                    </Typography>
+                                )} */}
+                            </Box>
+                        </Box>
 
                         <Stack direction="row" spacing={1} sx={{ mb: 2, flexWrap: 'wrap', gap: 0.5 }}>
                             {displaySalary && (
@@ -560,16 +643,52 @@ export default function JobCardTopCV({
                             <>
                                 <Divider sx={{ my: 1.5 }} />
                                 <Typography variant="body2" sx={{ color: 'text.secondary', fontSize: '0.85rem' }}>
-                                    <strong>Hạn nộp hồ sơ:</strong> {new Date(job_deadline).toLocaleDateString('vi-VN')}
+                                    <strong>Hạn nộp hồ sơ:</strong> {isNaN(new Date(job_deadline)) ? job_deadline : new Date(job_deadline).toLocaleDateString('vi-VN')}
                                 </Typography>
+                            </>
+                        )}
+
+                        {/* show updatedAt / publish and source link */}
+                        {(updatedAt || publish || jobUrl || experience) && (
+                            <>
+                                <Divider sx={{ my: 1.5 }} />
+                                {(updatedAt || publish || experience) && (
+                                    <Typography variant="caption" sx={{ color: 'text.secondary', display: 'block', mb: 1 }}>
+                                        {updatedAt ? `Cập nhật: ${updatedAt}` : ''}
+                                        {publish ? (updatedAt ? ' • ' : '') + `Đã đăng: ${publish}` : ''}
+                                        {experience ? (updatedAt || publish ? ' • ' : '') + `Kinh nghiệm: ${experience}` : ''}
+                                    </Typography>
+                                )}
+
+                                {jobUrl && (
+                                    <Box sx={{ mb: 1 }}>
+                                        <a href={jobUrl} target="_blank" rel="noopener noreferrer" style={{ color: 'inherit', textDecoration: 'underline', fontSize: '0.875rem' }}>
+                                            Xem tin gốc
+                                        </a>
+                                    </Box>
+                                )}
                             </>
                         )}
 
                         <Box sx={{ position: 'sticky', bottom: 0, mt: 2, pt: 2, borderTop: '1px solid', borderColor: 'divider' }}>
                             <Button
-                                variant="contained"
-                                fullWidth
-                                onClick={() => onClick?.(job)}
+                                    variant="contained"
+                                    fullWidth
+                                    onClick={() => {
+                                        if (jobUrl) {
+                                            try {
+                                                window.open(jobUrl, '_blank', 'noopener');
+                                            } catch (err) {
+                                                const a = document.createElement('a');
+                                                a.href = jobUrl;
+                                                a.target = '_blank';
+                                                a.rel = 'noopener noreferrer';
+                                                a.click();
+                                            }
+                                            return;
+                                        }
+                                        onClick?.(job);
+                                    }}
                                 sx={{
                                     bgcolor: 'primary.main',
                                     color: 'white',
