@@ -1,7 +1,8 @@
-import React, { useState, useRef, useEffect, use } from "react";
+import React, { useState, useRef, useEffect, useMemo, useCallback } from "react";
 import { Container, Box, Stack, useMediaQuery } from '@mui/material';
 import { useTheme } from '@mui/material/styles';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
+import { useDispatch, useSelector } from 'react-redux';
 import { JobListSection, HeroSection, FilterDialog, FilterToolbar } from "../../../components";
 import JobDescription from "../JobDescription";
 import { layoutType } from "../../../lib";
@@ -14,26 +15,78 @@ export default function FindJobs() {
     const statusJobs = useSelector(state => state.jobs?.status);
     const [selectedJob, setSelectedJob] = useState(null);
     const [isFilterOpen, setIsFilterOpen] = useState(false);
-    const [appliedFilters, setAppliedFilters] = useState(null);
+    const [appliedFilters, setAppliedFilters] = useState({});
     const [focusSection, setFocusSection] = useState(null);
     const theme = useTheme();
     const isSmall = useMediaQuery(theme.breakpoints.down('md'));
     const navigate = useNavigate();
+    const location = useLocation();
+    const dispatch = useDispatch();
     const jobDescRef = useRef(null);
+    const { jobs = [], pagination, status } = useSelector((state) => state.jobs || {});
+
+    const queryParams = useMemo(() => {
+        const params = new URLSearchParams(location.search);
+        return {
+            page: Number(params.get('page')) || 1,
+            title: params.get('title') || '',
+            location: params.get('location') || '',
+        };
+    }, [location.search]);
+
+    const updateQueryParams = useCallback(
+        (nextParams) => {
+            const params = new URLSearchParams();
+            Object.entries(nextParams).forEach(([key, value]) => {
+                if (value === undefined || value === null || value === '') return;
+                if (key === 'page' && Number(value) <= 1) return;
+                params.set(key, value);
+            });
+
+            const searchString = params.toString();
+            navigate({
+                pathname: location.pathname,
+                search: searchString ? `?${searchString}` : '',
+            });
+        },
+        [navigate, location.pathname]
+    );
+
+    const { page: currentPage = 1, title: currentTitle = '', location: currentLocation = '' } = queryParams;
 
     useEffect(() => {
-        dispatch(getJobs());
-    }, []);
+        dispatch(
+            getJobs({
+                page: currentPage,
+                title: currentTitle || undefined,
+                location: currentLocation || undefined,
+            })
+        );
+    }, [dispatch, currentPage, currentTitle, currentLocation]);
 
-    const handleSearch = (searchParams) => {
-        console.log('Search params:', searchParams);
-        // TODO: Implement search functionality
-    };
+    const handleSearch = useCallback(
+        ({ keyword, location }) => {
+            updateQueryParams({
+                ...queryParams,
+                page: 1,
+                title: keyword?.trim(),
+                location: location?.trim(),
+            });
+        },
+        [queryParams, updateQueryParams]
+    );
 
     const handleFilter = (filterParams) => {
         console.log('Filter params:', filterParams);
         // TODO: Implement filter functionality
     };
+
+    const handlePageChange = useCallback((page) => {
+        updateQueryParams({
+            ...queryParams,
+            page,
+        });
+    }, [queryParams, updateQueryParams]);
 
     const handleJobSelect = (job) => {
         if (isSmall) {
@@ -43,7 +96,6 @@ export default function FindJobs() {
         setSelectedJob(job);
     };
 
-    // when selectedJob changes, scroll job description container to top
     useEffect(() => {
         if (selectedJob && jobDescRef.current) {
             try {
@@ -103,7 +155,7 @@ export default function FindJobs() {
 
     const activeFilterCount = (() => {
         if (!appliedFilters) return 0;
-        const { levels = [], workingModels = [], salary, jobDomains = [], companyIndustries = [] } = appliedFilters;
+        const { levels = [], workingModels = [], salary, jobDomains = [], companyIndustries = [] } = appliedFilters || {};
         const countChips = levels.length + workingModels.length + jobDomains.length + companyIndustries.length;
         const salaryActive = salary && (salary.min !== 500 || salary.max !== 10000) ? 1 : 0;
         return countChips + salaryActive;
@@ -112,26 +164,42 @@ export default function FindJobs() {
     return (
         <>
             <HeroSection onSearch={handleSearch} />
-            {statusJobs === 'loading' ? (
-                <Box className="flex justify-center items-center h-64">
-                    <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-primary"></div>
-                </Box>
-            ) : (
-                <Container maxWidth="xl" className="py-4 md:py-6">
-                    {/* Top filter toolbar */}
-                    {/* <FilterToolbar
-                        onFilterClick={openFilter}
-                        onQuickFilterClick={handleQuickFilter}
-                        onQuickFilterChange={handleQuickFilterChange}
-                        activeFilterCount={activeFilterCount}
-                        appliedFilters={appliedFilters}
-                        className="mb-4 md:mb-6"
-                    /> */}
+            <Container maxWidth="xl" className="py-4 md:py-6">
+                {/* Top filter toolbar */}
+                <FilterToolbar
+                    onFilterClick={openFilter}
+                    onQuickFilterClick={handleQuickFilter}
+                    onQuickFilterChange={handleQuickFilterChange}
+                    activeFilterCount={activeFilterCount}
+                    appliedFilters={appliedFilters}
+                    className="mb-4 md:mb-6"
+                />
 
-                    <Stack
-                        direction={{ xs: 'column', md: 'row' }}
-                        spacing={{ xs: 3, md: 4 }}
-                        className="pb-6 md:pb-8 items-start"
+                <Stack
+                    direction={{ xs: 'column', md: 'row' }}
+                    spacing={{ xs: 3, md: 4 }}
+                    className="pb-6 md:pb-8 items-start"
+                    sx={{
+                        // keep the two columns aligned and allow independent scrolling
+                        alignItems: 'stretch'
+                    }}
+                >
+                    {/* Middle - Job List */}
+                    <Box className="flex-1 md:w-96 min-w-0">
+                        <JobListSection
+                            jobs={jobs}
+                            pagination={pagination}
+                            isLoading={status === 'loading'}
+                            onPageChange={handlePageChange}
+                            onJobSelect={handleJobSelect}
+                            selectedJob={selectedJob}
+                        />
+                    </Box>
+
+                    {/* Right - Job Description (hidden on small screens) */}
+                    <Box
+                        ref={jobDescRef}
+                        className={`flex-1 min-w-0 hidden md:block`}
                         sx={{
                             alignItems: 'stretch'
                         }}
