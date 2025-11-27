@@ -32,8 +32,6 @@ const topCVSlice = createSlice({
             })
             .addCase(getTopCVJobs.fulfilled, (state, action) => {
                 state.status = "succeeded";
-                // API returns shape: { success, data: [...], pagination: {...} }
-                // We only need the jobs array for UI
                 state.jobs = action.payload?.data || [];
             })
             .addCase(getTopCVJobs.rejected, (state, action) => {
