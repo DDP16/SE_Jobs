@@ -26,8 +26,8 @@ export default function FilterDialog({
     workingModelOptions,
     jobDomainOptions,
     companyIndustryOptions,
-    salaryMin = 500,
-    salaryMax = 10000
+    salaryMin = 0,
+    salaryMax = 100000000 // 100 triệu VND
 }) {
     const theme = useTheme();
     const fullScreen = useMediaQuery(theme.breakpoints.down('md'));
@@ -66,7 +66,7 @@ export default function FilterDialog({
     // State
     const [selectedLevels, setSelectedLevels] = useState([]);
     const [selectedWorkingModels, setSelectedWorkingModels] = useState([]);
-    const [salaryRange, setSalaryRange] = useState([salaryMin, salaryMax]);
+    const [salaryRange, setSalaryRange] = useState([salaryMin || 0, salaryMax || 100000000]);
     const [searchDomain, setSearchDomain] = useState('');
     const [selectedDomains, setSelectedDomains] = useState([]);
     const [searchIndustry, setSearchIndustry] = useState('');
@@ -206,20 +206,19 @@ export default function FilterDialog({
                     </div>
                 </div>
 
-                {/* Working Model */}
                 <div ref={workingModelRef} className="mb-7">
                     <h3 className="text-base font-semibold mb-3.5 text-gray-900">
                         Working Model
                     </h3>
                     <div className="flex flex-wrap gap-2.5">
-                        {defaultWorkingModels.map((wm) => (
+                        {defaultWorkingModels.map((wt) => (
                             <Chip
-                                key={wm}
-                                label={wm}
-                                onClick={() => toggleArrayValue(selectedWorkingModels, setSelectedWorkingModels, wm)}
-                                color={selectedWorkingModels.includes(wm) ? 'primary' : 'default'}
-                                variant={selectedWorkingModels.includes(wm) ? 'filled' : 'outlined'}
-                                className={`transition-all duration-200 hover:-translate-y-0.5 hover:shadow-md ${selectedWorkingModels.includes(wm) ? 'font-semibold' : 'font-normal'
+                                key={wt}
+                                label={wt}
+                                onClick={() => toggleArrayValue(selectedWorkingModels, setSelectedWorkingModels, wt)}
+                                color={selectedWorkingModels.includes(wt) ? 'primary' : 'default'}
+                                variant={selectedWorkingModels.includes(wt) ? 'filled' : 'outlined'}
+                                className={`transition-all duration-200 hover:-translate-y-0.5 hover:shadow-md ${selectedWorkingModels.includes(wt) ? 'font-semibold' : 'font-normal'
                                     }`}
                                 sx={{
                                     height: '36px',
@@ -237,28 +236,34 @@ export default function FilterDialog({
                     </h3>
                     <div className="bg-blue-50 rounded-lg px-4 py-3 mb-4">
                         <p className="text-lg font-semibold text-blue-700">
-                            ${salaryRange[0].toLocaleString()} - ${salaryRange[1].toLocaleString()}
+                            {salaryRange[0]?.toLocaleString('vi-VN') || 0} - {salaryRange[1]?.toLocaleString('vi-VN') || 0} VNĐ
                         </p>
                     </div>
-                    <div className="px-2">
+                    <div className="px-4 py-2">
                         <Slider
                             value={salaryRange}
-                            onChange={(_, v) => setSalaryRange(v)}
+                            onChange={(event, newValue) => {
+                                console.log('Slider changed:', newValue);
+                                if (Array.isArray(newValue)) {
+                                    setSalaryRange(newValue);
+                                }
+                            }}
                             valueLabelDisplay="auto"
-                            valueLabelFormat={(value) => `$${value.toLocaleString()}`}
+                            valueLabelFormat={(value) => `${value?.toLocaleString('vi-VN') || 0} VNĐ`}
                             min={salaryMin}
                             max={salaryMax}
-                            step={100}
+                            step={1000000}
+                            marks={[
+                                { value: salaryMin, label: `${(salaryMin / 1000000).toFixed(0)}M` },
+                                { value: salaryMax / 2, label: `${(salaryMax / 2 / 1000000).toFixed(0)}M` },
+                                { value: salaryMax, label: `${(salaryMax / 1000000).toFixed(0)}M` }
+                            ]}
+                            disabled={false}
                             sx={{
-                                color: 'primary.main',
                                 '& .MuiSlider-thumb': {
                                     width: 20,
                                     height: 20,
                                 },
-                                '& .MuiSlider-valueLabel': {
-                                    fontSize: '0.875rem',
-                                    fontWeight: 600
-                                }
                             }}
                         />
                     </div>

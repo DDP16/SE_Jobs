@@ -1,90 +1,36 @@
-import React, { useState, useRef, useEffect, useMemo, useCallback } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import { Container, Box, Stack, useMediaQuery, CircularProgress, Typography } from '@mui/material';
 import { useTheme } from '@mui/material/styles';
-import { useNavigate, useLocation } from 'react-router-dom';
-import { useDispatch, useSelector } from 'react-redux';
+import { useNavigate } from 'react-router-dom';
+import { useSelector } from 'react-redux';
 import { JobListSection, HeroSection, FilterDialog, FilterToolbar } from "../../../components";
 import JobDescription from "../JobDescription";
 import { layoutType } from "../../../lib";
-import { getJobs } from "@/modules";
+import useSearch from "../../../hooks/useSearch";
 
 
 export default function FindJobs() {
-    const dispatch = useDispatch();
-    const statusJobs = useSelector(state => state.jobs?.status);
     const [selectedJob, setSelectedJob] = useState(null);
-    const [isFilterOpen, setIsFilterOpen] = useState(false);
-    const [appliedFilters, setAppliedFilters] = useState({});
-    const [focusSection, setFocusSection] = useState(null);
     const theme = useTheme();
     const isSmall = useMediaQuery(theme.breakpoints.down('md'));
     const navigate = useNavigate();
-    const location = useLocation();
     const jobDescRef = useRef(null);
     const { jobs = [], pagination, status } = useSelector((state) => state.jobs || {});
 
-    const queryParams = useMemo(() => {
-        const params = new URLSearchParams(location.search);
-        return {
-            page: Number(params.get('page')) || 1,
-            title: params.get('title') || '',
-            location: params.get('location') || '',
-        };
-    }, [location.search]);
-
-    const updateQueryParams = useCallback(
-        (nextParams) => {
-            const params = new URLSearchParams();
-            Object.entries(nextParams).forEach(([key, value]) => {
-                if (value === undefined || value === null || value === '') return;
-                if (key === 'page' && Number(value) <= 1) return;
-                params.set(key, value);
-            });
-
-            const searchString = params.toString();
-            navigate({
-                pathname: location.pathname,
-                search: searchString ? `?${searchString}` : '',
-            });
-        },
-        [navigate, location.pathname]
-    );
-
-    const { page: currentPage = 1, title: currentTitle = '', location: currentLocation = '' } = queryParams;
-
-    useEffect(() => {
-        dispatch(
-            getJobs({
-                page: currentPage,
-                title: currentTitle || undefined,
-                location: currentLocation || undefined,
-            })
-        );
-    }, [dispatch, currentPage, currentTitle, currentLocation]);
-
-    const handleSearch = useCallback(
-        ({ keyword, location }) => {
-            updateQueryParams({
-                ...queryParams,
-                page: 1,
-                title: keyword?.trim(),
-                location: location?.trim(),
-            });
-        },
-        [queryParams, updateQueryParams]
-    );
-
-    const handleFilter = (filterParams) => {
-        console.log('Filter params:', filterParams);
-        // TODO: Implement filter functionality
-    };
-
-    const handlePageChange = useCallback((page) => {
-        updateQueryParams({
-            ...queryParams,
-            page,
-        });
-    }, [queryParams, updateQueryParams]);
+    // Sử dụng custom hook để quản lý search và filter
+    const {
+        appliedFilters,
+        isFilterOpen,
+        focusSection,
+        activeFilterCount,
+        handleSearch,
+        handlePageChange,
+        handleApplyFilters,
+        handleQuickFilter,
+        handleQuickFilterChange,
+        openFilter,
+        closeFilter,
+    } = useSearch();
 
     const handleJobSelect = (job) => {
         if (isSmall) {
@@ -104,60 +50,6 @@ export default function FindJobs() {
             }
         }
     }, [selectedJob]);
-
-    const openFilter = () => {
-        setFocusSection(null);
-        setIsFilterOpen(true);
-    };
-
-    const closeFilter = () => {
-        setIsFilterOpen(false);
-        setFocusSection(null);
-    };
-
-    const handleApplyFilters = (filters) => {
-        setAppliedFilters(filters);
-        handleFilter(filters);
-        closeFilter();
-    };
-
-    const handleQuickFilter = (filterId) => {
-        // Open FilterDialog with focus on specific section (for Salary and Job Domain)
-        setFocusSection(filterId);
-        setIsFilterOpen(true);
-    };
-
-    const handleQuickFilterChange = (filterId, value) => {
-        // Toggle the filter value in appliedFilters
-        const newFilters = { ...appliedFilters };
-
-        if (filterId === 'level') {
-            const levels = newFilters.levels || [];
-            if (levels.includes(value)) {
-                newFilters.levels = levels.filter(v => v !== value);
-            } else {
-                newFilters.levels = [...levels, value];
-            }
-        } else if (filterId === 'workingModel') {
-            const workingModels = newFilters.workingModels || [];
-            if (workingModels.includes(value)) {
-                newFilters.workingModels = workingModels.filter(v => v !== value);
-            } else {
-                newFilters.workingModels = [...workingModels, value];
-            }
-        }
-
-        setAppliedFilters(newFilters);
-        handleFilter(newFilters);
-    };
-
-    const activeFilterCount = (() => {
-        if (!appliedFilters) return 0;
-        const { levels = [], workingModels = [], salary, jobDomains = [], companyIndustries = [] } = appliedFilters || {};
-        const countChips = levels.length + workingModels.length + jobDomains.length + companyIndustries.length;
-        const salaryActive = salary && (salary.min !== 500 || salary.max !== 10000) ? 1 : 0;
-        return countChips + salaryActive;
-    })();
 
     return (
         <>
@@ -245,6 +137,9 @@ export default function FindJobs() {
                 onApply={handleApplyFilters}
                 title="Filter Jobs"
                 focusSection={focusSection}
+                initialFilters={appliedFilters}
+                salaryMin={0}
+                salaryMax={100000000}
             />
         </>
     );
