@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import {
     Box,
     Container,
@@ -7,12 +7,19 @@ import {
     IconButton
 } from '@mui/material';
 import { ArrowForward, ChevronLeft, ChevronRight } from '@mui/icons-material';
-import JobCard from '../features/JobCard';
-import { mockJobs } from '../../../mocks/mockData';
+import JobCardTopCV from '../features/JobCardTopCV';
+import { useSelector, useDispatch } from 'react-redux';
+import { getTopCVJobs } from '../../modules/services/topCVService';
 
 export default function HotJobTopCVSection() {
-    const latestJobs = mockJobs;
+    const dispatch = useDispatch();
+    // Ensure we always have an array to avoid runtime errors if slice is missing or not initialized yet
+    const latestJobs = useSelector(state => state.topCVJobs?.jobs || []);
     const scrollContainerRef = React.useRef(null);
+
+    useEffect(() => {
+        dispatch(getTopCVJobs());
+    }, [dispatch]);
 
     const getScrollAmount = () => {
         if (!scrollContainerRef.current) return 0;
@@ -199,11 +206,9 @@ export default function HotJobTopCVSection() {
                                                 minWidth: '384px'
                                             }}
                                         >
-                                            <JobCard
+                                            <JobCardTopCV
                                                 job={job}
                                                 onBookmark={(job) => handleJobAction('bookmark', job)}
-                                                onShare={(job) => handleJobAction('share', job)}
-                                                onApply={(job) => handleJobAction('apply', job)}
                                             />
                                         </Box>
                                     ))}
@@ -224,12 +229,9 @@ export default function HotJobTopCVSection() {
                                                 minWidth: '384px'
                                             }}
                                         >
-                                            <JobCard
-                                                showDescription={false}
+                                            <JobCardTopCV
                                                 job={job}
                                                 onBookmark={(job) => handleJobAction('bookmark', job)}
-                                                onShare={(job) => handleJobAction('share', job)}
-                                                onApply={(job) => handleJobAction('apply', job)}
                                             />
                                         </Box>
                                     ))}
