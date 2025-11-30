@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useState, useRef, useCallback, useMemo } from 'react';
 import {
     Box,
     Typography,
@@ -15,8 +15,41 @@ import {
     useMediaQuery
 } from '@mui/material';
 import { BookmarkBorder, Bookmark } from '@mui/icons-material';
+import { useNavigate } from 'react-router-dom';
 import Badge from '../common/Badge';
 import Button from '../common/Button';
+
+// Helper functions
+const isValidUrl = (url) => {
+    if (!url || typeof url !== 'string') return false;
+    const trimmed = url.trim();
+    if (trimmed === '' || trimmed === 'string') return false;
+    return trimmed.startsWith('http://') || trimmed.startsWith('https://');
+};
+
+const normalizeUrl = (url, website_url) => {
+    const rawUrl = url || website_url;
+    if (!rawUrl || typeof rawUrl !== 'string') return null;
+    const trimmed = rawUrl.trim();
+    if (trimmed === '' || trimmed === 'string' || (!trimmed.startsWith('http://') && !trimmed.startsWith('https://'))) {
+        return null;
+    }
+    return trimmed;
+};
+
+const getJobId = (job) => job.id || job.job_id || job.jobId || job._id;
+
+const openExternalUrl = (url) => {
+    try {
+        window.open(url, '_blank', 'noopener');
+    } catch (err) {
+        const a = document.createElement('a');
+        a.href = url;
+        a.target = '_blank';
+        a.rel = 'noopener noreferrer';
+        a.click();
+    }
+};
 
 export default function JobCard({
     job = {},
@@ -25,18 +58,23 @@ export default function JobCard({
     isBookmarked = false,
     showPopup = true
 }) {
-    const [isHovered, setIsHovered] = useState(false);
-    const [hoverTimeout, setHoverTimeout] = useState(null);
-    const [popupPosition, setPopupPosition] = useState({ top: '50%', left: '50%', transform: 'translate(-50%, -50%)' });
-    const cardRef = useRef(null);
-
+    const navigate = useNavigate();
     const theme = useTheme();
     const isSmall = useMediaQuery(theme.breakpoints.down('md'));
 
-    // Popup timing configuration
+    const [isHovered, setIsHovered] = useState(false);
+    const [hoverTimeout, setHoverTimeout] = useState(null);
+    const [popupPosition, setPopupPosition] = useState({
+        top: '50%',
+        left: '50%',
+        transform: 'translate(-50%, -50%)'
+    });
+    const cardRef = useRef(null);
+
     const openDelay = 300;
     const closeDelay = 300;
-    const calculatePopupPosition = () => {
+
+    const calculatePopupPosition = useCallback(() => {
         if (!cardRef.current) {
             return { top: '50%', left: '50%', transform: 'translate(-50%, -50%)' };
         }
@@ -45,68 +83,86 @@ export default function JobCard({
         const popupWidth = 420;
         const popupHeight = Math.min(window.innerHeight * 0.7, 600);
         const padding = 16;
-        const gap = 8; 
+        const gap = 8;
 
-        let left, top;
-        
-        // Calculate available space on both sides
         const spaceOnRight = window.innerWidth - cardRect.right - padding;
         const spaceOnLeft = cardRect.left - padding;
-        
-        // Prefer right side, fallback to left, then center
+
+        let left;
         if (spaceOnRight >= popupWidth + gap) {
-            // Show on right side, close to card
             left = cardRect.right + gap;
         } else if (spaceOnLeft >= popupWidth + gap) {
-            // Show on left side, close to card
             left = cardRect.left - popupWidth - gap;
         } else if (spaceOnRight > spaceOnLeft) {
-            // Not enough space, but more space on right - position flush right
-            left = cardRect.right + gap;
-            // Clamp to ensure it doesn't go off screen
-            if (left + popupWidth > window.innerWidth - padding) {
-                left = window.innerWidth - popupWidth - padding;
-            }
+            left = Math.min(cardRect.right + gap, window.innerWidth - popupWidth - padding);
         } else {
-            // More space on left - position flush left
-            left = cardRect.left - popupWidth - gap;
-            // Clamp to ensure it doesn't go off screen
-            if (left < padding) {
-                left = padding;
-            }
+            left = Math.max(cardRect.left - popupWidth - gap, padding);
         }
-        
-        // Vertically align with top of card, then clamp to viewport
-        top = cardRect.top;
+
+        let top = cardRect.top;
         const maxTop = window.innerHeight - popupHeight - padding;
-        if (top > maxTop) {
-            top = maxTop;
-        }
-        if (top < padding) {
-            top = padding;
-        }
+        top = Math.max(padding, Math.min(top, maxTop));
 
         return { top: `${top}px`, left: `${left}px`, transform: 'none' };
-    };
+    }, []);
+
+    const normalizedJob = useMemo(() => ({
+        title: job.title || "Job Title",
+        company: job.company,
+        location: Array.isArray(job.locations) && job.locations.length > 0
+            ? job.locations[0]
+            : job.location || job.company_branches?.location,
+        type: job.type || (Array.isArray(job.employment_types) && job.employment_types.length > 0
+            ? job.employment_types.map(et => et.name || et).join(', ')
+            : null),
+        salary_text: job.salary_text || job.salary?.text,
+        salary_from: job.salary_from ?? job.salary?.from,
+        salary_to: job.salary_to ?? job.salary?.to,
+        salary_currency: job.salary_currency || job.salary?.currency,
+        job_deadline: job.job_deadline || job.deadline,
+        url: normalizeUrl(job.url, job.website_url),
+        updatedAt: job.updatedAt || job.updated_at,
+        publish: job.publish || job.job_posted_at,
+        experience: job.experience || (Array.isArray(job.levels) && job.levels.length > 0
+            ? job.levels.map(l => l.name || l).join(', ')
+            : null),
+        locations: Array.isArray(job.locations)
+            ? job.locations
+            : (job.location ? [job.location] : (job.company_branches?.location ? [job.company_branches.location] : [])),
+        description: job.description || "Job description...",
+        responsibilities: job.responsibilities || [],
+        requirements: job.requirements || [],
+        requirement: job.requirement || [],
+        nice_to_haves: job.nice_to_haves || [],
+        niceToHaves: job.niceToHaves || [],
+        working_time: job.working_time,
+        logo: job.logo,
+        isFeatured: job.isFeatured,
+        is_diamond: job.is_diamond,
+        is_job_flash_active: job.is_job_flash_active,
+        is_hot: job.is_hot,
+        created_at: job.created_at,
+        createdAt: job.createdAt
+    }), [job]);
 
     const {
-        title = "Job Title",
+        title,
         company: companyData,
         location,
         type,
-        salary,
         salary_text,
         salary_from,
         salary_to,
         salary_currency,
-        description = "Job description...",
-        responsibilities = [],
-        requirements = [],
-        requirement = [],
-        nice_to_haves = [],
-        niceToHaves = [],
+        description,
+        responsibilities,
+        requirements,
+        requirement,
+        nice_to_haves,
+        niceToHaves,
         working_time,
         job_deadline,
+        url: jobUrl,
         logo,
         isFeatured,
         is_diamond,
@@ -114,7 +170,7 @@ export default function JobCard({
         is_hot,
         created_at,
         createdAt
-    } = job;
+    } = normalizedJob;
 
     const companyName = typeof companyData === 'string'
         ? companyData
@@ -125,33 +181,72 @@ export default function JobCard({
         ? companyName.charAt(0).toUpperCase()
         : "SE";
 
-    const displaySalary = salary_text || salary ||
+    const displaySalary = salary_text ||
         (salary_from && salary_to
             ? `${salary_from} - ${salary_to} ${salary_currency || ''}`.trim()
             : salary_from
                 ? `${salary_from} ${salary_currency || ''}`.trim()
                 : "Salary not specified");
 
-    const getIsJobFeatured = () => {
+    const isJobFeatured = useMemo(() => {
         const jobCreatedAt = created_at || createdAt;
         if (jobCreatedAt) {
             const createdDate = new Date(jobCreatedAt);
             const now = new Date();
-            const diffTime = Math.abs(now - createdDate);
-            const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+            const diffDays = Math.ceil(Math.abs(now - createdDate) / (1000 * 60 * 60 * 24));
             if (diffDays < 7) return true;
         }
         if (isFeatured !== undefined) return isFeatured;
         return is_diamond || is_job_flash_active || is_hot || false;
-    };
+    }, [created_at, createdAt, isFeatured, is_diamond, is_job_flash_active, is_hot]);
 
-    const isJobFeatured = getIsJobFeatured();
+    const handleNavigate = useCallback(() => {
+        if (isValidUrl(jobUrl)) {
+            openExternalUrl(jobUrl);
+            return;
+        }
+        if (onClick && typeof onClick === 'function') {
+            onClick(job);
+        } else {
+            const jobId = getJobId(job);
+            if (jobId) {
+                navigate(`/job?id=${jobId}`);
+            }
+        }
+    }, [jobUrl, onClick, job, navigate]);
 
-    const handleCardClick = (e) => {
+    const handleCardClick = useCallback((e) => {
         if (e.target.closest('button') || e.target.closest('a') || e.target.closest('[role="button"]')) return;
-        onClick?.(job);
-    };
+        handleNavigate();
+    }, [handleNavigate]);
 
+    const handleHoverStart = useCallback(() => {
+        if (hoverTimeout) clearTimeout(hoverTimeout);
+        const timeout = setTimeout(() => {
+            try {
+                if (!cardRef.current) return;
+                const position = calculatePopupPosition();
+                setPopupPosition(position);
+                setIsHovered(true);
+            } catch (err) {
+                console.error('JobCard hover error:', err);
+            }
+        }, openDelay);
+        setHoverTimeout(timeout);
+    }, [hoverTimeout, calculatePopupPosition, openDelay]);
+
+    const handleHoverEnd = useCallback(() => {
+        if (hoverTimeout) clearTimeout(hoverTimeout);
+        const timeout = setTimeout(() => setIsHovered(false), closeDelay);
+        setHoverTimeout(timeout);
+    }, [hoverTimeout, closeDelay]);
+
+    const hoverProps = showPopup && !isSmall ? {
+        onMouseEnter: handleHoverStart,
+        onMouseLeave: handleHoverEnd,
+        onFocus: handleHoverStart,
+        onBlur: handleHoverEnd
+    } : {};
 
     return (
         <Box sx={{ position: 'relative' }}>
@@ -164,7 +259,7 @@ export default function JobCard({
                     display: 'flex',
                     flexDirection: 'column',
                     position: 'relative',
-                    minHeight: '140px',
+                    minHeight: '150px',
                     minWidth: '260px',
                     maxWidth: '100%',
                     cursor: onClick ? 'pointer' : 'default',
@@ -252,65 +347,25 @@ export default function JobCard({
                         </Avatar>
 
                         <Box sx={{ flexGrow: 1, minWidth: 0, flex: 1 }}>
-                            <Box
-                                sx={{ display: 'flex', alignItems: 'center', gap: 0.5 }}
-                                {...(showPopup && !isSmall && {
-                                    onMouseEnter: () => {
-                                        if (hoverTimeout) clearTimeout(hoverTimeout);
-                                        const timeout = setTimeout(() => {
-                                            try {
-                                                if (!cardRef.current) return;
-                                                const position = calculatePopupPosition();
-                                                setPopupPosition(position);
-                                                setIsHovered(true);
-                                            } catch (err) {
-                                                console.error('JobCard hover error:', err);
-                                            }
-                                        }, openDelay);
-                                        setHoverTimeout(timeout);
-                                    },
-                                    onMouseLeave: () => {
-                                        if (hoverTimeout) clearTimeout(hoverTimeout);
-                                        const timeout = setTimeout(() => {
-                                            setIsHovered(false);
-                                        }, closeDelay);
-                                        setHoverTimeout(timeout);
-                                    },
-                                    onFocus: () => {
-                                        if (hoverTimeout) clearTimeout(hoverTimeout);
-                                        const timeout = setTimeout(() => {
-                                            try {
-                                                if (!cardRef.current) return;
-                                                const position = calculatePopupPosition();
-                                                setPopupPosition(position);
-                                                setIsHovered(true);
-                                            } catch (err) {
-                                                console.error('JobCard focus error:', err);
-                                            }
-                                        }, openDelay);
-                                        setHoverTimeout(timeout);
-                                    },
-                                    onBlur: () => {
-                                        if (hoverTimeout) clearTimeout(hoverTimeout);
-                                        const timeout = setTimeout(() => setIsHovered(false), closeDelay);
-                                        setHoverTimeout(timeout);
-                                    }
-                                })}
-                            >
+                            <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.5 }} {...hoverProps}>
                                 <Typography
                                     variant="subtitle1"
                                     sx={{
                                         fontWeight: 600,
                                         mb: 0.25,
                                         fontSize: '0.95rem',
-                                        wordWrap: 'break-word',
-                                        overflowWrap: 'break-word',
                                         pr: isJobFeatured ? 10 : 0,
                                         lineHeight: 1.3,
                                         cursor: showPopup ? 'pointer' : 'default',
                                         position: 'relative',
                                         color: 'text.primary',
                                         transition: 'all 0.2s ease-in-out',
+                                        // Clamp to 2 lines
+                                        display: '-webkit-box',
+                                        WebkitLineClamp: 2,
+                                        WebkitBoxOrient: 'vertical',
+                                        overflow: 'hidden',
+                                        textOverflow: 'ellipsis',
                                         ...(showPopup && {
                                             '&:hover': {
                                                 color: 'primary.main'
@@ -324,7 +379,17 @@ export default function JobCard({
                             <Typography
                                 variant="body2"
                                 color="text.secondary"
-                                sx={{ mb: 0.75, fontSize: '0.875rem', lineHeight: 1.2 }}
+                                sx={{
+                                    mb: 0.75,
+                                    fontSize: '0.875rem',
+                                    lineHeight: 1.2,
+                                    // Clamp to 1 line
+                                    display: '-webkit-box',
+                                    WebkitLineClamp: 1,
+                                    WebkitBoxOrient: 'vertical',
+                                    overflow: 'hidden',
+                                    textOverflow: 'ellipsis'
+                                }}
                             >
                                 {companyName}
                             </Typography>
@@ -344,9 +409,7 @@ export default function JobCard({
                             )}
                         </Box>
                     </Box>
-
                 </CardContent>
-
             </Card>
 
             {showPopup && isHovered && !isSmall && (
@@ -457,7 +520,7 @@ export default function JobCard({
                             </>
                         )}
 
-                        {(responsibilities && responsibilities.length > 0) && (
+                        {responsibilities?.length > 0 && (
                             <>
                                 <Divider sx={{ my: 1.5 }} />
                                 <Typography variant="subtitle2" sx={{ fontWeight: 600, mb: 1 }}>
@@ -478,7 +541,7 @@ export default function JobCard({
                             </>
                         )}
 
-                        {((requirements && requirements.length > 0) || (requirement && requirement.length > 0)) && (
+                        {(requirements?.length > 0 || requirement?.length > 0) && (
                             <>
                                 <Divider sx={{ my: 1.5 }} />
                                 <Typography variant="subtitle2" sx={{ fontWeight: 600, mb: 1 }}>
@@ -499,7 +562,7 @@ export default function JobCard({
                             </>
                         )}
 
-                        {((nice_to_haves && nice_to_haves.length > 0) || (niceToHaves && niceToHaves.length > 0)) && (
+                        {(nice_to_haves?.length > 0 || niceToHaves?.length > 0) && (
                             <>
                                 <Divider sx={{ my: 1.5 }} />
                                 <Typography variant="subtitle2" sx={{ fontWeight: 600, mb: 1 }}>
@@ -524,7 +587,7 @@ export default function JobCard({
                             <>
                                 <Divider sx={{ my: 1.5 }} />
                                 <Typography variant="body2" sx={{ color: 'text.secondary', fontSize: '0.85rem' }}>
-                                    <strong>Hạn nộp hồ sơ:</strong> {new Date(job_deadline).toLocaleDateString('vi-VN')}
+                                    <strong>Hạn nộp hồ sơ:</strong> {isNaN(new Date(job_deadline)) ? job_deadline : new Date(job_deadline).toLocaleDateString('vi-VN')}
                                 </Typography>
                             </>
                         )}
@@ -533,7 +596,7 @@ export default function JobCard({
                             <Button
                                 variant="contained"
                                 fullWidth
-                                onClick={() => onClick?.(job)}
+                                onClick={handleNavigate}
                                 sx={{
                                     bgcolor: 'primary.main',
                                     color: 'white',

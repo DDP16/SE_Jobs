@@ -5,11 +5,27 @@ const apiBaseUrl = "/api/topcv";
 
 export const getTopCVJobs = createAsyncThunk(
     "topcv/getTopCVJobs",
-    async (_, { rejectWithValue }) => {
+    async (params = {}, { rejectWithValue }) => {
         try {
-            const response = await api.get(`${apiBaseUrl}/jobs`);
-            console.log("TopCVJobs response:", response.data);
-            return response.data;
+            const { page = 1, limit = 10 } = params;
+            const response = await api.get(`${apiBaseUrl}/jobs`, {
+                params: { page, per_page: limit }  // Backend expects 'per_page' not 'limit'
+            });
+
+            // Transform backend response to match frontend expectations
+            const backendData = response.data;
+            return {
+                data: backendData.data || [],
+                pagination: backendData.pagination ? {
+                    currentPage: backendData.pagination.currentPage || page,
+                    totalPages: Math.ceil(
+                        (backendData.pagination.total || 0) /
+                        (backendData.pagination.perPage || limit)
+                    ),
+                    totalItems: backendData.pagination.total || 0,
+                    limit: backendData.pagination.perPage || limit
+                } : null
+            };
         } catch (error) {
             return rejectWithValue(error.response?.data?.message || "Something went wrong");
         }
@@ -45,6 +61,12 @@ const topCVSlice = createSlice({
     name: "topCVJobs",
     initialState: {
         jobs: [],
+        pagination: {
+            currentPage: 1,
+            totalPages: 1,
+            totalItems: 0,
+            limit: 10
+        },
         status: "idle",
         error: null
     },
@@ -58,6 +80,18 @@ const topCVSlice = createSlice({
             .addCase(getTopCVJobs.fulfilled, (state, action) => {
                 state.status = "succeeded";
                 state.jobs = action.payload?.data || [];
+                // Update pagination info (already transformed in thunk)
+                if (action.payload?.pagination) {
+                    state.pagination = action.payload.pagination;
+                } else {
+                    // Reset pagination if no data
+                    state.pagination = {
+                        currentPage: 1,
+                        totalPages: 1,
+                        totalItems: 0,
+                        limit: 10
+                    };
+                }
             })
             .addCase(getTopCVJobs.rejected, (state, action) => {
                 state.status = "failed";

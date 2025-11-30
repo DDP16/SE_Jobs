@@ -31,6 +31,60 @@ export default function JobSidebar({ job }) {
     );
   }
 
+  // Format salary - handle both object and string formats
+  const formatSalary = () => {
+    // If salary is already a string, return it
+    if (typeof job.salary === 'string') {
+      return job.salary;
+    }
+
+    // If salary is an object with text property
+    if (job.salary?.text) {
+      return job.salary.text;
+    }
+
+    // If salary_text exists (direct field)
+    if (job.salary_text) {
+      return job.salary_text;
+    }
+
+    // If salary is an object with from/to
+    if (job.salary?.from || job.salary?.to || job.salary_from || job.salary_to) {
+      const from = job.salary?.from ?? job.salary_from;
+      const to = job.salary?.to ?? job.salary_to;
+      const currency = job.salary?.currency || job.salary_currency || '';
+
+      if (from && to) {
+        return `${from} - ${to} ${currency}`.trim();
+      } else if (from) {
+        return `${from} ${currency}`.trim();
+      } else if (to) {
+        return `Up to ${to} ${currency}`.trim();
+      }
+    }
+
+    return "N/A";
+  };
+
+  const displaySalary = formatSalary();
+
+  // Format job type - handle employment_types array
+  const displayType = job.type || (Array.isArray(job.employment_types) && job.employment_types.length > 0
+    ? job.employment_types.map(et => et.name || et).join(', ')
+    : "N/A");
+
+  // Normalize categories - handle both array of strings and array of objects
+  const normalizedCategories = Array.isArray(job.categories)
+    ? job.categories.map(cat => typeof cat === 'string' ? cat : (cat.name || cat))
+    : [];
+
+  // Normalize skills - handle both array of strings and array of objects
+  const normalizedSkills = Array.isArray(job.skills)
+    ? job.skills.map(skill => typeof skill === 'string' ? skill : (skill.name || skill))
+    : (Array.isArray(job.requiredSkills)
+      ? job.requiredSkills.map(skill => typeof skill === 'string' ? skill : (skill.name || skill))
+      : []);
+
   return (
     <motion.div
       initial={{ opacity: 0, x: 20 }}
@@ -59,11 +113,11 @@ export default function JobSidebar({ job }) {
           </div>
           <div className="flex justify-between text-sm">
             <span className="text-muted-foreground">{t("job.job_type")}</span>
-            <span className="font-medium text-foreground">{job.type || "N/A"}</span>
+            <span className="font-medium text-foreground">{displayType}</span>
           </div>
           <div className="flex justify-between text-sm">
             <span className="text-muted-foreground">{t("job.salary")}</span>
-            <span className="font-medium text-foreground">{job.salary || "N/A"}</span>
+            <span className="font-medium text-foreground">{displaySalary}</span>
           </div>
         </div>
       </div>
@@ -72,29 +126,37 @@ export default function JobSidebar({ job }) {
 
       <h4 className="text-lg font-bold text-foreground mb-2">{t("job.categories")}</h4>
       <div className="flex flex-wrap gap-2">
-        {job.categories?.map((category, index) => (
-          <Badge
-            key={`category-${category}-${index}`}
-            variant="secondary"
-            className={`bg-accent-green/10 text-accent-green hover:bg-accent-green/20 px-2.5 py-1.5 rounded-lg`}
-          >
-            {category}
-          </Badge>
-        )) || <span className="text-muted-foreground">{t("job.no_categories_listed")}</span>}
+        {normalizedCategories.length > 0 ? (
+          normalizedCategories.map((category, index) => (
+            <Badge
+              key={`category-${category}-${index}`}
+              variant="secondary"
+              className={`bg-accent-green/10 text-accent-green hover:bg-accent-green/20 px-2.5 py-1.5 rounded-lg`}
+            >
+              {category}
+            </Badge>
+          ))
+        ) : (
+          <span className="text-muted-foreground">{t("job.no_categories_listed")}</span>
+        )}
       </div>
 
       <hr className="border-t border-neutrals-20" />
 
       <h4 className="text-lg font-bold text-foreground mb-2">{t("job.required_skills")}</h4>
       <div className="flex flex-wrap gap-2">
-        {job.requiredSkills?.map((skill, index) => (
-          <Badge
-            key={`skill-${skill}-${index}`}
-            className="rounded-lg bg-background-lightBlue text-primary hover:bg-primary/10 px-2.5 py-1.5"
-          >
-            {skill}
-          </Badge>
-        )) || <span className="text-muted-foreground">{t("job.no_skills_listed")}</span>}
+        {normalizedSkills.length > 0 ? (
+          normalizedSkills.map((skill, index) => (
+            <Badge
+              key={`skill-${skill}-${index}`}
+              className="rounded-lg bg-background-lightBlue text-primary hover:bg-primary/10 px-2.5 py-1.5"
+            >
+              {skill}
+            </Badge>
+          ))
+        ) : (
+          <span className="text-muted-foreground">{t("job.no_skills_listed")}</span>
+        )}
       </div>
     </motion.div>
   );

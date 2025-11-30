@@ -14,7 +14,9 @@ export default function JobHeader({ job = {} }) {
   const jobTitle = job.title || "Job Title";
   const jobCompany = job.company?.name || job.company || "Company Name";
   const jobLocation = job.location || job.company_branches?.location || "Location";
-  const jobType = job.working_time || job.type || "Job Type";
+  const jobType = job.working_time || job.type || (Array.isArray(job.employment_types) && job.employment_types.length > 0
+    ? job.employment_types.map(et => et.name || et).join(', ')
+    : "Job Type");
 
   return (
     <>
