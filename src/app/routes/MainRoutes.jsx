@@ -17,6 +17,7 @@ export default function MainRoutes() {
         ) : (
           <UserRoutes />
         )}
+        {/* <CompanyRoutes /> */}
       </BrowserRouter>
     </ThemeProvider>
   );
