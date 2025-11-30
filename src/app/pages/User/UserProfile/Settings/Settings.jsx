@@ -2,13 +2,15 @@ import React, { useState } from "react";
 import { motion } from "framer-motion";
 import { Check } from "lucide-react";
 import { AccountTab, NotificationsTab } from "./partials";
+import { useTranslation } from "react-i18next";
 
 export default function UserProfileSettings() {
+  const { t } = useTranslation();
   const [activeTab, setActiveTab] = useState("account");
 
   return (
     <div className="w-full min-h-screen bg-white">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+      <div className="mx-auto px-6 sm:px-10 lg:px-14 py-8">
         <motion.div
           initial={{ opacity: 0, y: -20 }}
           animate={{ opacity: 1, y: 0 }}
@@ -24,7 +26,7 @@ export default function UserProfileSettings() {
                   : "text-gray-500 hover:text-gray-700"
               }`}
             >
-              My Account
+              {t("setting.my_account")}
               {activeTab === "account" && (
                 <motion.div
                   layoutId="activeTab"
@@ -41,7 +43,7 @@ export default function UserProfileSettings() {
                   : "text-gray-500 hover:text-gray-700"
               }`}
             >
-              Notifications
+              {t("setting.notifications")}
               {activeTab === "notifications" && (
                 <motion.div
                   layoutId="activeTab"

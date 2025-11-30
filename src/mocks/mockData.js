@@ -1,3 +1,4 @@
+import { srcAsset } from "@/lib";
 import { create } from "zustand";
 
 // Mock data for development
@@ -36,7 +37,8 @@ export const mockJobs = [
         applied: 5,
         capacity: 10,
         dueDate: "2024-07-31",
-        createdAt: "2024-07-01"
+        createdAt: "2024-07-01",
+        logo: srcAsset.stripeIcon
     },
     {
         id: 2,
@@ -46,11 +48,33 @@ export const mockJobs = [
         type: "Full-time",
         salary: "$4,000 - $6,000",
         description: "We are looking for a Brand Designer to join our team. You will be responsible for creating visual designs and brand guidelines.",
+        responsibilities: [
+            "Create and maintain brand guidelines",
+            "Design visual assets for marketing and product",
+            "Collaborate with product and marketing teams",
+            "Ensure brand consistency across all channels",
+            "Present design concepts to stakeholders"
+        ],
+        requirements: [
+            "Bachelor's degree in Design or related field",
+            "Proven experience as a Brand Designer",
+            "Strong portfolio of branding projects",
+            "Excellent communication skills",
+            "Attention to detail"
+        ],
+        niceToHaves: [
+            "Experience with animation",
+            "Knowledge of UX/UI principles",
+            "Familiarity with web technologies"
+        ],
         categories: ["Design", "Branding", "Creative"],
+        requiredSkills: ["Branding", "Graphic Design", "Adobe Creative Suite", "Communication", "Creativity"],
         logo: "D",
         isFeatured: false,
         applied: 8,
-        capacity: 12
+        capacity: 12,
+        dueDate: "2024-08-15",
+        createdAt: "2024-07-05"
     },
     {
         id: 3,
@@ -60,11 +84,33 @@ export const mockJobs = [
         type: "Full-time",
         salary: "$3,000 - $5,000",
         description: "We are looking for an Interactive Developer to join our team. You will be responsible for developing interactive web applications.",
+        responsibilities: [
+            "Develop interactive web applications",
+            "Work closely with designers and backend developers",
+            "Optimize applications for speed and scalability",
+            "Write clean, maintainable code",
+            "Participate in code reviews"
+        ],
+        requirements: [
+            "Experience with JavaScript and React",
+            "Understanding of web performance optimization",
+            "Familiarity with RESTful APIs",
+            "Problem-solving skills",
+            "Team player"
+        ],
+        niceToHaves: [
+            "Experience with TypeScript",
+            "Knowledge of testing frameworks",
+            "Open source contributions"
+        ],
         categories: ["Development", "JavaScript", "React"],
+        requiredSkills: ["JavaScript", "React", "Web Development", "Performance Optimization", "REST API"],
         logo: "T",
         isFeatured: true,
         applied: 3,
-        capacity: 8
+        capacity: 8,
+        dueDate: "2024-08-20",
+        createdAt: "2024-07-10"
     },
     {
         id: 4,
@@ -74,11 +120,33 @@ export const mockJobs = [
         type: "Full-time",
         salary: "$5,000 - $8,000",
         description: "We are looking for a Product Designer to join our team. You will be responsible for designing user experiences and interfaces.",
+        responsibilities: [
+            "Design user experiences and interfaces",
+            "Conduct user research and usability testing",
+            "Collaborate with engineers and product managers",
+            "Create wireframes and prototypes",
+            "Iterate designs based on feedback"
+        ],
+        requirements: [
+            "Experience in product design",
+            "Proficiency with design tools (Figma, Sketch, etc.)",
+            "Strong portfolio of design projects",
+            "Understanding of UX/UI principles",
+            "Good communication skills"
+        ],
+        niceToHaves: [
+            "Animation skills",
+            "Experience with mobile design",
+            "Knowledge of accessibility standards"
+        ],
         categories: ["Design", "UX", "UI"],
+        requiredSkills: ["Product Design", "UX/UI", "Prototyping", "User Research", "Wireframing"],
         logo: "A",
         isFeatured: false,
         applied: 12,
-        capacity: 15
+        capacity: 15,
+        dueDate: "2024-08-25",
+        createdAt: "2024-07-15"
     },
     {
         id: 5,
@@ -88,11 +156,33 @@ export const mockJobs = [
         type: "Full-time",
         salary: "$6,000 - $10,000",
         description: "We are looking for a Frontend Developer to join our team. You will be responsible for developing user-facing features.",
+        responsibilities: [
+            "Develop user-facing features",
+            "Collaborate with designers and backend developers",
+            "Ensure cross-browser compatibility",
+            "Optimize applications for maximum speed",
+            "Maintain code quality and organization"
+        ],
+        requirements: [
+            "Strong knowledge of JavaScript, HTML, CSS",
+            "Experience with React",
+            "Familiarity with version control (Git)",
+            "Attention to detail",
+            "Problem-solving skills"
+        ],
+        niceToHaves: [
+            "Experience with Next.js",
+            "Knowledge of testing libraries",
+            "UI/UX design sense"
+        ],
         categories: ["Development", "React", "JavaScript"],
+        requiredSkills: ["JavaScript", "React", "HTML", "CSS", "Git"],
         logo: "G",
         isFeatured: true,
         applied: 15,
-        capacity: 20
+        capacity: 20,
+        dueDate: "2024-08-30",
+        createdAt: "2024-07-20"
     },
     {
         id: 6,
@@ -102,11 +192,33 @@ export const mockJobs = [
         type: "Full-time",
         salary: "$4,500 - $7,000",
         description: "We are looking for a UX Researcher to join our team. You will be responsible for conducting user research and usability testing.",
+        responsibilities: [
+            "Conduct user research and usability testing",
+            "Analyze user behavior and feedback",
+            "Work with designers and product managers",
+            "Prepare research reports",
+            "Present findings to stakeholders"
+        ],
+        requirements: [
+            "Experience in UX research",
+            "Knowledge of research methodologies",
+            "Analytical skills",
+            "Good communication skills",
+            "Attention to detail"
+        ],
+        niceToHaves: [
+            "Experience with analytics tools",
+            "Background in psychology",
+            "Presentation skills"
+        ],
         categories: ["Research", "UX", "Analytics"],
+        requiredSkills: ["UX Research", "Analytics", "User Testing", "Reporting", "Communication"],
         logo: "M",
         isFeatured: false,
         applied: 7,
-        capacity: 12
+        capacity: 12,
+        dueDate: "2024-09-05",
+        createdAt: "2024-07-25"
     },
     {
         id: 7,
@@ -116,11 +228,33 @@ export const mockJobs = [
         type: "Full-time",
         salary: "$5,000 - $8,000",
         description: "We are looking for a Product Designer to join our team. You will be responsible for designing user experiences and interfaces.",
+        responsibilities: [
+            "Design user experiences and interfaces",
+            "Conduct user research and usability testing",
+            "Collaborate with engineers and product managers",
+            "Create wireframes and prototypes",
+            "Iterate designs based on feedback"
+        ],
+        requirements: [
+            "Experience in product design",
+            "Proficiency with design tools (Figma, Sketch, etc.)",
+            "Strong portfolio of design projects",
+            "Understanding of UX/UI principles",
+            "Good communication skills"
+        ],
+        niceToHaves: [
+            "Animation skills",
+            "Experience with mobile design",
+            "Knowledge of accessibility standards"
+        ],
         categories: ["Design", "UX", "UI"],
+        requiredSkills: ["Product Design", "UX/UI", "Prototyping", "User Research", "Wireframing"],
         logo: "A",
         isFeatured: false,
         applied: 12,
-        capacity: 15
+        capacity: 15,
+        dueDate: "2024-09-10",
+        createdAt: "2024-07-30"
     },
     {
         id: 8,
@@ -130,11 +264,33 @@ export const mockJobs = [
         type: "Full-time",
         salary: "$6,000 - $10,000",
         description: "We are looking for a Frontend Developer to join our team. You will be responsible for developing user-facing features.",
+        responsibilities: [
+            "Develop user-facing features",
+            "Collaborate with designers and backend developers",
+            "Ensure cross-browser compatibility",
+            "Optimize applications for maximum speed",
+            "Maintain code quality and organization"
+        ],
+        requirements: [
+            "Strong knowledge of JavaScript, HTML, CSS",
+            "Experience with React",
+            "Familiarity with version control (Git)",
+            "Attention to detail",
+            "Problem-solving skills"
+        ],
+        niceToHaves: [
+            "Experience with Next.js",
+            "Knowledge of testing libraries",
+            "UI/UX design sense"
+        ],
         categories: ["Development", "React", "JavaScript"],
+        requiredSkills: ["JavaScript", "React", "HTML", "CSS", "Git"],
         logo: "G",
         isFeatured: true,
         applied: 15,
-        capacity: 20
+        capacity: 20,
+        dueDate: "2024-09-15",
+        createdAt: "2024-08-05"
     },
     {
         id: 9,
@@ -144,11 +300,33 @@ export const mockJobs = [
         type: "Full-time",
         salary: "$4,500 - $7,000",
         description: "We are looking for a UX Researcher to join our team. You will be responsible for conducting user research and usability testing.",
+        responsibilities: [
+            "Conduct user research and usability testing",
+            "Analyze user behavior and feedback",
+            "Work with designers and product managers",
+            "Prepare research reports",
+            "Present findings to stakeholders"
+        ],
+        requirements: [
+            "Experience in UX research",
+            "Knowledge of research methodologies",
+            "Analytical skills",
+            "Good communication skills",
+            "Attention to detail"
+        ],
+        niceToHaves: [
+            "Experience with analytics tools",
+            "Background in psychology",
+            "Presentation skills"
+        ],
         categories: ["Research", "UX", "Analytics"],
+        requiredSkills: ["UX Research", "Analytics", "User Testing", "Reporting", "Communication"],
         logo: "M",
         isFeatured: false,
         applied: 7,
-        capacity: 12
+        capacity: 12,
+        dueDate: "2024-09-20",
+        createdAt: "2024-08-10"
     }
 ];
 

@@ -1,8 +1,10 @@
 import { ArrowRight } from "lucide-react";
 import { srcAsset } from "../../../../lib";
 import { JobCardSecond } from "@/components";
+import { useTranslation } from "react-i18next";
 
 export default function OpenJobs() {
+  const { t } = useTranslation();
   const jobs = [
     {
       title: "Social Media Assistant",
@@ -89,12 +91,12 @@ export default function OpenJobs() {
   return (
     <section>
       <div className="flex items-center justify-between mb-6">
-        <h4 className="text-2xl font-bold text-foreground">Open Jobs</h4>
+        <h4 className="text-2xl font-bold text-foreground">{t('company.open_jobs.title')}</h4>
         <a
           href="/jobs"
           className="text-primary flex items-center gap-2 hover:underline font-medium"
         >
-          Show all jobs
+          {t('company.open_jobs.show_all')}
           <ArrowRight className="w-5 h-5" />
         </a>
       </div>

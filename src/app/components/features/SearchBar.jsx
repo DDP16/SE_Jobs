@@ -17,12 +17,23 @@ export default function SearchBar({
     placeholder = "Job title, keywords, or company",
     locationPlaceholder = "City, state, or remote",
     showLocation = true,
-    fullWidth = true
+    fullWidth = true,
+    initialKeyword = '',
+    initialLocation = ''
 }) {
     const provinces = useSelector(state => state.address.provinces);
     const dispatch = useDispatch();
-    const [keyword, setKeyword] = useState('');
-    const [location, setLocation] = useState('Tất cả thành phố');
+    const [keyword, setKeyword] = useState(initialKeyword || '');
+    const [location, setLocation] = useState(initialLocation || 'Tất cả thành phố');
+
+    // If parent updates initial values (e.g. URL changed), sync local state
+    useEffect(() => {
+        setKeyword(initialKeyword || '');
+    }, [initialKeyword]);
+
+    useEffect(() => {
+        setLocation(initialLocation || 'Tất cả thành phố');
+    }, [initialLocation]);
 
     useEffect(() => {
         dispatch(getProvinces());
@@ -153,4 +164,7 @@ export default function SearchBar({
             </Button>
         </Paper>
     );
+
+    // accept initial values from parent (e.g., from URL query) and sync when they change
+    // add optional props handled by parent
 }

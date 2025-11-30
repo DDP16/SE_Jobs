@@ -2,7 +2,7 @@ import { useState } from "react";
 import { delay, motion } from "framer-motion";
 import { Eye, EyeOff } from "lucide-react";
 import { Link, useNavigate } from "react-router-dom";
-import { uiInput as Input, uiButton as Button, CustomAlert } from "../../../components";
+import { CustomAlert, LangButtonGroup } from "@/components";
 import { srcAsset } from "../../../lib";
 import { register, validateEmail, validatePassword } from "../../../modules";
 import { useCustomAlert } from "../../../hooks/useCustomAlert";
@@ -27,6 +27,7 @@ import {
   LocationOn as LocationOnIcon,
   Error as ErrorIcon
 } from "@mui/icons-material";
+import { Button, Input } from "@/components/ui";
 
 export default function CompanySignUp() {
   const [showPassword, setShowPassword] = useState(false);
@@ -214,9 +215,11 @@ export default function CompanySignUp() {
         initial={{ opacity: 0, y: 0 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5 }}
-        className="absolute top-9 left-12"
+        className="absolute top-9 px-12 justify-between flex flex-row min-w-screen"
       >
         <img src={srcAsset.SELargeLogo} alt="KHOA CÔNG NGHỆ PHẦN MỀM" className="h-12 w-auto cursor-pointer" onClick={() => { nav("/"); }} />
+
+        <LangButtonGroup />
       </motion.div>
 
       <motion.div

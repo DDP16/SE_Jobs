@@ -1,17 +1,22 @@
 import { motion } from "framer-motion";
 import { Share2 } from "lucide-react";
-import { ApplicationModal, uiButton as Button } from "../../../../components";
+import { ApplicationModal } from "@/components";
 import { srcAsset } from "../../../../lib";
 import { useState } from "react";
+import { useTranslation } from "react-i18next";
+import { Button } from "@/components/ui";
 
 export default function JobHeader({ job = {} }) {
+  const { t } = useTranslation();
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   // Transform API data format to component format if needed
   const jobTitle = job.title || "Job Title";
   const jobCompany = job.company?.name || job.company || "Company Name";
   const jobLocation = job.location || job.company_branches?.location || "Location";
-  const jobType = job.working_time || job.type || "Job Type";
+  const jobType = job.working_time || job.type || (Array.isArray(job.employment_types) && job.employment_types.length > 0
+    ? job.employment_types.map(et => et.name || et).join(', ')
+    : "Job Type");
 
   return (
     <>
@@ -24,7 +29,7 @@ export default function JobHeader({ job = {} }) {
         <div className="flex items-center justify-between">
           <div className="flex gap-6">
             <img
-              src={job.company?.logo}
+              src={job.company?.logo || job.logo}
               alt={job.company?.name}
               className="w-14 h-14 object-contain"
             />
@@ -45,7 +50,7 @@ export default function JobHeader({ job = {} }) {
               className="bg-primary hover:bg-primary/90 text-white px-8"
               onClick={() => setIsModalOpen(true)}
             >
-              Apply
+              {t("apply")}
             </Button>
           </div>
         </div>

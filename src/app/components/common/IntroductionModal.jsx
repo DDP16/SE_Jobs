@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef } from "react";
 import {
-    uiButton as Button,
-} from "@/components";
+    Button,
+} from "@/components/ui";
 import { Dialog, DialogContent } from "@mui/material";
 import { X, Bold, Italic, Underline, List } from "lucide-react";
 import { Lightbulb } from "lucide-react";

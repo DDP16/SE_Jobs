@@ -15,3 +15,13 @@ export { default as CompanyDashboard } from "./Company/DashBoard";
 export { default as CompanyProfile } from "./Company/CompanyProfile";
 export { default as ApplicantDetails } from "./Company/ApplicantDetails";
 export { default as CompanySignUp } from "./Auth/CompanySignUp";
+
+// Admin Pages
+export { default as AdminDashboard } from "./Admin/Dashboard";
+export { default as UsersPage } from "./Admin/UsersPage";
+export { default as StudentsPage } from "./Admin/StudentsPage";
+export { default as CompaniesPage } from "./Admin/CompaniesPage";
+export { default as CompanyDetailPage } from "./Admin/CompanyDetailPage";
+export { default as StudentDetailPage } from "./Admin/StudentDetailPage";
+export { default as JobsPage } from "./Admin/JobsPage";
+export { default as SettingsPage } from "./Admin/SettingsPage";

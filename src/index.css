@@ -122,7 +122,8 @@ All colors MUST be HSL.
   /* === Animations === */
   --animate-gradient: gradient 8s linear infinite;
   --animate-marquee: marquee 15s linear infinite;
-  --animate-fadeIn: fadeIn 0.3s ease-out;
+  --animate-fadeIn: fadeIn 0.2s ease-out;
+  --animate-fadeOut: fadeOut 0.2s ease-out;
 }
 
 h1 {
@@ -286,7 +287,7 @@ body {
   @keyframes fadeIn {
     0% {
       opacity: 0;
-      transform: translateY(10px);
+      transform: translateY(-10px);
     }
 
     100% {
@@ -303,7 +304,7 @@ body {
 
     100% {
       opacity: 0;
-      transform: translateY(10px);
+      transform: translateY(-10px);
     }
   }
 
@@ -315,6 +316,78 @@ body {
 
     100% {
       transform: scale(1);
+      opacity: 1;
+    }
+  }
+
+  @keyframes zoomIn {
+    0% {
+      transform: scale(0.95);
+      opacity: 0;
+    }
+
+    100% {
+      transform: scale(1);
+      opacity: 1;
+    }
+  }
+
+  @keyframes zoomOut {
+    0% {
+      transform: scale(1);
+      opacity: 1;
+    }
+
+    100% {
+      transform: scale(0.95);
+      opacity: 0;
+    }
+  }
+
+  @keyframes slideInFromTop {
+    0% {
+      transform: translateY(-0.5rem);
+      opacity: 0;
+    }
+
+    100% {
+      transform: translateY(0);
+      opacity: 1;
+    }
+  }
+
+  @keyframes slideInFromBottom {
+    0% {
+      transform: translateY(0.5rem);
+      opacity: 0;
+    }
+
+    100% {
+      transform: translateY(0);
+      opacity: 1;
+    }
+  }
+
+  @keyframes slideInFromLeft {
+    0% {
+      transform: translateX(-0.5rem);
+      opacity: 0;
+    }
+
+    100% {
+      transform: translateX(0);
+      opacity: 1;
+    }
+  }
+
+  @keyframes slideInFromRight {
+    0% {
+      transform: translateX(0.5rem);
+      opacity: 0;
+    }
+
+    100% {
+      transform: translateX(0);
       opacity: 1;
     }
   }
@@ -337,6 +410,50 @@ body {
     100% {
       transform: translateX(-100%);
     }
+  }
+
+  .animate-in {
+    animation-duration: 150ms;
+    animation-timing-function: cubic-bezier(0.16, 1, 0.3, 1);
+    animation-fill-mode: both;
+  }
+
+  .animate-out {
+    animation-duration: 150ms;
+    animation-timing-function: cubic-bezier(0.16, 1, 0.3, 1);
+    animation-fill-mode: both;
+  }
+
+  .fade-in-0 {
+    animation-name: fadeIn;
+  }
+
+  .fade-out-0 {
+    animation-name: fadeOut;
+  }
+
+  .zoom-in-95 {
+    animation-name: zoomIn;
+  }
+
+  .zoom-out-95 {
+    animation-name: zoomOut;
+  }
+
+  .slide-in-from-top-2 {
+    animation-name: slideInFromTop;
+  }
+
+  .slide-in-from-bottom-2 {
+    animation-name: slideInFromBottom;
+  }
+
+  .slide-in-from-left-2 {
+    animation-name: slideInFromLeft;
+  }
+
+  .slide-in-from-right-2 {
+    animation-name: slideInFromRight;
   }
 
   .animate-accordion-down {

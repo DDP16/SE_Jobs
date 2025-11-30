@@ -1,9 +1,9 @@
 import { useState, useEffect, useRef } from "react";
 import {
-    uiInput as Input,
-    uiButton as Button,
-    uiLabel as Label,
-} from "@/components";
+    Input,
+    Button,
+    Label,
+} from "@/components/ui";
 import { validateAwardForm } from "@/modules";
 import { Dialog, DialogContent, FormControl, Select, MenuItem, FormHelperText } from "@mui/material";
 import { useTranslation } from 'react-i18next';
