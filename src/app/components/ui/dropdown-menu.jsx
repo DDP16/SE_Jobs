@@ -38,13 +38,26 @@ const DropdownMenuSubContent = React.forwardRef(({ className, ...props }, ref) =
 ));
 DropdownMenuSubContent.displayName = DropdownMenuPrimitive.SubContent.displayName;
 
-const DropdownMenuContent = React.forwardRef(({ className, sideOffset = 4, ...props }, ref) => (
+const DropdownMenuContent = React.forwardRef(({ className, sideOffset = 4, style, ...props }, ref) => (
   <DropdownMenuPrimitive.Portal>
     <DropdownMenuPrimitive.Content
       ref={ref}
       sideOffset={sideOffset}
+      style={{
+        position: "absolute",
+        zIndex: 50,
+        minWidth: "200px",
+        overflow: "hidden",
+        borderRadius: "6px",
+        border: "1px solid #e5e7eb",
+        backgroundColor: "#ffffff",
+        color: "#030712",
+        boxShadow: "0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05)",
+        animation: "slide-in-from-top-2 0.2s ease-out",
+        ...style,
+      }}
       className={cn(
-        "z-50 min-w-32 overflow-hidden rounded-md border bg-popover p-1 text-popover-foreground shadow-md data-[state=open]:animate-fadeIn data-[state=closed]:animate-fadeOut data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95 data-[side=bottom]:slide-in-from-top-2 data-[side=left]:slide-in-from-right-2 data-[side=right]:slide-in-from-left-2 data-[side=top]:slide-in-from-bottom-2",
+        "data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95 data-[side=bottom]:slide-in-from-top-2 data-[side=left]:slide-in-from-right-2 data-[side=right]:slide-in-from-left-2 data-[side=top]:slide-in-from-bottom-2",
         className
       )}
       {...props}
@@ -53,15 +66,30 @@ const DropdownMenuContent = React.forwardRef(({ className, sideOffset = 4, ...pr
 ));
 DropdownMenuContent.displayName = DropdownMenuPrimitive.Content.displayName;
 
-const DropdownMenuItem = React.forwardRef(({ className, inset, ...props }, ref) => (
+const DropdownMenuItem = React.forwardRef(({ className, inset, style, ...props }, ref) => (
   <DropdownMenuPrimitive.Item
     ref={ref}
-    className={cn(
-      "relative flex cursor-default select-none items-center rounded-sm px-2 py-1.5 text-sm outline-none transition-colors data-disabled:pointer-events-none data-disabled:opacity-50 focus:bg-accent focus:text-accent-foreground",
-      inset && "pl-8",
-      className
-    )}
+    style={{
+      display: "flex",
+      alignItems: "center",
+      padding: "8px 12px",
+      fontSize: "14px",
+      cursor: "pointer",
+      transition: "all 0.1s",
+      color: "#030712",
+      backgroundColor: "transparent",
+      ...style,
+    }}
+    className={cn("data-[disabled]:pointer-events-none data-[disabled]:opacity-50", className)}
     {...props}
+    onMouseEnter={(e) => {
+      e.target.style.backgroundColor = "#f3f4f6";
+      e.target.style.color = "#030712";
+    }}
+    onMouseLeave={(e) => {
+      e.target.style.backgroundColor = "transparent";
+      e.target.style.color = "#030712";
+    }}
   />
 ));
 DropdownMenuItem.displayName = DropdownMenuPrimitive.Item.displayName;
