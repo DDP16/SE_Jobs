@@ -4,6 +4,7 @@ import {
     ApplicantDetails,
     CompanyProfile,
     CompanyDashboard as Dashboard,
+    CompanySetting,
 } from "@/pages";
 import { Outlet, Route, Routes } from "react-router-dom";
 
@@ -19,6 +20,7 @@ export default function CompanyRoutes() {
                 <Route path="company" element={<CompanyProfile />} />
                 <Route path="applicants/:id" element={<ApplicantDetails />} />
                 <Route path="*" element={<PageNotFound />} />
+                <Route path="settings" element={<CompanySetting />} />
             </Route>
         </Routes>
     );
