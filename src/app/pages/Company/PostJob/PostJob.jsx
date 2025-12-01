@@ -31,7 +31,7 @@ import {
   DropdownMenuTrigger,
 } from "../../../components/ui/dropdown-menu";
 
-const PostJob = () => {
+export default function PostJob() {
   const [currentStep, setCurrentStep] = useState(1); // Start at Step 1
   const [jobTitle, setJobTitle] = useState("");
   const [employmentTypes, setEmploymentTypes] = useState([]);
@@ -779,5 +779,3 @@ const PostJob = () => {
     </div>
   );
 };
-
-export default PostJob;

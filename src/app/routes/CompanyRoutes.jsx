@@ -6,6 +6,7 @@ import {
     CompanyProfile,
     CompanyDashboard as Dashboard,
     CompanySetting,
+    PostJob,
 } from "@/pages";
 import { Outlet, Route, Routes } from "react-router-dom";
 
@@ -20,8 +21,9 @@ export default function CompanyRoutes() {
                 <Route index element={<Dashboard />} />
                 <Route path="company" element={<CompanyProfile />} />
                 <Route path="applicants/:id" element={<ApplicantDetails />} />
-                <Route path="*" element={<PageNotFound />} />
                 <Route path="settings" element={<CompanySetting />} />
+                <Route path="post-job" element={<PostJob />} />
+                <Route path="*" element={<PageNotFound />} />
             </Route>
         </Routes>
     );
