@@ -9,7 +9,7 @@ export default function CompanyLayout({ children }) {
       </div>
       <div className="flex flex-col flex-1">
         <TopBar />
-        <main className="flex-1">{children}</main>
+        <main className="flex-1 pt-6">{children}</main>
       </div>
     </div>
   );
