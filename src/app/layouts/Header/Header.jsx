@@ -49,7 +49,7 @@ export default function Header() {
 
   // Check if user is logged in 
   const isLoggedIn = localStorage.getItem(AUTHENTICATED) === 'true';
-  const userName = localStorage.getItem(USER_NAME) || 'User';
+  const userName = localStorage.getItem(USER_NAME);
 
   const handleLangChange = (_e, newLang) => {
     if (newLang) i18n.changeLanguage(newLang);
@@ -117,7 +117,7 @@ export default function Header() {
       }}
     >
       <Toolbar sx={{
-        minHeight: { xs: '56px', md: '64px' },
+        minHeight: { xs: '40px', md: '50px' },  
         px: { xs: 2, md: 3 },
         justifyContent: 'space-between'
       }}>
@@ -202,7 +202,8 @@ export default function Header() {
                 borderBottom: isActive('/') ? '2px solid' : 'none',
                 borderColor: 'primary.main',
                 borderRadius: 0,
-                pb: isActive('/') ? 0.5 : 0
+                pb: isActive('/') ? 0.2 : 0,
+                fontSize: { xs: '0.85rem', md: '0.9rem' }
               }}
             >
               {t('home')}
@@ -217,7 +218,8 @@ export default function Header() {
                 borderBottom: isActive('/jobs') ? '2px solid' : 'none',
                 borderColor: 'primary.main',
                 borderRadius: 0,
-                pb: isActive('/jobs') ? 0.5 : 0
+                pb: isActive('/jobs') ? 0.2 : 0,
+                fontSize: { xs: '0.85rem', md: '0.9rem' }
               }}
             >
               {t('jobs')}
@@ -232,7 +234,8 @@ export default function Header() {
                 borderBottom: isActive('/companies') ? '2px solid' : 'none',
                 borderColor: 'primary.main',
                 borderRadius: 0,
-                pb: isActive('/companies') ? 0.5 : 0
+                pb: isActive('/companies') ? 0.2 : 0,
+                fontSize: { xs: '0.85rem', md: '0.9rem' }
               }}
             >
               {t('companies')}
@@ -247,7 +250,8 @@ export default function Header() {
                 borderBottom: isActive('/contact-us') ? '2px solid' : 'none',
                 borderColor: 'primary.main',
                 borderRadius: 0,
-                pb: isActive('/contact-us') ? 0.5 : 0
+                pb: isActive('/contact-us') ? 0.2 : 0,
+                fontSize: { xs: '0.85rem', md: '0.9rem' }
               }}
             >
               {t('contactUs')}
@@ -258,7 +262,7 @@ export default function Header() {
         {/* Desktop Actions */}
         {!isMobile && (
           <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
-            <Button color="inherit" component={Link} to="/company/signup">{t('forEmployers')}</Button>
+            <Button sx={{ fontSize: { xs: '0.85rem', md: '0.9rem' } }} color="inherit" component={Link} to="/company/signup">{t('forEmployers')}</Button>
 
             {isLoggedIn ? (
               <>
@@ -275,15 +279,13 @@ export default function Header() {
                 >
                   <Avatar
                     sx={{
-                      width: 32,
-                      height: 32,
+                      width: 25,
+                      height: 25,
                       bgcolor: 'primary.main',
-                      fontSize: '0.9rem',
-                      fontWeight: 600
                     }}
-                  >
-                    {userName.charAt(0).toUpperCase()}
-                  </Avatar>
+                    alt={userName}
+                    src=""
+                  />
                 </IconButton>
                 {/* user menu moved lower so it's available on mobile and desktop */}
               </>

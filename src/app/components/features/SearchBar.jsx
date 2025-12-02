@@ -74,24 +74,64 @@ export default function SearchBar({
 
     return (
         <Paper
-            elevation={2}
+            elevation={0}
             sx={{
-                p: { xs: 1.5, md: 2 },
-                borderRadius: 2,
-                display: 'flex',
-                flexDirection: { xs: 'column', md: 'row' },
+                bgcolor: 'transparent',
+                borderRadius: 3,
+                display: "flex",
+                flexDirection: { xs: "column", md: "row" },
                 gap: { xs: 1, md: 1 },
-                alignItems: { xs: 'stretch', md: 'center' },
-                flexWrap: 'wrap',
-                maxWidth: '100%',
-                width: '100%'
+                alignItems: "stretch",
+                flexWrap: "wrap",
+                maxWidth: "90%",
+                width: "100%",
             }}
         >
-            <Box sx={{
-                flex: 1,
-                minWidth: { xs: '100%', md: 200 },
-                width: { xs: '100%', md: 'auto' }
-            }}>
+            {showLocation && (
+                <Box
+                    sx={{
+                        flex: 1,
+                        minWidth: { xs: "100%", md: "25%", lg: "20%" },
+                        width: { xs: "100%", md: "auto" },
+                    }}
+                >
+                    <Autocomplete
+                        freeSolo
+                        options={options}
+                        value={location}
+                        onChange={(event, newValue) => setLocation(newValue || "")}
+                        onInputChange={(event, newInput) => setLocation(newInput)}
+                        disableClearable={false}
+                        renderInput={(params) => (
+                            <Input
+                                {...params}
+                                placeholder={locationPlaceholder}
+                                onKeyPress={handleKeyPress}
+                                InputProps={{
+                                    // keep Autocomplete's InputProps (clear button, etc.) and add our start adornment
+                                    ...params.InputProps,
+                                    startAdornment: (
+                                        <InputAdornment position="start">
+                                            <LocationOn color="action" />
+                                        </InputAdornment>
+                                    ),
+                                }}
+                                inputProps={{
+                                    ...params.inputProps,
+                                }}
+                            />
+                        )}
+                    />
+                </Box>
+            )}
+
+            <Box
+                sx={{
+                    flex: 1,
+                    minWidth: { xs: "100%", md: "55%", lg: "60%" },
+                    width: { xs: "100%", md: "auto" },
+                }}
+            >
                 <Input
                     placeholder={placeholder}
                     value={keyword}
@@ -105,59 +145,12 @@ export default function SearchBar({
                 />
             </Box>
 
-            {showLocation && (
-                <>
-                    <Divider
-                        orientation="vertical"
-                        flexItem
-                        sx={{
-                            display: { xs: 'none', md: 'block' }
-                        }}
-                    />
-                    <Box sx={{
-                        flex: 1,
-                        minWidth: { xs: '100%', md: 200 },
-                        width: { xs: '100%', md: 'auto' }
-                    }}>
-                        <Autocomplete
-                            freeSolo
-                            options={options}
-                            value={location}
-                            onChange={(event, newValue) => setLocation(newValue || '')}
-                            onInputChange={(event, newInput) => setLocation(newInput)}
-                            disableClearable={false}
-                            renderInput={(params) => (
-                                <Input
-                                    {...params}
-                                    placeholder={locationPlaceholder}
-                                    onKeyPress={handleKeyPress}
-                                    variant="outlined"
-                                    fullWidth
-                                    InputProps={{
-                                        // keep Autocomplete's InputProps (clear button, etc.) and add our start adornment
-                                        ...params.InputProps,
-                                        startAdornment: (
-                                            <InputAdornment position="start">
-                                                <LocationOn color="action" />
-                                            </InputAdornment>
-                                        ),
-                                    }}
-                                    inputProps={{
-                                        ...params.inputProps
-                                    }}
-                                />
-                            )}
-                        />
-                    </Box>
-                </>
-            )}
-
             <Button
                 variant="contained"
                 onClick={handleSearch}
                 sx={{
-                    minWidth: { xs: '100%', md: 120 },
-                    width: { xs: '100%', md: 'auto' }
+                    minWidth: { xs: "100%", md: 120 },
+                    width: { xs: "100%", md: "auto" },
                 }}
             >
                 Search

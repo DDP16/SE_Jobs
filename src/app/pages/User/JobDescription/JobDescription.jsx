@@ -21,7 +21,7 @@ export default function JobDescription({
   showPerksSection = true,
   showCompanySection = true,
   showSimilarJobs = true,
-  layout = layoutType.full, // "full" | "compact" | "minimal"
+  layout = layoutType.full, // "full" | "compact" | "minimal" | "preview"
 }) {
   // Layout configurations
   const layoutConfig = {
@@ -39,7 +39,7 @@ export default function JobDescription({
       showCompanySection: false,
       showSimilarJobs: false,
     },
-    [layoutType.half_width]: {
+    [layoutType.preview]: {
       showBreadcrumb: false,
       showJobSidebar: true,
       showPerksSection: false,
@@ -96,7 +96,7 @@ export default function JobDescription({
   if (jobStatus === "loading" && !job) {
     return (
       <div className="min-h-screen bg-white mx-auto space-y-12 pb-12">
-        <div className={`pt-10 pb-5 ${layout !== layoutType.half_width ? "px-10 lg:px-25" : ""} bg-background-lightBlue`}>
+        <div className={`pt-10 pb-5 ${layout !== layoutType.preview ? "px-10 lg:px-25" : ""} bg-background-lightBlue`}>
           {/* Header Skeleton */}
           <Container maxWidth="lg">
             <Skeleton variant="text" width="40%" height={40} sx={{ mb: 2 }} />
@@ -104,7 +104,7 @@ export default function JobDescription({
           </Container>
         </div>
 
-        <div className={`grid grid-cols-1 gap-8 ${layout !== layoutType.half_width ? "px-10 lg:px-25 lg:grid-cols-3 md:grid-cols-2" : "px-15 lg:grid-cols-1"}`}>
+        <div className={`grid grid-cols-1 gap-8 ${layout !== layoutType.preview ? "px-10 lg:px-25 lg:grid-cols-3 md:grid-cols-2" : "px-15 lg:grid-cols-1"}`}>
           {/* Main Content Skeleton */}
           <div className="lg:col-span-2 space-y-4">
             <Skeleton variant="text" width="60%" height={40} />
@@ -206,8 +206,8 @@ export default function JobDescription({
   }
 
   return (
-    <div className="min-h-screen bg-white mx-auto space-y-12 pb-12">
-      <div className={`pt-10 pb-5 ${layout !== layoutType.half_width ? "px-10 lg:px-25" : ""} bg-background-lightBlue`}>
+    <div className={`min-h-screen bg-white mx-auto ${layout !== layoutType.preview ? "space-y-12 pb-12" : "space-y-6 pb-6"}`}>
+      <div className={`${layout !== layoutType.preview ? "px-10 lg:px-50 py-8" : "sticky top-0 z-10"} bg-background-lightBlue`}>
         {/* {finalConfig.showBreadcrumb && (
           <div className="mb-5">
             <p className="text-sm text-muted-foreground">
@@ -218,7 +218,7 @@ export default function JobDescription({
         {finalConfig.showJobHeader && <JobHeader job={job} />}
       </div>
 
-      <div className={` grid grid-cols-1 gap-8 ${layout !== layoutType.half_width ? "px-10 lg:px-25 lg:grid-cols-3 md:grid-cols-2" : "px-15 lg:grid-cols-1"}`}>
+      <div className={`grid grid-cols-1 ${layout !== layoutType.preview ? "px-10 lg:px-25 lg:grid-cols-3 md:grid-cols-2 gap-8" : "px-10 lg:grid-cols-1 gap-y-8"}`}>
         <div className="lg:col-span-2">
           {finalConfig.showJobDetails && <JobDetails job={job} />}
         </div>
@@ -227,11 +227,21 @@ export default function JobDescription({
         </div>
       </div>
 
-      <div className="px-10 lg:px-25 space-y-12">
-        {finalConfig.showPerksSection && <PerksSection job={job} />}
-        {finalConfig.showCompanySection && <CompanySection job={job} />}
-        {finalConfig.showSimilarJobs && <SimilarJobs job={job} />}
-      </div>
+      {finalConfig.showPerksSection &&
+        <div className="px-10 lg:px-25">
+          <PerksSection job={job} />
+        </div>
+      }
+      {finalConfig.showCompanySection &&
+        <div className="px-10 lg:px-25">
+          <CompanySection job={job} />
+        </div>
+      }
+      {finalConfig.showSimilarJobs &&
+        <div className="px-10 lg:px-25">
+          <SimilarJobs job={job} />
+        </div>
+      }
     </div>
   );
 }

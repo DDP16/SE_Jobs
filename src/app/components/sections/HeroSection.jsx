@@ -8,76 +8,38 @@ import {
 } from '@mui/material';
 import SearchBar from '../features/SearchBar';
 import { mockPopularSearches } from '../../../mocks/mockData';
+import { useTranslation } from 'react-i18next';
 
 export default function HeroSection({ onSearch, initialKeyword = '', initialLocation = '' }) {
+    const { t } = useTranslation();
+
     return (
         <Box
-            className="bg-linear-to-br from-gray-50 to-blue-400 py-12 md:py-20 relative overflow-hidden w-full"
-            sx={{
-                bgcolor: 'colors.primary',
-                color: 'text.primary',
-                py: { xs: 2, md: 3 },
-                position: 'relative',
-                overflow: 'hidden',
-                width: '100%'
-            }}
+            className="bg-linear-to-br from-gray-50 to-blue-400 py-2 md:py-3 relative overflow-hidden w-full"
         >
 
             <Container
                 maxWidth="lg"
-                className="relative z-10 px-4 sm:px-6 md:px-8 w-full"
-                sx={{
-                    position: 'relative',
-                    zIndex: 1,
-                    px: { xs: 2, sm: 3, md: 4 },
-                    width: '100%'
-                }}
+                className="relative z-10 px-4 sm:px-6 md:px-8 w-full space-y-2 md:space-y-3 flex flex-col items-center"
             >
                 <Box
-                    className="text-center mb-8 md:mb-12 w-full"
-                    sx={{
-                        textAlign: 'center',
-                        mb: { xs: 1.5, md: 2 },
-                        width: '100%'
-                    }}
+                    className="text-center w-full"
                 >
-                    <Typography
-                        variant="h1"
-                        className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold mb-4 md:mb-6 leading-tight text-gray-900"
-                        sx={{
-                            mb: { xs: 0.75, md: 1 },
-                            fontSize: { xs: '1.8rem', sm: '2.2rem', md: '2.8rem' },
-                            fontWeight: 700,
-                            lineHeight: 1.2,
-                            wordBreak: 'break-word'
-                        }}
+                    <h2
+                        className="font-bold text-gray-900"
                     >
                         Find your <span className="text-blue-500 underline decoration-blue-500 decoration-2 underline-offset-4">dream job</span>
-                    </Typography>
-                    <Typography
-                        variant="h5"
-                        className="text-lg md:text-xl text-gray-600 mb-6 md:mb-8 max-w-3xl mx-auto leading-relaxed"
-                        sx={{
-                            mb: { xs: 1.5, md: 2 },
-                            opacity: 0.9,
-                            maxWidth: { xs: '100%', md: '600px' },
-                            mx: 'auto',
-                            fontSize: { xs: '0.9rem', sm: '1rem', md: '1.1rem' },
-                            px: { xs: 1, md: 0 }
-                        }}
+                    </h2>
+                    <h5
+                        className="text-gray-600"
                     >
                         Tìm cơ hội thực tập và việc làm đúng với đam mê của bạn.
-                    </Typography>
+                    </h5>
                 </Box>
 
                 {/* Search Bar */}
                 <Box
-                    className="mb-6 md:mb-8 w-full max-w-4xl mx-auto"
-                    sx={{
-                        mb: { xs: 1.5, md: 2 },
-                        width: '100%',
-                        maxWidth: '100%'
-                    }}
+                    className="w-full mx-auto justify-center flex"
                 >
                     <SearchBar
                         onSearch={onSearch}
@@ -90,17 +52,12 @@ export default function HeroSection({ onSearch, initialKeyword = '', initialLoca
                 </Box>
 
                 {/* Popular Searches */}
-                <Box
-                    className="text-center"
-                    sx={{ textAlign: 'center' }}
+                <div
+                    className="text-center flex flex-col lg:flex-row items-center gap-2 md:gap-4"
                 >
-                    <Typography
-                        variant="body2"
-                        className="text-white mb-3 text-sm font-bold"
-                        sx={{ mb: 1.5, opacity: 1, color: 'black', fontWeight: 600 }}
-                    >
+                    <span className="body-small text-black font-semibold">
                         Popular:
-                    </Typography>
+                    </span>
                     <Stack
                         direction="row"
                         spacing={1}
@@ -132,7 +89,7 @@ export default function HeroSection({ onSearch, initialKeyword = '', initialLoca
                             />
                         ))}
                     </Stack>
-                </Box>
+                </div>
             </Container>
         </Box>
     );
