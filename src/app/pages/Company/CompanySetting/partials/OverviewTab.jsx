@@ -3,19 +3,32 @@ import { ChevronDown } from 'lucide-react';
 import { LogoUpload } from './logoUpload';
 import { TagInput } from './TagInput';
 import { RichTextEditor } from './RichTextEditor';
+import { ContactInfoSection } from './ContactInfoSection';
+import { BackgroundUpload } from './BackgroundUpload';
+import { AddressSection } from './AddressSection';
+import { CompanyTypeSection } from './CompanyTypeSection';
 
 export function OverviewTab() {
     const [formData, setFormData] = useState({
         companyName: 'Nomad',
         website: 'https://www.nomad.com',
+        email: 'contact@nomad.com',
+        phone: '+84 123 456 789',
         locations: ['England', 'Japan', 'Australia'],
         employees: '1 - 50',
         industry: 'Technology',
+        companyTypes: ['Product', 'Startup'],
         foundedDay: '31',
         foundedMonth: 'July',
         foundedYear: '2021',
         techStack: ['HTML 5', 'CSS 3', 'Javascript'],
-        description: 'Nomad is part of the Information Technology industry. We believe travellers want to experience real life and meet local people. Nomad has 30 total employees across all of its locations and generates $1.30 million in sales.'
+        description: 'Nomad is part of the Information Technology industry. We believe travellers want to experience real life and meet local people. Nomad has 30 total employees across all of its locations and generates $1.30 million in sales.',
+        address: {
+            street: '123 Business Street',
+            province: 'Hồ Chí Minh',
+            district: 'District 1',
+            ward: 'Bến Nghé'
+        }
     });
 
     const handleInputChange = (field, value) => {
@@ -38,7 +51,7 @@ export function OverviewTab() {
 
                 {/* Company Logo */}
                 <div className="mb-8">
-                    <h4 className="mb-1">Company Logo</h4>  
+                    <h4 className="mb-1">Company Logo</h4>
                     <p className="text-gray-500 mb-4">This image will be shown publicly as company logo.</p>
                     <LogoUpload
                         currentLogo="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Cpath fill='%2334d399' d='M30,20 L50,30 L50,60 L30,70 L10,60 L10,30 Z'/%3E%3Cpath fill='%2310b981' d='M50,30 L70,20 L90,30 L90,60 L70,70 L50,60 Z'/%3E%3C/svg%3E"
@@ -46,9 +59,27 @@ export function OverviewTab() {
                     />
                 </div>
 
+                {/* Company Background */}
+                {/* <div className="mb-8">
+                    <h4 className="mb-1">Company Background Image</h4>
+                    <p className="text-gray-500 mb-4">This image will be shown as cover/background on your company profile.</p>
+                    <BackgroundUpload
+                        currentBackground={null}
+                        onBackgroundChange={(file) => console.log('Background changed:', file)}
+                    />
+                </div> */}
+
+                {/* Contact Information */}
+                <ContactInfoSection
+                    email={formData.email}
+                    phone={formData.phone}
+                    onEmailChange={(value) => handleInputChange('email', value)}
+                    onPhoneChange={(value) => handleInputChange('phone', value)}
+                />
+
                 {/* Company Details */}
                 <div>
-                    <h4 className="mb-1">Company Details</h4>       
+                    <h4 className="mb-1">Company Details</h4>
                     <p className="text-gray-500 mb-6">Introduce your company core info quickly to users by fill up company details</p>
 
                     <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
@@ -115,7 +146,7 @@ export function OverviewTab() {
                         </div>
 
                         {/* Industry */}
-                        <div>
+                        <div className="lg:col-span-2">
                             <label htmlFor="industry" className="block mb-2 text-gray-700">
                                 Industry
                             </label>
@@ -135,6 +166,14 @@ export function OverviewTab() {
                                 </select>
                                 <ChevronDown className="absolute right-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400 pointer-events-none" />
                             </div>
+                        </div>
+
+                        {/* Company Types */}
+                        <div className="lg:col-span-2">
+                            <CompanyTypeSection
+                                companyTypes={formData.companyTypes}
+                                onCompanyTypesChange={(types) => setFormData({ ...formData, companyTypes: types })}
+                            />
                         </div>
 
                         {/* Date Founded */}
@@ -193,6 +232,12 @@ export function OverviewTab() {
                     </div>
                 </div>
             </section>
+
+            {/* Company Address */}
+            <AddressSection
+                address={formData.address}
+                onAddressChange={(address) => setFormData({ ...formData, address })}
+            />
 
             {/* About Company */}
             <section>
