@@ -53,8 +53,6 @@ export default function ProfileDashboard() {
         <Box sx={{ bgcolor: 'background.default', minHeight: '100vh', py: 4 }}>
             <Container maxWidth="xl">
                 <Box sx={{ display: 'flex', gap: 4, alignItems: 'flex-start' }}>
-                    {/* Sidebar */}
-                    <ProfileSidebar user={user} />
 
                     {/* Main Content */}
                     <Box sx={{ flex: 1, maxWidth: 900 }}>
