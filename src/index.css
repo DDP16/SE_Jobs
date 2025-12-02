@@ -117,7 +117,8 @@ All colors MUST be HSL.
   --font-size-h4: 24px;
   --font-size-h5: 20px;
   --font-size-base: 16px;
-  --font-size-body-lg: 18px;
+  --font-size-lg: 18px;
+  --font-size-sm: 14px;
 
   /* === Animations === */
   --animate-gradient: gradient 8s linear infinite;
@@ -151,6 +152,50 @@ h5 {
   font-size: var(--font-size-h5);
 }
 
+@media (max-width: 1024px) {
+  h1 {
+    font-size: 48px;
+  }
+
+  h2 {
+    font-size:  36px;
+  }
+
+  h3 {
+    font-size:  28px;
+  }
+
+  h4 {
+    font-size:  22px;
+  }
+
+  h5 {
+    font-size:  18px;
+  }
+}
+
+@media (max-width: 768px) {
+  h1 {
+    font-size: 32px;
+  }
+
+  h2 {
+    font-size: 24px;
+  }
+
+  h3 {
+    font-size: 20px;
+  }
+
+  h4 {
+    font-size: 18px;
+  }
+
+  h5 {
+    font-size: 16px;
+  }
+}
+
 body {
   font-family: var(--font-primary);
 }
@@ -160,9 +205,14 @@ body {
   font-size: var(--font-size-base);
 }
 
+.body-small {
+  font-family: var(--font-primary);
+  font-size: var(--font-size-sm);
+}
+
 .body-large {
   font-family: var(--font-primary);
-  font-size: var(--font-size-body-lg);
+  font-size: var(--font-size-lg);
 }
 
 /* === Utilities Layer === */

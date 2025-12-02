@@ -82,7 +82,7 @@ export default function FilterToolbar({
     const selectedValues = activeMenu ? getSelectedValues(activeMenu) : [];
 
     return (
-        <Box className={`bg-white rounded-xl p-4 md:p-5 shadow-sm border border-gray-100 ${className}`}>
+        <Box className={`bg-white rounded-xl p-2 md:p-3 shadow-sm border border-gray-100 ${className}`}>
             <Stack direction="row" spacing={1.5} flexWrap="wrap" useFlexGap alignItems="center">
                 {showQuickFilters && filterOptions.map((option) => {
                     const hasSelection = getSelectedValues(option.id).length > 0;

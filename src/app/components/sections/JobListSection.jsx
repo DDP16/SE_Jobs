@@ -85,48 +85,63 @@ export default function JobListSection({ onJobSelect, selectedJob }) {
     }, [selectedJob, jobsList, jobsPerPage]);
 
     return (
-        <Box sx={{ flexGrow: 1, minWidth: 0 }}>
-            <Box className="bg-white rounded-xl p-4 md:p-5 shadow-sm border border-gray-100" sx={{ mb: 3 }}>
-                <Typography variant="h6" sx={{ fontWeight: 600, fontSize: '18px', color: 'text.primary' }}>
-                    {jobsList.length} {jobsList.length === 1 ? 'job' : 'jobs'} found
-                </Typography>
+        <Box sx={{ flexGrow: 1, minWidth: 0 }} className="space-y-3 md:space-y-5">
+            <Box className="bg-white rounded-xl p-2 md:p-3 shadow-sm border border-gray-100">
+                <div className='body-large font-semibold ml-2'>
+                    {jobsList.length} {jobsList.length <= 1 ? 'job' : 'jobs'} found
+                </div>
             </Box>
 
-            <Stack spacing={2} sx={{ mb: 5 }}>
-                {currentJobs.map((job) => {
-                    const keyId = job.id ?? job.job_id ?? job.jobId ?? job._id;
-                    const isSelected = selectedJob && ((selectedJob?.id ?? selectedJob?.job_id ?? selectedJob?.jobId ?? selectedJob?._id) === keyId);
+            {jobsList.length > 0 ? (
+                <Stack spacing={2}>
+                    {currentJobs.map((job) => {
+                        const keyId = job.id ?? job.job_id ?? job.jobId ?? job._id;
+                        const isSelected = selectedJob && ((selectedJob?.id ?? selectedJob?.job_id ?? selectedJob?.jobId ?? selectedJob?._id) === keyId);
 
-                    return (
-                        <Box
-                            key={keyId}
-                            ref={(el) => { if (keyId) itemRefs.current[keyId] = el; }}
-                            onClick={() => onJobSelect?.(job)}
-                            sx={{
-                                cursor: 'pointer',
-                                border: isSelected ? '2px solid' : '1px solid',
-                                borderColor: isSelected ? 'primary.main' : 'transparent',
-                                borderRadius: 2,
-                                transition: 'all 0.2s ease-in-out',
-                                '&:hover': {
-                                    borderColor: 'primary.light',
-                                    transform: 'translateY(-1px)',
-                                    boxShadow: 2,
-                                },
-                            }}
-                        >
-                            <JobCard
-                                job={job}
-                                showDescription={false}
-                                showActions={false}
-                                onBookmark={(job) => handleJobAction('bookmark', job)}
-                                variant="list"
-                                showPopup={false}
-                            />
-                        </Box>
-                    );
-                })}
-            </Stack>
+                        return (
+                            <Box
+                                key={keyId}
+                                ref={(el) => { if (keyId) itemRefs.current[keyId] = el; }}
+                                onClick={() => onJobSelect?.(job)}
+                                sx={{
+                                    cursor: 'pointer',
+                                    border: isSelected ? '2px solid' : '1px solid',
+                                    borderColor: isSelected ? 'primary.main' : 'transparent',
+                                    borderRadius: 2,
+                                    transition: 'all 0.2s ease-in-out',
+                                    '&:hover': {
+                                        borderColor: 'primary.light',
+                                        transform: 'translateY(-1px)',
+                                        boxShadow: 2,
+                                    },
+                                }}
+                            >
+                                <JobCard
+                                    job={job}
+                                    showDescription={false}
+                                    showActions={false}
+                                    onBookmark={(job) => handleJobAction('bookmark', job)}
+                                    variant="list"
+                                    showPopup={false}
+                                    onClick={() => { }}
+                                />
+                            </Box>
+                        );
+                    })}
+                </Stack>
+            ) : (
+                <Box sx={{ textAlign: 'center', py: 8 }}>
+                    <Typography variant="h6" sx={{ mb: 2, color: 'text.secondary' }}>
+                        No jobs found
+                    </Typography>
+                    <Typography variant="body2" sx={{ mb: 3, color: 'text.secondary' }}>
+                        Try adjusting your search criteria or filters
+                    </Typography>
+                    <Button variant="outlined" onClick={() => window.location.reload()}>
+                        Clear Filters
+                    </Button>
+                </Box>
+            )}
 
             {totalPages > 1 && (
                 <Box className="bg-white rounded-xl p-4 md:p-5 shadow-sm border border-gray-100" sx={{ mt: 4 }}>
@@ -179,20 +194,6 @@ export default function JobListSection({ onJobSelect, selectedJob }) {
                             }}
                         />
                     </Stack>
-                </Box>
-            )}
-
-            {jobsList.length === 0 && (
-                <Box sx={{ textAlign: 'center', py: 8 }}>
-                    <Typography variant="h6" sx={{ mb: 2, color: 'text.secondary' }}>
-                        No jobs found
-                    </Typography>
-                    <Typography variant="body2" sx={{ mb: 3, color: 'text.secondary' }}>
-                        Try adjusting your search criteria or filters
-                    </Typography>
-                    <Button variant="outlined" onClick={() => window.location.reload()}>
-                        Clear Filters
-                    </Button>
                 </Box>
             )}
         </Box>

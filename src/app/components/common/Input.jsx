@@ -10,7 +10,7 @@ export default function Input({
     helperText,
     type = 'text',
     fullWidth = true,
-    size = 'medium',
+    size = 'normal',
     variant = 'outlined',
     startAdornment,
     endAdornment,
