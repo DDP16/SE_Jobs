@@ -205,8 +205,6 @@ export default function MyJobs() {
         <Box sx={{ bgcolor: 'background.default', minHeight: '100vh', py: 2 }}>
             <Container maxWidth="xl">
                 <Box sx={{ display: 'flex', gap: 3, alignItems: 'flex-start' }}>
-                    {/* Sidebar */}
-                    <ProfileSidebar user={{ name: 'User' }} />
 
                     {/* Main Content */}
                     <Box sx={{ flex: 1, maxWidth: 900 }}>

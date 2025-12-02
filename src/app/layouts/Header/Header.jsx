@@ -33,6 +33,7 @@ import { logout } from "@/modules/services/authService";
 import { useDispatch } from "react-redux";
 import { CustomAlert } from "../../components";
 import { useCustomAlert } from "../../hooks/useCustomAlert";
+import NotificationsPopup from "../../components/common/NotificationsPopup";
 
 
 export default function Header() {
@@ -139,24 +140,32 @@ export default function Header() {
 
             <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
               {isLoggedIn ? (
-                <IconButton
-                  onClick={handleUserMenuOpen}
-                  sx={{
-                    border: '2px solid',
-                    borderColor: 'primary.main',
-                    p: 0.5
-                  }}
-                >
-                  <Avatar
+                <>
+                  {/* notifications component (handles its own state) */}
+                  <NotificationsMenu compact />
+
+                  <IconButton
+                    onClick={handleUserMenuOpen}
                     sx={{
-                      width: 25,
-                      height: 25,
-                      bgcolor: 'primary.main',
+                      border: '2px solid',
+                      borderColor: 'primary.main',
+                      p: 0.25,
+                      ml: 0.5
                     }}
-                    alt={userName}
-                    src="/broken-image.jpg"
-                  />
-                </IconButton>
+                  >
+                      <Avatar
+                        sx={{
+                          width: 32,
+                          height: 32,
+                          bgcolor: 'primary.main',
+                          fontSize: '0.9rem',
+                          fontWeight: 600
+                        }}
+                      >
+                        {userName.charAt(0).toUpperCase()}
+                      </Avatar>
+                  </IconButton>
+                </>
               ) : (
                 <Button
                   variant="outlined"
@@ -257,12 +266,15 @@ export default function Header() {
 
             {isLoggedIn ? (
               <>
+                {/* notifications component (handles its own state) */}
+                <NotificationsPopup />
                 <IconButton
                   onClick={handleUserMenuOpen}
                   sx={{
                     border: '2px solid',
                     borderColor: 'primary.main',
-                    p: 0.5
+                    p: 0.25,
+                    ml: 0.5
                   }}
                 >
                   <Avatar
