@@ -25,7 +25,7 @@ export default function ProfileSidebar({ user }) {
         { icon: <DashboardIcon />, text: t('sidebar.dashboard'), path: '/profile/dashboard' },
         { icon: <PersonIcon />, text: t('sidebar.profile'), path: '/profile/user-profile' },
         { icon: <WorkIcon />, text: t('sidebar.myJobs'), path: '/profile/my-jobs' },
-        { icon: <NotificationsIcon />, text: t('sidebar.notifications'), path: '/profile/notifications' },
+        // { icon: <NotificationsIcon />, text: t('sidebar.notifications'), path: '/profile/notifications' },
         { icon: <SettingsIcon />, text: t('sidebar.settings'), path: '/profile/settings' },
     ];
 
