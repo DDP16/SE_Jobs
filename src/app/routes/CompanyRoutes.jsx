@@ -8,7 +8,6 @@ import {
     CompanySetting,
     PostJob,
 } from "@/pages";
-import { Outlet, Route, Routes } from "react-router-dom";
 
 export default function CompanyRoutes() {
     return (

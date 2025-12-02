@@ -24,7 +24,7 @@ export default function JobHeader({ job = {} }) {
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5 }}
-        className="bg-white p-8 shadow-sm mb-8 border border-gray-200 "
+        className="bg-white p-6 shadow-sm border border-gray-200 rounded-xl"
       >
         <div className="flex items-center justify-between">
           <div className="flex gap-6">
@@ -43,11 +43,11 @@ export default function JobHeader({ job = {} }) {
             </div>
           </div>
           <div className="flex gap-3">
-            <Button variant="outline" size="icon">
+            <Button variant="outline" size="icon" className="rounded-md">
               <Share2 className="w-5 h-5" />
             </Button>
             <Button
-              className="bg-primary hover:bg-primary/90 text-white px-8"
+              className="bg-primary hover:bg-primary/90 text-white font-semibold px-6 rounded-lg"
               onClick={() => setIsModalOpen(true)}
             >
               {t("apply")}

@@ -54,7 +54,7 @@ export default function FindJobs() {
     return (
         <>
             <HeroSection onSearch={handleSearch} />
-            <Container maxWidth="xl" className="py-4 md:py-6">
+            <div className="w-full px-10 py-2 md:py-3 space-y-3 md:space-y-5">
                 {/* Top filter toolbar */}
                 <FilterToolbar
                     onFilterClick={openFilter}
@@ -62,20 +62,13 @@ export default function FindJobs() {
                     onQuickFilterChange={handleQuickFilterChange}
                     activeFilterCount={activeFilterCount}
                     appliedFilters={appliedFilters}
-                    className="mb-4 md:mb-6"
                 />
 
-                <Stack
-                    direction={{ xs: 'column', md: 'row' }}
-                    spacing={{ xs: 3, md: 4 }}
-                    className="pb-6 md:pb-8 items-start"
-                    sx={{
-                        // keep the two columns aligned and allow independent scrolling
-                        alignItems: 'stretch'
-                    }}
+                <div
+                    className="items-start space-x-3 md:space-x-5 flex flex-col md:flex-row"
                 >
-                    {/* Middle - Job List */}
-                    <Box className="flex-1 md:w-96 min-w-0">
+                    {/* LEFT - Job List */}
+                    <Box className={`${selectedJob ? 'flex-2' : 'flex-3'} w-full min-w-0`}>
                         {status === 'loading' && jobs.length === 0 ? (
                             <Box className="bg-white rounded-xl p-8 shadow-sm border border-gray-100">
                                 <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 2, py: 8 }}>
@@ -100,10 +93,10 @@ export default function FindJobs() {
                     {/* Right - Job Description (hidden on small screens) */}
                     <Box
                         ref={jobDescRef}
-                        className={`flex-1 min-w-0 hidden md:block`}
+                        className={`${selectedJob ? 'flex-3' : 'flex-2'} min-w-0 hidden md:block sticky top-4 rounded-xl border border-gray-200 shadow-sm`}
                         sx={{
                             overflow: 'auto',
-                            maxHeight: { xs: '50vh', md: '72vh' },
+                            maxHeight: '96vh',
                             scrollbarWidth: 'none', // Firefox
                             '&::-webkit-scrollbar': { width: 0, height: 0 }, // WebKit
                         }}
@@ -111,7 +104,7 @@ export default function FindJobs() {
                         {selectedJob ? (
                             <JobDescription
                                 job={selectedJob}
-                                layout={layoutType.half_width}
+                                layout={layoutType.preview}
                             />
                         ) : (
                             <Box className="p-12 md:p-16 text-center bg-white rounded-xl border border-gray-200 shadow-sm">
@@ -127,8 +120,8 @@ export default function FindJobs() {
                             </Box>
                         )}
                     </Box>
-                </Stack>
-            </Container>
+                </div>
+            </div>
 
             {/* Filter popup component */}
             <FilterDialog
