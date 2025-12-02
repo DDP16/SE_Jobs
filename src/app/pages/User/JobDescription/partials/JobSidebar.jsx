@@ -3,11 +3,16 @@ import { BorderLinearProgress } from "@/components";
 import { useSelector } from "react-redux";
 import { useTranslation } from "react-i18next";
 import { Badge } from "@/components/ui";
+import { ArrowRight } from "lucide-react";
 
 export default function JobSidebar({ job }) {
   const { t } = useTranslation();
   const jobStatus = useSelector(state => state.jobs.status);
   const jobError = useSelector(state => state.jobs.error);
+  const companyLogo = job?.company?.logo || job.logo;
+  const companyName = typeof job?.company === 'string'
+    ? job.company
+    : job?.company?.name || "Company Name";
 
   if (jobStatus === "loading" && !job) {
     return (
@@ -93,15 +98,32 @@ export default function JobSidebar({ job }) {
       className="space-y-8"
     >
       <h4 className="text-lg font-bold text-foreground mb-4">
+        {t("company.info.title")}
+      </h4>
+
+      <div className="flex items-center mb-6 gap-4">
+        <img
+          src={companyLogo}
+          alt={`${companyName} Logo`}
+          className="w-14 h-14 object-contain"
+        />
+        <div>
+          <h4 className="text-2xl font-bold text-foreground">{companyName}</h4>
+          <a
+            href="#"
+            className="text-primary flex items-center gap-1 hover:underline mt-1"
+          >
+            {t("company.read_more_about", { companyName })}
+            <ArrowRight className="w-4 h-4" />
+          </a>
+        </div>
+      </div>
+
+      <h4 className="text-lg font-bold text-foreground mb-4">
         {t("job.about_this_role")}
       </h4>
 
       <div className="space-y-4">
-        <div className="flex items-center gap-1 text-sm">
-          <span className="text-success font-medium">{t("applied", { count: job.applied || 0 })}</span>
-          <span className="text-muted-foreground">{t("of")} {job.capacity || 0} {t("capacity")}</span>
-        </div>
-        <BorderLinearProgress variant="determinate" value={job.applied && job.capacity ? (job.applied / job.capacity) * 100 : 0} />
         <div className="space-y-2">
           <div className="flex justify-between text-sm">
             <span className="text-muted-foreground">{t("job.apply_before")}</span>

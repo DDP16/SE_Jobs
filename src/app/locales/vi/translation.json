@@ -143,6 +143,16 @@
         "open_jobs": {
             "title": "Việc làm đang tuyển",
             "show_all": "Xem tất cả việc làm"
+        },
+        "tech_stack": {
+            "title": "Công nghệ sử dụng",
+            "description": "Các công nghệ mà {{companyName}} sử dụng trong các dự án của họ",
+            "view_all": "Xem tất cả công nghệ"
+        },
+        "office_location": {
+            "title": "Vị trí văn phòng",
+            "description": "Các vị trí văn phòng của {{companyName}} trên toàn cầu",
+            "view_all": "Xem tất cả quốc gia"
         }
     },
     "sidebar": {
