@@ -49,7 +49,7 @@ export default function Header() {
 
   // Check if user is logged in 
   const isLoggedIn = localStorage.getItem(AUTHENTICATED) === 'true';
-  const userName = localStorage.getItem(USER_NAME);
+  const userName = localStorage.getItem(USER_NAME) || '';
 
   const handleLangChange = (_e, newLang) => {
     if (newLang) i18n.changeLanguage(newLang);
@@ -142,7 +142,7 @@ export default function Header() {
               {isLoggedIn ? (
                 <>
                   {/* notifications component (handles its own state) */}
-                  <NotificationsMenu compact />
+                  <NotificationsPopup compact />
 
                   <IconButton
                     onClick={handleUserMenuOpen}
@@ -162,7 +162,7 @@ export default function Header() {
                           fontWeight: 600
                         }}
                       >
-                        {userName.charAt(0).toUpperCase()}
+                        {(userName && userName.length > 0) ? userName.charAt(0).toUpperCase() : 'U'}
                       </Avatar>
                   </IconButton>
                 </>
