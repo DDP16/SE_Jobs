@@ -7,6 +7,7 @@ import {
     CompanyDashboard as Dashboard,
     CompanySetting,
     PostJob,
+    JobListing,
 } from "@/pages";
 
 export default function CompanyRoutes() {
@@ -22,6 +23,7 @@ export default function CompanyRoutes() {
                 <Route path="applicants/:id" element={<ApplicantDetails />} />
                 <Route path="settings" element={<CompanySetting />} />
                 <Route path="post-job" element={<PostJob />} />
+                <Route path="job-listing" element={<JobListing />} />
                 <Route path="*" element={<PageNotFound />} />
             </Route>
         </Routes>

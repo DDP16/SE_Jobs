@@ -4,7 +4,7 @@ import { Link } from "react-router-dom";
 
 export default function TopBar() {
   return (
-    <header className="fixed top-0 left-[16.66%] right-0 h-16 border-b border-l border-gray-300 bg-neutral-100 z-10 flex items-center justify-between px-6">
+    <header className="h-16 border-b border-l border-gray-300 bg-neutral-100 z-10 flex items-center justify-between px-6">
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
           <button className="flex items-center gap-3 hover:opacity-80 transition-opacity">

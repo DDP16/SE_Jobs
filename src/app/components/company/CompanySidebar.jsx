@@ -44,6 +44,7 @@ export default function CompanySidebar() {
           if (item.name === "Dashboard") to = "/";
           if (item.name === "Company Profile") to = "/company";
           if (item.name === "All Applicants") to = "/applicants/1";
+          if (item.name === "Job Listing") to = "/job-listing";
 
           return (
             <NavLink
