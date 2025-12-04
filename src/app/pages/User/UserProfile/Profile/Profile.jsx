@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { Container, Box } from '@mui/material';
+import { Container, Box, CircularProgress, Alert } from '@mui/material';
+import { useUserProfile } from '../../../../hooks/useUserProfile';
 import {
     InformationModal,
     IntroductionModal,
@@ -10,10 +11,9 @@ import {
     SkillsModal,
     CertificatesModal,
     AwardsModal,
-    ProfileSidebar
 } from '../../../../components';
 
-// Partials
+// Profile partials/sections
 import ProfileHeader from './partials/ProfileHeader';
 import CVUpload from './partials/CVUpload';
 import IntroductionSection from './partials/IntroductionSection';
@@ -29,34 +29,44 @@ import {
 } from './partials/ProfileSections';
 
 export default function Profile() {
-    // User Data
-    const [user, setUser] = useState({
-        name: 'Sang Trinh',
-        email: 'test@gmail.com',
-        phone: '012345679899',
-        dateOfBirth: '',
-        gender: '',
-        currentAddress: '',
-        personalLinks: '',
-    });
+    // Fetch real user profile data from API
+    const { profileData, isLoading, error } = useUserProfile();
 
-    // Profile Data
-    const [cvFile, setCvFile] = useState(null);
-    const [introduction, setIntroduction] = useState('');
-    const [experiences, setExperiences] = useState([]);
-    const [educations, setEducations] = useState([]);
-    const [skills, setSkills] = useState([]);
-    const [languages, setLanguages] = useState([]);
-    const [projects, setProjects] = useState([]);
-    const [certificates, setCertificates] = useState([]);
-    const [awards, setAwards] = useState([]);
+    // Extract student_info from profileData (BE auto joins this data for Student role)
+    const studentInfo = profileData?.student_info || {};
 
-    // UI State
+    // Map user data from profileData to component format
+    const user = {
+        name: `${profileData?.first_name || ''} ${profileData?.last_name || ''}`.trim(),
+        email: profileData?.email || '',
+        phone: profileData?.phone || '',
+        dateOfBirth: studentInfo?.date_of_birth || '',
+        gender: studentInfo?.gender || '',
+        currentAddress: studentInfo?.address || '',
+        personalLinks: studentInfo?.personal_links || '',
+    };
+
+    // Map profile sections from student_info
+    const cvFile = studentInfo?.cv_url ? {
+        name: 'CV.pdf',
+        url: studentInfo.cv_url
+    } : null;
+    
+    const introduction = studentInfo?.introduction || '';
+    const experiences = studentInfo?.experiences || [];
+    const educations = studentInfo?.educations || [];
+    const skills = studentInfo?.skills || [];
+    const languages = studentInfo?.languages || [];
+    const projects = studentInfo?.projects || [];
+    const certificates = studentInfo?.certificates || [];
+    const awards = studentInfo?.awards || [];
+
+    // UI State Management
     const [showAllExperiences, setShowAllExperiences] = useState(false);
     const [showAllEducations, setShowAllEducations] = useState(false);
     const [completionPercentage, setCompletionPercentage] = useState(5);
 
-    // Modal State
+    // Modal State Management - Controls which modal is currently open
     const [modals, setModals] = useState({
         information: false,
         introduction: false,
@@ -69,7 +79,7 @@ export default function Profile() {
         awards: false,
     });
 
-    // Selected Items
+    // Selected Items State - Tracks which item is being edited
     const [selectedEducation, setSelectedEducation] = useState(null);
     const [selectedExperience, setSelectedExperience] = useState(null);
     const [selectedSkillGroup, setSelectedSkillGroup] = useState(null);
@@ -77,7 +87,7 @@ export default function Profile() {
     const [selectedCertificate, setSelectedCertificate] = useState(null);
     const [selectedAward, setSelectedAward] = useState(null);
 
-    // Calculate completion percentage
+    // Calculate profile completion percentage based on filled sections
     useEffect(() => {
         const sections = [
             user.name, user.email, introduction,
@@ -89,11 +99,12 @@ export default function Profile() {
         setCompletionPercentage(Math.round((completed / sections.length) * 100));
     }, [user, introduction, experiences, educations, skills, languages, projects, certificates]);
 
-    // Modal Helpers
+    // Modal Control Helpers
     const openModal = (modalName) => setModals(prev => ({ ...prev, [modalName]: true }));
     const closeModal = (modalName) => setModals(prev => ({ ...prev, [modalName]: false }));
 
-    // CV Handlers
+    // CV Upload/Delete/View Handlers
+    // TODO: Integrate API call to save CV file to backend
     const handleCVFileChange = (file) => {
         setCvFile({
             name: file.name,
@@ -112,7 +123,8 @@ export default function Profile() {
         }
     };
 
-    // Information Handlers
+    // Personal Information Handlers
+    // TODO: Integrate API call to update user information
     const handleSaveInformation = (formData) => {
         setUser(prev => ({
             ...prev,
@@ -128,17 +140,20 @@ export default function Profile() {
         closeModal('information');
     };
 
+    // Introduction/Bio Handlers
+    // TODO: Integrate API call to update introduction
     const handleSaveIntroduction = (formData) => {
         setIntroduction(formData.introduction || formData.content || '');
         closeModal('introduction');
     };
 
-    // Experience Handlers
+    // Experience Section Handlers
     const handleEditExperience = (exp) => {
         setSelectedExperience(exp);
         openModal('experience');
     };
 
+    // TODO: Integrate API call to save/update experience
     const handleSaveExperience = (formData) => {
         const experienceData = {
             id: selectedExperience?.id || Date.now(),
@@ -154,14 +169,17 @@ export default function Profile() {
         };
 
         if (selectedExperience) {
+            // Update existing experience
             setExperiences(prev => prev.map(exp => exp.id === selectedExperience.id ? experienceData : exp));
         } else {
+            // Add new experience
             setExperiences(prev => [...prev, experienceData]);
         }
         setSelectedExperience(null);
         closeModal('experience');
     };
 
+    // TODO: Integrate API call to delete experience
     const handleDeleteExperience = (id) => {
         if (window.confirm('Bạn có chắc chắn muốn xóa thông tin công việc này?')) {
             setExperiences(prev => prev.filter(exp => exp.id !== id));
@@ -269,6 +287,38 @@ export default function Profile() {
             setAwards(prev => prev.filter(award => award.id !== id));
         }
     };
+
+    // Loading State
+    if (isLoading) {
+        return (
+            <Container maxWidth="lg" sx={{ py: 10, textAlign: 'center' }}>
+                <CircularProgress />
+                <Box sx={{ mt: 2 }}>Đang tải thông tin profile...</Box>
+            </Container>
+        );
+    }
+
+    // Error State
+    if (error) {
+        return (
+            <Container maxWidth="lg" sx={{ py: 10 }}>
+                <Alert severity="error">
+                    Lỗi khi tải profile: {error}
+                </Alert>
+            </Container>
+        );
+    }
+
+    // No Data
+    if (!profileData) {
+        return (
+            <Container maxWidth="lg" sx={{ py: 10 }}>
+                <Alert severity="warning">
+                    Không tìm thấy thông tin profile
+                </Alert>
+            </Container>
+        );
+    }
 
     return (
         <Box sx={{ bgcolor: 'background.default', minHeight: '100vh', py: 4 }}>

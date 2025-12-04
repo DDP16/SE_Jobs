@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import { ArrowForward } from '@mui/icons-material';
 import JobCard from '../features/JobCard';
 import { useSelector, useDispatch } from 'react-redux';
@@ -21,9 +21,25 @@ export default function HotJobTopCVSection() {
     const totalPages = pagination.totalPages || 1;
     const totalItems = pagination.totalItems || 0;
 
+    const sectionRef = useRef(null);
+
     const handlePageChange = (page) => {
         setCurrentPage(page);
-        window.scrollTo({ top: 0, behavior: 'smooth' });
+
+        // Only scroll the section into view if it's not fully visible in the viewport.
+        try {
+            const el = sectionRef.current;
+            if (el && el.getBoundingClientRect) {
+                const rect = el.getBoundingClientRect();
+                const fullyVisible = rect.top >= 0 && rect.bottom <= (window.innerHeight || document.documentElement.clientHeight);
+                if (!fullyVisible) {
+                    el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                }
+            }
+        } catch (err) {
+            // fallback: do nothing so the page doesn't jump to top
+            console.warn('Pagination scroll fallback', err);
+        }
     };
 
     // Generate smart pagination numbers
@@ -74,7 +90,7 @@ export default function HotJobTopCVSection() {
 
     return (
         <div className="py-8 md:py-16 bg-gray-50">
-            <div className="container mx-auto px-4 sm:px-6 md:px-8 max-w-7xl">
+            <div ref={sectionRef} className="container mx-auto px-4 sm:px-6 md:px-8 max-w-7xl">
                 {/* Header */}
                 <div className="flex justify-between items-center mb-8">
                     <h2 className="text-3xl md:text-4xl font-bold text-gray-900">
