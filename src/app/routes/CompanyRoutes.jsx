@@ -9,6 +9,7 @@ import {
     PostJob,
     JobListing,
 } from "@/pages";
+import ApplicantsTable from "../pages/Company/ApplicantList/ApplicantList";
 
 export default function CompanyRoutes() {
     return (
@@ -19,8 +20,9 @@ export default function CompanyRoutes() {
                 </CompanyLayout>
             }>
                 <Route index element={<Dashboard />} />
-                <Route path="company" element={<CompanyProfile />} />
+                <Route path="company/:id" element={<CompanyProfile />} />
                 <Route path="applicants/:id" element={<ApplicantDetails />} />
+                <Route path="applicants" element={<ApplicantsTable />} />
                 <Route path="settings" element={<CompanySetting />} />
                 <Route path="post-job" element={<PostJob />} />
                 <Route path="job-listing" element={<JobListing />} />
