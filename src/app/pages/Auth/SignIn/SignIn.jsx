@@ -4,8 +4,8 @@ import { Eye, EyeOff } from "lucide-react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { CustomAlert, LangButtonGroup } from "@/components";
 import { srcAsset } from "../../../lib";
-import { validateEmail, validatePassword, fetchProfileByRole } from "../../../modules";
-import { loginWithEmail, getMe } from "../../../modules";
+import { validateEmail, validatePassword } from "../../../modules";
+import { loginWithEmail } from "../../../modules";
 import { useCustomAlert } from "../../../hooks/useCustomAlert";
 import { useDispatch } from "react-redux";
 import { useTranslation } from "react-i18next";
@@ -52,16 +52,6 @@ export default function SignIn() {
         const result = await dispatch(loginWithEmail({ email, password }));
         if (loginWithEmail.fulfilled.match(result)) {
           console.log("Login successful: ", result.payload);
-          
-          // getme data
-          const meResult = await dispatch(getMe());
-          
-          // auto fecth profile data
-          if (getMe.fulfilled.match(meResult)) {
-            const { userId, userRole } = result.payload;
-            await fetchProfileByRole(dispatch, userId, userRole);
-          }
-          
           showSuccess("Login successful!");
           nav(from);
         } else {

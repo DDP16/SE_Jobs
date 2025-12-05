@@ -10,13 +10,14 @@ import { useTranslation } from 'react-i18next';
 
 export default function SkillsModal({ open, onOpenChange, initialData, onSave }) {
     const { t } = useTranslation();
-    // Skills come as simple string array from API: ["JavaScript", "React", ...]
-    const [skills, setSkills] = useState(initialData || []);
+    const [groupName, setGroupName] = useState(initialData?.groupName || initialData?.name || "Core Skills");
+    const [skills, setSkills] = useState(initialData?.skills || []);
     const [skillInput, setSkillInput] = useState("");
+    const [selectedExperience, setSelectedExperience] = useState("");
     const maxSkills = 20;
     const [errors, setErrors] = useState({});
 
-    // Sample skills for autocomplete
+    // Sample skills for autocomplete (in real app, this would come from API)
     const availableSkills = [
         "JavaScript",
         "Python",
@@ -49,28 +50,46 @@ export default function SkillsModal({ open, onOpenChange, initialData, onSave })
         "REST API",
     ];
 
-    // Update when initialData changes
+    const experienceLevels = [
+        { value: "< 1 year", label: "< 1 year" },
+        { value: "1 year", label: "1 year" },
+        { value: "2 years", label: "2 years" },
+        { value: "3 years", label: "3 years" },
+        { value: "4 years", label: "4 years" },
+        { value: "5+ years", label: "5+ years" },
+    ];
+
+    // Update form data when initialData changes
     useEffect(() => {
-        if (Array.isArray(initialData)) {
-            setSkills(initialData);
+        if (initialData) {
+            setGroupName(initialData?.groupName || initialData?.name || "Core Skills");
+            setSkills(initialData?.skills || []);
         } else {
+            setGroupName("Core Skills");
             setSkills([]);
         }
         setSkillInput("");
+        setSelectedExperience("");
         setErrors({});
     }, [initialData, open]);
 
     const handleAddSkill = () => {
         const normalizedSkill = (skillInput || "").trim();
-        if (!normalizedSkill || skills.length >= maxSkills) return;
+        if (!normalizedSkill || !selectedExperience || skills.length >= maxSkills) return;
 
-        const skillExists = skills.some((skill) =>
-            skill.toLowerCase() === normalizedSkill.toLowerCase()
+        const skillExists = skills.some(
+            (skill) => skill.name.toLowerCase() === normalizedSkill.toLowerCase()
         );
 
         if (!skillExists) {
-            setSkills((prev) => [...prev, normalizedSkill]);
+            const newSkill = {
+                id: Date.now(),
+                name: normalizedSkill,
+                experience: selectedExperience,
+            };
+            setSkills((prev) => [...prev, newSkill]);
             setSkillInput("");
+            setSelectedExperience("");
             setErrors((prev) => {
                 if (!prev.skills) return prev;
                 const updated = { ...prev };
@@ -80,18 +99,31 @@ export default function SkillsModal({ open, onOpenChange, initialData, onSave })
         }
     };
 
-    const handleRemoveSkill = (skillToRemove) => {
-        setSkills((prev) => prev.filter((skill) => skill !== skillToRemove));
+    const handleRemoveSkill = (skillId) => {
+        setSkills((prev) => prev.filter((skill) => skill.id !== skillId));
     };
 
     const handleSave = () => {
-        if (!Array.isArray(skills) || skills.length === 0) {
-            setErrors({ skills: 'modals.skills.errors.skillsRequired' });
+        const normalizedGroupName = "Core Skills";
+        const { isValid, errors: validationErrors, sanitizedData } = validateSkillGroupForm({
+            groupName: normalizedGroupName,
+            skills,
+        });
+
+        if (!isValid) {
+            setErrors(validationErrors);
             return;
         }
 
+        setGroupName(sanitizedData.groupName);
+        setSkills(sanitizedData.skills);
+
         if (onSave) {
-            onSave(skills);
+            onSave({
+                groupName: sanitizedData.groupName,
+                name: sanitizedData.groupName,
+                skills: sanitizedData.skills,
+            });
         }
         onOpenChange(false);
     };
@@ -150,7 +182,7 @@ export default function SkillsModal({ open, onOpenChange, initialData, onSave })
 
                             {/* Skill Input Row */}
                             <div className="grid grid-cols-12 gap-2">
-                                <div className="col-span-10">
+                                <div className="col-span-5">
                                     <Autocomplete
                                         freeSolo
                                         options={availableSkills}
@@ -185,11 +217,44 @@ export default function SkillsModal({ open, onOpenChange, initialData, onSave })
                                         )}
                                     />
                                 </div>
+                                <div className="col-span-5">
+                                    <FormControl fullWidth>
+                                        <Select
+                                            value={selectedExperience}
+                                            onChange={(e) => setSelectedExperience(e.target.value)}
+                                            displayEmpty
+                                            sx={{
+                                                height: "48px",
+                                                "& .MuiOutlinedInput-notchedOutline": {
+                                                    borderColor: "var(--color-neutrals-40)",
+                                                },
+                                                "&:hover .MuiOutlinedInput-notchedOutline": {
+                                                    borderColor: "var(--color-primary)",
+                                                },
+                                                "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
+                                                    borderColor: "var(--color-primary)",
+                                                },
+                                                "& .MuiSelect-icon": {
+                                                    color: "var(--color-neutrals-40)",
+                                                },
+                                            }}
+                                        >
+                                            <MenuItem value="" disabled>
+                                                {t('modals.skills.selectExperience')}
+                                            </MenuItem>
+                                            {experienceLevels.map((level) => (
+                                                <MenuItem key={level.value} value={level.value}>
+                                                    {level.label}
+                                                </MenuItem>
+                                            ))}
+                                        </Select>
+                                    </FormControl>
+                                </div>
                                 <div className="col-span-2">
                                     <Button
                                         type="button"
                                         onClick={handleAddSkill}
-                                            disabled={!skillInput?.trim?.() || skills.length >= maxSkills}
+                                        disabled={!skillInput?.trim?.() || !selectedExperience || skills.length >= maxSkills}
                                         className="h-12 w-full bg-primary hover:bg-primary/90 text-white font-medium"
                                     >
                                         <Plus className="h-5 w-5" />
@@ -202,9 +267,9 @@ export default function SkillsModal({ open, onOpenChange, initialData, onSave })
                                 <div className="flex flex-wrap gap-2 mt-3">
                                     {skills.map((skill) => (
                                         <Chip
-                                            key={skill}
-                                            label={skill}
-                                            onDelete={() => handleRemoveSkill(skill)}
+                                            key={skill.id}
+                                            label={`${skill.name} (${skill.experience})`}
+                                            onDelete={() => handleRemoveSkill(skill.id)}
                                             sx={{
                                                 bgcolor: "#E8E0FF",
                                                 color: "#5E35B1",
