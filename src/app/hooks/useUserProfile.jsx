@@ -72,7 +72,7 @@ export const useUserProfile = () => {
         
         // ADMIN: No additional fetch needed, basic user data from getMe() is sufficient
         
-    }, [isAuthenticated, userId, userRole, userProfile, companyProfile, userStatus, companyStatus, dispatch]);
+    }, [isAuthenticated, userId, userRole, userStatus, companyStatus, dispatch]);
 
     // Helper function to return appropriate data based on role
     const getProfileData = () => {

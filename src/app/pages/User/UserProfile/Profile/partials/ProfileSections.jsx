@@ -4,6 +4,11 @@ import { Edit as EditIcon, Delete as DeleteIcon, Add as AddIcon, Link as LinkIco
 
 // Skills Section
 export function SkillsSection({ skills, onEdit, onDelete, onAdd }) {
+  const handleDeleteSkill = (skillToDelete) => {
+    const updatedSkills = skills.filter(skill => skill !== skillToDelete);
+    onDelete(updatedSkills);
+  };
+
   return (
     <Box sx={{ bgcolor: 'background.paper', p: 4, borderRadius: 2, border: 1, borderColor: 'divider', mb: 2 }}>
       <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', mb: 3 }}>
@@ -18,38 +23,35 @@ export function SkillsSection({ skills, onEdit, onDelete, onAdd }) {
           Liệt kê các kỹ năng chuyên môn của bạn
         </Typography>
       ) : (
-        skills.map((skillGroup) => (
-          <Box key={skillGroup.id} sx={{ mb: 4, '&:last-child': { mb: 0 } }}>
-            <Box sx={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', mb: 1 }}>
-              <Typography variant="body1" sx={{ fontWeight: 600 }}>{skillGroup.groupName || skillGroup.name}</Typography>
-              <Box sx={{ display: 'flex', gap: 0.5 }}>
-                <IconButton
-                  onClick={() => onEdit(skillGroup)}
-                  size="small"
-                  sx={{ p: 0.5, color: 'primary.main', '&:hover': { bgcolor: 'primary.lighter' } }}
-                >
-                  <EditIcon sx={{ fontSize: 18 }} />
-                </IconButton>
-                <IconButton
-                  onClick={() => onDelete(skillGroup.id)}
-                  size="small"
-                  sx={{ p: 0.5, color: 'text.secondary', '&:hover': { bgcolor: 'grey.100' } }}
-                >
-                  <DeleteIcon sx={{ fontSize: 18 }} />
-                </IconButton>
-              </Box>
-            </Box>
-            <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 1 }}>
-              {skillGroup.skills?.map((skill, index) => (
-                <Chip
-                  key={index}
-                  label={`${skill.name} (${skill.experience})`}
-                  sx={{ bgcolor: '#E8E0FF', color: '#5E35B1', fontWeight: 500, borderRadius: 2 }}
-                />
-              ))}
-            </Box>
-          </Box>
-        ))
+        <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 1 }}>
+          {skills.map((skill) => (
+            <Chip
+              key={skill}
+              label={skill}
+              onDelete={() => handleDeleteSkill(skill)}
+              size="small"
+              sx={{ 
+                bgcolor: '#F3F4F6', 
+                color: '#374151', 
+                fontWeight: 500, 
+                borderRadius: 2,
+                transition: 'all 0.2s ease',
+                '&:hover': {
+                  bgcolor: '#3B82F6',
+                  color: '#FFFFFF',
+                },
+                '& .MuiChip-deleteIcon': {
+                  color: 'currentColor',
+                  fontSize: '16px',
+                  marginRight: '2px',
+                  '&:hover': {
+                    opacity: 0.8,
+                  },
+                },
+              }}
+            />
+          ))}
+        </Box>
       )}
     </Box>
   );
