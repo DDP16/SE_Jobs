@@ -11,11 +11,8 @@ export {
     validateLanguagesList,
 } from './utils/validator';
 
-export { fetchProfileByRole, clearProfileData } from './utils/profileHelper';
-
 export { loginWithEmail, register, getMe, logout } from './services/authService';
 export { getProvinces, getWards } from './services/addressService';
 export { getJobs, getJobById } from './services/jobsService';
 export { getCompanies, getCompany, createCompany, updateCompany, deleteCompany } from './services/companyService';
 export { getTopCVJobs } from './services/topCVService';
-export { getUserById, updateUser } from './services/userService';

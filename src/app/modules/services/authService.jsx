@@ -76,8 +76,6 @@ export const register = createAsyncThunk(
             first_name,
             last_name,
             confirm_password: password,
-            // requirements for Student accounts
-            student_info: {},
         };
 
         try {
