@@ -167,6 +167,7 @@ export const logout = createAsyncThunk(
                             const data = await res.json();
                             if (res.ok) {
                                 resolve(data);
+                                clearAuthStorage();
                             } else {
                                 reject(data.message || "Logout failed");
                             }

@@ -38,14 +38,8 @@ export const useUserProfile = () => {
     
     // Get authentication state from Redux
     const { user: authUser, userId, userRole, isAuthenticated } = useSelector((state) => state.auth);
-    
-    // Get profile data from appropriate Redux slice based on role
-    const userProfile = useSelector((state) => state.user?.user);
-    const companyProfile = useSelector((state) => state.company?.company);
-    
-    // Get loading status for each profile type
-    const userStatus = useSelector((state) => state.user?.status);
-    const companyStatus = useSelector((state) => state.company?.status);
+    const { user: userProfile, status: userStatus, error: userError } = useSelector((state) => state.user);
+    const { company: companyProfile, status: companyStatus, error: companyError } = useSelector((state) => state.company);
 
     // Auto-fetch profile data when user is authenticated
     useEffect(() => {
@@ -54,25 +48,29 @@ export const useUserProfile = () => {
 
         const role = userRole?.toLowerCase();
         
-        // STUDENT: Fetch user profile (BE automatically joins student_info)
-        if (role === Role.STUDENT.toLowerCase()) {
-            // Only fetch if we don't have data yet or status is idle
-            if (!userProfile || userStatus === 'idle') {
-                dispatch(getUserById(userId));
+        try {
+            // STUDENT: Fetch user profile (BE automatically joins student_info)
+            if (role === Role.STUDENT.toLowerCase()) {
+                // Only fetch if we don't have data yet or status is idle
+                if (!userProfile || userStatus === 'idle') {
+                    dispatch(getUserById(userId));
+                }
             }
-        }
-        
-        // EMPLOYER: Fetch company profile
-        else if (role === Role.EMPLOYER.toLowerCase()) {
-            // Only fetch if we don't have company data yet or status is idle
-            if (!companyProfile || companyStatus === 'idle') {
-                dispatch(getCompany(userId));
+            
+            // EMPLOYER: Fetch company profile
+            else if (role === Role.EMPLOYER.toLowerCase()) {
+                // Only fetch if we don't have company data yet or status is idle
+                if (!companyProfile || companyStatus === 'idle') {
+                    dispatch(getCompany(userId));
+                }
             }
+        } catch (error) {
+            console.error('Error fetching profile data:', error);
         }
         
         // ADMIN: No additional fetch needed, basic user data from getMe() is sufficient
         
-    }, [isAuthenticated, userId, userRole, userProfile, companyProfile, userStatus, companyStatus, dispatch]);
+    }, [isAuthenticated, userId, userRole, dispatch]);
 
     // Helper function to return appropriate data based on role
     const getProfileData = () => {
@@ -83,7 +81,7 @@ export const useUserProfile = () => {
             return {
                 profileData: userProfile,
                 isLoading: userStatus === 'loading',
-                error: useSelector((state) => state.user?.error),
+                error: userError,
                 profileType: 'student'
             };
         }
@@ -93,7 +91,7 @@ export const useUserProfile = () => {
             return {
                 profileData: companyProfile,
                 isLoading: companyStatus === 'loading',
-                error: useSelector((state) => state.company?.error),
+                error: companyError,
                 profileType: 'company'
             };
         }
@@ -107,5 +105,6 @@ export const useUserProfile = () => {
         };
     };
 
+    if (!isAuthenticated || !userId || !userRole) return;
     return getProfileData();
 };

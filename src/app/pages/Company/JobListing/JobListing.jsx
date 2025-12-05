@@ -1,19 +1,9 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Filter, MoreVertical, Calendar, ChevronLeft, ChevronRight } from 'lucide-react';
 import {
     Button,
     Badge,
     Checkbox,
-    Table,
-    TableBody,
-    TableCell,
-    TableHead,
-    TableHeader,
-    TableRow,
-    DropdownMenu,
-    DropdownMenuContent,
-    DropdownMenuItem,
-    DropdownMenuTrigger,
     Select,
     SelectContent,
     SelectItem,
@@ -23,6 +13,9 @@ import {
     PopoverContent,
     PopoverTrigger,
 } from '@/components/ui';
+import JobTable from './partials/JobTable';
+import { useDispatch, useSelector } from 'react-redux';
+import { getJobs, getJobsByCompanyId } from '../../../modules';
 
 const mockJobListings = [
     {
@@ -182,35 +175,44 @@ const mockJobListings = [
 ];
 
 export default function JobListing() {
-    const [selectedIds, setSelectedIds] = useState([]);
     const [currentPage, setCurrentPage] = useState(1);
     const [pageSize, setPageSize] = useState(10);
+
+    const dispatch = useDispatch();
+    const id = useSelector((state) => state.auth.userId);
+    const jobs = useSelector((state) => state.jobs.jobs);
+
+    useEffect(() => {
+        // dispatch(getJobsByCompanyId({companyId: id, page: currentPage, limit: pageSize}));
+        dispatch(getJobs());
+    }, [currentPage, pageSize]);
+
+    // const [selectedIds, setSelectedIds] = useState([]);
     const [dateRange] = useState('July 19 - July 25');
 
-    const totalPages = Math.ceil(mockJobListings.length / pageSize);
     const startIndex = (currentPage - 1) * pageSize;
     const endIndex = startIndex + pageSize;
     const currentData = mockJobListings.slice(startIndex, endIndex);
 
-    const toggleSelectAll = () => {
-        if (selectedIds.length === currentData.length) {
-            setSelectedIds([]);
-        } else {
-            setSelectedIds(currentData.map((job) => job.id));
-        }
-    };
+    // const toggleSelectAll = () => {
+    //     if (selectedIds.length === currentData.length) {
+    //         setSelectedIds([]);
+    //     } else {
+    //         setSelectedIds(currentData.map((job) => job.id));
+    //     }
+    // };
 
-    const toggleSelect = (id) => {
-        setSelectedIds((prev) =>
-            prev.includes(id) ? prev.filter((selectedId) => selectedId !== id) : [...prev, id]
-        );
-    };
+    // const toggleSelect = (id) => {
+    //     setSelectedIds((prev) =>
+    //         prev.includes(id) ? prev.filter((selectedId) => selectedId !== id) : [...prev, id]
+    //     );
+    // };
 
     return (
-        <div className="space-y-6">
+        <div className="space-y-6 p-4 lg:p-6 2xl:p-8 flex flex-col">
             <div className="flex items-center justify-between">
                 <div>
-                    <h1 className="text-gray-900 mb-1">Job Listing</h1>
+                    <h4 className="font-semibold mb-1">Job Listing</h4>
                     <p className="text-gray-600">
                         Here is your jobs listing status from {dateRange}.
                     </p>
@@ -230,147 +232,16 @@ export default function JobListing() {
             </div>
 
             <div className="bg-white rounded-lg border border-gray-200">
-                <div className="px-6 py-4 border-b border-gray-200 flex items-center justify-between">
-                    <h2 className="text-gray-900">Job List</h2>
-                    <Button variant="outline" className="gap-2">
-                        <Filter className="w-4 h-4" />
-                        Filters
-                    </Button>
-                </div>
-
-                <div className="overflow-x-auto">
-                    <Table>
-                        <TableHeader>
-                            <TableRow className="border-b border-gray-200">
-                                <TableHead className="w-12">
-                                    <Checkbox
-                                        checked={selectedIds.length === currentData.length && currentData.length > 0}
-                                        onCheckedChange={toggleSelectAll}
-                                    />
-                                </TableHead>
-                                <TableHead className="text-gray-500">Roles</TableHead>
-                                <TableHead className="text-gray-500">Status</TableHead>
-                                <TableHead className="text-gray-500">Date Posted</TableHead>
-                                <TableHead className="text-gray-500">Due Date</TableHead>
-                                <TableHead className="text-gray-500">Job Type</TableHead>
-                                <TableHead className="text-gray-500">Applicants</TableHead>
-                                <TableHead className="text-gray-500">Needs</TableHead>
-                                <TableHead className="w-12"></TableHead>
-                            </TableRow>
-                        </TableHeader>
-                        <TableBody>
-                            {currentData.map((job) => (
-                                <TableRow key={job.id} className="border-b border-gray-100 hover:bg-gray-50">
-                                    <TableCell>
-                                        <Checkbox
-                                            checked={selectedIds.includes(job.id)}
-                                            onCheckedChange={() => toggleSelect(job.id)}
-                                        />
-                                    </TableCell>
-                                    <TableCell className="text-gray-900">{job.role}</TableCell>
-                                    <TableCell>
-                                        <Badge
-                                            className={
-                                                job.status === 'Live'
-                                                    ? 'bg-emerald-50 text-emerald-700 border border-emerald-200 hover:bg-emerald-50'
-                                                    : 'bg-red-50 text-red-700 border border-red-200 hover:bg-red-50'
-                                            }
-                                        >
-                                            {job.status}
-                                        </Badge>
-                                    </TableCell>
-                                    <TableCell className="text-gray-600">{job.datePosted}</TableCell>
-                                    <TableCell className="text-gray-600">{job.dueDate}</TableCell>
-                                    <TableCell>
-                                        <Badge
-                                            className={
-                                                job.jobType === 'Fulltime'
-                                                    ? 'bg-blue-50 text-blue-700 border border-blue-200 hover:bg-blue-50'
-                                                    : 'bg-orange-50 text-orange-700 border border-orange-200 hover:bg-orange-50'
-                                            }
-                                        >
-                                            {job.jobType}
-                                        </Badge>
-                                    </TableCell>
-                                    <TableCell className="text-gray-900">
-                                        {job.applicants.toLocaleString()}
-                                    </TableCell>
-                                    <TableCell className="text-gray-900">
-                                        {job.needs} <span className="text-gray-400">/ {job.totalNeeds}</span>
-                                    </TableCell>
-                                    <TableCell>
-                                        <DropdownMenu>
-                                            <DropdownMenuTrigger asChild>
-                                                <Button variant="ghost" size="icon">
-                                                    <MoreVertical className="w-4 h-4" />
-                                                </Button>
-                                            </DropdownMenuTrigger>
-                                            <DropdownMenuContent align="end">
-                                                <DropdownMenuItem>View Details</DropdownMenuItem>
-                                                <DropdownMenuItem>Edit</DropdownMenuItem>
-                                                <DropdownMenuItem className="text-red-600">Delete</DropdownMenuItem>
-                                            </DropdownMenuContent>
-                                        </DropdownMenu>
-                                    </TableCell>
-                                </TableRow>
-                            ))}
-                        </TableBody>
-                    </Table>
-                </div>
-
-                <div className="px-6 py-4 border-t border-gray-200 flex items-center justify-between">
-                    <div className="flex items-center gap-4">
-                        <span className="text-gray-600 text-sm">View</span>
-                        <Select value={pageSize.toString()} onValueChange={(value) => setPageSize(Number(value))}>
-                            <SelectTrigger className="w-20">
-                                <SelectValue />
-                            </SelectTrigger>
-                            <SelectContent>
-                                <SelectItem value="10">10</SelectItem>
-                                <SelectItem value="20">20</SelectItem>
-                                <SelectItem value="50">50</SelectItem>
-                            </SelectContent>
-                        </Select>
-                        <span className="text-gray-600 text-sm">Applicants per page</span>
-                    </div>
-
-                    <div className="flex items-center gap-2">
-                        <Button
-                            variant="outline"
-                            size="icon"
-                            onClick={() => setCurrentPage((prev) => Math.max(1, prev - 1))}
-                            disabled={currentPage === 1}
-                            className="w-10 h-10"
-                        >
-                            <ChevronLeft className="w-4 h-4" />
-                        </Button>
-
-                        {Array.from({ length: totalPages }, (_, i) => i + 1).map((page) => (
-                            <Button
-                                key={page}
-                                variant={currentPage === page ? 'default' : 'outline'}
-                                size="icon"
-                                onClick={() => setCurrentPage(page)}
-                                className={`w-10 h-10 ${currentPage === page
-                                        ? 'bg-blue-600 hover:bg-blue-700 text-white'
-                                        : 'hover:bg-gray-50'
-                                    }`}
-                            >
-                                {page}
-                            </Button>
-                        ))}
-
-                        <Button
-                            variant="outline"
-                            size="icon"
-                            onClick={() => setCurrentPage((prev) => Math.min(totalPages, prev + 1))}
-                            disabled={currentPage === totalPages}
-                            className="w-10 h-10"
-                        >
-                            <ChevronRight className="w-4 h-4" />
-                        </Button>
-                    </div>
-                </div>
+                <JobTable 
+                    currentData={currentData}
+                    currentPage={currentPage}
+                    pageSize={pageSize}
+                    total={mockJobListings.length}
+                    onChangePage={(newPage, newPageSize) => {
+                        setCurrentPage(newPage);
+                        setPageSize(newPageSize);
+                    }}
+                />
             </div>
         </div>
     );

@@ -23,7 +23,7 @@ function App() {
     if (isAuthenticated && !user) {
       dispatch(getMe())
     }
-  }, [isAuthenticated, user, dispatch])
+  }, [isAuthenticated, dispatch])
 
   return <MainRoutes />
 }
