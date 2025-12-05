@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
 import {
@@ -12,21 +12,26 @@ import {
     Chip,
     Grid,
     useTheme,
-    IconButton
+    IconButton,
+    CircularProgress,
+    Alert
 } from '@mui/material';
 import {
-    Description as DescriptionIcon,
     ArrowForward as ArrowForwardIcon,
-    Person as PersonIcon,
     Edit as EditIcon,
     Email as EmailIcon,
     Phone as PhoneIcon
 } from '@mui/icons-material';
-import { ProfileSidebar, JobCard } from '../../../../components';
+import { JobCard } from '../../../../components';
 import { mockRecentApplications, mockDashboardStats } from '../../../../../mocks/mockData';
 import { UserActivities } from './partials';
+import { useUserProfile } from '../../../../hooks/useUserProfile';
 
-// Helper function to get initials from name
+/**
+ * Get user initials from full name for avatar display
+ * @param {string} name - Full name of user
+ * @returns {string} First 2 initials in uppercase
+ */
 const getInitials = (name) => {
     if (!name) return '';
     return name
@@ -34,20 +39,52 @@ const getInitials = (name) => {
         .map(word => word[0])
         .join('')
         .toUpperCase()
-        .slice(0, 2); // Get first 2 initials
+        .slice(0, 2);
 };
 
 export default function ProfileDashboard() {
     const theme = useTheme();
     const { t } = useTranslation();
     const navigate = useNavigate();
-    const [user] = useState({
-        name: 'Sang Trinh',
-    });
+    
+    // Fetch real user profile data from API
+    const { profileData, isLoading, error } = useUserProfile();
 
-    // Use mock data
+    // Extract student_info from profileData
+    const studentInfo = profileData?.student_info || {};
+
+    // Map API data to component-friendly format
+    const user = {
+        name: `${profileData?.first_name || ''} ${profileData?.last_name || ''}`.trim() || 'User',
+        email: profileData?.email || '',
+        phone: profileData?.phone || '',
+        avatar: studentInfo?.avatar_url || '',
+    };
+
+    // TODO: Replace with real API data later
     const stats = mockDashboardStats;
     const recentApplications = mockRecentApplications;
+
+    // Loading State
+    if (isLoading) {
+        return (
+            <Container maxWidth="lg" sx={{ py: 10, textAlign: 'center' }}>
+                <CircularProgress />
+                <Box sx={{ mt: 2 }}>Đang tải thông tin dashboard...</Box>
+            </Container>
+        );
+    }
+
+    // Error State
+    if (error) {
+        return (
+            <Container maxWidth="lg" sx={{ py: 10 }}>
+                <Alert severity="error">
+                    Lỗi khi tải dashboard: {error}
+                </Alert>
+            </Container>
+        );
+    }
 
     return (
         <Box sx={{ bgcolor: 'background.default', minHeight: '100vh', py: 4 }}>
@@ -70,6 +107,7 @@ export default function ProfileDashboard() {
                                 <Box sx={{ display: 'flex', alignItems: 'flex-start', gap: 3 }}>
                                     <Box sx={{ position: 'relative' }}>
                                         <Avatar
+                                            src={user.avatar}
                                             sx={{
                                                 width: 80,
                                                 height: 80,
@@ -82,6 +120,7 @@ export default function ProfileDashboard() {
                                         </Avatar>
                                         <IconButton
                                             size="small"
+                                            onClick={() => navigate('/user/profile')}
                                             sx={{
                                                 position: 'absolute',
                                                 bottom: -4,
@@ -106,15 +145,24 @@ export default function ProfileDashboard() {
                                                 <Typography variant="h5" sx={{ fontWeight: 600, mb: 0.5 }}>
                                                     {user.name}
                                                 </Typography>
-                                                <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                                                <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 0.5 }}>
                                                     <EmailIcon sx={{ fontSize: 18, color: 'text.secondary' }} />
                                                     <Typography variant="body2" color="text.secondary">
-                                                        test@gmail.com
+                                                        {user.email || 'Chưa cập nhật'}
                                                     </Typography>
                                                 </Box>
+                                                {user.phone && (
+                                                    <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                                                        <PhoneIcon sx={{ fontSize: 18, color: 'text.secondary' }} />
+                                                        <Typography variant="body2" color="text.secondary">
+                                                            {user.phone}
+                                                        </Typography>
+                                                    </Box>
+                                                )}
                                                 <Button
                                                     variant="text"
                                                     endIcon={<ArrowForwardIcon />}
+                                                    onClick={() => navigate('/profile/user-profile')}
                                                     sx={{
                                                         textTransform: 'none',
                                                         fontWeight: 600,

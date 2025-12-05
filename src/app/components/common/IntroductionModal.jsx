@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, useCallback } from "react";
 import {
     Button,
 } from "@/components/ui";
@@ -12,49 +12,52 @@ export default function IntroductionModal({ open, onOpenChange, initialData, onS
     const editorRef = useRef(null);
     const maxChars = 2500;
 
-    // Update content when initialData changes
+    // Only update content when initialData changes (not on every open)
     useEffect(() => {
-        if (initialData) {
+        if (open && initialData) {
             const introContent = initialData?.introduction || initialData?.content || "";
             setContent(introContent);
             setCharCount(introContent.length);
-            if (editorRef.current) {
-                editorRef.current.innerHTML = introContent;
-            }
-        } else {
-            setContent("");
-            setCharCount(0);
-            if (editorRef.current) {
-                editorRef.current.innerHTML = "";
-            }
+            
+            // Defer DOM update to avoid blocking UI
+            requestAnimationFrame(() => {
+                if (editorRef.current) {
+                    editorRef.current.innerHTML = introContent;
+                }
+            });
         }
-    }, [initialData, open]);
+    }, [initialData?.introduction, initialData?.content, open]);
 
-    const handleContentChange = () => {
+    const handleContentChange = useCallback(() => {
         if (editorRef.current) {
             const text = editorRef.current.innerText || "";
-            const html = editorRef.current.innerHTML;
+            // Get clean text without HTML tags for storage
+            const cleanText = text.trim();
 
-            if (text.length <= maxChars) {
-                setContent(html);
-                setCharCount(text.length);
+            if (cleanText.length <= maxChars) {
+                // Store clean text, not HTML
+                setContent(cleanText);
+                setCharCount(cleanText.length);
             } else {
                 // Truncate if exceeds max
-                const truncated = text.substring(0, maxChars);
+                const truncated = cleanText.substring(0, maxChars);
                 editorRef.current.innerText = truncated;
                 setContent(truncated);
                 setCharCount(maxChars);
             }
         }
-    };
+    }, [maxChars]);
 
-    const handleFormat = (command, value = null) => {
+    const handleFormat = useCallback((command, value = null) => {
         document.execCommand(command, false, value);
         editorRef.current?.focus();
-        handleContentChange();
-    };
+        // Use requestAnimationFrame to batch state updates
+        requestAnimationFrame(() => {
+            handleContentChange();
+        });
+    }, [handleContentChange]);
 
-    const handleSave = () => {
+    const handleSave = useCallback(() => {
         const formData = {
             introduction: content,
             content: content,
@@ -63,11 +66,11 @@ export default function IntroductionModal({ open, onOpenChange, initialData, onS
             onSave(formData);
         }
         onOpenChange(false);
-    };
+    }, [content, onSave, onOpenChange]);
 
-    const handleCancel = () => {
+    const handleCancel = useCallback(() => {
         onOpenChange(false);
-    };
+    }, [onOpenChange]);
 
     return (
         <Dialog
@@ -149,7 +152,14 @@ export default function IntroductionModal({ open, onOpenChange, initialData, onS
                         <div
                             ref={editorRef}
                             contentEditable
+                            suppressContentEditableWarning={true}
                             onInput={handleContentChange}
+                            onPaste={(e) => {
+                                // Paste as plain text only
+                                e.preventDefault();
+                                const text = e.clipboardData.getData('text/plain');
+                                document.execCommand('insertText', false, text);
+                            }}
                             className="min-h-[200px] p-4 border border-t-0 border-neutrals-40 rounded-b-lg focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-0"
                             style={{
                                 whiteSpace: "pre-wrap",

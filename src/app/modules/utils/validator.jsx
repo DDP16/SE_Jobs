@@ -321,10 +321,8 @@ export const validateSkillGroupForm = (formData = {}) => {
     skills: Array.isArray(formData.skills)
       ? formData.skills
         .map((skill) => ({
-          ...skill,
           id: skill.id ?? Date.now(),
-          name: sanitizeString(skill.name || ''),
-          experience: sanitizeString(skill.experience || ''),
+          name: sanitizeString(skill.name || skill.skill_name || skill || ''),
         }))
         .filter((skill) => skill.name)
       : [],
@@ -338,8 +336,6 @@ export const validateSkillGroupForm = (formData = {}) => {
 
   if (sanitizedData.skills.length === 0) {
     errors.skills = 'modals.skills.errors.skillsRequired';
-  } else if (sanitizedData.skills.some((skill) => !skill.experience)) {
-    errors.skills = 'modals.skills.errors.skillExperienceRequired';
   }
 
   return {
