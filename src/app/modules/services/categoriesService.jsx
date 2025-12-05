@@ -29,6 +29,8 @@ const categoriesSlice = createSlice({
         state.error = null;
       })
       .addCase(getCategories.fulfilled, (state, action) => {
+        // console.log("Fulfilled payload:", action.payload);
+        // console.log("Data to store:", action.payload.data);
         state.status = "succeeded";
         state.categories = action.payload.data || [];
       })

@@ -1,4 +1,3 @@
-// src/app/pages/Company/PostJob/partials/Step1JobInfo.jsx
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
@@ -227,7 +226,7 @@ export default function Step1JobInfo({
             </DropdownMenuTrigger>
             <DropdownMenuContent>
               {categories.map((cat) => (
-                <DropdownMenuItem key={cat.id} onSelect={() => handleCategorySelect(cat.name)}>
+                <DropdownMenuItem key={cat.id} onClick={() => handleCategorySelect(cat.name)}>
                   {cat.name}
                 </DropdownMenuItem>
               ))}
@@ -236,7 +235,6 @@ export default function Step1JobInfo({
         </div>
       </div>
 
-      {/* ✅ FIXED: Skill search */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4 items-start">
         <div>
           <Label className="text-foreground font-semibold text-lg">Required Skills</Label>

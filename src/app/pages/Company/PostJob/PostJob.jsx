@@ -43,13 +43,19 @@ export default function PostJob() {
     dispatch(getLevels());
   }, [dispatch]);
 
-  // ✅ Correct selectors — assumes your slices store data in .categories, .employmentTypes, etc.
-  const { categories = [] } = useSelector((state) => state.categories?.categories || state.categories || []);
-  const { employmentTypes: apiEmploymentTypes = [] } = useSelector(
-    (state) => state.employmentTypes?.employmentTypes || state.employmentTypes || []
-  );
-  const { skills: apiSkills = [] } = useSelector((state) => state.skills?.skills || state.skills || []);
-  const { levels = [] } = useSelector((state) => state.levels?.levels || state.levels || []);
+  const currentUser = useSelector((state) => state.auth.user);
+  const authStatus = useSelector((state) => state.auth.status);
+
+  console.log("PostJob authStatus:", authStatus);
+  console.log("PostJob currentUser:", currentUser);
+
+  const companyId = currentUser?.company?.id;
+  // const companyBranchId = 1;
+
+  const categories = useSelector((state) => state.categories?.categories ?? []);
+  const apiEmploymentTypes = useSelector((state) => state.employmentTypes?.employmentTypes ?? []);
+  const apiSkills = useSelector((state) => state.skills?.skills ?? []);
+  const levels = useSelector((state) => state.levels?.levels ?? []);
 
   const [currentStep, setCurrentStep] = useState(1);
   const [jobTitle, setJobTitle] = useState("");
@@ -125,9 +131,8 @@ export default function PostJob() {
     }
   };
 
-  // ✅ FIXED: update UI state + ID state
   const handleCategorySelect = (categoryName) => {
-    setSelectedCategory(categoryName); // ← this was missing!
+    setSelectedCategory(categoryName);
     const cat = categories.find((c) => c.name === categoryName);
     setCategoryIds(cat ? [cat.id] : []);
   };
@@ -163,12 +168,14 @@ export default function PostJob() {
   };
 
   const handleSubmit = async () => {
-    const companyId = 1;
-    const companyBranchId = 1;
+    if (!companyId) {
+      console.error("Cannot post job: user is not associated with a company");
+      return;
+    }
 
     const payload = {
       company_id: companyId,
-      company_branches_id: companyBranchId,
+      // company_branches_id: companyBranchId,
       title: jobTitle,
       description: jobDescription,
       responsibilities: responsibilities ? [responsibilities] : [],
@@ -181,7 +188,7 @@ export default function PostJob() {
       category_ids: categoryIds,
       required_skill_ids: skillIds,
       employment_type_ids: employmentTypeIds,
-      status: "active",
+      status: "Pending",
     };
 
     try {
@@ -191,7 +198,13 @@ export default function PostJob() {
       console.error("Failed to create job:", err);
     }
   };
+  if (authStatus === "loading") {
+    return <div>Loading company profile...</div>;
+  }
 
+  if (!currentUser || !currentUser.company) {
+    return <div>Company profile not found.</div>;
+  }
   return (
     <div className="mt-10 bg-background p-8">
       <div className="mx-auto">

@@ -9,12 +9,12 @@ import { BE_ENPOINT } from "src/settings/localVar";
 const productURL = "";
 const developmentURL = BE_ENPOINT;
 
-const baseURL =
-  import.meta.env.MODE === "production" ? productURL : developmentURL;
+const baseURL = import.meta.env.MODE === "production" ? productURL : developmentURL;
 
 const instance = axios.create({
   baseURL: baseURL,
   timeout: 15000,
+  withCredentials: true,
   headers: {
     "Content-Type": "application/json; charset=utf-8",
   },

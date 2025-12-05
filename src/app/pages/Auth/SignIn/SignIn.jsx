@@ -5,7 +5,7 @@ import { Link, useLocation, useNavigate } from "react-router-dom";
 import { CustomAlert, LangButtonGroup } from "@/components";
 import { srcAsset } from "../../../lib";
 import { validateEmail, validatePassword } from "../../../modules";
-import { loginWithEmail } from "../../../modules";
+import { loginWithEmail, getMe } from "../../../modules";
 import { useCustomAlert } from "../../../hooks/useCustomAlert";
 import { useDispatch } from "react-redux";
 import { useTranslation } from "react-i18next";
@@ -53,6 +53,7 @@ export default function SignIn() {
         if (loginWithEmail.fulfilled.match(result)) {
           console.log("Login successful: ", result.payload);
           showSuccess("Login successful!");
+          await dispatch(getMe());
           nav(from);
         } else {
           console.error("Login failed: ", result);
@@ -73,10 +74,17 @@ export default function SignIn() {
         transition={{ duration: 0.5 }}
         className="absolute top-9 px-12 justify-between flex flex-row min-w-screen"
       >
-        <img src={srcAsset.SELargeLogo} alt="KHOA CÔNG NGHỆ PHẦN MỀM" className="h-12 w-auto cursor-pointer" onClick={() => { nav("/"); }} />
+        <img
+          src={srcAsset.SELargeLogo}
+          alt="KHOA CÔNG NGHỆ PHẦN MỀM"
+          className="h-12 w-auto cursor-pointer"
+          onClick={() => {
+            nav("/");
+          }}
+        />
 
         <LangButtonGroup />
-      </motion.div>      
+      </motion.div>
 
       <motion.div
         initial={{ opacity: 0, scale: 0.95 }}
@@ -110,9 +118,7 @@ export default function SignIn() {
               onChange={(e) => setEmail(e.target.value)}
               className="w-full h-11 rounded-xl border-gray-300 focus:border-blue-500 focus:ring-blue-500"
             />
-            {emailError && (
-              <p className="text-xs text-red-500 mt-1">{emailError}</p>
-            )}
+            {emailError && <p className="text-xs text-red-500 mt-1">{emailError}</p>}
           </div>
 
           <div className="w-full space-y-2">
@@ -137,9 +143,7 @@ export default function SignIn() {
               </button>
             </div>
             <div className="flex items-center justify-end">
-              {passwordError && (
-                <span className="text-xs text-red-500 mr-auto">{passwordError}</span>
-              )}
+              {passwordError && <span className="text-xs text-red-500 mr-auto">{passwordError}</span>}
               <Link to="/forgot-password" className="text-sm text-blue-600 hover:underline">
                 {t("auth.forgot_password")}
               </Link>
@@ -155,10 +159,7 @@ export default function SignIn() {
         </form>
       </motion.div>
 
-      <CustomAlert
-        {...alertConfig}
-        onClose={hideAlert}
-      />
+      <CustomAlert {...alertConfig} onClose={hideAlert} />
     </div>
   );
-};
+}

@@ -44,7 +44,6 @@ export default function Step3PerksBenefit({ benefits, addBenefit, removeBenefit,
                   className="relative bg-card border border-border rounded-lg p-6 hover:shadow-md transition-shadow group"
                 >
                   {benefit.isEditing ? (
-                    // Editing Mode
                     <div className="space-y-3">
                       <div className="flex items-center gap-2">
                         <Select
@@ -111,7 +110,6 @@ export default function Step3PerksBenefit({ benefits, addBenefit, removeBenefit,
                               // Remove if empty
                               setBenefits(benefits.filter((b) => b.id !== benefit.id));
                             } else {
-                              // Exit editing mode
                               setBenefits(benefits.map((b) => (b.id === benefit.id ? { ...b, isEditing: false } : b)));
                             }
                           }}
@@ -121,7 +119,6 @@ export default function Step3PerksBenefit({ benefits, addBenefit, removeBenefit,
                       </div>
                     </div>
                   ) : (
-                    // Display Mode
                     <>
                       <button
                         onClick={() => removeBenefit(benefit.id)}
