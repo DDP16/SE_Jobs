@@ -12,6 +12,8 @@ import Button from '../common/Button';
 import { useSelector, useDispatch } from 'react-redux';
 import { getProvinces } from '../../modules/services/addressService';
 
+const DEFAULT_LOCATION = { label: 'Tất cả thành phố', value: null };
+
 export default function SearchBar({
     onSearch,
     placeholder = "Job title, keywords, or company",
@@ -19,12 +21,12 @@ export default function SearchBar({
     showLocation = true,
     fullWidth = true,
     initialKeyword = '',
-    initialLocation = ''
+    initialLocation = DEFAULT_LOCATION
 }) {
     const provinces = useSelector(state => state.address.provinces);
     const dispatch = useDispatch();
     const [keyword, setKeyword] = useState(initialKeyword || '');
-    const [location, setLocation] = useState(initialLocation || 'Tất cả thành phố');
+    const [location, setLocation] = useState(initialLocation);
 
     // If parent updates initial values (e.g. URL changed), sync local state
     useEffect(() => {
@@ -32,7 +34,7 @@ export default function SearchBar({
     }, [initialKeyword]);
 
     useEffect(() => {
-        setLocation(initialLocation || 'Tất cả thành phố');
+        setLocation(initialLocation || DEFAULT_LOCATION);
     }, [initialLocation]);
 
     useEffect(() => {
@@ -40,8 +42,8 @@ export default function SearchBar({
     }, [dispatch]);
 
     const handleSearch = () => {
-        if (location === 'Tất cả thành phố') {
-            onSearch({ keyword, location: '' });
+        if (!location.value) {
+            onSearch({ keyword, location: null });
             return;
         }
         onSearch({ keyword, location });
@@ -53,7 +55,6 @@ export default function SearchBar({
         }
     };
 
-    // Normalize provinces shape to an array of objects or strings
     const provinceList = React.useMemo(() => {
         if (!provinces) return [];
         if (Array.isArray(provinces)) return provinces;
@@ -62,15 +63,9 @@ export default function SearchBar({
         return [];
     }, [provinces]);
 
-    // build option strings and ensure default 'Tất cả thành phố' is present
-    const optionStrings = (provinceList || []).map(p =>
-        typeof p === 'string' ? p : (p.name || p.title || p.province_name || '')
-    ).filter(Boolean);
-
-    const options = React.useMemo(() => {
-        const arr = ['Tất cả thành phố', ...optionStrings];
-        return Array.from(new Set(arr));
-    }, [optionStrings]);
+    const options = provinceList.map(province => {
+        return { label: province.name, value: province.id }
+    })
 
     return (
         <Paper
@@ -98,7 +93,7 @@ export default function SearchBar({
                     <Autocomplete
                         freeSolo
                         options={options}
-                        value={location}
+                        value={location.label}
                         onChange={(event, newValue) => setLocation(newValue || "")}
                         onInputChange={(event, newInput) => setLocation(newInput)}
                         disableClearable={false}
