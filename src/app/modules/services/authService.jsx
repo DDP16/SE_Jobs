@@ -2,35 +2,21 @@ import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import { get, post } from "../httpHandle";
 import { AUTHENTICATED, USER_ID, USER_ROLE, AUTH_USER } from "src/settings/localVar";
 
-const setAuthStorage = (userId, isAuthenticated, userRole, user) => {
+const setAuthStorage = (userId, isAuthenticated) => {
   localStorage.setItem(AUTHENTICATED, isAuthenticated);
   localStorage.setItem(USER_ID, userId);
-  localStorage.setItem(USER_ROLE, userRole);
-  localStorage.setItem(AUTH_USER, JSON.stringify(user));
 };
 
 const getAuthStorage = () => {
   return {
     isAuthenticated: localStorage.getItem(AUTHENTICATED),
     userId: localStorage.getItem(USER_ID),
-    userRole: localStorage.getItem(USER_ROLE),
-    user: (() => {
-      const raw = localStorage.getItem(AUTH_USER);
-      if (!raw || raw === "undefined" || raw === "null") return null;
-      try {
-        return JSON.parse(raw);
-      } catch {
-        return null;
-      }
-    })(),
   };
 };
 
 const clearAuthStorage = () => {
   localStorage.removeItem(AUTHENTICATED);
   localStorage.removeItem(USER_ID);
-  localStorage.removeItem(USER_ROLE);
-  localStorage.removeItem(AUTH_USER);
 };
 
 export const loginWithEmail = createAsyncThunk(
@@ -50,9 +36,8 @@ export const loginWithEmail = createAsyncThunk(
               console.log("Login response:", res);
               if (isAuthenticated) {
                 const userId = data.data.user.user_id;
-                const userRole = data.data.user.role;
-                setAuthStorage(userId, isAuthenticated, userRole, data.data.user);
-                resolve({ userId, isAuthenticated, userRole, user: data.data.user });
+                setAuthStorage(userId, isAuthenticated);
+                resolve(data.data.user);
               } else {
                 reject("Login failed: " + (data.message || res.status));
               }
@@ -198,15 +183,13 @@ export const logout = createAsyncThunk(
     }
 );
 
-const authStorage = getAuthStorage();
-
 const authSlice = createSlice({
   name: "auth",
   initialState: {
-    userId: authStorage.userId || null,
-    userRole: authStorage.userRole || null,
-    isAuthenticated: authStorage.isAuthenticated || false,
-    user: authStorage.user || null,
+    userId: null,
+    userRole: null,
+    isAuthenticated: false,
+    user: null,
     status: "idle", // 'idle' | 'loading' | 'succeeded' | 'failed'
     error: null,
   },
@@ -224,10 +207,10 @@ const authSlice = createSlice({
       })
       .addCase(loginWithEmail.fulfilled, (state, action) => {
         state.status = "succeeded";
-        state.userId = action.payload.userId;
-        state.userRole = action.payload.userRole;
+        state.userId = action.payload.user_id;
+        state.userRole = action.payload.role;
         state.isAuthenticated = true;
-        state.user = action.payload.user; // <-- set user profile immediately
+        state.user = action.payload;
         state.error = null;
       })
       .addCase(loginWithEmail.rejected, (state, action) => {
@@ -253,6 +236,8 @@ const authSlice = createSlice({
       .addCase(getMe.fulfilled, (state, action) => {
         state.status = "succeeded";
         state.user = action.payload;
+        state.userId = action.payload.user_id;
+        state.userRole = action.payload.role;
         state.isAuthenticated = true;
         state.error = null;
         if (action.payload) {

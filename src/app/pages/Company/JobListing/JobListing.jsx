@@ -180,11 +180,12 @@ export default function JobListing() {
 
     const dispatch = useDispatch();
     const id = useSelector((state) => state.auth.userId);
+    const companyId = useSelector((state) => state.auth.user.company.company_id);
     const jobs = useSelector((state) => state.jobs.jobs);
 
     useEffect(() => {
         // dispatch(getJobsByCompanyId({companyId: id, page: currentPage, limit: pageSize}));
-        dispatch(getJobs());
+        dispatch(getJobsByCompanyId({companyId: companyId, page: currentPage, limit: pageSize}));
     }, [currentPage, pageSize]);
 
     // const [selectedIds, setSelectedIds] = useState([]);

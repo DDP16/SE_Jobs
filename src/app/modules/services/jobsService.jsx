@@ -42,8 +42,8 @@ export const getJobsByCompanyId = createAsyncThunk(
     "jobs/getJobsByCompanyId",
     async ({companyId, page, limit}, { rejectWithValue }) => {
         try {
-            const response = await api.get(`${apiBaseUrl}/company/${companyId}`, {
-                params: { page: page, limit: limit },
+            const response = await api.get(`${apiBaseUrl}`, {
+                params: { page: page, limit: limit, company_id: companyId },
                 withCredentials: true,
             });
             return response.data;
