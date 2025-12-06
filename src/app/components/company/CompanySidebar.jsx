@@ -21,6 +21,7 @@ const navigation = [
   { name: "Company Profile", icon: Building2, badge: null },
   { name: "All Applicants", icon: Users, badge: null },
   { name: "Job Listing", icon: FileText, badge: null },
+  { name: "Job Posting", icon: FileText, badge: null },
   { name: "My Schedule", icon: Calendar, badge: null },
   { name: "Employee", icon: User, badge: null },
 ];
@@ -44,6 +45,7 @@ export default function CompanySidebar() {
           if (item.name === "Dashboard") to = "/";
           if (item.name === "Company Profile") to = "/company";
           if (item.name === "All Applicants") to = "/applicants/1";
+          if (item.name === "Job Posting") to = "/post-job";
 
           return (
             <NavLink
@@ -102,4 +104,4 @@ export default function CompanySidebar() {
       </div>
     </aside>
   );
-};
+}
