@@ -20,8 +20,8 @@ export default function useSearch() {
         const params = new URLSearchParams(location.search);
         return {
             page: Number(params.get("page")) || 1,
-            title: params.get("title") || "",
-            location: params.get("location") || "",
+            keyword: params.get("keyword") || "",
+            province_ids: params.get("province_ids") || "",
         };
     }, [location.search]);
 
@@ -53,8 +53,8 @@ export default function useSearch() {
     useEffect(() => {
         const params = {
             page: queryParams.page,
-            title: queryParams.title || undefined,
-            location: queryParams.location || undefined,
+            keyword: queryParams.keyword || undefined,
+            province_ids: queryParams.province_ids || undefined,
             ...appliedFilters,
         };
 
@@ -70,8 +70,8 @@ export default function useSearch() {
         updateQueryParams({
             ...queryParams,
             page: 1,
-            title: keyword?.trim(),
-            location: location?.trim(),
+            keyword: keyword?.trim(),
+            province_ids: location?.value,
         });
     }, [queryParams, updateQueryParams]);
 

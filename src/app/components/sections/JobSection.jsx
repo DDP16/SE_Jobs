@@ -1,29 +1,60 @@
-import React, { useEffect, useState, useRef } from 'react';
-import { ArrowForward } from '@mui/icons-material';
+import React, { useEffect, useRef } from 'react';
+import {
+    Box,
+    Container,
+    Typography,
+    Button,
+    IconButton
+} from '@mui/material';
+import { ArrowForward, ChevronLeft, ChevronRight } from '@mui/icons-material';
 import JobCard from '../features/JobCard';
 import { useSelector, useDispatch } from 'react-redux';
 import { getJobs, getJobById } from '../../modules/services/jobsService';
 import { useNavigate } from 'react-router-dom';
 
 export default function JobSection() {
+    const latestJobs = useSelector(state => state.jobs.jobs);
     const dispatch = useDispatch();
     const navigate = useNavigate();
-    const sectionRef = useRef(null);
+    const scrollContainerRef = useRef(null);
 
-    const latestJobs = useSelector(state => state.jobs?.jobs || []);
-    const status = useSelector(state => state.jobs?.status || 'idle');
-    const [currentPage, setCurrentPage] = useState(1);
-    const jobsPerPage = 9; // 3x3 grid
-
-    // Fetch jobs with pagination
     useEffect(() => {
-        dispatch(getJobs({
-            page: currentPage,
-            limit: jobsPerPage,
-            sort_by: "job_posted_at",
-            order: "desc"
-        }));
-    }, [dispatch, currentPage, jobsPerPage]);
+        dispatch(getJobs({ page: 1, limit: 10, sort_by: "job_posted_at", order: "desc" }));
+    }, [dispatch]);
+
+    const getScrollAmount = () => {
+        if (!scrollContainerRef.current) return 0;
+
+        const container = scrollContainerRef.current;
+        const firstGroup = container.firstElementChild;
+
+        if (!firstGroup) return 0;
+
+        const groupWidth = firstGroup.offsetWidth;
+        const gap = 16;
+
+        return groupWidth + gap;
+    };
+
+    const scrollLeft = () => {
+        if (scrollContainerRef.current) {
+            const scrollAmount = getScrollAmount();
+            scrollContainerRef.current.scrollBy({
+                left: -scrollAmount,
+                behavior: 'smooth'
+            });
+        }
+    };
+
+    const scrollRight = () => {
+        if (scrollContainerRef.current) {
+            const scrollAmount = getScrollAmount();
+            scrollContainerRef.current.scrollBy({
+                left: scrollAmount,
+                behavior: 'smooth'
+            });
+        }
+    };
 
     // Transform API data to JobCard format
     const transformJobData = (job) => {
@@ -66,73 +97,20 @@ export default function JobSection() {
 
     const transformedJobs = latestJobs.map(transformJobData).filter(Boolean);
 
-    // Calculate pagination (client-side since API might not return pagination info)
-    const totalPages = Math.ceil(transformedJobs.length / jobsPerPage);
-    const startIndex = (currentPage - 1) * jobsPerPage;
-    const endIndex = startIndex + jobsPerPage;
-    const currentJobs = transformedJobs.slice(startIndex, endIndex);
-
-    const handlePageChange = (page) => {
-        setCurrentPage(page);
-
-        // Only scroll the section into view if it's not fully visible in the viewport
-        try {
-            const el = sectionRef.current;
-            if (el && el.getBoundingClientRect) {
-                const rect = el.getBoundingClientRect();
-                const fullyVisible = rect.top >= 0 && rect.bottom <= (window.innerHeight || document.documentElement.clientHeight);
-                if (!fullyVisible) {
-                    el.scrollIntoView({ behavior: 'smooth', block: 'start' });
-                }
-            }
-        } catch (err) {
-            console.warn('Pagination scroll fallback', err);
-        }
-    };
-
-    // Generate smart pagination numbers
-    const getPageNumbers = () => {
-        const pages = [];
-        const maxVisible = 5;
-
-        if (totalPages <= maxVisible) {
-            for (let i = 1; i <= totalPages; i++) {
-                pages.push(i);
-            }
-        } else {
-            if (currentPage <= 3) {
-                for (let i = 1; i <= 4; i++) {
-                    pages.push(i);
-                }
-                pages.push('...');
-                pages.push(totalPages);
-            } else if (currentPage >= totalPages - 2) {
-                pages.push(1);
-                pages.push('...');
-                for (let i = totalPages - 3; i <= totalPages; i++) {
-                    pages.push(i);
-                }
-            } else {
-                pages.push(1);
-                pages.push('...');
-                for (let i = currentPage - 1; i <= currentPage + 1; i++) {
-                    pages.push(i);
-                }
-                pages.push('...');
-                pages.push(totalPages);
-            }
-        }
-        return pages;
-    };
-
-    const pageNumbers = getPageNumbers();
+    // Group jobs into groups of 6 (2 rows x 3 columns)
+    const groupedJobs = [];
+    for (let i = 0; i < transformedJobs.length; i += 6) {
+        groupedJobs.push(transformedJobs.slice(i, i + 6));
+    }
 
     const handleJobAction = (action, job) => {
         switch (action) {
             case 'bookmark':
+                // TODO: Implement bookmark functionality
                 console.log('Bookmark job:', job);
                 break;
             case 'share':
+                // TODO: Implement share functionality
                 console.log('Share job:', job);
                 break;
             case 'click':
@@ -145,127 +123,184 @@ export default function JobSection() {
     };
 
     return (
-        <div className="py-8 md:py-16 bg-gray-50">
-            <div ref={sectionRef} className="container mx-auto px-4 sm:px-6 md:px-8 max-w-7xl">
-                {/* Header */}
-                <div className="flex justify-between items-center mb-8">
-                    <h2 className="text-3xl md:text-4xl font-bold text-gray-900">
-                        Latest <span style={{ color: '#0041D9' }}>jobs open</span>
-                    </h2>
-                    <button className="hidden md:flex items-center gap-2 text-blue-600 hover:text-blue-700 font-medium transition-colors">
+        <Box
+            className="py-16 bg-gray-50"
+            sx={{ py: 4, bgcolor: 'background.default' }}
+        >
+            <Container maxWidth="lg" sx={{ px: { xs: 2, sm: 3, md: 4 } }}>
+                <Box
+                    className="flex justify-between items-center mb-8"
+                    sx={{ mb: 3 }}
+                >
+                    <Box>
+                        <Typography
+                            variant="h2"
+                            sx={{
+                                fontSize: { xs: '2rem', md: '2.5rem' },
+                                fontWeight: 700,
+                                color: 'text.primary'
+                            }}
+                        >
+                            Latest <span style={{ color: '#0041D9' }}>jobs open</span>
+                        </Typography>
+                    </Box>
+                    <Button
+                        variant="text"
+                        endIcon={<ArrowForward />}
+                        className="text-blue-600 hover:text-blue-700 font-medium"
+                        sx={{
+                            textTransform: 'none',
+                            fontSize: '1rem',
+                            fontWeight: 500
+                        }}
+                    >
                         Show all jobs
-                        <ArrowForward className="w-5 h-5" />
-                    </button>
-                </div>
+                    </Button>
+                </Box>
 
-                {/* Loading State */}
-                {status === 'loading' && (
-                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6 mb-8">
-                        {[...Array(9)].map((_, index) => (
-                            <div key={index} className="h-40 bg-gray-200 rounded-lg animate-pulse"></div>
-                        ))}
-                    </div>
-                )}
+                {/* Job Cards - 2 Rows with Horizontal Scroll */}
+                <Box
+                    className="relative mb-8"
+                    sx={{ position: 'relative', mb: 0, mx: { xs: -2, sm: -3, md: -4 } }}
+                >
+                    {/* Scroll Buttons - Only show if there are more than 6 jobs */}
+                    {transformedJobs.length > 6 && (
+                        <Box
+                            sx={{
+                                display: { xs: 'none', md: 'flex' },
+                                justifyContent: 'space-between',
+                                position: 'absolute',
+                                top: '50%',
+                                left: { md: 16, lg: 24 },
+                                right: { md: 16, lg: 24 },
+                                transform: 'translateY(-50%)',
+                                zIndex: 2,
+                                pointerEvents: 'none'
+                            }}
+                        >
+                            <IconButton
+                                onClick={scrollLeft}
+                                sx={{
+                                    bgcolor: 'white',
+                                    boxShadow: 2,
+                                    pointerEvents: 'auto',
+                                    '&:hover': {
+                                        bgcolor: 'grey.50',
+                                        transform: 'scale(1.1)'
+                                    }
+                                }}
+                            >
+                                <ChevronLeft />
+                            </IconButton>
+                            <IconButton
+                                onClick={scrollRight}
+                                sx={{
+                                    bgcolor: 'white',
+                                    boxShadow: 2,
+                                    pointerEvents: 'auto',
+                                    '&:hover': {
+                                        bgcolor: 'grey.50',
+                                        transform: 'scale(1.1)'
+                                    }
+                                }}
+                            >
+                                <ChevronRight />
+                            </IconButton>
+                        </Box>
+                    )}
 
-                {/* Grid Layout */}
-                {status !== 'loading' && (
-                    <>
-                        {currentJobs.length > 0 ? (
-                            <>
-                                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6 mb-8">
-                                    {currentJobs.map((job) => (
-                                        <div key={job.id || job.external_id || job._id} className="h-full">
+                    {/* Scroll Container with Grid Layout */}
+                    <Box
+                        ref={scrollContainerRef}
+                        sx={{
+                            display: 'flex',
+                            gap: 2,
+                            overflowX: 'auto',
+                            scrollBehavior: 'smooth',
+                            pb: 1,
+                            px: { xs: 2, sm: 3, md: 4 },
+                            '&::-webkit-scrollbar': {
+                                height: '6px',
+                            },
+                            '&::-webkit-scrollbar-track': {
+                                backgroundColor: 'rgba(0,0,0,0.1)',
+                                borderRadius: '3px',
+                            },
+                            '&::-webkit-scrollbar-thumb': {
+                                backgroundColor: 'rgba(0,0,0,0.3)',
+                                borderRadius: '3px',
+                                '&:hover': {
+                                    backgroundColor: 'rgba(0,0,0,0.5)',
+                                },
+                            },
+                        }}
+                    >
+                        {groupedJobs.map((group, groupIndex) => (
+                            <Box
+                                key={groupIndex}
+                                sx={{
+                                    flex: '0 0 auto',
+                                    display: 'flex',
+                                    flexDirection: 'column',
+                                    gap: 2,
+                                    width: 'calc(384px * 3 + 16px * 2)',
+                                    minWidth: 'calc(384px * 3 + 16px * 2)'
+                                }}
+                            >
+                                {/* Upper Row - First 3 jobs */}
+                                <Box
+                                    sx={{
+                                        display: 'flex',
+                                        gap: 2
+                                    }}
+                                >
+                                    {group.slice(0, 3).map((job) => (
+                                        <Box
+                                            key={job.id}
+                                            sx={{
+                                                flex: '0 0 auto',
+                                                width: '384px',
+                                                minWidth: '384px'
+                                            }}
+                                        >
                                             <JobCard
                                                 job={job}
                                                 onBookmark={(job) => handleJobAction('bookmark', job)}
                                                 onClick={() => handleJobAction('click', job)}
                                             />
-                                        </div>
+                                        </Box>
                                     ))}
-                                </div>
-
-                                {/* Pagination */}
-                                {totalPages > 1 && (
-                                    <div className="flex justify-center items-center gap-2 mt-8">
-                                        {/* Previous Button */}
-                                        <button
-                                            onClick={() => handlePageChange(currentPage - 1)}
-                                            disabled={currentPage === 1}
-                                            className={`
-                                                px-4 py-2 rounded-lg font-medium transition-all
-                                                ${currentPage === 1
-                                                    ? 'bg-gray-200 text-gray-400 cursor-not-allowed'
-                                                    : 'bg-white text-gray-700 hover:bg-gray-100 shadow-sm'
-                                                }
-                                            `}
+                                </Box>
+                                {/* Lower Row - Next 3 jobs */}
+                                <Box
+                                    sx={{
+                                        display: 'flex',
+                                        gap: 2
+                                    }}
+                                >
+                                    {group.slice(3, 6).map((job) => (
+                                        <Box
+                                            key={job.id}
+                                            sx={{
+                                                flex: '0 0 auto',
+                                                width: '384px',
+                                                minWidth: '384px'
+                                            }}
                                         >
-                                            Previous
-                                        </button>
+                                            <JobCard
+                                                job={job}
+                                                onBookmark={(job) => handleJobAction('bookmark', job)}
+                                                onClick={() => handleJobAction('click', job)}
+                                            />
+                                        </Box>
+                                    ))}
+                                </Box>
+                            </Box>
+                        ))}
+                    </Box>
+                </Box>
 
-                                        {/* Page Numbers */}
-                                        <div className="flex gap-2">
-                                            {pageNumbers.map((page, index) => {
-                                                if (page === '...') {
-                                                    return (
-                                                        <span key={`ellipsis-${index}`} className="w-10 h-10 flex items-center justify-center text-gray-500">
-                                                            ...
-                                                        </span>
-                                                    );
-                                                }
-                                                return (
-                                                    <button
-                                                        key={page}
-                                                        onClick={() => handlePageChange(page)}
-                                                        className={`
-                                                            w-10 h-10 rounded-lg font-medium transition-all
-                                                            ${currentPage === page
-                                                                ? 'bg-blue-600 text-white shadow-md'
-                                                                : 'bg-white text-gray-700 hover:bg-gray-100 shadow-sm'
-                                                            }
-                                                        `}
-                                                    >
-                                                        {page}
-                                                    </button>
-                                                );
-                                            })}
-                                        </div>
-
-                                        {/* Next Button */}
-                                        <button
-                                            onClick={() => handlePageChange(currentPage + 1)}
-                                            disabled={currentPage === totalPages}
-                                            className={`
-                                                px-4 py-2 rounded-lg font-medium transition-all
-                                                ${currentPage === totalPages
-                                                    ? 'bg-gray-200 text-gray-400 cursor-not-allowed'
-                                                    : 'bg-white text-gray-700 hover:bg-gray-100 shadow-sm'
-                                                }
-                                            `}
-                                        >
-                                            Next
-                                        </button>
-                                    </div>
-                                )}
-
-                                {/* Pagination Info */}
-                                {totalPages > 1 && transformedJobs.length > 0 && (
-                                    <div className="text-center mt-4">
-                                        <p className="text-sm text-gray-600">
-                                            Showing {startIndex + 1}-{Math.min(endIndex, transformedJobs.length)} of {transformedJobs.length} jobs
-                                            <span className="mx-2">•</span>
-                                            Page {currentPage} of {totalPages}
-                                        </p>
-                                    </div>
-                                )}
-                            </>
-                        ) : (
-                            <div className="text-center py-16">
-                                <p className="text-gray-500 text-lg">No jobs available at the moment.</p>
-                            </div>
-                        )}
-                    </>
-                )}
-            </div>
-        </div>
+            </Container>
+        </Box>
     );
 }

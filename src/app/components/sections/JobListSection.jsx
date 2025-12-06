@@ -36,7 +36,7 @@ export default function JobListSection({ onJobSelect, selectedJob }) {
 
     const handlePageChange = (event, page) => {
         setCurrentPage(page);
-
+        
         const firstIndex = (page - 1) * jobsPerPage;
         const firstJob = jobsList[firstIndex];
         const firstId = firstJob ? (firstJob.id ?? firstJob.job_id ?? firstJob.jobId ?? firstJob._id) : null;
@@ -63,14 +63,14 @@ export default function JobListSection({ onJobSelect, selectedJob }) {
 
     useEffect(() => {
         if (!selectedJob) return;
-
+        
         const selectedId = selectedJob?.id ?? selectedJob?.job_id ?? selectedJob?.jobId ?? selectedJob?._id;
         const idx = jobsList.findIndex(
             (j) => (j.id === selectedId) || (j.job_id === selectedId) || (j.jobId === selectedId) || (j._id === selectedId)
         );
-
+        
         if (idx === -1) return;
-
+        
         const targetPage = Math.floor(idx / jobsPerPage) + 1;
         setCurrentPage(targetPage);
 
@@ -80,7 +80,7 @@ export default function JobListSection({ onJobSelect, selectedJob }) {
                 el.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
             }
         }, 120);
-
+        
         return () => clearTimeout(t);
     }, [selectedJob, jobsList, jobsPerPage]);
 
