@@ -1,15 +1,15 @@
 export {
-    validateEmail,
-    validatePassword,
-    validateConfirmPassword,
-    validateExperienceForm,
-    validateEducationForm,
-    validateProjectForm,
-    validateCertificateForm,
-    validateAwardForm,
-    validateSkillGroupForm,
-    validateLanguagesList,
-} from './utils/validator';
+  validateEmail,
+  validatePassword,
+  validateConfirmPassword,
+  validateExperienceForm,
+  validateEducationForm,
+  validateProjectForm,
+  validateCertificateForm,
+  validateAwardForm,
+  validateSkillGroupForm,
+  validateLanguagesList,
+} from "./utils/validator";
 
 export { fetchProfileByRole, clearProfileData } from './utils/profileHelper';
 
@@ -19,3 +19,7 @@ export { getJobs, getJobById, getJobsByCompanyId } from './services/jobsService'
 export { getCompanies, getCompany, createCompany, updateCompany, deleteCompany } from './services/companyService';
 export { getTopCVJobs } from './services/topCVService';
 export { getUserById, updateUser } from './services/userService';
+export { getCategories } from "./services/categoriesService";
+export { getSkills } from "./services/skillsService";
+export { getEmploymentTypes } from "./services/employmentTypeService";
+export { getLevels } from "./services/levelsService";
