@@ -21,7 +21,8 @@ export const getJobs = createAsyncThunk(
         } catch (error) {
             return rejectWithValue(error.response?.data?.message || "Something went wrong");
         }
-    });
+    }
+);
 
 export const getJobById = createAsyncThunk(
     "jobs/getJobById",
@@ -34,7 +35,23 @@ export const getJobById = createAsyncThunk(
         } catch (error) {
             return rejectWithValue(error.response?.data?.message || "Something went wrong");
         }
-    });
+    }
+);
+
+export const getJobsByCompanyId = createAsyncThunk(
+    "jobs/getJobsByCompanyId",
+    async ({companyId, page, limit}, { rejectWithValue }) => {
+        try {
+            const response = await api.get(`${apiBaseUrl}`, {
+                params: { page: page, limit: limit, company_id: companyId },
+                withCredentials: true,
+            });
+            return response.data;
+        } catch (error) {
+            return rejectWithValue(error.response?.data?.message || "Something went wrong");
+        }
+    }
+);
 
 export const createJob = createAsyncThunk(
     "jobs/createJob",
@@ -47,7 +64,8 @@ export const createJob = createAsyncThunk(
         } catch (error) {
             return rejectWithValue(error.response?.data?.message || "Something went wrong");
         }
-    });
+    }
+);
 
 export const updateJob = createAsyncThunk(
     "jobs/updateJob",
@@ -73,7 +91,8 @@ export const deleteJob = createAsyncThunk(
         } catch (error) {
             return rejectWithValue(error.response?.data?.message || "Something went wrong");
         }
-    });
+    }
+);
 
 const initialState = {
     job: null,
@@ -115,6 +134,21 @@ const jobsSlice = createSlice({
             .addCase(getJobById.rejected, (state, action) => {
                 state.status = "failed";
                 state.error = action.payload;
+            })
+            .addCase(getJobsByCompanyId.pending, (state) => {
+                state.status = "loading";
+                state.error = null;
+                state.pagination = null;
+            })
+            .addCase(getJobsByCompanyId.fulfilled, (state, action) => {
+                state.status = "succeeded";
+                state.jobs = action.payload.data || [];
+                state.pagination = action.payload.pagination || null;
+            })
+            .addCase(getJobsByCompanyId.rejected, (state, action) => {
+                state.status = "failed";
+                state.error = action.payload;
+                state.pagination = null;
             })
             .addCase(createJob.pending, (state) => {
                 state.status = "loading";

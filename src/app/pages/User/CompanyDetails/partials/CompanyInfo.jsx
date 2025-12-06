@@ -11,32 +11,12 @@ import {
     LocationOn
 } from '@mui/icons-material';
 import { useTranslation } from 'react-i18next';
+import { Image } from 'antd';
+import { srcAsset } from '../../../../lib';
+import { ArrowRight } from 'lucide-react';
 
 export default function CompanyInfo({ company = {} }) {
     const { t } = useTranslation();
-    const {
-        industry = 'Công nghệ',
-        size = '10-50 nhân viên',
-        location = 'Địa điểm'
-    } = company;
-
-    const infoItems = [
-        {
-            icon: Business,
-            label: t('company.info.field'),
-            value: industry
-        },
-        {
-            icon: People,
-            label: t('company.info.company_size'),
-            value: size
-        },
-        {
-            icon: LocationOn,
-            label: t('company.info.location'),
-            value: location
-        }
-    ];
 
     return (
         <Box sx={{ position: 'sticky', top: 16 }}>
@@ -46,49 +26,56 @@ export default function CompanyInfo({ company = {} }) {
                     p: 3,
                     border: '1px solid',
                     borderColor: 'divider',
-                    borderRadius: 2
+                    borderRadius: 2,
+                    gap: 1,
+                    display: 'flex',
+                    flexDirection: 'column'
                 }}
             >
-                <Typography variant="h6" sx={{ fontWeight: 700, mb: 2 }}>
-                    {t('company.info.title')}
+                <Typography variant="h6" sx={{ fontWeight: 700 }}>
+                    {t('company.tech_stack.title')}
                 </Typography>
+                <Typography variant="body2" color="text.secondary">
+                    {t('company.tech_stack.description', { companyName: company.name || 'the company' })}
+                </Typography>
+                <div className='grid grid-cols-4 md:grid-cols-3 lg:grid-cols-4 gap-4'>
+                    {company.techStack && company.techStack.map((tech, index) => (
+                        <div key={index} className=' flex flex-col justify-center items-center'>
+                            <Image 
+                                src={`https://cdn.jsdelivr.net/gh/devicons/devicon/icons/${tech.toLowerCase()}/${tech.toLowerCase()}-original.svg`}
+                                alt={tech}
+                                width={50}
+                                height={50}
+                                preview={false}
+                                fallback={srcAsset.techIcon}
+                            />
+                            <span className='text-base mt-2'>{tech}</span>
+                        </div>
+                    ))}
+                </div>
+                <a
+                    href="#"
+                    className="text-primary flex items-center gap-2 hover:underline font-medium"
+                >
+                    {t('company.tech_stack.view_all')}
+                    <ArrowRight className="w-5 h-5" />
+                </a>
 
-                {/* Company Details */}
-                <Box>
-                    {infoItems.map((item, index) => {
-                        const Icon = item.icon;
-                        return (
-                            <Box key={index}>
-                                <Box
-                                    sx={{
-                                        display: 'flex',
-                                        alignItems: 'flex-start',
-                                        gap: 2,
-                                        py: 2
-                                    }}
-                                >
-                                    <Icon sx={{ fontSize: 20, color: 'primary.main', mt: 0.2 }} />
-                                    <Box sx={{ flex: 1, minWidth: 0 }}>
-                                        <Typography
-                                            variant="caption"
-                                            color="text.secondary"
-                                            sx={{ display: 'block', mb: 0.5, fontSize: '0.75rem' }}
-                                        >
-                                            {item.label}
-                                        </Typography>
-                                        <Typography
-                                            variant="body2"
-                                            sx={{ fontWeight: 500 }}
-                                        >
-                                            {item.value}
-                                        </Typography>
-                                    </Box>
-                                </Box>
-                                {index < infoItems.length - 1 && <Divider />}
-                            </Box>
-                        );
-                    })}
-                </Box>
+                {/* <Divider sx={{ my: 1 }} />
+
+                <Typography variant="h6" sx={{ fontWeight: 700 }}>
+                    {t('company.office_location.title')}
+                </Typography>
+                <Typography variant="body2" color="text.secondary">
+                    {t('company.office_location.description', { companyName: company.name || 'the company' })}
+                </Typography>
+                <a
+                    href="#"
+                    className="text-primary flex items-center gap-2 hover:underline font-medium"
+                >
+                    {t('company.office_location.view_all')}
+                    <ArrowRight className="w-5 h-5" />
+                </a> */}
             </Paper>
         </Box>
     );

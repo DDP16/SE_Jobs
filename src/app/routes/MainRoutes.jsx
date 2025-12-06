@@ -15,12 +15,10 @@ export default function MainRoutes() {
   const user = useSelector((state) => state.auth.user);
 
   useEffect(() => {
-    console.log("🔍 MainRoutes: isAuthenticated =", isAuthenticated, "user =", user);
     if (isAuthenticated && !user) {
-      console.log("🚀 Dispatching getMe...");
       dispatch(getMe());
     }
-  }, [dispatch, isAuthenticated, user]);
+  }, []);
 
   const userRole = useSelector((state) => state.auth.userRole);
 

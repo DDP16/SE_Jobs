@@ -10,6 +10,7 @@ import {
 } from "@mui/icons-material";
 import { srcAsset } from "../../../../lib";
 import { useTranslation } from "react-i18next";
+import { Image } from 'antd';
 
 export default function CompanyHeader({ company = {} }) {
   const { t } = useTranslation();
@@ -66,7 +67,6 @@ export default function CompanyHeader({ company = {} }) {
         px: { xs: 2, sm: 4, md: 6, lg: 8 },
         py: { xs: 2, md: 3, lg: 4 }
       }}
-      className="bg-background-lightBlue"
     >
       <Box
         sx={{
@@ -74,16 +74,21 @@ export default function CompanyHeader({ company = {} }) {
           flexDirection: { xs: "column", md: "row" },
           alignItems: { xs: "flex-start", md: "center" },
           gap: { xs: 1.5, md: 0 },
-          p: { xs: 2.5, sm: 3, md: 4, lg: 5 },
+          p: { xs: 1.5, sm: 2, md: 3, lg: 4 },
+          border: '1px solid',
+          borderColor: 'divider',
+          borderRadius: 2,
         }}
         className="bg-white"
       >
         {/* Left Side - Company Info */}
         <Box sx={{ display: "flex", gap: { xs: 1.5, md: 2 }, alignItems: "center", flex: 1, width: "100%" }}>
-          <img
+          <Image
             src={srcAsset.nomadIcon}
             alt="Nomad Logo"
-            className="w-14 h-14 sm:w-20 sm:h-20 md:w-26 md:h-26 object-contain shrink-0"
+            width={100}
+            height={100}
+            fallback={srcAsset.fallback}
           />
           <Box sx={{ minWidth: 0, flex: 1 }}>
             <Typography

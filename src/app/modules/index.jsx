@@ -11,11 +11,12 @@ export {
   validateLanguagesList,
 } from "./utils/validator";
 
-export { loginWithEmail, register, getMe, logout } from "./services/authService";
-export { getProvinces, getWards } from "./services/addressService";
-export { getJobs, getJobById } from "./services/jobsService";
-export { getCompanies, getCompany, createCompany, updateCompany, deleteCompany } from "./services/companyService";
-export { getTopCVJobs } from "./services/topCVService";
+export { loginWithEmail, register, getMe, logout } from './services/authService';
+export { getProvinces, getWards } from './services/addressService';
+export { getJobs, getJobById, getJobsByCompanyId } from './services/jobsService';
+export { getCompanies, getCompany, createCompany, updateCompany, deleteCompany } from './services/companyService';
+export { getTopCVJobs } from './services/topCVService';
+export { getUserById, updateUser } from './services/userService';
 export { getCategories } from "./services/categoriesService";
 export { getSkills } from "./services/skillsService";
 export { getEmploymentTypes } from "./services/employmentTypeService";

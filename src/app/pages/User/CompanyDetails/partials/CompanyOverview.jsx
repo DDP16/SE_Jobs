@@ -36,7 +36,7 @@ export default function CompanyOverview({ company = {} }) {
                     borderRadius: 2,
                     display: 'flex',
                     flexDirection: 'column',
-                    gap: 2.5
+                    gap: 2
                 }}
             >
                 <Typography
