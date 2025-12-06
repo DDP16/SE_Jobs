@@ -143,6 +143,16 @@
         "open_jobs": {
             "title": "Open Jobs",
             "show_all": "Show all jobs"
+        },
+        "tech_stack": {
+            "title": "Tech Stack",
+            "description": "Learn about the technology and tools that {{companyName}} uses.",
+            "view_all": "View tech stack"
+        },
+        "office_location": {
+            "title": "Office Location",
+            "description": "{{companyName}} offices spread across the globe.",
+            "view_all": "View countries"
         }
     },
     "sidebar": {

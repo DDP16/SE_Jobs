@@ -121,3 +121,4 @@ export {
     TooltipTrigger,
     TooltipProvider,
 } from './tooltip';
+export { Popover, PopoverTrigger, PopoverContent, PopoverAnchor } from './popover';

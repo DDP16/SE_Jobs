@@ -14,6 +14,9 @@ import { Avatar, AvatarFallback, AvatarImage, Badge, Button } from "../ui";
 import { Box } from "@mui/material";
 import logo from "@/assets/logo.svg";
 import NavLink from "./NavLink";
+import { logout } from "../../modules";
+import { useDispatch } from "react-redux";
+import { useNavigate } from "react-router-dom";
 
 const navigation = [
   { name: "Dashboard", icon: Home, badge: null },
@@ -27,8 +30,11 @@ const navigation = [
 ];
 
 export default function CompanySidebar() {
+  const dispatch = useDispatch();
+  const nav = useNavigate();
+
   return (
-    <aside className="fixed left-0 top-0 h-screen w-1/6 min-w-[220px] border-r border-border bg-sidebar-background flex flex-col overflow-y-auto border-gray-300">
+    <aside className="h-screen w-1/6 min-w-[220px] border-r border-border bg-sidebar-background flex flex-col overflow-y-auto border-gray-300">
       {/* Logo */}
       <div className="flex items-center px-3 py-4 justify-center">
         <Box
@@ -45,6 +51,7 @@ export default function CompanySidebar() {
           if (item.name === "Dashboard") to = "/";
           if (item.name === "Company Profile") to = "/company";
           if (item.name === "All Applicants") to = "/applicants/1";
+          if (item.name === "Job Listing") to = "/job-listing";
           if (item.name === "Job Posting") to = "/post-job";
 
           return (
@@ -97,6 +104,11 @@ export default function CompanySidebar() {
           variant="ghost"
           size="sm"
           className="w-full justify-start text-destructive hover:text-destructive hover:bg-red-50 active:bg-red-100 active:text-white"
+          onClick={() => {
+            // Dispatch logout action
+            dispatch(logout());
+            nav("/");
+          }}
         >
           <LogOut className="w-4 h-4 mr-2" />
           Logout

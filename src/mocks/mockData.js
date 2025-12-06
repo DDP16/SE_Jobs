@@ -339,12 +339,11 @@ export const mockCompanies = [
         industry: "Công nghệ",
         size: "10-50 nhân viên",
         description: `Nomad là công ty công nghệ hàng đầu chuyên cung cấp giải pháp làm việc từ xa.
-        
         Chúng tôi tin rằng tương lai của công việc là linh hoạt và không giới hạn. Với đội ngũ chuyên gia giàu kinh nghiệm, chúng tôi tạo ra các sản phẩm giúp kết nối đội ngũ từ xa hiệu quả hơn.
-        
         Tại Nomad, chúng tôi luôn đề cao sự sáng tạo, tinh thần học hỏi và văn hóa làm việc tích cực. Mỗi thành viên đều được trao quyền để đóng góp ý tưởng và phát triển sự nghiệp.`,
         jobsCount: 5,
-        isHiring: true
+        isHiring: true,
+        techStack: ["React", "Node.js", "GraphQL", "Docker", "AWS"]
     },
     {
         id: 2,
