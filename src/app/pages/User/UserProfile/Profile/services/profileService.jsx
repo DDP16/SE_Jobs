@@ -1,15 +1,6 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import api from "../../../../modules/AxiosInstance";
 import { getUserById, updateUser } from "../../../../modules/services/userService";
-import {useSelector} from "react-redux";
-import { useDispatch } from "react-redux";
-
-const { user: authUser, userId, userRole, isAuthenticated } = useSelector((state) => state.auth);
-const userProfile = useSelector((state) => state.profile?.profile);
-const userStatus = useSelector((state) => state.profile?.status);
-const userError = useSelector((state) => state.profile?.error);
-
-const dispatch = useDispatch();
 
 // ==================== Initial State ====================
 const initialState = {

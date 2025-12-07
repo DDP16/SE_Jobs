@@ -13,9 +13,9 @@ export const getCompanies = createAsyncThunk(
             return response.data;
         } catch (error) {
             return rejectWithValue(error.response?.data?.message || "Something went wrong");
-        } 
+        }
     });
-    
+
 export const getCompany = createAsyncThunk(
     "companies/getCompany",
     async (companyId, { rejectWithValue }) => {
@@ -44,7 +44,17 @@ export const updateCompany = createAsyncThunk(
     "companies/updateCompany",
     async ({ companyId, companyData }, { rejectWithValue }) => {
         try {
-            const response = await api.put(`${apiBaseUrl}/${companyId}`, companyData, { withCredentials: true });
+            // Check if companyData is FormData (for file uploads)
+            const isFormData = companyData instanceof FormData;
+            const config = {
+                withCredentials: true,
+                ...(isFormData && {
+                    headers: {
+                        'Content-Type': 'multipart/form-data',
+                    },
+                }),
+            };
+            const response = await api.put(`${apiBaseUrl}/${companyId}`, companyData, config);
             return response.data;
         } catch (error) {
             return rejectWithValue(error.response?.data?.message || "Something went wrong");
@@ -129,8 +139,14 @@ const companiesSlice = createSlice({
                 state.status = "succeeded";
                 const updated = action.payload?.data ?? action.payload;
                 if (updated) {
-                    const idx = state.companies.findIndex(c => c.id === (updated.id || updated.company_id || updated.companyId));
+                    const updatedId = updated.id || updated.company_id || updated.companyId;
+                    // Update in companies array
+                    const idx = state.companies.findIndex(c => c.id === updatedId || c.company_id === updatedId || c.companyId === updatedId);
                     if (idx !== -1) state.companies[idx] = updated;
+                    // Update current company if it matches
+                    if (state.company && (state.company.id === updatedId || state.company.company_id === updatedId || state.company.companyId === updatedId)) {
+                        state.company = updated;
+                    }
                 }
             })
             .addCase(updateCompany.rejected, (state, action) => {

@@ -16,8 +16,16 @@ export function AddressSection({ address, onAddressChange }) {
         'Bến Nghé', 'Đa Kao', 'Tân Định', 'Cô Giang', 'Nguyễn Cư Trinh'
     ];
 
+    // Initialize address with default values if null/undefined
+    const currentAddress = address || {
+        street: '',
+        province: '',
+        district: '',
+        ward: ''
+    };
+
     const handleChange = (field, value) => {
-        onAddressChange({ ...address, [field]: value });
+        onAddressChange({ ...currentAddress, [field]: value });
     };
 
     return (
@@ -34,7 +42,7 @@ export function AddressSection({ address, onAddressChange }) {
                     <input
                         id="street"
                         type="text"
-                        value={address.street || ''}
+                        value={currentAddress.street || ''}
                         onChange={(e) => handleChange('street', e.target.value)}
                         placeholder="123 Main Street"
                         className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-600 focus:border-transparent"
@@ -50,7 +58,7 @@ export function AddressSection({ address, onAddressChange }) {
                         </label>
                         <select
                             id="province"
-                            value={address.province || ''}
+                            value={currentAddress.province || ''}
                             onChange={(e) => handleChange('province', e.target.value)}
                             className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-600 focus:border-transparent appearance-none bg-white"
                         >
@@ -71,7 +79,7 @@ export function AddressSection({ address, onAddressChange }) {
                         </label>
                         <select
                             id="district"
-                            value={address.district || ''}
+                            value={currentAddress.district || ''}
                             onChange={(e) => handleChange('district', e.target.value)}
                             className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-600 focus:border-transparent appearance-none bg-white"
                         >
@@ -92,7 +100,7 @@ export function AddressSection({ address, onAddressChange }) {
                         </label>
                         <select
                             id="ward"
-                            value={address.ward || ''}
+                            value={currentAddress.ward || ''}
                             onChange={(e) => handleChange('ward', e.target.value)}
                             className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-600 focus:border-transparent appearance-none bg-white"
                         >
