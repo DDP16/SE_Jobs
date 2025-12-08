@@ -44,17 +44,16 @@ export const updateCompany = createAsyncThunk(
     "companies/updateCompany",
     async ({ companyId, companyData }, { rejectWithValue }) => {
         try {
-            // Check if companyData is FormData (for file uploads)
             const isFormData = companyData instanceof FormData;
-            const config = {
-                withCredentials: true,
-                ...(isFormData && {
-                    headers: {
-                        'Content-Type': 'multipart/form-data',
-                    },
-                }),
-            };
-            const response = await api.put(`${apiBaseUrl}/${companyId}`, companyData, config);
+            let config = { withCredentials: true };
+            if (isFormData) {
+                config.headers = { 'Content-Type': 'multipart/form-data' };
+            }
+            const response = await api.put(
+                `${apiBaseUrl}/${companyId}`,
+                companyData,
+                config
+            );
             return response.data;
         } catch (error) {
             return rejectWithValue(error.response?.data?.message || "Something went wrong");

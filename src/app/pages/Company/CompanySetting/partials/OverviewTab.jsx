@@ -10,19 +10,33 @@ import { CompanyTypeSection } from './CompanyTypeSection';
 import { useDispatch, useSelector } from 'react-redux';
 import { getCompany, updateCompany } from '../../../../modules/services/companyService';
 import { uploadMedia, deleteMedia } from '../../../../modules/services/mediaService';
+import { getCategories } from '../../../../modules/services/categoriesService';
+import { getEmploymentTypes } from '../../../../modules/services/employmentTypeService';
+import { getSkills } from '../../../../modules/services/skillsService';
 
 export function OverviewTab({ companyId }) {
     const dispatch = useDispatch();
-    const company = useSelector((state) => state.company.company);
-    const updateStatus = useSelector((state) => state.company.status);
-    const updateError = useSelector((state) => state.company.error);
-    const [isUpdating, setIsUpdating] = useState(false);
 
     useEffect(() => {
         if (companyId) {
             dispatch(getCompany(companyId));
         }
     }, [dispatch, companyId]);
+
+    useEffect(() => {
+        dispatch(getCategories());
+        dispatch(getEmploymentTypes());
+        dispatch(getSkills());
+    }, [dispatch]);
+
+    const company = useSelector((state) => state.company.company);
+    const updateStatus = useSelector((state) => state.company.status);
+    const updateError = useSelector((state) => state.company.error);
+    const categories = useSelector((state) => state.categories?.categories ?? []);
+    const employmentTypes = useSelector((state) => state.employmentTypes?.employmentTypes ?? []);
+    const skills = useSelector((state) => state.skills?.skills ?? []);
+    const [isUpdating, setIsUpdating] = useState(false);
+
 
     const [formData, setFormData] = useState({
         companyName: '',
@@ -167,7 +181,7 @@ export function OverviewTab({ companyId }) {
     };
 
     const locationSuggestions = ['England', 'Japan', 'Australia', 'United States', 'Canada', 'Germany', 'France', 'Singapore'];
-    const techStackSuggestions = ['HTML 5', 'CSS 3', 'Javascript', 'React', 'TypeScript', 'Node.js', 'Python', 'Java'];
+    const techStackSuggestions = skills.map((skill) => skill.name) || [];
 
     const days = Array.from({ length: 31 }, (_, i) => (i + 1).toString());
     const months = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
@@ -282,13 +296,9 @@ export function OverviewTab({ companyId }) {
                                     onChange={(e) => handleInputChange('industry', e.target.value)}
                                     className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-600 focus:border-transparent appearance-none bg-white"
                                 >
-                                    <option value="">Select industry</option>
-                                    <option value="Technology">Technology</option>
-                                    <option value="Healthcare">Healthcare</option>
-                                    <option value="Finance">Finance</option>
-                                    <option value="Education">Education</option>
-                                    <option value="Retail">Retail</option>
-                                    <option value="Manufacturing">Manufacturing</option>
+                                        {categories.map((category) => (
+                                            <option key={category.id} value={category.name}>{category.name}</option>
+                                        ))}
                                 </select>
                                 <ChevronDown className="absolute right-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400 pointer-events-none" />
                             </div>
