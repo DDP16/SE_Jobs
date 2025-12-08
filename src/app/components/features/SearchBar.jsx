@@ -63,9 +63,15 @@ export default function SearchBar({
         return [];
     }, [provinces]);
 
-    const options = provinceList.map(province => {
-        return { label: province.name, value: province.id }
-    })
+    const options = React.useMemo(() => {
+        return [
+            DEFAULT_LOCATION,
+            ...provinceList.map(province => ({
+                label: province.name,
+                value: province.id
+            }))
+        ];
+    }, [provinceList]);
 
     return (
         <Paper

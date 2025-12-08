@@ -14,7 +14,6 @@ export default function Footer() {
               <img src={logo} alt="Jobs" width={60} height={60} />
             </div>
             <p className="footer_desc">
-              Great platform for the job seeker that passionate about startups.
               Find your dream job easier.
             </p>
           </div>
