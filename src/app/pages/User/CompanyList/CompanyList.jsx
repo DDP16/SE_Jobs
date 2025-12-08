@@ -1,90 +1,76 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Container, Box } from '@mui/material';
 import CompanyListHero from './partials/CompanyListHero';
 import CompanyFilters from './partials/CompanyFilters';
 import CompanyGrid from './partials/CompanyGrid';
-import { mockCompanies } from '../../../../mocks/mockData';
-import { sortType } from '../../../lib';
+import { useDispatch, useSelector } from 'react-redux';
+import { getCompanies } from '../../../modules';
+import { getCompanyTypes } from '../../../modules/services/companyTypesService';
 
+const DEFAULT_FILTER = {
+    keyword : '',
+    company_type_ids: [],
+    employee_count: '',
+}
 export default function CompanyList() {
-    const [searchKeyword, setSearchKeyword] = useState('');
-    const [selectedIndustries, setSelectedIndustries] = useState([]);
-    const [selectedSizes, setSelectedSizes] = useState([]);
-    const [selectedLocations, setSelectedLocations] = useState([]);
-    const [sortBy, setSortBy] = useState(sortType.featured);
+    const [sortBy, setSortBy] = useState('created_at:desc');
+    const [filter, setFilter] = useState(DEFAULT_FILTER);
+    const companies = useSelector(state => state.company.companies);
 
-    // Filter companies based on search and filters
-    const filteredCompanies = mockCompanies.filter(company => {
-        // Search filter
-        if (searchKeyword && !company.name.toLowerCase().includes(searchKeyword.toLowerCase()) &&
-            !company.description.toLowerCase().includes(searchKeyword.toLowerCase())) {
-            return false;
+    const dispatch = useDispatch();
+
+    const getActiveFilter = () => {
+      let active = 0;
+
+      Object.keys(filter).forEach((key) => {
+        const value = filter[key];
+
+        if (typeof value === "string" && value.trim() !== "") {
+          active++;
         }
-
-        // Industry filter
-        if (selectedIndustries.length > 0 && !selectedIndustries.includes(company.industry)) {
-            return false;
+        else if (Array.isArray(value) && value.length > 0) {
+          active++;
         }
-
-        // Size filter
-        if (selectedSizes.length > 0 && !selectedSizes.includes(company.size)) {
-            return false;
+        else if (typeof value === "number" && value !== 0) {
+          active++;
         }
+      });
 
-        // Location filter
-        if (selectedLocations.length > 0 && !selectedLocations.some(loc =>
-            company.location.includes(loc))) {
-            return false;
-        }
-
-        return true;
-    });
-
-    // Sort companies
-    const sortedCompanies = [...filteredCompanies].sort((a, b) => {
-        switch (sortBy) {
-            case sortType.featured:
-                return (b.isHiring ? 1 : 0) - (a.isHiring ? 1 : 0);
-            case sortType.jobs:
-                return b.jobsCount - a.jobsCount;
-            case sortType.name:
-                return a.name.localeCompare(b.name);
-            default:
-                return 0;
-        }
-    });
-
-    const handleSearch = (keyword) => {
-        setSearchKeyword(keyword);
+      return active;
     };
 
-    const handleIndustryChange = (industries) => {
-        setSelectedIndustries(industries);
-    };
+    const searchCompanies = async (filter, sortBy) => {
+        const query = {
+            page: 1,
+            limit: 10,
+            company_type_ids: filter.company_type_ids.join(',') || '',
+            keyword: filter.keyword,
+            employee_count_from: filter.employee_count ? filter.employee_count.split(":")[0] : 0,
+            employee_count_to: filter.employee_count ? filter.employee_count.split(":")[1] : 1000000,
+        }
+        
+        if (sortBy) {
+            query.order = sortBy;
+        }
+        dispatch(getCompanies(query));
+    }
 
-    const handleSizeChange = (sizes) => {
-        setSelectedSizes(sizes);
-    };
+    useEffect(() => {
+        dispatch(getCompanyTypes({ page: 1, limit: 10 }));
+    }, [dispatch])
 
-    const handleLocationChange = (locations) => {
-        setSelectedLocations(locations);
-    };
-
-    const handleClearFilters = () => {
-        setSelectedIndustries([]);
-        setSelectedSizes([]);
-        setSelectedLocations([]);
-        setSearchKeyword('');
-    };
-
-    const activeFiltersCount = selectedIndustries.length + selectedSizes.length + selectedLocations.length;
+    useEffect(() => {
+        searchCompanies(filter, sortBy);
+    }, [filter, sortBy])
 
     return (
         <Box sx={{ bgcolor: 'background.default', minHeight: '100vh' }}>
             {/* Hero Section with Search */}
             <CompanyListHero
-                onSearch={handleSearch}
-                searchKeyword={searchKeyword}
+                onSearch={(keyword) => {
+                    setFilter((filter) => ({ ...filter, keyword }));
+                }}
+                searchKeyword={filter.keyword}
             />
 
             <Container maxWidth="xl" sx={{ py: { xs: 4, md: 6 } }}>
@@ -104,24 +90,20 @@ export default function CompanyList() {
                         }}
                     >
                         <CompanyFilters
-                            selectedIndustries={selectedIndustries}
-                            selectedSizes={selectedSizes}
-                            selectedLocations={selectedLocations}
-                            onIndustryChange={handleIndustryChange}
-                            onSizeChange={handleSizeChange}
-                            onLocationChange={handleLocationChange}
-                            onClearFilters={handleClearFilters}
-                            activeFiltersCount={activeFiltersCount}
+                            clearFilter={() => setFilter(DEFAULT_FILTER)}
+                            setFilter={setFilter}
+                            filter={filter}
+                            activeFiltersCount={getActiveFilter()}
                         />
                     </Box>
 
                     {/* Company Grid */}
                     <Box sx={{ flex: 1, minWidth: 0 }}>
                         <CompanyGrid
-                            companies={sortedCompanies}
+                            companies={companies}
                             sortBy={sortBy}
                             onSortChange={setSortBy}
-                            totalCount={filteredCompanies.length}
+                            totalCount={companies.length}
                         />
                     </Box>
                 </Box>

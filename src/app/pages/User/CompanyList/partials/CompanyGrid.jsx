@@ -76,9 +76,10 @@ export default function CompanyGrid({
                                 }
                             }}
                         >
-                            <MenuItem value={sortType.featured}>Featured</MenuItem>
-                            <MenuItem value={sortType.jobs}>Most Jobs</MenuItem>
-                            <MenuItem value={sortType.name}>Name (A-Z)</MenuItem>
+                            <MenuItem value={'created_at:desc'}>Newest</MenuItem>
+                            <MenuItem value={'created_at:asc'}>Oldest</MenuItem>
+                            <MenuItem value={'name:asc'}>Name (A-Z)</MenuItem>
+                            <MenuItem value={'name:desc'}>Name (Z-A)</MenuItem>
                         </Select>
                     </FormControl>
                 </Box>

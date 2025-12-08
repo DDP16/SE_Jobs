@@ -4,11 +4,11 @@ import api from "../AxiosInstance";
 const apiBaseUrl = "/api/companies";
 
 export const getCompanies = createAsyncThunk(
-    "companies/getCompanies",
-    async ({ page, limit }, { rejectWithValue }) => {
+    "companies",
+    async (query, { rejectWithValue }) => {
         try {
             const response = await api.get(`${apiBaseUrl}/`, {
-                params: { page: page, limit: limit },
+                params: query,
             });
             return response.data;
         } catch (error) {

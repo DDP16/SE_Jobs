@@ -11,56 +11,44 @@ import {
     Accordion,
     AccordionSummary,
     AccordionDetails,
-    Chip
+    Chip,
+    RadioGroup,
+    Radio
 } from '@mui/material';
 import {
     ExpandMore,
     FilterList,
     Clear
 } from '@mui/icons-material';
+import { useSelector } from 'react-redux';
 
 export default function CompanyFilters({
-    selectedIndustries = [],
-    selectedSizes = [],
-    selectedLocations = [],
-    onIndustryChange,
-    onSizeChange,
-    onLocationChange,
-    onClearFilters,
+    clearFilter,
+    filter,
+    setFilter,
     activeFiltersCount = 0
 }) {
     const [expandedPanels, setExpandedPanels] = useState(['industry', 'size', 'location']);
-
-    const industries = [
-        'Technology',
-        'Cloud Storage',
-        'Productivity',
-        'Finance',
-        'Healthcare',
-        'Education',
-        'E-commerce',
-        'Marketing'
-    ];
+    const company_types = useSelector(state => state.companyTypes.types);
 
     const companySizes = [
-        '1-10 employees',
-        '10-50 employees',
-        '50-200 employees',
-        '200-500 employees',
-        '500-1000 employees',
-        '1000+ employees'
+        { name: '1-10 employees', value: "1:50" },
+        { name: '50-200 employees', value: "50:200" },
+        { name: '200-500 employees', value: "200:5000" },
+        { name: '500-1000 employees', value: "500:1000" },
+        { name: '1000+ employees', value: "1000:10000000" },
     ];
 
-    const locations = [
-        'USA',
-        'Remote',
-        'France',
-        'UK',
-        'Germany',
-        'Canada',
-        'Singapore',
-        'Vietnam'
-    ];
+    // const locations = [
+    //     'USA',
+    //     'Remote',
+    //     'France',
+    //     'UK',
+    //     'Germany',
+    //     'Canada',
+    //     'Singapore',
+    //     'Vietnam'
+    // ];
 
     const handlePanelChange = (panel) => (event, isExpanded) => {
         setExpandedPanels(prev =>
@@ -70,198 +58,122 @@ export default function CompanyFilters({
         );
     };
 
-    const handleIndustryToggle = (industry) => {
-        const newSelection = selectedIndustries.includes(industry)
-            ? selectedIndustries.filter(i => i !== industry)
-            : [...selectedIndustries, industry];
-        onIndustryChange(newSelection);
-    };
-
-    const handleSizeToggle = (size) => {
-        const newSelection = selectedSizes.includes(size)
-            ? selectedSizes.filter(s => s !== size)
-            : [...selectedSizes, size];
-        onSizeChange(newSelection);
-    };
-
-    const handleLocationToggle = (location) => {
-        const newSelection = selectedLocations.includes(location)
-            ? selectedLocations.filter(l => l !== location)
-            : [...selectedLocations, location];
-        onLocationChange(newSelection);
-    };
-
     return (
-        <Paper
-            elevation={0}
-            sx={{
-                border: '1px solid',
-                borderColor: 'divider',
-                borderRadius: 2,
-                overflow: 'hidden',
-                position: 'sticky',
-                top: 16
-            }}
+      <Paper
+        elevation={0}
+        sx={{
+          border: "1px solid",
+          borderColor: "divider",
+          borderRadius: 2,
+          overflow: "hidden",
+          position: "sticky",
+          top: 16,
+        }}
+      >
+        {/* Header */}
+        <Box
+          sx={{
+            p: 2,
+            bgcolor: "background.default",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "space-between",
+          }}
         >
-            {/* Header */}
-            <Box
-                sx={{
-                    p: 2,
-                    bgcolor: 'background.default',
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'space-between'
-                }}
-            >
-                <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-                    <FilterList color="primary" />
-                    <Typography variant="h6" sx={{ fontWeight: 600 }}>
-                        Filters
-                    </Typography>
-                    {activeFiltersCount > 0 && (
-                        <Chip
-                            label={activeFiltersCount}
-                            size="small"
-                            color="primary"
-                            sx={{ height: 20, minWidth: 20 }}
-                        />
-                    )}
-                </Box>
-                {activeFiltersCount > 0 && (
-                    <Button
-                        size="small"
-                        startIcon={<Clear />}
-                        onClick={onClearFilters}
-                        sx={{ textTransform: 'none' }}
-                    >
-                        Clear
-                    </Button>
-                )}
-            </Box>
+          <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
+            <FilterList color="primary" />
+            <Typography variant="h6" sx={{ fontWeight: 600 }}>
+              Filters
+            </Typography>
+            {activeFiltersCount > 0 && <Chip label={activeFiltersCount} size="small" color="primary" sx={{ height: 20, minWidth: 20 }} />}
+          </Box>
+          {activeFiltersCount > 0 && (
+            <Button size="small" startIcon={<Clear />} onClick={clearFilter} sx={{ textTransform: "none" }}>
+              Clear
+            </Button>
+          )}
+        </Box>
 
-            <Divider />
+        <Divider />
 
-            {/* Industry Filter */}
-            <Accordion
-                expanded={expandedPanels.includes('industry')}
-                onChange={handlePanelChange('industry')}
-                elevation={0}
-                disableGutters
-            >
-                <AccordionSummary expandIcon={<ExpandMore />}>
-                    <Typography sx={{ fontWeight: 600 }}>Industry</Typography>
-                    {selectedIndustries.length > 0 && (
-                        <Chip
-                            label={selectedIndustries.length}
-                            size="small"
-                            color="primary"
-                            sx={{ ml: 1, height: 20 }}
-                        />
-                    )}
-                </AccordionSummary>
-                <AccordionDetails sx={{ pt: 0 }}>
-                    <FormGroup>
-                        {industries.map((industry) => (
-                            <FormControlLabel
-                                key={industry}
-                                control={
-                                    <Checkbox
-                                        checked={selectedIndustries.includes(industry)}
-                                        onChange={() => handleIndustryToggle(industry)}
-                                        size="small"
-                                    />
-                                }
-                                label={
-                                    <Typography variant="body2">{industry}</Typography>
-                                }
-                            />
-                        ))}
-                    </FormGroup>
-                </AccordionDetails>
-            </Accordion>
+        {/* Industry Filter */}
+        <Accordion expanded={expandedPanels.includes("industry")} onChange={handlePanelChange("industry")} elevation={0} disableGutters>
+          <AccordionSummary expandIcon={<ExpandMore />}>
+            <Typography sx={{ fontWeight: 600 }}>Industry</Typography>
+            {[].length > 0 && <Chip label={[].length} size="small" color="primary" sx={{ ml: 1, height: 20 }} />}
+          </AccordionSummary>
+          <AccordionDetails sx={{ pt: 0 }}>
+            <FormGroup>
+              {company_types.map((company_type) => (
+                <FormControlLabel
+                  key={company_type.id}
+                  control={
+                    <Checkbox
+                      checked={(filter?.company_type_ids || []).includes(company_type.id)}
+                      onChange={() => {
+                        setFilter((prev) => {
+                          const current = prev.company_type_ids || [];
+                          const exists = current.includes(company_type.id);
 
-            <Divider />
+                          return {
+                            ...prev,
+                            company_type_ids: exists ? current.filter((id) => id !== company_type.id) : [...current, company_type.id],
+                          };
+                        });
+                      }}
+                      size="small"
+                    />
+                  }
+                  label={<Typography variant="body2">{company_type.name}</Typography>}
+                />
+              ))}
+            </FormGroup>
+          </AccordionDetails>
+        </Accordion>
 
-            {/* Company Size Filter */}
-            <Accordion
-                expanded={expandedPanels.includes('size')}
-                onChange={handlePanelChange('size')}
-                elevation={0}
-                disableGutters
-            >
-                <AccordionSummary expandIcon={<ExpandMore />}>
-                    <Typography sx={{ fontWeight: 600 }}>Company Size</Typography>
-                    {selectedSizes.length > 0 && (
-                        <Chip
-                            label={selectedSizes.length}
-                            size="small"
-                            color="primary"
-                            sx={{ ml: 1, height: 20 }}
-                        />
-                    )}
-                </AccordionSummary>
-                <AccordionDetails sx={{ pt: 0 }}>
-                    <FormGroup>
-                        {companySizes.map((size) => (
-                            <FormControlLabel
-                                key={size}
-                                control={
-                                    <Checkbox
-                                        checked={selectedSizes.includes(size)}
-                                        onChange={() => handleSizeToggle(size)}
-                                        size="small"
-                                    />
-                                }
-                                label={
-                                    <Typography variant="body2">{size}</Typography>
-                                }
-                            />
-                        ))}
-                    </FormGroup>
-                </AccordionDetails>
-            </Accordion>
+        <Divider />
 
-            <Divider />
+        {/* Company Size Filter */}
+        <Accordion expanded={expandedPanels.includes("size")} onChange={handlePanelChange("size")} elevation={0} disableGutters>
+          <AccordionSummary expandIcon={<ExpandMore />}>
+            <Typography sx={{ fontWeight: 600 }}>Company Size</Typography>
+            {[].length > 0 && <Chip label={[].length} size="small" color="primary" sx={{ ml: 1, height: 20 }} />}
+          </AccordionSummary>
+          <AccordionDetails sx={{ pt: 0 }}>
+          <RadioGroup onChange={(e) => setFilter((filter) => ({...filter, employee_count: e?.target?.value}))}>
+            {companySizes.map((size) => (
+              <FormControlLabel
+                key={size.value}
+                value={size.value}
+                control={<Radio size="small" />}
+                label={<Typography variant="body2">{size.name}</Typography>}
+              />
+            ))}
+          </RadioGroup>
+        </AccordionDetails>
+        </Accordion>
 
-            {/* Location Filter */}
-            <Accordion
-                expanded={expandedPanels.includes('location')}
-                onChange={handlePanelChange('location')}
-                elevation={0}
-                disableGutters
-            >
-                <AccordionSummary expandIcon={<ExpandMore />}>
-                    <Typography sx={{ fontWeight: 600 }}>Location</Typography>
-                    {selectedLocations.length > 0 && (
-                        <Chip
-                            label={selectedLocations.length}
-                            size="small"
-                            color="primary"
-                            sx={{ ml: 1, height: 20 }}
-                        />
-                    )}
-                </AccordionSummary>
-                <AccordionDetails sx={{ pt: 0 }}>
-                    <FormGroup>
-                        {locations.map((location) => (
-                            <FormControlLabel
-                                key={location}
-                                control={
-                                    <Checkbox
-                                        checked={selectedLocations.includes(location)}
-                                        onChange={() => handleLocationToggle(location)}
-                                        size="small"
-                                    />
-                                }
-                                label={
-                                    <Typography variant="body2">{location}</Typography>
-                                }
-                            />
-                        ))}
-                    </FormGroup>
-                </AccordionDetails>
-            </Accordion>
-        </Paper>
+        <Divider />
+
+        {/* Location Filter */}
+        {/* <Accordion expanded={expandedPanels.includes("location")} onChange={handlePanelChange("location")} elevation={0} disableGutters>
+          <AccordionSummary expandIcon={<ExpandMore />}>
+            <Typography sx={{ fontWeight: 600 }}>Location</Typography>
+            {[].length > 0 && <Chip label={[].length} size="small" color="primary" sx={{ ml: 1, height: 20 }} />}
+          </AccordionSummary>
+          <AccordionDetails sx={{ pt: 0 }}>
+            <FormGroup>
+              {locations.map((location) => (
+                <FormControlLabel
+                  key={location}
+                  control={<Checkbox checked={[].includes(location)} onChange={() => {}} size="small" />}
+                  label={<Typography variant="body2">{location}</Typography>}
+                />
+              ))}
+            </FormGroup>
+          </AccordionDetails>
+        </Accordion> */}
+      </Paper>
     );
 }
 
