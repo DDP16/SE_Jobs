@@ -1,4 +1,5 @@
 import React, { useMemo, useState, useRef, useEffect } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 import {
     Dialog,
     DialogTitle,
@@ -13,6 +14,9 @@ import {
     FormControlLabel
 } from '@mui/material';
 import { useTheme } from '@mui/material/styles';
+import { getLevels } from '../../modules/services/levelsService';
+import { getEmploymentTypes } from '../../modules/services/employmentTypeService';
+import { getCategories } from '../../modules/services/categoriesService';
 
 export default function FilterDialog({
     open = false,
@@ -20,57 +24,38 @@ export default function FilterDialog({
     onClose,
     onApply,
     maxWidth = 'md',
-    focusSection = null, // 'level', 'workingModel', 'salary', 'jobDomain', 'companyIndustry'
+    focusSection = null,
     initialFilters = {},
-    levelOptions,
-    workingModelOptions,
-    jobDomainOptions,
-    companyIndustryOptions,
     salaryMin = 0,
-    salaryMax = 100000000 // 100 triệu VND
+    salaryMax = 100000000
 }) {
+    const dispatch = useDispatch();
     const theme = useTheme();
     const fullScreen = useMediaQuery(theme.breakpoints.down('md'));
 
-    // Defaults
-    const defaultLevels = useMemo(() => levelOptions || ['Fresher', 'Junior', 'Senior', 'Manager'], [levelOptions]);
-    const defaultWorkingModels = useMemo(() => workingModelOptions || ['At office', 'Remote', 'Hybrid'], [workingModelOptions]);
-    const defaultJobDomains = useMemo(
-        () => jobDomainOptions || [
-            'Blockchain & Web3 Services',
-            'Food and Beverage',
-            'Tourism and Hospitality Services',
-            'Insurance',
-            'Consumer Goods'
-        ],
-        [jobDomainOptions]
-    );
-    const defaultCompanyIndustries = useMemo(
-        () => companyIndustryOptions || [
-            'Information Technology',
-            'Healthcare',
-            'Education',
-            'Finance',
-            'E-commerce'
-        ],
-        [companyIndustryOptions]
-    );
+    // Fetch filter options from Redux
+    const levels = useSelector((state) => state.levels?.levels || []);
+    const employmentTypes = useSelector((state) => state.employmentTypes?.employmentTypes || []);
+    const categories = useSelector((state) => state.categories?.categories || []);
+    
+    useEffect(() => {
+        dispatch(getLevels());
+        dispatch(getEmploymentTypes());
+        dispatch(getCategories());
+    }, [dispatch]);
 
     // Refs for scroll to section
     const levelRef = useRef(null);
     const workingModelRef = useRef(null);
     const salaryRef = useRef(null);
     const jobDomainRef = useRef(null);
-    const companyIndustryRef = useRef(null);
 
-    // State
+    // State - now using IDs instead of names
     const [selectedLevels, setSelectedLevels] = useState([]);
     const [selectedWorkingModels, setSelectedWorkingModels] = useState([]);
     const [salaryRange, setSalaryRange] = useState([salaryMin || 0, salaryMax || 100000000]);
     const [searchDomain, setSearchDomain] = useState('');
     const [selectedDomains, setSelectedDomains] = useState([]);
-    const [searchIndustry, setSearchIndustry] = useState('');
-    const [selectedIndustries, setSelectedIndustries] = useState([]);
 
     // Initialize dialog state from parent-provided filters when opening
     useEffect(() => {
@@ -80,7 +65,6 @@ export default function FilterDialog({
             setSelectedLevels(initialFilters.levels || []);
             setSelectedWorkingModels(initialFilters.workingModels || []);
             setSelectedDomains(initialFilters.jobDomains || []);
-            setSelectedIndustries(initialFilters.companyIndustries || []);
             if (initialFilters.salary && typeof initialFilters.salary.min === 'number' && typeof initialFilters.salary.max === 'number') {
                 setSalaryRange([initialFilters.salary.min, initialFilters.salary.max]);
             } else {
@@ -90,12 +74,8 @@ export default function FilterDialog({
     }, [open, initialFilters, salaryMin, salaryMax]);
 
     const filteredDomains = useMemo(
-        () => defaultJobDomains.filter((d) => d.toLowerCase().includes(searchDomain.toLowerCase())),
-        [defaultJobDomains, searchDomain]
-    );
-    const filteredIndustries = useMemo(
-        () => defaultCompanyIndustries.filter((d) => d.toLowerCase().includes(searchIndustry.toLowerCase())),
-        [defaultCompanyIndustries, searchIndustry]
+        () => categories.filter((c) => c.name.toLowerCase().includes(searchDomain.toLowerCase())),
+        [categories, searchDomain]
     );
 
     // Auto scroll to focused section when dialog opens
@@ -103,11 +83,10 @@ export default function FilterDialog({
         if (open && focusSection) {
             setTimeout(() => {
                 const refMap = {
-                    level: levelRef,
-                    workingModel: workingModelRef,
+                    levels: levelRef,
+                    workingModels: workingModelRef,
                     salary: salaryRef,
-                    jobDomain: jobDomainRef,
-                    companyIndustry: companyIndustryRef
+                    jobDomain: jobDomainRef
                 };
 
                 const targetRef = refMap[focusSection];
@@ -117,7 +96,7 @@ export default function FilterDialog({
                         block: 'start'
                     });
                 }
-            }, 300); // Wait for dialog animation
+            }, 300);
         }
     }, [open, focusSection]);
 
@@ -135,8 +114,6 @@ export default function FilterDialog({
         setSalaryRange([salaryMin, salaryMax]);
         setSearchDomain('');
         setSelectedDomains([]);
-        setSearchIndustry('');
-        setSelectedIndustries([]);
     };
 
     const handleApply = () => {
@@ -145,7 +122,7 @@ export default function FilterDialog({
             workingModels: selectedWorkingModels,
             salary: { min: salaryRange[0], max: salaryRange[1] },
             jobDomains: selectedDomains,
-            companyIndustries: selectedIndustries
+            companyIndustries: []
         });
     };
 
@@ -188,14 +165,14 @@ export default function FilterDialog({
                         Level
                     </h3>
                     <div className="flex flex-wrap gap-2.5">
-                        {defaultLevels.map((lvl) => (
+                        {levels.map((level) => (
                             <Chip
-                                key={lvl}
-                                label={lvl}
-                                onClick={() => toggleArrayValue(selectedLevels, setSelectedLevels, lvl)}
-                                color={selectedLevels.includes(lvl) ? 'primary' : 'default'}
-                                variant={selectedLevels.includes(lvl) ? 'filled' : 'outlined'}
-                                className={`transition-all duration-200 hover:-translate-y-0.5 hover:shadow-md ${selectedLevels.includes(lvl) ? 'font-semibold' : 'font-normal'
+                                key={level.id}
+                                label={level.name}
+                                onClick={() => toggleArrayValue(selectedLevels, setSelectedLevels, level.id)}
+                                color={selectedLevels.includes(level.id) ? 'primary' : 'default'}
+                                variant={selectedLevels.includes(level.id) ? 'filled' : 'outlined'}
+                                className={`transition-all duration-200 hover:-translate-y-0.5 hover:shadow-md ${selectedLevels.includes(level.id) ? 'font-semibold' : 'font-normal'
                                     }`}
                                 sx={{
                                     height: '36px',
@@ -211,14 +188,14 @@ export default function FilterDialog({
                         Working Model
                     </h3>
                     <div className="flex flex-wrap gap-2.5">
-                        {defaultWorkingModels.map((wt) => (
+                        {employmentTypes.map((type) => (
                             <Chip
-                                key={wt}
-                                label={wt}
-                                onClick={() => toggleArrayValue(selectedWorkingModels, setSelectedWorkingModels, wt)}
-                                color={selectedWorkingModels.includes(wt) ? 'primary' : 'default'}
-                                variant={selectedWorkingModels.includes(wt) ? 'filled' : 'outlined'}
-                                className={`transition-all duration-200 hover:-translate-y-0.5 hover:shadow-md ${selectedWorkingModels.includes(wt) ? 'font-semibold' : 'font-normal'
+                                key={type.id}
+                                label={type.name}
+                                onClick={() => toggleArrayValue(selectedWorkingModels, setSelectedWorkingModels, type.id)}
+                                color={selectedWorkingModels.includes(type.id) ? 'primary' : 'default'}
+                                variant={selectedWorkingModels.includes(type.id) ? 'filled' : 'outlined'}
+                                className={`transition-all duration-200 hover:-translate-y-0.5 hover:shadow-md ${selectedWorkingModels.includes(type.id) ? 'font-semibold' : 'font-normal'
                                     }`}
                                 sx={{
                                     height: '36px',
@@ -290,17 +267,17 @@ export default function FilterDialog({
                     <div className="border border-gray-200 rounded-lg p-3 max-h-[200px] overflow-auto bg-gray-50/50 shadow-sm">
                         {filteredDomains.length > 0 ? (
                             <div className="space-y-1">
-                                {filteredDomains.map((d) => (
+                                {filteredDomains.map((category) => (
                                     <FormControlLabel
-                                        key={d}
+                                        key={category.id}
                                         control={
                                             <Checkbox
-                                                checked={selectedDomains.includes(d)}
-                                                onChange={() => toggleArrayValue(selectedDomains, setSelectedDomains, d)}
+                                                checked={selectedDomains.includes(category.id)}
+                                                onChange={() => toggleArrayValue(selectedDomains, setSelectedDomains, category.id)}
                                                 size="small"
                                             />
                                         }
-                                        label={<span className="text-sm text-gray-700">{d}</span>}
+                                        label={<span className="text-sm text-gray-700">{category.name}</span>}
                                         className="mx-0 hover:bg-white rounded-md px-2 py-1.5 transition-colors w-full block"
                                         sx={{ margin: 0, display: 'flex' }}
                                     />
@@ -309,51 +286,6 @@ export default function FilterDialog({
                         ) : (
                             <p className="text-sm text-gray-500 py-8 text-center">
                                 No domains found
-                            </p>
-                        )}
-                    </div>
-                </div>
-
-                {/* Company Industry */}
-                <div ref={companyIndustryRef}>
-                    <h3 className="text-base font-semibold mb-3.5 text-gray-900">
-                        Company Industry
-                    </h3>
-                    <TextField
-                        placeholder="Search industry..."
-                        size="small"
-                        fullWidth
-                        value={searchIndustry}
-                        onChange={(e) => setSearchIndustry(e.target.value)}
-                        className="mb-4"
-                        sx={{
-                            '& .MuiOutlinedInput-root': {
-                                backgroundColor: 'white',
-                            }
-                        }}
-                    />
-                    <div className="border border-gray-200 rounded-lg p-3 max-h-[200px] overflow-auto bg-gray-50/50 shadow-sm">
-                        {filteredIndustries.length > 0 ? (
-                            <div className="space-y-1">
-                                {filteredIndustries.map((d) => (
-                                    <FormControlLabel
-                                        key={d}
-                                        control={
-                                            <Checkbox
-                                                checked={selectedIndustries.includes(d)}
-                                                onChange={() => toggleArrayValue(selectedIndustries, setSelectedIndustries, d)}
-                                                size="small"
-                                            />
-                                        }
-                                        label={<span className="text-sm text-gray-700">{d}</span>}
-                                        className="mx-0 hover:bg-white rounded-md px-2 py-1.5 transition-colors w-full block"
-                                        sx={{ margin: 0, display: 'flex' }}
-                                    />
-                                ))}
-                            </div>
-                        ) : (
-                            <p className="text-sm text-gray-500 py-8 text-center">
-                                No industries found
                             </p>
                         )}
                     </div>

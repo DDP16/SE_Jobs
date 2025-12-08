@@ -2,20 +2,41 @@ import React, { useState, useRef, useEffect } from "react";
 import { Container, Box, Stack, useMediaQuery, CircularProgress, Typography } from '@mui/material';
 import { useTheme } from '@mui/material/styles';
 import { useNavigate } from 'react-router-dom';
-import { useSelector } from 'react-redux';
 import { JobListSection, HeroSection, FilterDialog, FilterToolbar } from "../../../components";
 import JobDescription from "../JobDescription";
 import { layoutType } from "../../../lib";
 import useSearch from "../../../hooks/useSearch";
-
+import { useDispatch, useSelector } from 'react-redux';
+import { getLevels } from '../../../modules/services/levelsService';
+import { getEmploymentTypes } from '../../../modules/services/employmentTypeService';
 
 export default function FindJobs() {
-    const [selectedJob, setSelectedJob] = useState(null);
-    const theme = useTheme();
-    const isSmall = useMediaQuery(theme.breakpoints.down('md'));
+    const dispatch = useDispatch();
     const navigate = useNavigate();
+    const theme = useTheme();
+    
+    const [selectedJob, setSelectedJob] = useState(null);
+    const isSmall = useMediaQuery(theme.breakpoints.down('md'));
     const jobDescRef = useRef(null);
     const { jobs = [], pagination, status } = useSelector((state) => state.jobs || {});
+
+    const levels = useSelector(state => state.levels);
+    const employmentTypes = useSelector(state => state.employmentTypes);
+    useEffect(() => {
+        dispatch(getLevels());
+        dispatch(getEmploymentTypes());
+    }, [dispatch]);
+
+    useEffect(() => {
+        if (selectedJob && jobDescRef.current) {
+            try {
+                jobDescRef.current.scrollTo({ top: 0, behavior: 'smooth' });
+            } catch (e) {
+                // fallback for non-scrollable elements
+                jobDescRef.current.scrollTop = 0;
+            }
+        }
+    }, [selectedJob]);
 
     // Sử dụng custom hook để quản lý search và filter
     const {
@@ -27,6 +48,7 @@ export default function FindJobs() {
         handlePageChange,
         handleApplyFilters,
         handleQuickFilter,
+        handleClearFilter,
         handleQuickFilterChange,
         openFilter,
         closeFilter,
@@ -40,17 +62,6 @@ export default function FindJobs() {
         setSelectedJob(job);
     };
 
-    useEffect(() => {
-        if (selectedJob && jobDescRef.current) {
-            try {
-                jobDescRef.current.scrollTo({ top: 0, behavior: 'smooth' });
-            } catch (e) {
-                // fallback for non-scrollable elements
-                jobDescRef.current.scrollTop = 0;
-            }
-        }
-    }, [selectedJob]);
-
     return (
         <>
             <HeroSection onSearch={handleSearch} />
@@ -60,6 +71,7 @@ export default function FindJobs() {
                     onFilterClick={openFilter}
                     onQuickFilterClick={handleQuickFilter}
                     onQuickFilterChange={handleQuickFilterChange}
+                    onClearFilter={handleClearFilter}
                     activeFilterCount={activeFilterCount}
                     appliedFilters={appliedFilters}
                 />
