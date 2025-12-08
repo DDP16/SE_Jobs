@@ -222,7 +222,7 @@ export default function JobDescription({
         <div className="lg:col-span-2">
           {finalConfig.showJobDetails && <JobDetails job={job} />}
         </div>
-        <div className="sticky top-0 z-10 self-start">
+        <div className={`${layout !== layoutType.preview ? "sticky top-0 z-10 self-start" : ""}`}>
           {finalConfig.showJobSidebar && <JobSidebar job={job} />}
         </div>
       </div>
