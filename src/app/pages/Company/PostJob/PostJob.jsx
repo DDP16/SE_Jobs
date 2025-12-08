@@ -32,6 +32,7 @@ import { getEmploymentTypes } from "../../../modules/services/employmentTypeServ
 import { getSkills } from "../../../modules/services/skillsService";
 import { getLevels } from "../../../modules/services/levelsService";
 import { createJob } from "../../../modules/services/jobsService";
+import { useNavigate } from "react-router-dom";
 
 export default function PostJob() {
   const dispatch = useDispatch();
@@ -61,7 +62,7 @@ export default function PostJob() {
   const [jobTitle, setJobTitle] = useState("");
   const [employmentTypes, setEmploymentTypes] = useState([]);
   const [salaryRange, setSalaryRange] = useState([5000, 22000]);
-  const [skills, setSkills] = useState(["Graphic Design", "Communication", "Illustrator"]);
+  const [skills, setSkills] = useState([]);
   const [newSkill, setNewSkill] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("");
   const [jobDescription, setJobDescription] = useState("");
@@ -198,6 +199,7 @@ export default function PostJob() {
       console.error("Failed to create job:", err);
     }
   };
+
   if (authStatus === "loading") {
     return <div>Loading company profile...</div>;
   }
@@ -205,126 +207,126 @@ export default function PostJob() {
   if (!currentUser || !currentUser.company) {
     return <div>Company profile not found.</div>;
   }
-  return (
-    <div className="mt-10 bg-background p-8">
-      <div className="mx-auto">
-        <div className="flex items-center gap-4 mb-8 pt-6">
-          <Button variant="ghost" size="icon" className="h-10 w-10">
-            <ArrowLeft className="h-5 w-5" />
-          </Button>
-          <h3 className="text-xl font-bold text-foreground">Post a Job</h3>
-        </div>
 
-        <div className="flex gap-4 mb-10">
-          {steps.map((step) => {
-            const Icon = step.icon;
-            const isActive = currentStep === step.number;
-            const isCompleted = currentStep > step.number;
-            return (
-              <div
-                key={step.number}
-                className={`flex-1 flex items-center gap-3 p-4 rounded-lg transition-colors ${
-                  isActive
-                    ? "bg-primary/10 border-2 border-primary"
-                    : isCompleted
+  const nav = useNavigate();
+
+  return (
+    <div className="bg-background p-4 lg:p-6 2xl:p-8 space-y-8">
+      <div className="flex items-center gap-4">
+        <Button variant="ghost" size="icon" className="h-10 w-10 cursor-pointer" onClick={() => nav(-1)}>
+          <ArrowLeft className="h-5 w-5" />
+        </Button>
+        <h4 className="font-bold text-foreground">Post a Job</h4>
+      </div>
+
+      <div className="flex gap-4">
+        {steps.map((step) => {
+          const Icon = step.icon;
+          const isActive = currentStep === step.number;
+          const isCompleted = currentStep > step.number;
+          return (
+            <div
+              key={step.number}
+              className={`flex-1 flex items-center gap-3 p-4 rounded-lg transition-colors cursor-pointer ${isActive
+                  ? "bg-primary/10 border-2 border-primary"
+                  : isCompleted
                     ? "bg-primary/5 border-2 border-primary/30"
                     : "bg-input border-2 border-border"
                 }`}
-              >
-                <div
-                  className={`flex items-center justify-center w-12 h-12 rounded-full transition-colors ${
-                    isActive
-                      ? "bg-primary text-white"
-                      : isCompleted
+              onClick={() => { setCurrentStep(step.number) }}
+            >
+              <div
+                className={`flex items-center justify-center w-12 h-12 rounded-full transition-colors ${isActive
+                    ? "bg-primary text-white"
+                    : isCompleted
                       ? "bg-primary/20 text-primary"
                       : "bg-input text-muted-foreground border border-border"
                   }`}
-                >
-                  <Icon className="h-6 w-6" />
-                </div>
-                <div className="flex-1">
-                  <p className={`text-sm font-medium ${isActive ? "text-primary" : "text-muted-foreground"}`}>
-                    Step {step.number}/3
-                  </p>
-                  <p className={`font-semibold ${isActive ? "text-foreground" : "text-muted-foreground"}`}>
-                    {step.title}
-                  </p>
-                </div>
+              >
+                <Icon className="h-6 w-6" />
               </div>
-            );
-          })}
-        </div>
+              <div className="flex-1">
+                <p className={`text-sm font-medium ${isActive ? "text-primary" : "text-muted-foreground"}`}>
+                  Step {step.number}/3
+                </p>
+                <p className={`font-semibold ${isActive ? "text-foreground" : "text-muted-foreground"}`}>
+                  {step.title}
+                </p>
+              </div>
+            </div>
+          );
+        })}
+      </div>
 
-        <div className="bg-card rounded-lg p-8">
-          {currentStep === 1 && (
-            <Step1JobInfo
-              jobTitle={jobTitle}
-              setJobTitle={setJobTitle}
-              employmentTypes={employmentTypes}
-              employmentOptions={employmentOptions}
-              toggleEmploymentType={toggleEmploymentType}
-              salaryRange={salaryRange}
-              setSalaryRange={setSalaryRange}
-              selectedCategory={selectedCategory}
-              handleCategorySelect={handleCategorySelect}
-              categories={categories}
-              skills={skills}
-              newSkill={newSkill}
-              setNewSkill={setNewSkill}
-              addSkill={addSkill}
-              removeSkill={removeSkill}
-              apiSkills={apiSkills}
-              onSkillSelect={addSkillFromApi}
-            />
+      <div className="bg-card rounded-lg px-6">
+        {currentStep === 1 && (
+          <Step1JobInfo
+            jobTitle={jobTitle}
+            setJobTitle={setJobTitle}
+            employmentTypes={employmentTypes}
+            employmentOptions={employmentOptions}
+            toggleEmploymentType={toggleEmploymentType}
+            salaryRange={salaryRange}
+            setSalaryRange={setSalaryRange}
+            selectedCategory={selectedCategory}
+            handleCategorySelect={handleCategorySelect}
+            categories={categories}
+            skills={skills}
+            newSkill={newSkill}
+            setNewSkill={setNewSkill}
+            addSkill={addSkill}
+            removeSkill={removeSkill}
+            apiSkills={apiSkills}
+            onSkillSelect={addSkillFromApi}
+          />
+        )}
+
+        {currentStep === 2 && (
+          <Step2JobDescription
+            jobDescription={jobDescription}
+            setJobDescription={setJobDescription}
+            responsibilities={responsibilities}
+            setResponsibilities={setResponsibilities}
+            whoYouAre={whoYouAre}
+            setWhoYouAre={setWhoYouAre}
+            niceToHaves={niceToHaves}
+            setNiceToHaves={setNiceToHaves}
+          />
+        )}
+
+        {currentStep === 3 && (
+          <Step3PerksBenefit
+            benefits={benefits}
+            addBenefit={addBenefit}
+            removeBenefit={removeBenefit}
+            setBenefits={setBenefits}
+            getBenefitIcon={getBenefitIcon}
+          />
+        )}
+
+        <div className="flex justify-between mt-8">
+          {currentStep > 1 && (
+            <Button variant="outline" size="lg" onClick={() => setCurrentStep(currentStep - 1)} className="px-8">
+              Previous
+            </Button>
           )}
-
-          {currentStep === 2 && (
-            <Step2JobDescription
-              jobDescription={jobDescription}
-              setJobDescription={setJobDescription}
-              responsibilities={responsibilities}
-              setResponsibilities={setResponsibilities}
-              whoYouAre={whoYouAre}
-              setWhoYouAre={setWhoYouAre}
-              niceToHaves={niceToHaves}
-              setNiceToHaves={setNiceToHaves}
-            />
+          {currentStep < 3 ? (
+            <Button
+              size="lg"
+              onClick={() => setCurrentStep(currentStep + 1)}
+              className="bg-primary hover:bg-primary/90 text-white px-8 ml-auto"
+            >
+              Next Step
+            </Button>
+          ) : (
+            <Button
+              size="lg"
+              onClick={handleSubmit}
+              className="bg-primary hover:bg-primary/90 text-white px-8 ml-auto"
+            >
+              Post Job
+            </Button>
           )}
-
-          {currentStep === 3 && (
-            <Step3PerksBenefit
-              benefits={benefits}
-              addBenefit={addBenefit}
-              removeBenefit={removeBenefit}
-              setBenefits={setBenefits}
-              getBenefitIcon={getBenefitIcon}
-            />
-          )}
-
-          <div className="flex justify-between mt-8">
-            {currentStep > 1 && (
-              <Button variant="outline" size="lg" onClick={() => setCurrentStep(currentStep - 1)} className="px-8">
-                Previous
-              </Button>
-            )}
-            {currentStep < 3 ? (
-              <Button
-                size="lg"
-                onClick={() => setCurrentStep(currentStep + 1)}
-                className="bg-primary hover:bg-primary/90 text-white px-8 ml-auto"
-              >
-                Next Step
-              </Button>
-            ) : (
-              <Button
-                size="lg"
-                onClick={handleSubmit}
-                className="bg-primary hover:bg-primary/90 text-white px-8 ml-auto"
-              >
-                Post Job
-              </Button>
-            )}
-          </div>
         </div>
       </div>
     </div>

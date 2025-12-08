@@ -46,7 +46,6 @@ const DropdownMenuContent = React.forwardRef(({ className, sideOffset = 4, style
       style={{
         zIndex: 50,
         minWidth: "200px",
-        overflow: "hidden",
         borderRadius: "6px",
         border: "1px solid #e5e7eb",
         backgroundColor: "#ffffff",

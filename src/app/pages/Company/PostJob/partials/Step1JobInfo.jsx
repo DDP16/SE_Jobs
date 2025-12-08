@@ -67,7 +67,7 @@ export default function Step1JobInfo({
             placeholder="e.g. Software Engineer"
             value={jobTitle}
             onChange={(e) => setJobTitle(e.target.value)}
-            className="bg-background border-border"
+            className="bg-white border-border"
           />
           <p className="text-normal font-regular text-muted-foreground mt-1">At least 80 characters</p>
         </div>
@@ -97,10 +97,12 @@ export default function Step1JobInfo({
         </div>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-4 items-start border-b border-border pb-6">
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-4 items-start border-b border-border border-gray-300 pb-6">
         <div>
-          <Label className="text-foreground font-medium">Salary</Label>
-          <p className="text-xs text-muted-foreground mt-1">
+          <Label className="text-foreground font-semibold text-lg">
+            Salary
+          </Label>
+          <p className="text-normal font-regular text-muted-foreground mt-1">
             Please specify the estimated salary range for the role. You can leave this blank.
           </p>
         </div>
@@ -117,7 +119,7 @@ export default function Step1JobInfo({
                     const newMin = Math.min(val, salaryRange[1]);
                     setSalaryRange([newMin, salaryRange[1]]);
                   }}
-                  className="pl-7 bg-background border-border"
+                  className="pl-7 bg-white border-border"
                 />
               </div>
             </div>
@@ -133,7 +135,7 @@ export default function Step1JobInfo({
                     const newMax = Math.max(val, salaryRange[0]);
                     setSalaryRange([salaryRange[0], newMax]);
                   }}
-                  className="pl-7 bg-background border-border"
+                  className="pl-7 bg-white border-border"
                 />
               </div>
             </div>
@@ -146,7 +148,7 @@ export default function Step1JobInfo({
                 left: `${(salaryRange[0] / 50000) * 100}%`,
                 width: `${((salaryRange[1] - salaryRange[0]) / 50000) * 100}%`,
               }}
-            ></div>
+            />
             <div
               className="absolute w-5 h-5 rounded-full bg-primary shadow-lg cursor-grab active:cursor-grabbing hover:scale-110 transition-transform z-10"
               style={{
@@ -174,7 +176,7 @@ export default function Step1JobInfo({
                 document.addEventListener("mousemove", handleMove);
                 document.addEventListener("mouseup", handleUp);
               }}
-            ></div>
+            />
             <div
               className="absolute w-5 h-5 rounded-full bg-primary shadow-lg cursor-grab active:cursor-grabbing hover:scale-110 transition-transform z-10"
               style={{
@@ -208,23 +210,31 @@ export default function Step1JobInfo({
       </div>
 
       {/* ✅ FIXED: Category dropdown */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-4 items-start border-b border-border pb-6">
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-4 items-start border-b border-border border-gray-300 pb-6">
         <div>
-          <Label className="text-foreground font-medium">Categories</Label>
-          <p className="text-xs text-muted-foreground mt-1">Select a job category</p>
+          <Label className="text-foreground font-semibold text-lg">Categories</Label>
+          <p className="text-normal font-regular text-muted-foreground mt-1">Select a job category</p>
         </div>
         <div className="md:col-span-2">
-          <DropdownMenu>
+          <DropdownMenu className="rounded-lg">
             <DropdownMenuTrigger asChild>
               <Button
                 variant="outline"
-                className="w-full justify-between bg-background border-border hover:bg-background"
+                className=" justify-between bg-white border-border hover:bg-white rounded-lg"
               >
                 {selectedCategory || "Select Category"}
                 <ChevronDown className="ml-2 h-4 w-4 opacity-50" />
               </Button>
             </DropdownMenuTrigger>
-            <DropdownMenuContent>
+            <DropdownMenuContent 
+              side="bottom" 
+              align="center" 
+              className="bg-white rounded-lg overflow-y-auto max-h-60 scrollbar-hide"
+              style={{
+                scrollbarWidth: 'none',
+                msOverflowStyle: 'none'
+              }}
+            >
               {categories.map((cat) => (
                 <DropdownMenuItem key={cat.id} onClick={() => handleCategorySelect(cat.name)}>
                   {cat.name}
@@ -249,10 +259,10 @@ export default function Step1JobInfo({
               placeholder="Search skills..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="pl-10 bg-background border-border"
+              className="pl-10 bg-white border-border"
             />
             {searchQuery && filteredSkills.length > 0 && (
-              <div className="absolute z-10 mt-1 w-full bg-background border border-border rounded-md shadow-lg max-h-60 overflow-auto">
+              <div className="absolute z-10 mt-1 w-full bg-white border border-border rounded-md shadow-lg max-h-60 overflow-auto">
                 {filteredSkills.map((skill) => (
                   <div
                     key={skill.id}
@@ -265,7 +275,7 @@ export default function Step1JobInfo({
               </div>
             )}
             {searchQuery && filteredSkills.length === 0 && (
-              <div className="absolute z-10 mt-1 w-full bg-background border border-border rounded-md px-4 py-2 text-muted-foreground text-sm">
+              <div className="absolute z-10 mt-1 w-full bg-white border border-border rounded-md px-4 py-2 text-muted-foreground text-sm">
                 No skills found
               </div>
             )}

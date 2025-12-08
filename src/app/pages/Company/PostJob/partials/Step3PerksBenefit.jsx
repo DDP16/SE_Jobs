@@ -28,7 +28,7 @@ export default function Step3PerksBenefit({ benefits, addBenefit, removeBenefit,
             variant="outline"
             size="sm"
             onClick={addBenefit}
-            className="text-primary hover:text-primary hover:bg-primary/10 mb-4"
+            className="text-primary bg-white hover:text-white hover:bg-primary/90 mb-4 transition-all"
           >
             <Plus className="h-4 w-4 mr-1" />
             Add Benefit
@@ -41,7 +41,7 @@ export default function Step3PerksBenefit({ benefits, addBenefit, removeBenefit,
               return (
                 <div
                   key={benefit.id}
-                  className="relative bg-card border border-border rounded-lg p-6 hover:shadow-md transition-shadow group"
+                  className="relative bg-white border border-border rounded-lg p-6 hover:shadow-md transition-shadow group"
                 >
                   {benefit.isEditing ? (
                     <div className="space-y-3">
@@ -124,7 +124,7 @@ export default function Step3PerksBenefit({ benefits, addBenefit, removeBenefit,
                         onClick={() => removeBenefit(benefit.id)}
                         className="absolute top-3 right-3 w-6 h-6 rounded-full bg-muted hover:bg-destructive/10 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity"
                       >
-                        <X className="h-4 w-4 text-muted-foreground hover:text-destructive" />
+                        <X className="h-6 w-6 text-accent-red hover:text-red-500 hover:font-bold"/>
                       </button>
 
                       <div className="mb-4">
@@ -137,17 +137,19 @@ export default function Step3PerksBenefit({ benefits, addBenefit, removeBenefit,
 
                       <p className="text-sm text-muted-foreground leading-relaxed">{benefit.description}</p>
 
-                      <Button
-                        type="button"
-                        variant="outline"
-                        size="sm"
-                        className="mt-4 w-full"
-                        onClick={() => {
-                          setBenefits(benefits.map((b) => (b.id === benefit.id ? { ...b, isEditing: true } : b)));
-                        }}
-                      >
-                        Edit
-                      </Button>
+                      <div className="w-full flex justify-end">
+                        <Button
+                          type="button"
+                          variant="outline"
+                          size="sm"
+                          className="mt-4 px-10 py-5 bg-primary hover:bg-primary/90 text-white hover:scale-105 hover:shadow-lg transition-all"
+                          onClick={() => {
+                            setBenefits(benefits.map((b) => (b.id === benefit.id ? { ...b, isEditing: true } : b)));
+                          }}
+                        >
+                          Edit
+                        </Button>
+                      </div>
                     </>
                   )}
                 </div>

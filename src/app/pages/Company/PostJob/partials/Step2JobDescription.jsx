@@ -51,7 +51,7 @@ export default function Step2JobDescription({
           <p className="text-normal font-regular text-muted-foreground mt-1">Job titles must describe one position</p>
         </div>
         <div className="md:col-span-2">
-          <div className="border border-border rounded-lg overflow-hidden bg-background border-gray-300">
+          <div className="border border-border rounded-lg overflow-hidden bg-white">
             <Textarea
               id="jobDescriptions"
               placeholder="Enter job description"
@@ -79,7 +79,7 @@ export default function Step2JobDescription({
           </p>
         </div>
         <div className="md:col-span-2">
-          <div className="border border-border rounded-lg overflow-hidden bg-background">
+          <div className="border border-border rounded-lg overflow-hidden bg-white">
             <Textarea
               id="responsibilities"
               placeholder="Enter job responsibilities"
@@ -107,7 +107,7 @@ export default function Step2JobDescription({
           </p>
         </div>
         <div className="md:col-span-2">
-          <div className="border border-border rounded-lg overflow-hidden bg-background">
+          <div className="border border-border rounded-lg overflow-hidden bg-white">
             <Textarea
               id="whoYouAre"
               placeholder="Enter qualifications"
@@ -136,7 +136,7 @@ export default function Step2JobDescription({
           </p>
         </div>
         <div className="md:col-span-2">
-          <div className="border border-border rounded-lg overflow-hidden bg-background">
+          <div className="border border-border rounded-lg overflow-hidden bg-white">
             <Textarea
               id="niceToHaves"
               placeholder="Enter nice-to-haves"

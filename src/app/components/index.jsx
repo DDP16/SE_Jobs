@@ -45,3 +45,5 @@ export { default as JobSection } from './sections/JobSection';
 export { default as CTASection } from './sections/CTASection';
 export { default as JobListSection } from './sections/JobListSection';
 export { default as HotJobTopCVSection } from './sections/HotJobTopCVSection';
+
+export { default as FuzzyText } from './ui/FuzzyText';
