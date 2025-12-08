@@ -48,6 +48,7 @@ export default function FindJobs() {
         handlePageChange,
         handleApplyFilters,
         handleQuickFilter,
+        handleClearFilter,
         handleQuickFilterChange,
         openFilter,
         closeFilter,
@@ -70,6 +71,7 @@ export default function FindJobs() {
                     onFilterClick={openFilter}
                     onQuickFilterClick={handleQuickFilter}
                     onQuickFilterChange={handleQuickFilterChange}
+                    onClearFilter={handleClearFilter}
                     activeFilterCount={activeFilterCount}
                     appliedFilters={appliedFilters}
                 />

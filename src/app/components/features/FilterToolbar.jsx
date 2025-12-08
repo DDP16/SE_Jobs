@@ -13,6 +13,7 @@ import {
     Typography
 } from '@mui/material';
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
+import CloseIcon from '@mui/icons-material/Close';
 import { getLevels } from '../../modules/services/levelsService';
 import { getEmploymentTypes } from '../../modules/services/employmentTypeService';
 import { getCategories } from '../../modules/services/categoriesService';
@@ -21,6 +22,7 @@ export default function FilterToolbar({
     onFilterClick,
     onQuickFilterClick,
     onQuickFilterChange,
+    onClearFilter,
     activeFilterCount = 0,
     appliedFilters = null,
     showQuickFilters = true,
@@ -108,11 +110,48 @@ export default function FilterToolbar({
     const activeOption = filterOptions.find(opt => opt.id === activeMenu);
     const selectedValues = activeMenu ? getSelectedValues(activeMenu) : [];
 
+    // Helpers for selected labels
+    const getSelectedNames = (filterId) => {
+        if (!appliedFilters) return [];
+
+        if (filterId === 'levels') {
+            return (appliedFilters.levels || [])
+                .map(id => levels.find(l => l.id === id)?.name)
+                .filter(Boolean);
+        }
+        if (filterId === 'workingModels') {
+            return (appliedFilters.workingModels || [])
+                .map(id => employmentTypes.find(t => t.id === id)?.name)
+                .filter(Boolean);
+        }
+        if (filterId === 'jobDomains') {
+            return (appliedFilters.jobDomains || [])
+                .map(id => categories.find(c => c.id === id)?.name)
+                .filter(Boolean);
+        }
+        return [];
+    };
+
+    const buildLevelLabel = () => {
+        const names = getSelectedNames('levels');
+        if (!names.length) return 'Level';
+        if (names.length === 1) return names[0];
+        if (names.length === 2) return `${names[0]}, ${names[1]}`;
+        return `${names[0]}, ${names[1]}, +${names.length - 2}`;
+    };
+
+    const clearFilter = (filterId) => {
+        if (onClearFilter) {
+            onClearFilter(filterId);
+        }
+    };
+
     return (
         <Box className={`bg-white rounded-xl p-2 md:p-3 shadow-sm border border-gray-100 ${className}`}>
             <Stack direction="row" spacing={1.5} flexWrap="wrap" useFlexGap alignItems="center">
                 {showQuickFilters && filterOptions.map((option) => {
                     const hasSelection = getSelectedValues(option.id).length > 0;
+                    const isLevel = option.id === 'levels';
 
                     return (
                         <React.Fragment key={option.id}>
@@ -133,14 +172,14 @@ export default function FilterToolbar({
                                     }
                                 }}
                             >
-                                {option.label}
-                                {hasSelection && (
+                                {isLevel && hasSelection ? buildLevelLabel() : option.label}
+                                {!isLevel && hasSelection && (
                                     <Box
                                         component="span"
                                         sx={{
                                             ml: 1,
                                             px: 0.75,
-                                            py: 0.25,
+                                        py: 0.25,
                                             borderRadius: '10px',
                                             backgroundColor: 'primary.main',
                                             color: 'white',
@@ -244,6 +283,26 @@ export default function FilterToolbar({
                         />
                     </MenuItem>
                 ))}
+
+                {selectedValues.length > 0 && <Divider sx={{ my: 0.5 }} />}
+                
+                {selectedValues.length > 0 && (
+                    <MenuItem
+                        onClick={() => {
+                            clearFilter(activeMenu);
+                            handleMenuClose();
+                        }}
+                        sx={{
+                            py: 0.5,
+                            px: 2,
+                            color: 'error.main',
+                            fontWeight: 600
+                        }}
+                    >
+                        <CloseIcon fontSize="small" sx={{ mr: 1 }} />
+                        Clear all
+                    </MenuItem>
+                )}
             </Menu>
         </Box>
     );

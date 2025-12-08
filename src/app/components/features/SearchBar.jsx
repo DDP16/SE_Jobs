@@ -26,7 +26,7 @@ export default function SearchBar({
     const provinces = useSelector(state => state.address.provinces);
     const dispatch = useDispatch();
     const [keyword, setKeyword] = useState(initialKeyword || '');
-    const [location, setLocation] = useState(initialLocation);
+    const [location, setLocation] = useState(initialLocation || DEFAULT_LOCATION);
 
     // If parent updates initial values (e.g. URL changed), sync local state
     useEffect(() => {
@@ -97,19 +97,19 @@ export default function SearchBar({
                     }}
                 >
                     <Autocomplete
-                        freeSolo
                         options={options}
-                        value={location.label}
-                        onChange={(event, newValue) => setLocation(newValue || "")}
-                        onInputChange={(event, newInput) => setLocation(newInput)}
-                        disableClearable={false}
+                        value={location || DEFAULT_LOCATION}
+                        onChange={(event, newValue) => {
+                            setLocation(newValue || DEFAULT_LOCATION);
+                        }}
+                        isOptionEqualToValue={(option, value) => option.value === value.value}
+                        getOptionLabel={(option) => option?.label || ''}
                         renderInput={(params) => (
                             <Input
                                 {...params}
                                 placeholder={locationPlaceholder}
                                 onKeyPress={handleKeyPress}
                                 InputProps={{
-                                    // keep Autocomplete's InputProps (clear button, etc.) and add our start adornment
                                     ...params.InputProps,
                                     startAdornment: (
                                         <InputAdornment position="start">

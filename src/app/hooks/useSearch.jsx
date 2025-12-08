@@ -172,6 +172,27 @@ export default function useSearch() {
         
         updateQueryParams(updates);
     }, [appliedFilters, updateQueryParams]);
+
+    const handleClearFilter = useCallback((key) => {
+        const updates = {
+            page: 1,
+        };
+        
+        // Map key to URL param name
+        const paramMap = {
+            levels: 'level_ids',
+            workingModels: 'employment_type_ids',
+            jobDomains: 'category_ids',
+            companyIndustries: 'skill_ids',
+        };
+        
+        const paramKey = paramMap[key];
+        if (paramKey) {
+            updates[paramKey] = undefined;
+        }
+        
+        updateQueryParams(updates);
+    }, [updateQueryParams]);
     
     // Remove the extra useEffect that was causing infinite loop
 
@@ -227,6 +248,7 @@ export default function useSearch() {
         handleSearch,
         handleApplyFilters,
         handleQuickFilterChange,
+        handleClearFilter,
         handlePageChange,
         openFilter,
         closeFilter,
