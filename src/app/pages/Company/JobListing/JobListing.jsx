@@ -15,7 +15,7 @@ import {
 } from '@/components/ui';
 import JobTable from './partials/JobTable';
 import { useDispatch, useSelector } from 'react-redux';
-import { getJobs, getJobsByCompanyId } from '../../../modules';
+import { getJobsByCompanyId } from '../../../modules';
 
 const mockJobListings = [
     {
@@ -180,11 +180,11 @@ export default function JobListing() {
 
     const dispatch = useDispatch();
     const id = useSelector((state) => state.auth.userId);
-    const companyId = useSelector((state) => state.auth.user.company.company_id);
+    const companyId = useSelector((state) => state.auth.user.company.id);
     const jobs = useSelector((state) => state.jobs.jobs);
+    const pagination = useSelector((state) => state.jobs.pagination);
 
     useEffect(() => {
-        // dispatch(getJobsByCompanyId({companyId: id, page: currentPage, limit: pageSize}));
         dispatch(getJobsByCompanyId({companyId: companyId, page: currentPage, limit: pageSize}));
     }, [currentPage, pageSize]);
 
@@ -193,7 +193,9 @@ export default function JobListing() {
 
     const startIndex = (currentPage - 1) * pageSize;
     const endIndex = startIndex + pageSize;
-    const currentData = mockJobListings.slice(startIndex, endIndex);
+
+    const currentData = jobs;
+    // const currentData = mockJobListings.slice(startIndex, endIndex);
 
     // const toggleSelectAll = () => {
     //     if (selectedIds.length === currentData.length) {
@@ -237,7 +239,7 @@ export default function JobListing() {
                     currentData={currentData}
                     currentPage={currentPage}
                     pageSize={pageSize}
-                    total={mockJobListings.length}
+                    total={pagination?.total ?? 0}
                     onChangePage={(newPage, newPageSize) => {
                         setCurrentPage(newPage);
                         setPageSize(newPageSize);

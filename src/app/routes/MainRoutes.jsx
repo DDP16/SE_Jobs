@@ -18,7 +18,7 @@ export default function MainRoutes() {
     if (isAuthenticated && !user) {
       dispatch(getMe());
     }
-  }, []);
+  }, [isAuthenticated, dispatch]);
 
   const userRole = useSelector((state) => state.auth.userRole);
 

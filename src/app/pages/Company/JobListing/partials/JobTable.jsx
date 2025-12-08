@@ -1,23 +1,56 @@
 import { Table } from "antd";
 import { Badge } from "@/components/ui";
+import { Button, DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "../../../../components/ui";
+import { Edit, Eye, MoreVertical, Trash2, Diamond, Flame, Zap } from "lucide-react";
 
 const columns = [
-    // {
-    //     title: '',
-    //     dataIndex: 'id',
-    //     key: 'checkbox',
-    //     width: 50,
-    //     render: (id) => (
-    //         <Checkbox
-    //             checked={selectedIds.includes(id)}
-    //             onCheckedChange={() => toggleSelect(id)}
-    //         />
-    //     ),
-    // },
     {
-        title: 'Roles',
-        dataIndex: 'role',
-        key: 'role',
+        title: 'Job Title',
+        dataIndex: 'title',
+        key: 'title',
+    },
+    {
+        title: 'Company',
+        dataIndex: 'company',
+        key: 'company',
+        render: (company) => company.name,
+    },
+    {
+        title: 'Category',
+        dataIndex: 'categories',
+        key: 'category',
+        render: (categories) => categories[0]?.name ?? 'N/A',
+    },
+    {
+        title: 'Level',
+        dataIndex: 'levels',
+        key: 'level',
+        render: (levels) => levels[0]?.name ?? 'N/A',
+    },
+    {
+        title: 'Salary',
+        dataIndex: 'salary',
+        key: 'salary',
+        render: (salary) => `${salary.from.toLocaleString()} - ${salary.to.toLocaleString()} ${salary.currency}`,
+    },
+    {
+        title: 'Tags',
+        dataIndex: 'tags',
+        key: 'tags',
+        align: 'center',
+        render: (_, job) => (
+            <div className="flex gap-2 items-center justify-center">
+                {job.isDiamond && (
+                    <Diamond className="w-4 h-4 text-cyan-600" fill="currentColor" />
+                )}
+                {job.isHot && (
+                    <Flame className="w-4 h-4 text-orange-600" fill="currentColor" />
+                )}
+                {job.isJobFlashActive && (
+                    <Zap className="w-4 h-4 text-yellow-600" fill="currentColor" />
+                )}
+            </div>
+        ),
     },
     {
         title: 'Status',
@@ -28,7 +61,7 @@ const columns = [
         render: (status) => (
             <Badge
                 className={
-                    status === 'Live'
+                    status === 'Approved'
                         ? 'bg-emerald-50 text-emerald-700 border border-emerald-200 hover:bg-emerald-50'
                         : 'bg-red-50 text-red-700 border border-red-200 hover:bg-red-50'
                 }
@@ -39,71 +72,69 @@ const columns = [
     },
     {
         title: 'Date Posted',
-        dataIndex: 'datePosted',
-        key: 'datePosted',
+        dataIndex: 'createdAt',
+        key: 'createdAt',
+        render: (createdAt) => {
+            const date = new Date(createdAt);
+            return date.toLocaleDateString('en-GB');
+        },
     },
     {
         title: 'Due Date',
-        dataIndex: 'dueDate',
-        key: 'dueDate',
-    },
-    {
-        title: 'Job Type',
-        dataIndex: 'jobType',
-        key: 'jobType',
-        width: 200,
-        align: 'center',
-        render: (jobType) => (
-            <Badge
-                className={
-                    jobType === 'Fulltime'
-                        ? 'bg-blue-50 text-blue-700 border border-blue-200 hover:bg-blue-50'
-                        : 'bg-orange-50 text-orange-700 border border-orange-200 hover:bg-orange-50'
-                }
-            >
-                {jobType}
-            </Badge>
-        ),
-    },
-    {
-        title: 'Applicants',
-        dataIndex: 'applicants',
-        key: 'applicants',
-        render: (applicants) => applicants.toLocaleString(),
+        dataIndex: 'deadline',
+        key: 'deadline',
+        render: (deadline) => {
+            const date = new Date(deadline);
+            return date.toLocaleDateString('en-GB');
+        },
     },
     {
         title: 'Needs',
-        dataIndex: 'needs',
-        key: 'needs',
-        render: (needs, record) => (
+        dataIndex: 'quantity',
+        key: 'quantity',
+        render: (quantity) => (
             <span>
-                {needs} <span className="text-gray-400">/ {record.totalNeeds}</span>
+                {quantity} <span className="text-gray-400"></span>
             </span>
         ),
     },
-    // {
-    //     title: '',
-    //     key: 'action',
-    //     render: () => (
-    //         <DropdownMenu>
-    //             <DropdownMenuTrigger asChild>
-    //                 <Button variant="ghost" size="icon">
-    //                     <MoreVertical className="w-4 h-4" />
-    //                 </Button>
-    //             </DropdownMenuTrigger>
-    //             <DropdownMenuContent align="end">
-    //                 <DropdownMenuItem>View Details</DropdownMenuItem>
-    //                 <DropdownMenuItem>Edit</DropdownMenuItem>
-    //                 <DropdownMenuItem className="text-red-600">Delete</DropdownMenuItem>
-    //             </DropdownMenuContent>
-    //         </DropdownMenu>
-    //     ),
-    // },
+    {
+        title: 'Actions',
+        key: 'action',
+        align: 'center',
+        fixed: 'end',
+        render: () => (
+            <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                    <Button variant="ghost" size="icon">
+                        <MoreVertical className="w-4 h-4" />
+                    </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent className="bg-white" align="center" side="left">
+                    <DropdownMenuItem onClick={() => {
+                        setSelectedJob(job);
+                        setIsViewDialogOpen(true);
+                    }}>
+                        <Eye className="w-4 h-4 mr-2" />
+                        View Details
+                    </DropdownMenuItem>
+                    <DropdownMenuItem>
+                        <Edit className="w-4 h-4 mr-2" />
+                        Edit
+                    </DropdownMenuItem>
+                    <DropdownMenuItem className="text-red-600">
+                        <Trash2 className="w-4 h-4 mr-2" />
+                        Delete
+                    </DropdownMenuItem>
+                </DropdownMenuContent>
+            </DropdownMenu>
+        ),
+    },
 ];
 
 export default function JobTable({ currentData, currentPage, pageSize, total, onChangePage }) {
     return (
-        <div className="relative flex flex-col h-[75vh]">
+        <div className="relative flex flex-col h-[60vh]">
             <Table
                 columns={columns}
                 dataSource={currentData}
@@ -116,7 +147,7 @@ export default function JobTable({ currentData, currentPage, pageSize, total, on
                         onChangePage(newPage, newPageSize);
                     },
                 }}
-                scroll={{ y: '62vh' }}
+                scroll={{ y: '60vh', x: 'max-content' }}
                 className="custom-ant-table flex-1"
             />
         </div>

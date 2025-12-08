@@ -559,12 +559,12 @@ body {
 }
 
 .custom-ant-table .ant-table-body {
-  @apply min-h-[62vh] max-h-[62vh] overflow-y-auto;
+  @apply min-h-[60vh] max-h-[60vh] overflow-y-auto;
 }
 
 /* Pagination cố định dưới đáy */
 .custom-ant-table .ant-pagination {
-  @apply absolute -bottom-14 right-5;
+  @apply absolute -bottom-[7vh] right-0;
 }
 
 /* Giúp table luôn fill vertical space */
