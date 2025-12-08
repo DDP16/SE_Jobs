@@ -1,7 +1,7 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import api from "../AxiosInstance";
 
-const apiBaseUrl = "/api/company-types";
+const apiBaseUrl = "/api/company_types";
 
 export const getCompanyTypes = createAsyncThunk(
     "companyTypes/getCompanyTypes",
