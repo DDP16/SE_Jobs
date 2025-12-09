@@ -132,17 +132,6 @@ export default function EducationModal({ open, onOpenChange, initialData, onSave
         years.push({ value: i.toString(), label: i.toString() });
     }
 
-    // Degree options
-    const degreeOptions = [
-        "Trung học phổ thông",
-        "Trung cấp",
-        "Cao đẳng",
-        "Đại học",
-        "Thạc sĩ",
-        "Tiến sĩ",
-        "Khác",
-    ];
-
     return (
         <Dialog
             open={open}
@@ -189,45 +178,21 @@ export default function EducationModal({ open, onOpenChange, initialData, onSave
                         <div className="grid grid-cols-2 gap-4">
                             {/* Trình độ (Degree) */}
                             <div className="space-y-2">
-                                <FormControl fullWidth error={Boolean(errors.degree)}>
-                                    <Select
-                                        value={formData.degree}
-                                        onChange={(e) => handleChange("degree", e.target.value)}
-                                        displayEmpty
-                                        sx={{
-                                            height: "48px",
-                                            "& .MuiOutlinedInput-notchedOutline": {
-                                                borderColor: "var(--color-neutrals-40)",
-                                            },
-                                            "&:hover .MuiOutlinedInput-notchedOutline": {
-                                                borderColor: "var(--color-primary)",
-                                            },
-                                            "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
-                                                borderColor: "var(--color-primary)",
-                                            },
-                                            "& .MuiSelect-icon": {
-                                                color: "var(--color-neutrals-40)",
-                                            },
-                                        }}
-                                    >
-                                        <MenuItem value="" disabled>
-                                            {t('modals.education.degreePlaceholder')}
-                                        </MenuItem>
-                                        {degreeOptions.map((degree) => (
-                                            <MenuItem key={degree} value={degree}>
-                                                {degree}
-                                            </MenuItem>
-                                        ))}
-                                    </Select>
-                                    {errors.degree && (
-                                        <FormHelperText>{t(errors.degree)}</FormHelperText>
-                                    )}
-                                </FormControl>
+                                <Input
+                                    value={formData.degree}
+                                    onChange={(e) => handleChange("degree", e.target.value)}
+                                    placeholder={t('modals.education.degreePlaceholder')}
+                                    aria-invalid={Boolean(errors.degree)}
+                                    className={`h-12 ${errors.degree ? "border-red-500 focus-visible:ring-red-500" : ""}`}
+                                />
+                                {errors.degree && (
+                                    <p className="text-sm text-red-500">{t(errors.degree)}</p>
+                                )}
                             </div>
 
                             {/* Ngành học (Major) */}
                             <div className="space-y-2">
-                                    <Input
+                                <Input
                                     value={formData.major}
                                     onChange={(e) => handleChange("major", e.target.value)}
                                     placeholder={t('modals.education.majorPlaceholder')}
@@ -431,14 +396,14 @@ export default function EducationModal({ open, onOpenChange, initialData, onSave
                         </div>
 
                         {/* Thông tin chi tiết khác (Other detailed information) */}
-                        <div className="space-y-2">
+                        {/* <div className="space-y-2">
                             <Textarea
                                 value={formData.description}
                                 onChange={(e) => handleChange("description", e.target.value)}
                                 placeholder={t('modals.education.otherInfoPlaceholder')}
                                 className="min-h-[100px] resize-y"
                             />
-                        </div>
+                        </div> */}
                     </form>
 
                     {/* Footer Buttons */}

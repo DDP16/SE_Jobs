@@ -7,7 +7,7 @@ import { X, Bold, Italic, Underline, List } from "lucide-react";
 import { Lightbulb } from "lucide-react";
 import { useSelector } from "react-redux";
 
-export default function IntroductionModal({ open, onOpenChange, onSave }) {
+export default function AboutModal({ open, onOpenChange, onSave }) {
     const currentUser = useSelector((state) => state.auth.user);
     const [content, setContent] = useState(currentUser?.about || "");
     const [charCount, setCharCount] = useState(0);
