@@ -21,8 +21,11 @@ export default function Step1JobInfo({
   setSalaryRange,
   selectedCategory,
   handleCategorySelect,
+  selectedLevel,
+  handleLevelSelect,
   categories,
   skills,
+  levels,
   newSkill,
   setNewSkill,
   addSkill,
@@ -31,9 +34,9 @@ export default function Step1JobInfo({
   onSkillSelect,
 }) {
   const [searchQuery, setSearchQuery] = useState("");
-  console.log("API Skills:", apiSkills);
-  console.log("Search Query:", searchQuery);
-  console.log("categories", categories);
+  // console.log("API Skills:", apiSkills);
+  // console.log("Search Query:", searchQuery);
+  // console.log("categories", categories);
 
   const filteredSkills = useMemo(() => {
     if (!searchQuery.trim()) return [];
@@ -210,38 +213,74 @@ export default function Step1JobInfo({
       </div>
 
       {/* ✅ FIXED: Category dropdown */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-4 items-start border-b border-border border-gray-300 pb-6">
-        <div>
-          <Label className="text-foreground font-semibold text-lg">Categories</Label>
-          <p className="text-normal font-regular text-muted-foreground mt-1">Select a job category</p>
-        </div>
-        <div className="md:col-span-2">
-          <DropdownMenu className="rounded-lg">
-            <DropdownMenuTrigger asChild>
-              <Button
-                variant="outline"
-                className=" justify-between bg-white border-border hover:bg-white rounded-lg"
+      <div className="grid grid-cols-1 md:grid-cols-2 border-b border-border border-gray-300 pb-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 items-center">
+          <div>
+            <Label className="text-foreground font-semibold text-lg">Categories</Label>
+            <p className="text-normal font-regular text-muted-foreground mt-1">Select a job category</p>
+          </div>
+          <div className="">
+            <DropdownMenu className="rounded-lg">
+              <DropdownMenuTrigger asChild>
+                <Button
+                  variant="outline"
+                  className=" justify-between bg-white border-border hover:bg-white rounded-lg"
+                >
+                  {selectedCategory || "Select Category"}
+                  <ChevronDown className="ml-2 h-4 w-4 opacity-50" />
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent 
+                side="bottom" 
+                align="center" 
+                className="bg-white rounded-lg overflow-y-auto max-h-60 scrollbar-hide"
+                style={{
+                  scrollbarWidth: 'none',
+                  msOverflowStyle: 'none'
+                }}
               >
-                {selectedCategory || "Select Category"}
-                <ChevronDown className="ml-2 h-4 w-4 opacity-50" />
-              </Button>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent 
-              side="bottom" 
-              align="center" 
-              className="bg-white rounded-lg overflow-y-auto max-h-60 scrollbar-hide"
-              style={{
-                scrollbarWidth: 'none',
-                msOverflowStyle: 'none'
-              }}
-            >
-              {categories.map((cat) => (
-                <DropdownMenuItem key={cat.id} onClick={() => handleCategorySelect(cat.name)}>
-                  {cat.name}
-                </DropdownMenuItem>
-              ))}
-            </DropdownMenuContent>
-          </DropdownMenu>
+                {categories.map((cat) => (
+                  <DropdownMenuItem key={cat.id} onClick={() => handleCategorySelect(cat.name)}>
+                    {cat.name}
+                  </DropdownMenuItem>
+                ))}
+              </DropdownMenuContent>
+            </DropdownMenu>
+          </div>
+        </div>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 items-center">
+          <div>
+            <Label className="text-foreground font-semibold text-lg">Levels</Label>
+            <p className="text-normal font-regular text-muted-foreground mt-1">Select a job level</p>
+          </div>
+          <div className="">
+            <DropdownMenu className="rounded-lg">
+              <DropdownMenuTrigger asChild>
+                <Button
+                  variant="outline"
+                  className=" justify-between bg-white border-border hover:bg-white rounded-lg"
+                >
+                  {selectedLevel || "Select Level"}
+                  <ChevronDown className="ml-2 h-4 w-4 opacity-50" />
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent 
+                side="bottom" 
+                align="center" 
+                className="bg-white rounded-lg overflow-y-auto max-h-60 scrollbar-hide"
+                style={{
+                  scrollbarWidth: 'none',
+                  msOverflowStyle: 'none'
+                }}
+              >
+                {levels.map((level) => (
+                  <DropdownMenuItem key={level.id} onClick={() => handleLevelSelect(level.name)}>
+                    {level.name}
+                  </DropdownMenuItem>
+                ))}
+              </DropdownMenuContent>
+            </DropdownMenu>
+          </div>
         </div>
       </div>
 
