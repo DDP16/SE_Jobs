@@ -70,17 +70,47 @@ export const ProfileModals = ({
                     if (open) openModal('education');
                     else { closeModal('education'); setSelectedEducation(null); }
                 }}
-                initialData={selectedEducation ? {
-                    school: selectedEducation.university,
-                    degree: selectedEducation.degree,
-                    major: selectedEducation.major,
-                    startMonth: selectedEducation.startMonth || '',
-                    startYear: selectedEducation.startYear,
-                    endMonth: selectedEducation.endMonth || '',
-                    endYear: selectedEducation.endYear === 'Present' ? '' : selectedEducation.endYear,
-                    isCurrentlyStudying: selectedEducation.endYear === 'Present' || selectedEducation.isCurrentlyStudying,
-                    description: selectedEducation.description || '',
-                } : null}
+                initialData={selectedEducation ? (() => {
+                    let startMonth = selectedEducation.startMonth || '';
+                    let startYear = selectedEducation.startYear || '';
+                    let endMonth = selectedEducation.endMonth || '';
+                    let endYear = selectedEducation.endYear || '';
+                    let isCurrentlyStudying = selectedEducation.isCurrentlyStudying || false;
+
+                    if (selectedEducation.start_date) {
+                        const startDate = new Date(selectedEducation.start_date);
+                        startMonth = String(startDate.getMonth() + 1).padStart(2, '0');
+                        startYear = String(startDate.getFullYear());
+
+                        if (selectedEducation.end_date && selectedEducation.end_date !== null) {
+                            const endDate = new Date(selectedEducation.end_date);
+                            endMonth = String(endDate.getMonth() + 1).padStart(2, '0');
+                            endYear = String(endDate.getFullYear());
+                            isCurrentlyStudying = false;
+                        } else {
+                            // end_date is null means currently studying
+                            endMonth = '';
+                            endYear = '';
+                            isCurrentlyStudying = true;
+                        }
+                    } else if (selectedEducation.endYear === 'Present') {
+                        isCurrentlyStudying = true;
+                        endMonth = '';
+                        endYear = '';
+                    }
+
+                    return {
+                        school: selectedEducation.school || selectedEducation.university || '',
+                        degree: selectedEducation.degree || '',
+                        major: selectedEducation.major || '',
+                        startMonth,
+                        startYear,
+                        endMonth,
+                        endYear,
+                        isCurrentlyStudying,
+                        description: selectedEducation.description || '',
+                    };
+                })() : null}
                 onSave={handlers.handleSaveEducation}
             />
 

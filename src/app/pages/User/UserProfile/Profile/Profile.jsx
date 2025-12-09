@@ -28,19 +28,21 @@ import { getEducationByStudentId } from '../../../../modules/services/educations
 
 export default function Profile() {
     const dispatch = useDispatch();
-    
+
     // Check auth state
     const currentUser = useSelector((state) => state.auth.user);
     const authStatus = useSelector((state) => state.auth.status);
-    
+
     // Custom hooks for data management
     const profileData = useProfileData();
     const modalState = useProfileModals();
-    
+
     // Handlers
     const handlers = useProfileHandlers({
         ...profileData,
         ...modalState,
+        dispatch,
+        currentUser,
     });
 
     // Fetch profile data (education, experience, etc.) once when component mounts
@@ -57,9 +59,9 @@ export default function Profile() {
     // Show loading if no user data yet (after reload)
     if (!currentUser && authStatus === 'loading') {
         return (
-            <Box sx={{ 
-                bgcolor: 'background.default', 
-                minHeight: '100vh', 
+            <Box sx={{
+                bgcolor: 'background.default',
+                minHeight: '100vh',
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'center'
@@ -145,9 +147,9 @@ export default function Profile() {
                 <Box sx={{ display: 'flex', gap: 4, alignItems: 'flex-start' }}>
                     {/* Main Content */}
                     <Box sx={{ flex: 1, maxWidth: 900 }}>
-                        <ProfileHeader 
-                            user={user} 
-                            onEdit={() => openModal('information')} 
+                        <ProfileHeader
+                            user={user}
+                            onEdit={() => openModal('information')}
                         />
 
                         <CVUpload

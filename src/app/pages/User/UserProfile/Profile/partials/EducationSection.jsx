@@ -3,7 +3,34 @@ import { Box, Typography, IconButton, Button } from '@mui/material';
 import { Edit as EditIcon, Delete as DeleteIcon, Add as AddIcon } from '@mui/icons-material';
 
 export default function EducationSection({ educations, showAll, onToggleShowAll, onEdit, onDelete, onAdd }) {
-  const formatDate = (startMonth, startYear, endMonth, endYear, isCurrentlyStudying) => {
+  const formatDate = (edu) => {
+    // Handle backend date format (start_date: "2021-09-01", end_date: null for present)
+    if (edu.start_date) {
+      const startDate = new Date(edu.start_date);
+      const startMonth = startDate.getMonth() + 1; // getMonth() returns 0-11
+      const startYear = startDate.getFullYear();
+
+      let endDateStr = 'HIỆN TẠI';
+      // If end_date exists and is not null, format it
+      if (edu.end_date && edu.end_date !== null) {
+        const endDate = new Date(edu.end_date);
+        const endMonth = endDate.getMonth() + 1;
+        const endYear = endDate.getFullYear();
+        endDateStr = `${String(endMonth).padStart(2, '0')}/${endYear}`;
+      }
+      // If end_date is null or undefined, it means "HIỆN TẠI" (currently studying)
+
+      const startDateStr = `${String(startMonth).padStart(2, '0')}/${startYear}`;
+      return `${startDateStr} - ${endDateStr}`;
+    }
+
+    // Fallback to old format (startMonth, startYear, etc.)
+    const startMonth = edu.startMonth;
+    const startYear = edu.startYear;
+    const endMonth = edu.endMonth;
+    const endYear = edu.endYear;
+    const isCurrentlyStudying = edu.isCurrentlyStudying;
+
     const startDate = startMonth ? `${String(startMonth).padStart(2, '0')}/${startYear}` : startYear;
     const endDate = (endYear === 'Present' || isCurrentlyStudying)
       ? 'HIỆN TẠI'
@@ -39,7 +66,7 @@ export default function EducationSection({ educations, showAll, onToggleShowAll,
           {displayedEducations.map((edu) => (
             <Box key={edu.id} sx={{ mb: 4, '&:last-child': { mb: 0 } }}>
               <Box sx={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', mb: 0.5 }}>
-                <Typography variant="body1" sx={{ fontWeight: 600 }}>{edu.university}</Typography>
+                <Typography variant="body1" sx={{ fontWeight: 600 }}>{edu.school}</Typography>
                 <Box sx={{ display: 'flex', gap: 0.5 }}>
                   <IconButton
                     onClick={() => onEdit(edu)}
@@ -61,7 +88,7 @@ export default function EducationSection({ educations, showAll, onToggleShowAll,
                 {edu.degree} {edu.major && `- ${edu.major}`}
               </Typography>
               <Typography variant="body2" sx={{ color: 'text.secondary', mb: 1 }}>
-                {formatDate(edu.startMonth, edu.startYear, edu.endMonth, edu.endYear, edu.isCurrentlyStudying)}
+                {formatDate(edu)}
               </Typography>
               {edu.description && (
                 <Typography variant="body2" sx={{ color: 'text.primary', lineHeight: 1.6 }}>

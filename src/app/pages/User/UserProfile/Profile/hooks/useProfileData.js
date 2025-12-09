@@ -5,11 +5,11 @@ import { getMe } from '../../../../../modules/services/authService';
 export const useProfileData = () => {
     const dispatch = useDispatch();
     const currentUser = useSelector((state) => state.auth.user);
-    const userEducation = useSelector((state) => state.educations);
+    const userEducation = useSelector((state) => state.educations.educations);
     const userExperience = useSelector((state) => state.experiences);
     const authStatus = useSelector((state) => state.auth.status);
 
-    console.log('Current User in useProfileData:',userEducation);
+    console.log('Current User in useProfileData:', userEducation);
 
     // User Data - Initialize with safe defaults
     const [user, setUser] = useState({
@@ -26,7 +26,7 @@ export const useProfileData = () => {
     // useEffect(() => {
     //     const isAuthenticated = localStorage.getItem('AUTHENTICATED');
     //     const userId = localStorage.getItem('USER_ID');
-        
+
     //     // If we have auth data but no user in Redux, fetch user data
     //     if (isAuthenticated && userId && !currentUser && authStatus !== 'loading') {
     //         console.log('Fetching user data after reload...');
@@ -51,7 +51,7 @@ export const useProfileData = () => {
     const [cvFile, setCvFile] = useState(null);
     const [about, setAbout] = useState('');
     const [experiences, setExperiences] = useState([]);
-    // const [educations, setEducations] = useState([]);
+    const [educations, setEducations] = useState([]);
     const [skills, setSkills] = useState([]);
     const [languages, setLanguages] = useState([]);
     const [projects, setProjects] = useState([]);
@@ -63,17 +63,24 @@ export const useProfileData = () => {
     const [showAllEducations, setShowAllEducations] = useState(false);
     const [completionPercentage, setCompletionPercentage] = useState(5);
 
+    // Sync educations with Redux state
+    useEffect(() => {
+        if (userEducation && Array.isArray(userEducation)) {
+            setEducations(userEducation);
+        }
+    }, [userEducation]);
+
     // Calculate completion percentage
     useEffect(() => {
         const sections = [
             user.name, user.email, about, user.location,
-            experiences.length > 0, userEducation.length > 0,
+            experiences.length > 0, educations.length > 0,
             skills.length > 0, languages.length > 0,
             projects.length > 0, certificates.length > 0
         ];
         const completed = sections.filter(Boolean).length;
         setCompletionPercentage(Math.round((completed / sections.length) * 100));
-    }, [user, about, experiences, userEducation, skills, languages, projects, certificates]);
+    }, [user, about, experiences, educations, skills, languages, projects, certificates]);
 
     return {
         currentUser,
@@ -87,7 +94,7 @@ export const useProfileData = () => {
         setAbout,
         experiences,
         setExperiences,
-        userEducation,
+        educations,
         setEducations,
         skills,
         setSkills,

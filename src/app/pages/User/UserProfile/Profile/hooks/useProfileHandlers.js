@@ -1,3 +1,5 @@
+import { createEducation, updateEducation, deleteEducation, getEducationByStudentId } from '../../../../../modules/services/educationsService';
+
 export const useProfileHandlers = ({
     setUser,
     setCvFile,
@@ -18,6 +20,8 @@ export const useProfileHandlers = ({
     selectedExperience,
     selectedEducation,
     selectedSkillGroup,
+    dispatch,
+    currentUser,
 }) => {
     // CV Handlers
     const handleCVFileChange = (file) => {
@@ -90,33 +94,81 @@ export const useProfileHandlers = ({
     };
 
     // Education Handlers
-    const handleSaveEducation = (formData) => {
-        const educationData = {
-            id: selectedEducation?.id || Date.now(),
-            university: formData.school,
-            degree: formData.degree,
-            major: formData.major,
-            startYear: formData.startYear,
-            endYear: formData.isCurrentlyStudying ? 'Present' : formData.endYear,
-            description: formData.description,
-            logo: formData.school?.charAt(0).toUpperCase() || 'U',
-            startMonth: formData.startMonth,
-            endMonth: formData.endMonth,
-            isCurrentlyStudying: formData.isCurrentlyStudying,
-        };
+    const handleSaveEducation = async (formData) => {
+        try {
+            // Validate required fields
+            if (!formData.school || !formData.degree || !formData.major || !formData.startYear || !formData.startMonth) {
+                alert('Vui lòng điền đầy đủ thông tin bắt buộc');
+                return;
+            }
 
-        if (selectedEducation) {
-            setEducations(prev => prev.map(edu => edu.id === selectedEducation.id ? educationData : edu));
-        } else {
-            setEducations(prev => [...prev, educationData]);
+            // Validate student_id exists before proceeding
+            if (!currentUser?.student_info?.id) {
+                alert('Không tìm thấy thông tin sinh viên. Vui lòng đăng nhập lại.');
+                return;
+            }
+
+            const startMonth = String(formData.startMonth || '').padStart(2, '0');
+            const startDate = `${formData.startYear}-${startMonth}-01`;
+            let endDate = null;
+            if (!formData.isCurrentlyStudying && formData.endYear && formData.endMonth) {
+                const endMonth = String(formData.endMonth).padStart(2, '0');
+                endDate = `${formData.endYear}-${endMonth}-01`;
+            }
+
+            // Prepare data for API 
+            // Note: Backend gets student_id from authenticated session, not from request body
+            const educationData = {
+                school: formData.school || '',
+                degree: formData.degree || '',
+                major: formData.major || '',
+                start_date: startDate,
+                end_date: endDate, // null if currently studying
+                description: formData.description || '',
+            };
+
+            // Debug log
+            console.log('Sending education data:', educationData);
+
+            let result;
+            if (selectedEducation && selectedEducation.id) {
+                // Update existing education
+                result = await dispatch(updateEducation({
+                    id: selectedEducation.id,
+                    educationData
+                })).unwrap();
+            } else {
+                // Create new education 
+                result = await dispatch(createEducation(educationData)).unwrap();
+            }
+
+            // Refresh education list from backend
+            if (currentUser?.student_info?.id) {
+                await dispatch(getEducationByStudentId()).unwrap();
+            }
+
+            setSelectedEducation(null);
+            closeModal('education');
+        } catch (error) {
+            console.error('Error saving education:', error);
+            const errorMessage = typeof error === 'string' ? error : (error?.message || 'Có lỗi xảy ra khi lưu thông tin học vấn');
+            alert(errorMessage);
         }
-        setSelectedEducation(null);
-        closeModal('education');
     };
 
-    const handleDeleteEducation = (id) => {
+    const handleDeleteEducation = async (id) => {
         if (window.confirm('Bạn có chắc chắn muốn xóa thông tin học vấn này?')) {
-            setEducations(prev => prev.filter(edu => edu.id !== id));
+            try {
+                await dispatch(deleteEducation(id)).unwrap();
+
+                // Refresh education list from backend
+                if (currentUser?.student_info?.id) {
+                    await dispatch(getEducationByStudentId()).unwrap();
+                }
+            } catch (error) {
+                console.error('Error deleting education:', error);
+                alert(error || 'Có lỗi xảy ra khi xóa thông tin học vấn');
+            }
         }
     };
 

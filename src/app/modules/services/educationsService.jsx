@@ -44,7 +44,7 @@ export const createEducation = createAsyncThunk(
   "educations/createEducation",
   async (educationData, { rejectWithValue }) => {
     try {
-      const response = await api.post(`${apiBaseUrl}/`, educationData);
+      const response = await api.post(`${apiBaseUrl}/`, educationData, { withCredentials: true });
       return response.data;
     } catch (error) {
       return rejectWithValue(error.response?.data?.message || "Something went wrong");
