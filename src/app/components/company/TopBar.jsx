@@ -28,9 +28,9 @@ export default function TopBar() {
         <button className="relative p-2 hover:bg-accent rounded-md transition-colors">
           <Bell className="w-5 h-5 text-muted-foreground" />
         </button>
-        <Button className="bg-primary hover:bg-primary/90 text-white">
-          <Plus className="w-4 h-4 mr-2" />
-          <Link className="text-inherit" to="/postjob">Post a job</Link>
+        <Button className="bg-primary hover:bg-primary/90 text-white rounded-lg hover:scale-105 hover:shadow-lg transition-all" >
+          <Plus className="w-4 h-4" />
+          <Link className="" to="/post-job">Post a job</Link>
         </Button>
       </div>
     </header>

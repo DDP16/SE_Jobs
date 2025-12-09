@@ -8,7 +8,7 @@ import {
     CompanySetting,
     PostJob,
     JobListing,
-} from "@/pages";
+} from "../pages";
 import ApplicantsTable from "../pages/Company/ApplicantList/ApplicantList";
 
 export default function CompanyRoutes() {
