@@ -4,6 +4,9 @@ import { Edit as EditIcon, Delete as DeleteIcon, Add as AddIcon, Link as LinkIco
 
 // Skills Section
 export function SkillsSection({ skills, onEdit, onDelete, onAdd }) {
+  // Ensure skills is always an array to prevent undefined errors
+  const skillsArray = Array.isArray(skills) ? skills : [];
+
   return (
     <Box sx={{ bgcolor: 'background.paper', p: 4, borderRadius: 2, border: 1, borderColor: 'divider', mb: 2 }}>
       <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', mb: 3 }}>
@@ -13,12 +16,12 @@ export function SkillsSection({ skills, onEdit, onDelete, onAdd }) {
         </IconButton>
       </Box>
 
-      {skills.length === 0 ? (
+      {skillsArray.length === 0 ? (
         <Typography variant="body2" sx={{ color: 'text.secondary' }}>
           Liệt kê các kỹ năng chuyên môn của bạn
         </Typography>
       ) : (
-        skills.map((skillGroup) => (
+        skillsArray.map((skillGroup) => (
           <Box key={skillGroup.id} sx={{ mb: 4, '&:last-child': { mb: 0 } }}>
             <Box sx={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', mb: 1 }}>
               <Typography variant="body1" sx={{ fontWeight: 600 }}>{skillGroup.groupName || skillGroup.name}</Typography>

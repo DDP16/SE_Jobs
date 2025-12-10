@@ -43,6 +43,7 @@ export const useProfileData = () => {
                 email: currentUser.email || '', location: currentUser.student_info?.location || '',
                 phone: currentUser?.student_info?.phone || '012345678',
                 dateOfBirth: currentUser?.student_info?.date_of_birth || '',
+                skills: currentUser?.student_info?.skills || [],
             }));
         }
     }, [currentUser]);
@@ -53,7 +54,7 @@ export const useProfileData = () => {
     const [experiences, setExperiences] = useState([]);
     const [educations, setEducations] = useState([]);
     const [skills, setSkills] = useState([]);
-    const [languages, setLanguages] = useState([]);
+    // const [languages, setLanguages] = useState([]);
     const [projects, setProjects] = useState([]);
     const [certificates, setCertificates] = useState([]);
     const [awards, setAwards] = useState([]);
@@ -75,12 +76,12 @@ export const useProfileData = () => {
         const sections = [
             user.name, user.email, about, user.location,
             experiences.length > 0, educations.length > 0,
-            skills.length > 0, languages.length > 0,
-            projects.length > 0, certificates.length > 0
+            projects.length > 0, certificates.length > 0,
+            currentUser?.student_info?.skills?.length > 0
         ];
         const completed = sections.filter(Boolean).length;
         setCompletionPercentage(Math.round((completed / sections.length) * 100));
-    }, [user, about, experiences, educations, skills, languages, projects, certificates]);
+    }, [user, about, experiences, educations, projects, certificates]);
 
     return {
         currentUser,
@@ -98,8 +99,8 @@ export const useProfileData = () => {
         setEducations,
         skills,
         setSkills,
-        languages,
-        setLanguages,
+        // languages,
+        // setLanguages,
         projects,
         setProjects,
         certificates,

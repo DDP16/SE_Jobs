@@ -10,7 +10,7 @@ import { useTranslation } from 'react-i18next';
 
 export default function SkillsModal({ open, onOpenChange, initialData, onSave }) {
     const { t } = useTranslation();
-    const [groupName, setGroupName] = useState(initialData?.groupName || initialData?.name || "Core Skills");
+    const [groupName, setGroupName] = useState(initialData?.groupName || initialData?.name || "Skills");
     const [skills, setSkills] = useState(initialData?.skills || []);
     const [skillInput, setSkillInput] = useState("");
     const [selectedExperience, setSelectedExperience] = useState("");
@@ -75,7 +75,7 @@ export default function SkillsModal({ open, onOpenChange, initialData, onSave })
 
     const handleAddSkill = () => {
         const normalizedSkill = (skillInput || "").trim();
-        if (!normalizedSkill || !selectedExperience || skills.length >= maxSkills) return;
+        if (!normalizedSkill || skills.length >= maxSkills) return;
 
         const skillExists = skills.some(
             (skill) => skill.name.toLowerCase() === normalizedSkill.toLowerCase()
@@ -85,7 +85,7 @@ export default function SkillsModal({ open, onOpenChange, initialData, onSave })
             const newSkill = {
                 id: Date.now(),
                 name: normalizedSkill,
-                experience: selectedExperience,
+                experience: selectedExperience || "N/A",
             };
             setSkills((prev) => [...prev, newSkill]);
             setSkillInput("");
@@ -173,16 +173,16 @@ export default function SkillsModal({ open, onOpenChange, initialData, onSave })
                     <form className="space-y-4">
                         {/* List Skills */}
                         <div className="space-y-2">
-                                <Label className="text-sm font-medium text-foreground">
-                                    {t('modals.skills.listCount', { count: skills.length, max: maxSkills })}
-                                </Label>
+                            <Label className="text-sm font-medium text-foreground">
+                                {t('modals.skills.listCount', { count: skills.length, max: maxSkills })}
+                            </Label>
                             {errors.skills && (
                                 <p className="text-sm text-red-500">{t(errors.skills)}</p>
                             )}
 
                             {/* Skill Input Row */}
                             <div className="grid grid-cols-12 gap-2">
-                                <div className="col-span-5">
+                                <div className="col-span-10">
                                     <Autocomplete
                                         freeSolo
                                         options={availableSkills}
@@ -217,7 +217,7 @@ export default function SkillsModal({ open, onOpenChange, initialData, onSave })
                                         )}
                                     />
                                 </div>
-                                <div className="col-span-5">
+                                {/* <div className="col-span-5">
                                     <FormControl fullWidth>
                                         <Select
                                             value={selectedExperience}
@@ -249,12 +249,12 @@ export default function SkillsModal({ open, onOpenChange, initialData, onSave })
                                             ))}
                                         </Select>
                                     </FormControl>
-                                </div>
+                                </div> */}
                                 <div className="col-span-2">
                                     <Button
                                         type="button"
                                         onClick={handleAddSkill}
-                                        disabled={!skillInput?.trim?.() || !selectedExperience || skills.length >= maxSkills}
+                                        disabled={!skillInput?.trim?.() || skills.length >= maxSkills}
                                         className="h-12 w-full bg-primary hover:bg-primary/90 text-white font-medium"
                                     >
                                         <Plus className="h-5 w-5" />
