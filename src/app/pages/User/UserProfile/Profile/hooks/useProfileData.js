@@ -9,7 +9,7 @@ export const useProfileData = () => {
     const userExperience = useSelector((state) => state.experiences);
     const authStatus = useSelector((state) => state.auth.status);
 
-    console.log('Current User in useProfileData:', userEducation);
+    console.log('Current User in useProfileData:', currentUser);
 
     // User Data - Initialize with safe defaults
     const [user, setUser] = useState({
@@ -40,11 +40,17 @@ export const useProfileData = () => {
             setUser(prev => ({
                 ...prev,
                 name: `${currentUser.first_name || ''} ${currentUser.last_name || ''}`.trim() || 'User',
-                email: currentUser.email || '', location: currentUser.student_info?.location || '',
+                email: currentUser.email || '', 
+                location: currentUser.student_info?.location || '',
                 phone: currentUser?.student_info?.phone || '012345678',
                 dateOfBirth: currentUser?.student_info?.date_of_birth || '',
-                skills: currentUser?.student_info?.skills || [],
             }));
+            
+            // Sync about from student_info
+            setAbout(currentUser.student_info?.about || '');
+            
+            // Sync skills from student_info
+            setSkills(currentUser.student_info?.skills || []);
         }
     }, [currentUser]);
 
@@ -99,8 +105,6 @@ export const useProfileData = () => {
         setEducations,
         skills,
         setSkills,
-        // languages,
-        // setLanguages,
         projects,
         setProjects,
         certificates,

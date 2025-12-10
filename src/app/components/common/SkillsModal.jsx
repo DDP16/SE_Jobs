@@ -3,17 +3,15 @@ import {
     Button,
     Label,
 } from "@/components/ui";
-import { validateSkillGroupForm } from "@/modules";
-import { Dialog, DialogContent, FormControl, Select, MenuItem, Autocomplete, Chip, TextField } from "@mui/material";
+import { Dialog, DialogContent, Autocomplete, Chip, TextField } from "@mui/material";
 import { X, Lightbulb, Plus } from "lucide-react";
 import { useTranslation } from 'react-i18next';
 
 export default function SkillsModal({ open, onOpenChange, initialData, onSave }) {
     const { t } = useTranslation();
-    const [groupName, setGroupName] = useState(initialData?.groupName || initialData?.name || "Skills");
-    const [skills, setSkills] = useState(initialData?.skills || []);
+    // Skills is now a simple string array
+    const [skills, setSkills] = useState(initialData || []);
     const [skillInput, setSkillInput] = useState("");
-    const [selectedExperience, setSelectedExperience] = useState("");
     const maxSkills = 20;
     const [errors, setErrors] = useState({});
 
@@ -30,7 +28,6 @@ export default function SkillsModal({ open, onOpenChange, initialData, onSave })
         "C#",
         ".NET",
         ".NET Standard",
-        "ABCL",
         "HTML",
         "CSS",
         "SQL",
@@ -50,26 +47,10 @@ export default function SkillsModal({ open, onOpenChange, initialData, onSave })
         "REST API",
     ];
 
-    const experienceLevels = [
-        { value: "< 1 year", label: "< 1 year" },
-        { value: "1 year", label: "1 year" },
-        { value: "2 years", label: "2 years" },
-        { value: "3 years", label: "3 years" },
-        { value: "4 years", label: "4 years" },
-        { value: "5+ years", label: "5+ years" },
-    ];
-
     // Update form data when initialData changes
     useEffect(() => {
-        if (initialData) {
-            setGroupName(initialData?.groupName || initialData?.name || "Core Skills");
-            setSkills(initialData?.skills || []);
-        } else {
-            setGroupName("Core Skills");
-            setSkills([]);
-        }
+        setSkills(initialData || []);
         setSkillInput("");
-        setSelectedExperience("");
         setErrors({});
     }, [initialData, open]);
 
@@ -78,18 +59,12 @@ export default function SkillsModal({ open, onOpenChange, initialData, onSave })
         if (!normalizedSkill || skills.length >= maxSkills) return;
 
         const skillExists = skills.some(
-            (skill) => skill.name.toLowerCase() === normalizedSkill.toLowerCase()
+            (skill) => skill.toLowerCase() === normalizedSkill.toLowerCase()
         );
 
         if (!skillExists) {
-            const newSkill = {
-                id: Date.now(),
-                name: normalizedSkill,
-                experience: selectedExperience || "N/A",
-            };
-            setSkills((prev) => [...prev, newSkill]);
+            setSkills((prev) => [...prev, normalizedSkill]);
             setSkillInput("");
-            setSelectedExperience("");
             setErrors((prev) => {
                 if (!prev.skills) return prev;
                 const updated = { ...prev };
@@ -99,31 +74,18 @@ export default function SkillsModal({ open, onOpenChange, initialData, onSave })
         }
     };
 
-    const handleRemoveSkill = (skillId) => {
-        setSkills((prev) => prev.filter((skill) => skill.id !== skillId));
+    const handleRemoveSkill = (skillToRemove) => {
+        setSkills((prev) => prev.filter((skill) => skill !== skillToRemove));
     };
 
     const handleSave = () => {
-        const normalizedGroupName = "Core Skills";
-        const { isValid, errors: validationErrors, sanitizedData } = validateSkillGroupForm({
-            groupName: normalizedGroupName,
-            skills,
-        });
-
-        if (!isValid) {
-            setErrors(validationErrors);
+        if (skills.length === 0) {
+            setErrors({ skills: 'modals.skills.errors.required' });
             return;
         }
 
-        setGroupName(sanitizedData.groupName);
-        setSkills(sanitizedData.skills);
-
         if (onSave) {
-            onSave({
-                groupName: sanitizedData.groupName,
-                name: sanitizedData.groupName,
-                skills: sanitizedData.skills,
-            });
+            onSave(skills); // Pass simple string array
         }
         onOpenChange(false);
     };
@@ -198,6 +160,12 @@ export default function SkillsModal({ open, onOpenChange, initialData, onSave })
                                             <TextField
                                                 {...params}
                                                 placeholder={t('modals.skills.searchPlaceholder')}
+                                                onKeyPress={(e) => {
+                                                    if (e.key === 'Enter') {
+                                                        e.preventDefault();
+                                                        handleAddSkill();
+                                                    }
+                                                }}
                                                 InputProps={{
                                                     ...params.InputProps,
                                                     sx: {
@@ -217,39 +185,6 @@ export default function SkillsModal({ open, onOpenChange, initialData, onSave })
                                         )}
                                     />
                                 </div>
-                                {/* <div className="col-span-5">
-                                    <FormControl fullWidth>
-                                        <Select
-                                            value={selectedExperience}
-                                            onChange={(e) => setSelectedExperience(e.target.value)}
-                                            displayEmpty
-                                            sx={{
-                                                height: "48px",
-                                                "& .MuiOutlinedInput-notchedOutline": {
-                                                    borderColor: "var(--color-neutrals-40)",
-                                                },
-                                                "&:hover .MuiOutlinedInput-notchedOutline": {
-                                                    borderColor: "var(--color-primary)",
-                                                },
-                                                "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
-                                                    borderColor: "var(--color-primary)",
-                                                },
-                                                "& .MuiSelect-icon": {
-                                                    color: "var(--color-neutrals-40)",
-                                                },
-                                            }}
-                                        >
-                                            <MenuItem value="" disabled>
-                                                {t('modals.skills.selectExperience')}
-                                            </MenuItem>
-                                            {experienceLevels.map((level) => (
-                                                <MenuItem key={level.value} value={level.value}>
-                                                    {level.label}
-                                                </MenuItem>
-                                            ))}
-                                        </Select>
-                                    </FormControl>
-                                </div> */}
                                 <div className="col-span-2">
                                     <Button
                                         type="button"
@@ -265,11 +200,11 @@ export default function SkillsModal({ open, onOpenChange, initialData, onSave })
                             {/* Skills List */}
                             {skills.length > 0 && (
                                 <div className="flex flex-wrap gap-2 mt-3">
-                                    {skills.map((skill) => (
+                                    {skills.map((skill, index) => (
                                         <Chip
-                                            key={skill.id}
-                                            label={`${skill.name} (${skill.experience})`}
-                                            onDelete={() => handleRemoveSkill(skill.id)}
+                                            key={`${skill}-${index}`}
+                                            label={skill}
+                                            onDelete={() => handleRemoveSkill(skill)}
                                             sx={{
                                                 bgcolor: "#E8E0FF",
                                                 color: "#5E35B1",

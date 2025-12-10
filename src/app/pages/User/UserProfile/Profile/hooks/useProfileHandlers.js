@@ -1,11 +1,12 @@
 import { createEducation, updateEducation, deleteEducation, getEducationByStudentId } from '../../../../../modules/services/educationsService';
+import { updateUser } from '../../../../../modules/services/userService';
+import { getMe } from '../../../../../modules/services/authService';
 
 export const useProfileHandlers = ({
     setUser,
     setCvFile,
     setAbout,
     setExperiences,
-    setEducations,
     setSkills,
     setProjects,
     setCertificates,
@@ -96,13 +97,11 @@ export const useProfileHandlers = ({
     // Education Handlers
     const handleSaveEducation = async (formData) => {
         try {
-            // Validate required fields
             if (!formData.school || !formData.degree || !formData.major || !formData.startYear || !formData.startMonth) {
                 alert('Vui lòng điền đầy đủ thông tin bắt buộc');
                 return;
             }
 
-            // Validate student_id exists before proceeding
             if (!currentUser?.student_info?.id) {
                 alert('Không tìm thấy thông tin sinh viên. Vui lòng đăng nhập lại.');
                 return;
@@ -116,8 +115,6 @@ export const useProfileHandlers = ({
                 endDate = `${formData.endYear}-${endMonth}-01`;
             }
 
-            // Prepare data for API 
-            // Note: Backend gets student_id from authenticated session, not from request body
             const educationData = {
                 school: formData.school || '',
                 degree: formData.degree || '',
@@ -127,25 +124,13 @@ export const useProfileHandlers = ({
                 description: formData.description || '',
             };
 
-            // Debug log
-            console.log('Sending education data:', educationData);
-
-            let result;
-            if (selectedEducation && selectedEducation.id) {
-                // Update existing education
-                result = await dispatch(updateEducation({
-                    id: selectedEducation.id,
-                    educationData
-                })).unwrap();
+            if (selectedEducation?.id) {
+                await dispatch(updateEducation({ id: selectedEducation.id, educationData })).unwrap();
             } else {
-                // Create new education 
-                result = await dispatch(createEducation(educationData)).unwrap();
+                await dispatch(createEducation(educationData)).unwrap();
             }
 
-            // Refresh education list from backend
-            if (currentUser?.student_info?.id) {
-                await dispatch(getEducationByStudentId()).unwrap();
-            }
+            await dispatch(getEducationByStudentId()).unwrap();
 
             setSelectedEducation(null);
             closeModal('education');
@@ -172,29 +157,47 @@ export const useProfileHandlers = ({
         }
     };
 
-    // Skills Handlers
-    const handleSaveSkillGroup = (formData) => {
-        const skillGroupData = {
-            id: selectedSkillGroup?.id || Date.now(),
-            groupName: formData.groupName || formData.name || 'Core Skills',
-            name: formData.groupName || formData.name || 'Core Skills',
-            skills: formData.skills || [],
-        };
+    const handleSkills = async (skillsArray = [], { closeAfterSave = true } = {}) => {
+        setSkills(skillsArray);
 
-        if (selectedSkillGroup) {
-            setSkills(prev => prev.map(group => group.id === selectedSkillGroup.id ? skillGroupData : group));
-        } else {
-            setSkills(prev => [...prev, skillGroupData]);
+        if (!currentUser?.user_id) {
+            alert('Không tìm thấy người dùng. Vui lòng đăng nhập lại.');
+            return;
         }
+        try {
+            await dispatch(updateUser({
+                userId: currentUser.user_id,
+                userData: {
+                    student_info: {
+                        ...(currentUser?.student_info || {}),
+                        skills: skillsArray,
+                    },
+                },
+            })).unwrap();
 
-        setSelectedSkillGroup(null);
-        closeModal('skills');
+            await dispatch(getMe()).unwrap();
+        } catch (error) {
+            console.error('Error updating skills:', error);
+            const message = typeof error === 'string' ? error : (error?.message || 'Có lỗi xảy ra khi cập nhật kỹ năng');
+            alert(message);
+            setSkills(currentUser?.student_info?.skills || []);
+        } finally {
+            if (closeAfterSave) {
+                setSelectedSkillGroup(null);
+                closeModal('skills');
+            }
+        }
     };
 
-    const handleDeleteSkillGroup = (id) => {
-        if (window.confirm('Bạn có chắc chắn muốn xóa nhóm kỹ năng này?')) {
-            setSkills(prev => prev.filter(skill => skill.id !== id));
-        }
+    const handleSaveSkillGroup = async (skillsArray = []) => {
+        await handleSkills(skillsArray, { closeAfterSave: true });
+    };
+
+    const handleDeleteSkillGroup = async (skillToDelete) => {
+        if (!window.confirm('Bạn có chắc chắn muốn xóa kỹ năng này?')) return;
+
+        const nextSkills = (prevSkills => prevSkills.filter(skill => skill !== skillToDelete))(currentUser?.student_info?.skills || []);
+        await handleSkills(nextSkills, { closeAfterSave: false });
     };
 
     // Projects Handlers

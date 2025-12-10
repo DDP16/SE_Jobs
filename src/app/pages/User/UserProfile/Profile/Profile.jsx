@@ -96,6 +96,7 @@ export default function Profile() {
     const {
         modals,
         openModal,
+        closeModal,
         selectedEducation,
         selectedExperience,
         selectedSkillGroup,
@@ -121,8 +122,9 @@ export default function Profile() {
         openModal('education');
     };
 
-    const handleEditSkillGroup = (skillGroup) => {
-        setSelectedSkillGroup(skillGroup);
+    const handleEditSkillGroup = () => {
+        // For simple array skills we just open the modal with current skills
+        setSelectedSkillGroup(null);
         openModal('skills');
     };
 
@@ -224,7 +226,7 @@ export default function Profile() {
             <ProfileModals
                 modals={modals}
                 openModal={openModal}
-                closeModal={modalState.closeModal}
+                closeModal={closeModal}
                 user={user}
                 selectedExperience={selectedExperience}
                 selectedEducation={selectedEducation}
@@ -232,6 +234,7 @@ export default function Profile() {
                 selectedProject={selectedProject}
                 selectedCertificate={selectedCertificate}
                 selectedAward={selectedAward}
+                    skills={skills}
                 setSelectedExperience={setSelectedExperience}
                 setSelectedEducation={setSelectedEducation}
                 setSelectedSkillGroup={setSelectedSkillGroup}
