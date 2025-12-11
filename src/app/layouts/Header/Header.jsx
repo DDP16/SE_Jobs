@@ -109,11 +109,15 @@ export default function Header() {
 
   return (
     <AppBar
-      position="static"
+      position="fixed"
       sx={{
         bgcolor: 'white',
         color: 'text.primary',
-        boxShadow: 1
+        boxShadow: 0.5,
+        top: 0,
+        left: 0,
+        right: 0,
+        zIndex: 1100
       }}
     >
       <Toolbar sx={{
