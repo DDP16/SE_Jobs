@@ -123,7 +123,7 @@ export const register = createAsyncThunk(
       role = 'student',
       company
     },
-    { rejectWithValue }
+    { rejectWithValue } 
   ) => {
     const reqData = {
       email,
