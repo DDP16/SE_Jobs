@@ -8,7 +8,7 @@ export default function Footer() {
       <div className="footer_container">
         {/* top section */}
         <div className="footer_top">
-          {/* Brand */}
+          {/* Brand & Info */}
           <div className="footer_brand">
             <div className="footer_brandRow">
               <img src={logo} alt="Jobs" width={60} height={60} />
@@ -16,6 +16,29 @@ export default function Footer() {
             <p className="footer_desc">
               Find your dream job easier.
             </p>
+            <div className="footer_info">
+              <p className="footer_info_title">The Faculty of Software Engineering 2022</p>
+              <p className="footer_info_subtitle">University of Information Technology - VNUHCM</p>
+              
+              <div className="footer_contact">
+                <div className="footer_contact_item">
+                  <span className="footer_contact_icon">f</span>
+                  <p>SeExpress - Kênh thông tin khoa Công Nghệ Phần Mềm, ĐH CNTT</p>
+                </div>
+                <div className="footer_contact_item">
+                  <span className="footer_contact_icon">📍</span>
+                  <p>Phòng E7.2, tòa nhà E, Trường Đại học Công nghệ Thông tin, Khu phố 34, Phường Linh Xuân, Tp. Hồ Chí Minh</p>
+                </div>
+                <div className="footer_contact_item">
+                  <span className="footer_contact_icon">📞</span>
+                  <p>(028) 37252002 - số nội bộ 120</p>
+                </div>
+                <div className="footer_contact_item">
+                  <span className="footer_contact_icon">✉️</span>
+                  <p><a href="mailto:se@uit.edu.vn" className="footer_link">se@uit.edu.vn</a></p>
+                </div>
+              </div>
+            </div>
           </div>
 
           {/* About */}
@@ -88,10 +111,10 @@ export default function Footer() {
         </div>
 
         {/* divider */}
-        <div className="footer_divider" />
+        {/* <div className="footer_divider" /> */}
 
         {/* bottom bar */}
-        <div className="footer_bottom">
+        {/* <div className="footer_bottom">
           <small className="footer_copyright">
             2025© SE UIT. All rights reserved.
           </small>
@@ -114,7 +137,7 @@ export default function Footer() {
               </a>
             ))}
           </div>
-        </div>
+        </div> */}
       </div>
     </footer>
   );

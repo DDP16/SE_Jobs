@@ -13,8 +13,8 @@
 /* Top grid */
 .footer_top {
     display: grid;
-    grid-template-columns: 1.2fr 0.8fr 0.8fr 1.2fr;
-    gap: 32px;
+    grid-template-columns: 2fr 0.6fr 0.6fr 1.1fr;
+    gap: 40px;
     align-items: start;
 }
 
@@ -26,33 +26,99 @@
 
 .footer_desc {
     margin-top: 16px;
-    margin-bottom: 0;
+    margin-bottom: 24px;
     color: #94a3b8;
+    font-size: 14px;
+    line-height: 1.6;
+}
+
+.footer_info {
+    margin-top: 20px;
+}
+
+.footer_info_title {
+    margin: 0;
+    font-weight: 600;
+    color: #e2e8f0;
+    font-size: 14px;
+    line-height: 1.5;
+}
+
+.footer_info_subtitle {
+    margin: 4px 0 12px 0;
+    color: #94a3b8;
+    font-size: 13px;
+    line-height: 1.5;
+}
+
+.footer_contact {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-top: 12px;
+    font-size: 13px;
+}
+
+.footer_contact_item {
+    display: flex;
+    gap: 8px;
+    align-items: flex-start;
+    color: #94a3b8;
+}
+
+.footer_contact_icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 16px;
+    font-size: 14px;
+}
+
+.footer_contact_item p {
+    margin: 0;
+    line-height: 1.5;
+    font-size: 13px;
+}
+
+.footer_contact_item a {
+    color: #94a3b8;
+    text-decoration: none;
 }
 
 .footer_title {
     margin: 0;
     color: #e2e8f0;
     font-size: 14px;
+    font-weight: 600;
+    margin-bottom: 16px;
 }
 
 .footer_list {
     list-style: none;
     padding: 0;
-    margin: 12px;
+    margin: 0;
 }
 
 .footer_item {
-    margin: 8px 0;
+    margin: 10px 0;
 }
 
 .footer_link {
     color: #94a3b8;
+    font-size: 13px;
+    line-height: 1.6;
+    transition: color 0.2s ease;
+}
+
+.footer_link:hover {
+    color: #cbd5e1;
 }
 
 .footer_hint {
     margin-top: 12px;
     color: #94a3b8;
+    font-size: 13px;
+    line-height: 1.6;
 }
 
 .footer_form {
@@ -64,21 +130,33 @@
 .footer_input {
     flex: 1;
     min-width: 0;
-    padding: 10px 12px;
+    padding: 9px 12px;
     border-radius: 6px;
     border: 1px solid #334155;
     background: #0b1220;
     color: #e2e8f0;
+    font-size: 13px;
+}
+
+.footer_input::placeholder {
+    color: #64748b;
+    font-size: 13px;
 }
 
 .footer_btn {
     background: #2563eb;
     color: #fff;
     border: 0;
-    padding: 10px 14px;
+    padding: 9px 16px;
     border-radius: 6px;
     font-weight: 600;
+    font-size: 13px;
     cursor: pointer;
+    transition: background 0.2s ease;
+}
+
+.footer_btn:hover {
+    background: #1d4ed8;
 }
 
 .footer_divider {
@@ -116,11 +194,10 @@
     font-size: 12px;
 }
 
-/* Responsive */
 @media (max-width: 900px) {
     .footer_top {
         grid-template-columns: 1fr 1fr;
-        gap: 24px;
+        gap: 32px;
     }
 }
 

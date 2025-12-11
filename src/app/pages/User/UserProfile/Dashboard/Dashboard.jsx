@@ -39,13 +39,10 @@ const getInitials = (name) => {
 };
 
 export default function ProfileDashboard() {
-    const currentUser = useSelector((state) => state.auth.user);
+    const currentUser = useSelector((state) => state.auth.user) || {};
     const theme = useTheme();
     const { t } = useTranslation();
     const navigate = useNavigate();
-    const [user] = useState({
-        name: currentUser?.name || 'User',
-    });
 
     // Use mock data
     const stats = mockDashboardStats;
@@ -59,7 +56,7 @@ export default function ProfileDashboard() {
                     {/* Main Content */}
                     <Box sx={{ flex: 1, maxWidth: 900 }}>
                         {/* User Profile Card */}
-                        <Grid item xs={12} paddingBottom={2}>
+                        <Grid sx={{ paddingBottom: 2 }}>
                             <Paper
                                 elevation={0}
                                 sx={{
@@ -71,17 +68,35 @@ export default function ProfileDashboard() {
                             >
                                 <Box sx={{ display: 'flex', alignItems: 'flex-start', gap: 3 }}>
                                     <Box sx={{ position: 'relative' }}>
-                                        <Avatar
-                                            sx={{
-                                                width: 80,
-                                                height: 80,
-                                                bgcolor: '#7c4dff',
-                                                fontSize: '2rem',
-                                                fontWeight: 600,
-                                            }}
-                                        >
-                                            {getInitials(user.name)}
-                                        </Avatar>
+                                        {currentUser.avatar
+                                            ? (
+                                                <Avatar
+                                                    src={currentUser.avatar}
+                                                    sx={{
+                                                        width: 80,
+                                                        height: 80,
+                                                        bgcolor: 'background.default',
+                                                        fontSize: '2rem',
+                                                        fontWeight: 600,
+                                                        objectFit: 'cover',
+                                                    }}
+                                                    imgProps={{ style: { objectFit: 'cover', width: '100%', height: '100%' } }}
+                                                />
+                                            )
+                                            : (
+                                                <Avatar
+                                                    sx={{
+                                                        width: 80,
+                                                        height: 80,
+                                                        bgcolor: 'background.default',
+                                                        fontSize: '2rem',
+                                                        fontWeight: 600,
+                                                    }}
+                                                >
+                                                    {getInitials((currentUser.last_name || '') + ' ' + (currentUser.first_name || ''))}
+                                                </Avatar>
+                                            )
+                                        }
                                         <IconButton
                                             size="small"
                                             sx={{
@@ -106,7 +121,7 @@ export default function ProfileDashboard() {
                                         <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', mb: 2 }}>
                                             <Box>
                                                 <Typography variant="h5" sx={{ fontWeight: 600, mb: 0.5 }}>
-                                                    {user.name}
+                                                    {currentUser.last_name}
                                                 </Typography>
                                                 <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
                                                     <EmailIcon sx={{ fontSize: 18, color: 'text.secondary' }} />
