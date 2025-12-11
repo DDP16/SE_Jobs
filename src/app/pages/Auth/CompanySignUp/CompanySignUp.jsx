@@ -59,7 +59,8 @@ export default function CompanySignUp() {
 
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
-  const [email, setEmail] = useState("");
+  const [loginEmail, setLoginEmail] = useState("");
+  const [companyEmail, setCompanyEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [lastName, setLastName] = useState("");
@@ -69,7 +70,8 @@ export default function CompanySignUp() {
   const [websiteUrl, setWebsiteUrl] = useState("");
   const [agreeTerms, setAgreeTerms] = useState(false);
 
-  const [emailError, setEmailError] = useState("");
+  const [loginEmailError, setLoginEmailError] = useState("");
+  const [companyEmailError, setCompanyEmailError] = useState("");
   const [passwordError, setPasswordError] = useState("");
   const [confirmPasswordError, setConfirmPasswordError] = useState("");
   const [lastNameError, setLastNameError] = useState("");
@@ -82,7 +84,8 @@ export default function CompanySignUp() {
     e.preventDefault();
 
     // Reset all errors
-    setEmailError("");
+    setLoginEmailError("");
+    setCompanyEmailError("");
     setPasswordError("");
     setConfirmPasswordError("");
     setLastNameError("");
@@ -94,11 +97,18 @@ export default function CompanySignUp() {
     let valid = true;
 
     // Validate email
-    if (!email) {
-      setEmailError("Email đăng nhập không được để trống");
+    if (!loginEmail) {
+      setLoginEmailError("Email đăng nhập không được để trống");
       valid = false;
-    } else if (!validateEmail(email)) {
-      setEmailError("Vui lòng nhập địa chỉ email hợp lệ");
+    } else if (!validateEmail(loginEmail)) {
+      setLoginEmailError("Vui lòng nhập địa chỉ email hợp lệ");
+      valid = false;
+    }
+    if (!companyEmail) {
+      setCompanyEmailError("Email doanh nghiệp không được để trống");
+      valid = false;
+    } else if (!validateEmail(companyEmail)) {
+      setCompanyEmailError("Vui lòng nhập địa chỉ email doanh nghiệp hợp lệ");
       valid = false;
     }
 
@@ -154,7 +164,7 @@ export default function CompanySignUp() {
     if (valid) {
       try {
         const payload = {
-          email,
+          email: loginEmail,
           first_name: firstName,
           last_name: lastName,
           password,
@@ -164,8 +174,8 @@ export default function CompanySignUp() {
             name: companyName,
             company_types: companyType,
             phone,
-            email,
-            // website_url: websiteUrl,
+            email: companyEmail,
+            website_url: websiteUrl,
           }
         };
 
@@ -248,16 +258,16 @@ export default function CompanySignUp() {
                     id="email"
                     type="email"
                     placeholder="Email đăng nhập"
-                    value={email}
-                    onChange={(e) => setEmail(e.target.value)}
-                    className={`w-full h-12 rounded-lg border-gray-300 focus:border-blue-500 focus:ring-blue-500 pl-10 ${emailError ? 'border-red-500' : ''}`}
+                    value={loginEmail}
+                    onChange={(e) => setLoginEmail(e.target.value)}
+                    className={`w-full h-12 rounded-lg border-gray-300 focus:border-blue-500 focus:ring-blue-500 pl-10 ${loginEmailError ? 'border-red-500' : ''}`}
                   />
-                  {emailError && (
+                  {loginEmailError && (
                     <ErrorIcon className="absolute right-3 top-1/2 -translate-y-1/2 text-red-500 z-10" style={{ fontSize: '16px' }} />
                   )}
                 </div>
-                {emailError && (
-                  <p className="text-xs text-red-500 mt-1">{emailError}</p>
+                {loginEmailError && (
+                  <p className="text-xs text-red-500 mt-1">{loginEmailError}</p>
                 )}
               </div>
             </div>
@@ -478,16 +488,16 @@ export default function CompanySignUp() {
                     id="companyEmail"
                     type="email"
                     placeholder="Email doanh nghiệp"
-                    value={email}
-                    onChange={(e) => setEmail(e.target.value)}
-                    className={`w-full h-12 rounded-lg border-gray-300 focus:border-blue-500 focus:ring-blue-500 pl-10 ${emailError ? 'border-red-500' : ''}`}
+                    value={companyEmail}
+                    onChange={(e) => setCompanyEmail(e.target.value)}
+                    className={`w-full h-12 rounded-lg border-gray-300 focus:border-blue-500 focus:ring-blue-500 pl-10 ${companyEmailError ? 'border-red-500' : ''}`}
                   />
-                  {emailError && (
+                  {companyEmailError && (
                     <ErrorIcon className="absolute right-3 top-1/2 -translate-y-1/2 text-red-500 z-10" style={{ fontSize: '16px' }} />
                   )}
                 </div>
-                {emailError && (
-                  <p className="text-xs text-red-500 mt-1">{emailError}</p>
+                {companyEmailError && (
+                  <p className="text-xs text-red-500 mt-1">{companyEmailError}</p>
                 )}
               </div>
           </div>
