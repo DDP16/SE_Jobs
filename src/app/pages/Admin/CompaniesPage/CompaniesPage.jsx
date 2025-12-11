@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { Plus, Search, Filter, MoreVertical, Eye, Edit, Trash2, Building2 } from 'lucide-react';
 import { 
@@ -21,6 +21,9 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui';
+import { Pagination } from 'antd';
+import { useDispatch, useSelector } from 'react-redux';
+import { getCompanies } from '../../../modules';
 
 const mockCompanies = [
   { 
@@ -114,10 +117,20 @@ const mockCompanies = [
 ];
 
 export default function CompaniesPage() {
+  const dispatch = useDispatch();
   const [searchQuery, setSearchQuery] = useState('');
   const [typeFilter, setTypeFilter] = useState('all');
+  const [currentPage, setCurrentPage] = useState(1);
+  const [pageSize, setPageSize] = useState(10);
 
-  const filteredCompanies = mockCompanies.filter((company) => {
+  const companies = useSelector((state) => state.company.companies);
+  const pagination = useSelector((state) => state.company.pagination);
+
+  useEffect(() => {
+    dispatch(getCompanies({ page: currentPage, limit: pageSize }));
+  }, [currentPage, pageSize]);
+
+  const filteredCompanies = companies.filter((company) => {
     const matchesSearch = company.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
       company.email.toLowerCase().includes(searchQuery.toLowerCase());
     const matchesType = typeFilter === 'all' || company.types.some(type => type === typeFilter);
@@ -167,92 +180,104 @@ export default function CompaniesPage() {
         </div>
 
         <div className='px-4'>
-        <Table>
-          <TableHeader>
-            <TableRow>
-              <TableHead>Company</TableHead>
-              <TableHead>Contact</TableHead>
-              <TableHead className="text-center">Employee Count</TableHead>
-              <TableHead className="text-center">Branches</TableHead>
-              <TableHead className="text-center">Active Jobs</TableHead>
-              <TableHead className="text-center">Types</TableHead>
-              <TableHead className="text-center">Status</TableHead>
-              <TableHead className="text-right">Actions</TableHead>
-            </TableRow>
-          </TableHeader>
-          <TableBody>
-            {filteredCompanies.map((company) => (
-              <TableRow key={company.id}>
-                <TableCell>
-                  <div className="flex items-center gap-2">
-                    <div className="w-8 h-8 rounded-lg bg-linear-to-br from-blue-500 to-purple-500 flex items-center justify-center">
-                      <Building2 className="w-4 h-4 text-white" />
-                    </div>
-                    <span>{company.name}</span>
-                  </div>
-                </TableCell>
-                <TableCell>
-                  <div className="text-sm">
-                    <div className="text-gray-900">{company.email}</div>
-                    <div className="text-gray-500">{company.phone}</div>
-                  </div>
-                </TableCell>
-                <TableCell className="text-gray-600 text-center">{company.employeeCount}</TableCell>
-                <TableCell className="text-center">
-                  <Badge variant="secondary" className="bg-blue-50 text-blue-700">
-                    {company.branches}
-                  </Badge>
-                </TableCell>
-                <TableCell className="text-center">
-                  <Badge variant="secondary" className="bg-green-50 text-green-700">
-                    {company.activeJobs}
-                  </Badge>
-                </TableCell>
-                <TableCell className="text-center">
-                  <div className="flex flex-wrap gap-1">
-                    {company.types.slice(0, 2).map((type, index) => (
-                      <Badge key={index} variant="secondary" className="bg-purple-50 text-purple-700 text-xs">
-                        {type}
-                      </Badge>
-                    ))}
-                  </div>
-                </TableCell>
-                <TableCell className="text-center">
-                  <Badge className={`${company.status === 'Active' ? 'bg-green-400 text-white border-2 border-accent-green/50' : 'bg-gray-100'} px-4 py-1`}>
-                    {company.status}
-                  </Badge>
-                </TableCell>
-                <TableCell className="text-right">
-                  <DropdownMenu>
-                    <DropdownMenuTrigger asChild>
-                      <Button variant="ghost" size="icon">
-                        <MoreVertical className="w-4 h-4" />
-                      </Button>
-                    </DropdownMenuTrigger>
-                    <DropdownMenuContent className="bg-white" align="end">
-                      <DropdownMenuItem asChild>
-                        <Link to={`/companies/${company.id}`}>
-                          <Eye className="w-4 h-4 mr-2" />
-                          View Details
-                        </Link>
-                      </DropdownMenuItem>
-                      <DropdownMenuItem>
-                        <Edit className="w-4 h-4 mr-2" />
-                        Edit
-                      </DropdownMenuItem>
-                      <DropdownMenuItem className="text-red-600">
-                        <Trash2 className="w-4 h-4 mr-2" />
-                        Delete
-                      </DropdownMenuItem>
-                    </DropdownMenuContent>
-                  </DropdownMenu>
-                </TableCell>
+          <Table>
+            <TableHeader>
+              <TableRow>
+                <TableHead>Company</TableHead>
+                <TableHead>Contact</TableHead>
+                <TableHead className="text-center">Employee Count</TableHead>
+                <TableHead className="text-center">Branches</TableHead>
+                <TableHead className="text-center">Active Jobs</TableHead>
+                <TableHead className="text-center">Types</TableHead>
+                <TableHead className="text-center">Status</TableHead>
+                <TableHead className="text-right">Actions</TableHead>
               </TableRow>
-            ))}
-          </TableBody>
-        </Table>
+            </TableHeader>
+            <TableBody>
+              {filteredCompanies.map((company) => (
+                <TableRow key={company.id}>
+                  <TableCell>
+                    <div className="flex items-center gap-2">
+                      <div className="w-8 h-8 rounded-lg bg-linear-to-br from-blue-500 to-purple-500 flex items-center justify-center">
+                        <Building2 className="w-4 h-4 text-white" />
+                      </div>
+                      <span>{company.name}</span>
+                    </div>
+                  </TableCell>
+                  <TableCell>
+                    <div className="text-sm">
+                      <div className="text-gray-900">{company.email}</div>
+                      <div className="text-gray-500">{company.phone}</div>
+                    </div>
+                  </TableCell>
+                  <TableCell className="text-gray-600 text-center">{company.employee_count}</TableCell>
+                  <TableCell className="text-center">
+                    <Badge variant="secondary" className="bg-blue-50 text-blue-700">
+                      {Array.isArray(company.company_branches) ? company.company_branches.length : 0}
+                    </Badge>
+                  </TableCell>
+                  <TableCell className="text-center">
+                    <Badge variant="secondary" className="bg-green-50 text-green-700">
+                      {Array.isArray(company.jobs) ? company.jobs.length : 0}
+                    </Badge>
+                  </TableCell>
+                  <TableCell className="text-center">
+                    <div className="flex flex-wrap gap-1">
+                      {company.company_types.slice(0, 2).map((type, index) => (
+                        <Badge key={index} variant="secondary" className="bg-purple-50 text-purple-700 text-xs">
+                          {type.name}
+                        </Badge>
+                      ))}
+                    </div>
+                  </TableCell>
+                  <TableCell className="text-center">
+                    <Badge className={`${company.users.is_active ? 'bg-green-500 text-white border-2 border-accent-green/50' : 'bg-gray-100'} px-4 py-1`}>
+                      {company.users.is_active ? 'Active' : 'Inactive'}
+                    </Badge>
+                  </TableCell>
+                  <TableCell className="text-right">
+                    <DropdownMenu>
+                      <DropdownMenuTrigger asChild>
+                        <Button variant="ghost" size="icon">
+                          <MoreVertical className="w-4 h-4" />
+                        </Button>
+                      </DropdownMenuTrigger>
+                      <DropdownMenuContent className="bg-white" align="end">
+                        <DropdownMenuItem asChild>
+                          <Link to={`/companies/${company.id}`}>
+                            <Eye className="w-4 h-4 mr-2" />
+                            View Details
+                          </Link>
+                        </DropdownMenuItem>
+                        <DropdownMenuItem>
+                          <Edit className="w-4 h-4 mr-2" />
+                          Edit
+                        </DropdownMenuItem>
+                        <DropdownMenuItem className="text-red-600">
+                          <Trash2 className="w-4 h-4 mr-2" />
+                          Delete
+                        </DropdownMenuItem>
+                      </DropdownMenuContent>
+                    </DropdownMenu>
+                  </TableCell>
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
         </div>
       </div>
+
+      <Pagination align="end" 
+        current={currentPage}
+        total={pagination?.total ?? 0}
+        pageSize={pageSize}
+        onChange={
+          (newPage, newPageSize) => {
+            setCurrentPage(newPage)
+            setPageSize(newPageSize)
+          }
+        }
+      />
     </div>
   );
 }

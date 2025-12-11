@@ -59,6 +59,7 @@ export default function PostJob() {
   const [jobTitle, setJobTitle] = useState("");
   const [employmentTypes, setEmploymentTypes] = useState([]);
   const [salaryRange, setSalaryRange] = useState([5000, 22000]);
+  const [salaryCurrency, setSalaryCurrency] = useState("USD");
   const [skills, setSkills] = useState([]);
   const [newSkill, setNewSkill] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("");
@@ -67,27 +68,7 @@ export default function PostJob() {
   const [responsibilities, setResponsibilities] = useState("");
   const [whoYouAre, setWhoYouAre] = useState("");
   const [niceToHaves, setNiceToHaves] = useState("");
-  const [benefits, setBenefits] = useState([
-    {
-      id: "1",
-      icon: "Heart",
-      title: "Full Healthcare",
-      description: "We believe in thriving communities and that starts with our team being happy and healthy.",
-    },
-    {
-      id: "2",
-      icon: "Plane",
-      title: "Unlimited Vacation",
-      description: "We believe you should have a flexible schedule that makes space for family, wellness, and fun.",
-    },
-    {
-      id: "3",
-      icon: "Video",
-      title: "Skill Development",
-      description:
-        "We believe in always learning and leveling up our skills. Whether it's a conference or online course.",
-    },
-  ]);
+  const [benefits, setBenefits] = useState([]);
 
   const [employmentTypeIds, setEmploymentTypeIds] = useState([]);
   const [skillIds, setSkillIds] = useState([]);
@@ -95,12 +76,8 @@ export default function PostJob() {
   const [levelId, setLevelId] = useState(null);
 
   useEffect(() => {
-    console.log("Selected Employment Type IDs:", employmentTypeIds);
-  }, [employmentTypeIds]);
-
-  useEffect(() => {
-    console.log("Selected Level IDs:", levelId);
-  }, [levelId]);
+    console.log(benefits);
+  }, [benefits]);
 
   const steps = [
     { number: 1, title: "Job Information", icon: FileText },
@@ -195,10 +172,11 @@ export default function PostJob() {
       responsibilities: responsibilities ? [responsibilities] : [],
       requirement: whoYouAre ? [whoYouAre] : [],
       nice_to_haves: niceToHaves ? [niceToHaves] : [],
-      benefit: benefits.map((b) => b.description),
+      benefit: benefits.map((b) => ({ icon: b.icon, title: b.title, description: b.description })),
       salary_from: salaryRange[0],
       salary_to: salaryRange[1],
-      salary_currency: "USD",
+      salary_currency: salaryCurrency,
+      salary_text: `${salaryRange[0]} - ${salaryRange[1]} ${salaryCurrency}`,
       category_ids: categoryIds,
       level_ids: levelId ? [levelId] : [],
       required_skill_ids: skillIds,
@@ -284,6 +262,8 @@ export default function PostJob() {
             toggleEmploymentType={toggleEmploymentType}
             salaryRange={salaryRange}
             setSalaryRange={setSalaryRange}
+            salaryCurrency={salaryCurrency}
+            setSalaryCurrency={setSalaryCurrency}
             selectedCategory={selectedCategory}
             handleCategorySelect={handleCategorySelect}
             categories={categories}

@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { 
   ArrowLeft, 
@@ -31,6 +31,8 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui";
+import { useDispatch, useSelector } from 'react-redux';
+import { getCompany } from '../../../modules';
 
 const mockCompany = {
   id: 1,
@@ -39,21 +41,21 @@ const mockCompany = {
   background: 'https://images.unsplash.com/photo-1573164713714-d95e436ab8d6?w=1200',
   email: 'hr@google.com',
   phone: '+1 (650) 253-0000',
-  website: 'https://careers.google.com',
-  employeeCount: '50,000+',
-  techStack: ['JavaScript', 'Python', 'Go', 'Kubernetes', 'TensorFlow'],
+  website_url: 'https://careers.google.com',
+  employee_count: '50,000+',
+  tech_stack: ['JavaScript', 'Python', 'Go', 'Kubernetes', 'TensorFlow'],
   description: 'Google is a multinational technology company that specializes in Internet-related services and products. We are committed to building products that organize the world\'s information and make it universally accessible and useful.',
   socials: {
     linkedin: 'https://linkedin.com/company/google',
     twitter: 'https://twitter.com/google',
     facebook: 'https://facebook.com/google'
   },
-  types: [
+  company_types: [
     { id: 1, name: 'Technology' },
     { id: 2, name: 'Software' },
     { id: 3, name: 'Cloud Computing' },
   ],
-  branches: [
+  company_branches: [
     { 
       id: 1, 
       name: 'Google Mountain View HQ', 
@@ -79,7 +81,7 @@ const mockCompany = {
       country: 'United Kingdom'
     },
   ],
-  activeJobs: [
+  jobs: [
     {
       id: 1,
       title: 'Senior Software Engineer',
@@ -87,7 +89,7 @@ const mockCompany = {
       type: 'Full-time',
       level: 'Senior',
       applications: 45,
-      postedDate: '2024-03-01'
+      created_at: '2024-03-01'
     },
     {
       id: 2,
@@ -96,7 +98,7 @@ const mockCompany = {
       type: 'Full-time',
       level: 'Mid-level',
       applications: 32,
-      postedDate: '2024-03-05'
+      created_at: '2024-03-05'
     },
     {
       id: 3,
@@ -105,7 +107,7 @@ const mockCompany = {
       type: 'Full-time',
       level: 'Junior',
       applications: 28,
-      postedDate: '2024-03-10'
+      created_at: '2024-03-10'
     },
   ],
 };
@@ -113,6 +115,14 @@ const mockCompany = {
 export default function CompanyDetailPage() {
   const { id } = useParams();
   const [activeTab, setActiveTab] = useState('overview');
+  const dispatch = useDispatch();
+
+  const company = useSelector((state) => state.company.company);
+  const companyDisplay = company || mockCompany;
+
+  useEffect(() => {
+    dispatch(getCompany(id));
+  },[id]);
 
   return (
     <div className="space-y-6">
@@ -124,8 +134,8 @@ export default function CompanyDetailPage() {
         
         <div className="relative h-48 rounded-lg overflow-hidden mb-6">
           <img 
-            src={mockCompany.background} 
-            alt={mockCompany.name}
+            src={companyDisplay.background} 
+            alt={companyDisplay.name}
             className="w-full h-full object-cover"
           />
           <div className="absolute inset-0 bg-linear-to-t from-black/60 to-transparent" />
@@ -137,21 +147,21 @@ export default function CompanyDetailPage() {
               <Building2 className="w-10 h-10 text-blue-600" />
             </div>
             <div>
-              <h3 className="text-gray-900 mb-1 font-semibold">{mockCompany.name}</h3>
-              <p className="text-gray-600 mb-3">{mockCompany.employeeCount} employees</p>
+              <h3 className="text-gray-900 mb-1 font-semibold">{companyDisplay.name}</h3>
+              <p className="text-gray-600 mb-3">{companyDisplay.employee_count} employees</p>
               <div className="flex flex-wrap gap-4 text-sm text-gray-600">
                 <div className="flex items-center gap-1">
                   <Mail className="w-4 h-4" />
-                  {mockCompany.email}
+                  {companyDisplay.email}
                 </div>
                 <div className="flex items-center gap-1">
                   <Phone className="w-4 h-4" />
-                  {mockCompany.phone}
+                  {companyDisplay.phone}
                 </div>
                 <div className="flex items-center gap-1">
                   <Globe className="w-4 h-4" />
-                  <a href={mockCompany.website} target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:underline">
-                    {mockCompany.website}
+                  <a href={companyDisplay.website_url} target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:underline">
+                    {companyDisplay.website_url}
                   </a>
                 </div>
               </div>
@@ -173,7 +183,7 @@ export default function CompanyDetailPage() {
               </div>
               <div>
                 <p className="text-gray-600 text-sm">Total Branches</p>
-                <p className="text-gray-900 text-xl">{mockCompany.branches.length}</p>
+                <p className="text-gray-900 text-xl">{companyDisplay.company_branches.length}</p>
               </div>
             </div>
           </CardContent>
@@ -186,7 +196,7 @@ export default function CompanyDetailPage() {
               </div>
               <div>
                 <p className="text-gray-600 text-sm">Active Jobs</p>
-                <p className="text-gray-900 text-xl">{mockCompany.activeJobs.length}</p>
+                <p className="text-gray-900 text-xl">{companyDisplay.jobs.filter(job => job.status === 'Approved').length}</p>
               </div>
             </div>
           </CardContent>
@@ -199,7 +209,7 @@ export default function CompanyDetailPage() {
               </div>
               <div>
                 <p className="text-gray-600 text-sm">Company Types</p>
-                <p className="text-gray-900 text-xl">{mockCompany.types.length}</p>
+                <p className="text-gray-900 text-xl">{companyDisplay.company_types.length}</p>
               </div>
             </div>
           </CardContent>
@@ -217,16 +227,16 @@ export default function CompanyDetailPage() {
         <TabsContent value="overview" className="space-y-6">
           <Card>
             <CardHeader>
-              <CardTitle>About {mockCompany.name}</CardTitle>
+              <CardTitle>About {companyDisplay.name}</CardTitle>
             </CardHeader>
             <CardContent>
-              <p className="text-gray-600 mb-4">{mockCompany.description}</p>
+              <p className="text-gray-600 mb-4">{companyDisplay.description}</p>
               
               <div className="space-y-4 mt-6">
                 <div>
                   <p className="text-sm text-gray-600 mb-2">Tech Stack</p>
                   <div className="flex flex-wrap gap-2">
-                    {mockCompany.techStack.map((tech, index) => (
+                    {companyDisplay.tech_stack.map((tech, index) => (
                       <Badge key={index} variant="secondary" className="bg-blue-50 text-blue-700">
                         {tech}
                       </Badge>
@@ -237,15 +247,11 @@ export default function CompanyDetailPage() {
                 <div>
                   <p className="text-sm text-gray-600 mb-2">Social Media</p>
                   <div className="flex gap-3">
-                    <a href={mockCompany.socials.linkedin} target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:underline text-sm">
-                      LinkedIn
-                    </a>
-                    <a href={mockCompany.socials.twitter} target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:underline text-sm">
-                      Twitter
-                    </a>
-                    <a href={mockCompany.socials.facebook} target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:underline text-sm">
-                      Facebook
-                    </a>
+                    {companyDisplay.socials && Object.entries(companyDisplay.socials).map(([key, url]) => (
+                      <a key={key} href={url} target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:underline text-sm capitalize">
+                        {key}
+                      </a>
+                    ))}
                   </div>
                 </div>
               </div>
@@ -275,7 +281,7 @@ export default function CompanyDetailPage() {
                   </TableRow>
                 </TableHeader>
                 <TableBody>
-                  {mockCompany.branches.map((branch) => (
+                  {companyDisplay.company_branches.map((branch) => (
                     <TableRow key={branch.id}>
                       <TableCell>
                         <div className="flex items-center gap-2">
@@ -328,7 +334,7 @@ export default function CompanyDetailPage() {
                   </TableRow>
                 </TableHeader>
                 <TableBody>
-                  {mockCompany.activeJobs.map((job) => (
+                  {companyDisplay.jobs.map((job) => (
                     <TableRow key={job.id}>
                       <TableCell>
                         <div className="flex items-center gap-2">
@@ -339,12 +345,12 @@ export default function CompanyDetailPage() {
                       <TableCell className="text-gray-600">{job.location}</TableCell>
                       <TableCell>
                         <Badge variant="secondary" className="bg-blue-50 text-blue-700">
-                          {job.type}
+                          {job.job_types?.[0]?.type?.name || 'N/A'}
                         </Badge>
                       </TableCell>
                       <TableCell>
                         <Badge variant="secondary" className="bg-purple-50 text-purple-700">
-                          {job.level}
+                          {job.job_levels?.[0]?.levels?.name || 'N/A'}
                         </Badge>
                       </TableCell>
                       <TableCell>
@@ -352,7 +358,7 @@ export default function CompanyDetailPage() {
                           {job.applications}
                         </Badge>
                       </TableCell>
-                      <TableCell className="text-gray-600">{job.postedDate}</TableCell>
+                      <TableCell className="text-gray-600">{new Date(job.created_at).toLocaleDateString('en-GB')}</TableCell>
                       <TableCell className="text-right">
                         <div className="flex items-center justify-end gap-2">
                           <Button variant="ghost" size="icon">
@@ -382,7 +388,7 @@ export default function CompanyDetailPage() {
             </CardHeader>
             <CardContent>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-                {mockCompany.types.map((type) => (
+                {companyDisplay.company_types.map((type) => (
                   <div key={type.id} className="flex items-center justify-between p-3 border border-gray-200 rounded-lg">
                     <Badge variant="secondary" className="bg-purple-50 text-purple-700">
                       {type.name}

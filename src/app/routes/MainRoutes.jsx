@@ -8,11 +8,14 @@ import UserRoutes from "./UserRoutes";
 import AdminRoutes from "./AdminRoutes";
 import { Role } from "@/lib/enums";
 import { getMe } from "../modules";
+import { Spin } from "antd";
+import { LoadingOutlined } from '@ant-design/icons';
 
 export default function MainRoutes() {
   const dispatch = useDispatch();
   const isAuthenticated = useSelector((state) => state.auth.isAuthenticated);
   const user = useSelector((state) => state.auth.user);
+  const isLoading = useSelector((state) => state.auth.isLoadingGetMe);
 
   useEffect(() => {
     if (isAuthenticated && !user) {
@@ -24,15 +27,22 @@ export default function MainRoutes() {
 
   return (
     <ThemeProvider>
-      <BrowserRouter>
-        {isAuthenticated && userRole?.toLowerCase() === Role.ADMIN.toLowerCase() ? (
+      {isLoading ? (
+        <div className="flex items-center justify-center min-h-screen">
+          <Spin indicator={<LoadingOutlined spin />} size="large" />
+        </div>
+      ) : (
+        <BrowserRouter>
           <AdminRoutes />
-        ) : isAuthenticated && userRole?.toLowerCase() === Role.EMPLOYER.toLowerCase() ? (
-          <CompanyRoutes />
-        ) : (
-          <UserRoutes />
-        )}
-      </BrowserRouter>
+          {/* {isAuthenticated && userRole?.toLowerCase() === Role.ADMIN.toLowerCase() ? (
+            <AdminRoutes />
+          ) : isAuthenticated && userRole?.toLowerCase() === Role.EMPLOYER.toLowerCase() ? (
+            <CompanyRoutes />
+          ) : (
+            <UserRoutes />
+          )} */}
+        </BrowserRouter>
+      )}
     </ThemeProvider>
   );
 }
