@@ -9,7 +9,7 @@ export const useProfileData = () => {
     const userExperience = useSelector((state) => state.experiences);
     const authStatus = useSelector((state) => state.auth.status);
 
-    console.log('Current User in useProfileData:', userEducation);
+    console.log('Current User in useProfileData:', currentUser);
 
     // User Data - Initialize with safe defaults
     const [user, setUser] = useState({
@@ -40,10 +40,17 @@ export const useProfileData = () => {
             setUser(prev => ({
                 ...prev,
                 name: `${currentUser.first_name || ''} ${currentUser.last_name || ''}`.trim() || 'User',
-                email: currentUser.email || '', location: currentUser.student_info?.location || '',
+                email: currentUser.email || '', 
+                location: currentUser.student_info?.location || '',
                 phone: currentUser?.student_info?.phone || '012345678',
                 dateOfBirth: currentUser?.student_info?.date_of_birth || '',
             }));
+            
+            // Sync about from student_info
+            setAbout(currentUser.student_info?.about || '');
+            
+            // Sync skills from student_info
+            setSkills(currentUser.student_info?.skills || []);
         }
     }, [currentUser]);
 
@@ -53,7 +60,7 @@ export const useProfileData = () => {
     const [experiences, setExperiences] = useState([]);
     const [educations, setEducations] = useState([]);
     const [skills, setSkills] = useState([]);
-    const [languages, setLanguages] = useState([]);
+    // const [languages, setLanguages] = useState([]);
     const [projects, setProjects] = useState([]);
     const [certificates, setCertificates] = useState([]);
     const [awards, setAwards] = useState([]);
@@ -75,12 +82,12 @@ export const useProfileData = () => {
         const sections = [
             user.name, user.email, about, user.location,
             experiences.length > 0, educations.length > 0,
-            skills.length > 0, languages.length > 0,
-            projects.length > 0, certificates.length > 0
+            projects.length > 0, certificates.length > 0,
+            currentUser?.student_info?.skills?.length > 0
         ];
         const completed = sections.filter(Boolean).length;
         setCompletionPercentage(Math.round((completed / sections.length) * 100));
-    }, [user, about, experiences, educations, skills, languages, projects, certificates]);
+    }, [user, about, experiences, educations, projects, certificates]);
 
     return {
         currentUser,
@@ -98,8 +105,6 @@ export const useProfileData = () => {
         setEducations,
         skills,
         setSkills,
-        languages,
-        setLanguages,
         projects,
         setProjects,
         certificates,

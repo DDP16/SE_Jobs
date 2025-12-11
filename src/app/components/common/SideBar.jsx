@@ -14,12 +14,14 @@ import {
     PowerSettingsNew as LogoutIcon
 } from '@mui/icons-material';
 import { useNavigate, useLocation } from 'react-router-dom';
+import { useSelector } from 'react-redux';
 
 export default function ProfileSidebar({ user }) {
     const navigate = useNavigate();
     const location = useLocation();
     const theme = useTheme();
     const { t } = useTranslation();
+    const currentUser = useSelector((state) => state.auth.user);
 
     const menuItems = [
         { icon: <DashboardIcon />, text: t('sidebar.dashboard'), path: '/profile/dashboard' },
@@ -57,7 +59,7 @@ export default function ProfileSidebar({ user }) {
                     </Typography>
                 </Box>
                 <Typography variant="h6" sx={{ fontWeight: 600, color: theme.palette.text.primary }}>
-                    {user?.name || 'User'}
+                    {currentUser?.last_name || ''}
                 </Typography>
             </Box>
 
@@ -111,5 +113,5 @@ export default function ProfileSidebar({ user }) {
 
 // Keep the old component for backward compatibility
 export function DefaultSidebar() {
-    return <ProfileSidebar user={{ name: 'Sang Trinh' }} />;
+    return <ProfileSidebar user={{ name: currentUser?.name || 'User' }} />;``
 }

@@ -10,6 +10,7 @@ import { Role } from "@/lib/enums";
 import { getMe } from "../modules";
 import { Spin } from "antd";
 import { LoadingOutlined } from '@ant-design/icons';
+import {getCategories} from "../modules";
 
 export default function MainRoutes() {
   const dispatch = useDispatch();
@@ -20,6 +21,7 @@ export default function MainRoutes() {
   useEffect(() => {
     if (isAuthenticated && !user) {
       dispatch(getMe());
+      dispatch(getCategories());
     }
   }, [isAuthenticated, dispatch]);
 

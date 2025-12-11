@@ -334,7 +334,7 @@ export default function JobCard({
                             src={companyLogoUrl}
                             variant="square"
                             sx={{
-                                bgcolor: 'primary.main',
+                                bgcolor: '#ffffff',
                                 width: 48,
                                 height: 48,
                                 fontSize: '1rem',

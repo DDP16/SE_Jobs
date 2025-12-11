@@ -16,6 +16,7 @@ export const ProfileModals = ({
     openModal,
     closeModal,
     user,
+    skills,
     selectedExperience,
     selectedEducation,
     selectedSkillGroup,
@@ -120,7 +121,7 @@ export const ProfileModals = ({
                     if (open) openModal('skills');
                     else { closeModal('skills'); setSelectedSkillGroup(null); }
                 }}
-                initialData={selectedSkillGroup}
+                initialData={skills}
                 onSave={handlers.handleSaveSkillGroup}
             />
 
