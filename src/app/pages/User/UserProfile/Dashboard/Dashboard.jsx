@@ -52,7 +52,7 @@ export default function ProfileDashboard() {
     const recentApplications = mockRecentApplications;
 
     return (
-        <Box sx={{ bgcolor: 'background.default', minHeight: '100vh', py: 4 }}>
+        <Box sx={{ bgcolor: 'background.default', minHeight: '100vh'}}>
             <Container maxWidth="xl">
                 <Box sx={{ display: 'flex', gap: 4, alignItems: 'flex-start' }}>
 
