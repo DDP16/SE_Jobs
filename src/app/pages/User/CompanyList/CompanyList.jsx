@@ -5,10 +5,10 @@ import CompanyFilters from './partials/CompanyFilters';
 import CompanyGrid from './partials/CompanyGrid';
 import { useDispatch, useSelector } from 'react-redux';
 import { getCompanies } from '../../../modules';
-import { getCompanyTypes } from '../../../modules/services/companyTypesService';
+import { getCompanyTypes } from '../../../modules/services/companyTypeService';
 
 const DEFAULT_FILTER = {
-    keyword : '',
+    keyword: '',
     company_type_ids: [],
     employee_count: '',
 }
@@ -20,23 +20,23 @@ export default function CompanyList() {
     const dispatch = useDispatch();
 
     const getActiveFilter = () => {
-      let active = 0;
+        let active = 0;
 
-      Object.keys(filter).forEach((key) => {
-        const value = filter[key];
+        Object.keys(filter).forEach((key) => {
+            const value = filter[key];
 
-        if (typeof value === "string" && value.trim() !== "") {
-          active++;
-        }
-        else if (Array.isArray(value) && value.length > 0) {
-          active++;
-        }
-        else if (typeof value === "number" && value !== 0) {
-          active++;
-        }
-      });
+            if (typeof value === "string" && value.trim() !== "") {
+                active++;
+            }
+            else if (Array.isArray(value) && value.length > 0) {
+                active++;
+            }
+            else if (typeof value === "number" && value !== 0) {
+                active++;
+            }
+        });
 
-      return active;
+        return active;
     };
 
     const searchCompanies = async (filter, sortBy) => {
@@ -48,7 +48,7 @@ export default function CompanyList() {
             employee_count_from: filter.employee_count ? filter.employee_count.split(":")[0] : 0,
             employee_count_to: filter.employee_count ? filter.employee_count.split(":")[1] : 1000000,
         }
-        
+
         if (sortBy) {
             query.order = sortBy;
         }
@@ -56,7 +56,7 @@ export default function CompanyList() {
     }
 
     useEffect(() => {
-        dispatch(getCompanyTypes({ page: 1, limit: 10 }));
+        dispatch(getCompanyTypes());
     }, [dispatch])
 
     useEffect(() => {

@@ -4,6 +4,12 @@ import { Edit as EditIcon, Delete as DeleteIcon, Add as AddIcon, Link as LinkIco
 
 // Skills Section
 export function SkillsSection({ skills, onEdit, onDelete, onAdd }) {
+  // Ensure skills is always an array to prevent undefined errors
+  const skillsArray = Array.isArray(skills) ? skills : [];
+  
+  // Check if skills are simple strings (from API) or objects (grouped format)
+  const isSimpleArray = skillsArray.length > 0 && typeof skillsArray[0] === 'string';
+
   return (
     <Box sx={{ bgcolor: 'background.paper', p: 4, borderRadius: 2, border: 1, borderColor: 'divider', mb: 2 }}>
       <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', mb: 3 }}>
@@ -13,12 +19,30 @@ export function SkillsSection({ skills, onEdit, onDelete, onAdd }) {
         </IconButton>
       </Box>
 
-      {skills.length === 0 ? (
+      {skillsArray.length === 0 ? (
         <Typography variant="body2" sx={{ color: 'text.secondary' }}>
           Liệt kê các kỹ năng chuyên môn của bạn
         </Typography>
+      ) : isSimpleArray ? (
+        // Render simple string array from API
+        <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 1 }}>
+          {skillsArray.map((skill, index) => (
+            <Chip
+              key={index}
+              label={skill}
+              onDelete={onDelete ? () => onDelete(skill) : undefined}
+              sx={{ 
+                bgcolor: '#E8E0FF', 
+                color: '#5E35B1', 
+                fontWeight: 500, 
+                borderRadius: 2 
+              }}
+            />
+          ))}
+        </Box>
       ) : (
-        skills.map((skillGroup) => (
+        // Render grouped format (legacy)
+        skillsArray.map((skillGroup) => (
           <Box key={skillGroup.id} sx={{ mb: 4, '&:last-child': { mb: 0 } }}>
             <Box sx={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', mb: 1 }}>
               <Typography variant="body1" sx={{ fontWeight: 600 }}>{skillGroup.groupName || skillGroup.name}</Typography>

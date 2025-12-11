@@ -56,7 +56,7 @@ export default function ProfileHeader({ user, onEdit }) {
             </Box>
             <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
               <LocationOnIcon sx={{ fontSize: 18, color: 'text.disabled' }} />
-              <Typography variant="body2" color="text.secondary">Địa chỉ hiện tại</Typography>
+              <Typography variant="body2" color="text.secondary">{user.location}</Typography>
             </Box>
             <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
               <LinkIcon sx={{ fontSize: 18, color: 'text.disabled' }} />

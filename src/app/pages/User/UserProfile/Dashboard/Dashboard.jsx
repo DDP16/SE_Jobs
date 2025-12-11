@@ -25,6 +25,7 @@ import {
 import { ProfileSidebar, JobCard } from '../../../../components';
 import { mockRecentApplications, mockDashboardStats } from '../../../../../mocks/mockData';
 import { UserActivities } from './partials';
+import { useSelector } from 'react-redux';
 
 // Helper function to get initials from name
 const getInitials = (name) => {
@@ -38,11 +39,12 @@ const getInitials = (name) => {
 };
 
 export default function ProfileDashboard() {
+    const currentUser = useSelector((state) => state.auth.user);
     const theme = useTheme();
     const { t } = useTranslation();
     const navigate = useNavigate();
     const [user] = useState({
-        name: 'Sang Trinh',
+        name: currentUser?.name || 'User',
     });
 
     // Use mock data
@@ -109,7 +111,7 @@ export default function ProfileDashboard() {
                                                 <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
                                                     <EmailIcon sx={{ fontSize: 18, color: 'text.secondary' }} />
                                                     <Typography variant="body2" color="text.secondary">
-                                                        test@gmail.com
+                                                        {currentUser?.email || 'No email provided'}
                                                     </Typography>
                                                 </Box>
                                                 <Button
