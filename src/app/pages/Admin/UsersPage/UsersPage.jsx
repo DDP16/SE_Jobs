@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Plus, Search, Filter, MoreVertical, Edit, Trash2 } from 'lucide-react';
 import {
   Button,
@@ -27,6 +27,10 @@ import {
   DialogTitle,
   Label,
 } from "@/components/ui";
+import { Pagination } from 'antd';
+import { useDispatch, useSelector } from 'react-redux';
+import { getUsers } from '../../../modules/services/userService';
+import { create } from 'lodash';
 
 const mockUsers = [
   { id: 1, name: 'John Doe', email: 'john.doe@university.edu', role: 'Student', status: 'Active', createdAt: '2024-01-15' },
@@ -45,8 +49,22 @@ export default function UsersPage() {
   const [isAddDialogOpen, setIsAddDialogOpen] = useState(false);
   const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
   const [selectedUser, setSelectedUser] = useState(null);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [pageSize, setPageSize] = useState(10);
+  const dispatch = useDispatch();
+  
+  const users = useSelector((state) => state.user.userItems);
+  const pagination = useSelector((state) => state.user.pagination);
 
-  const filteredUsers = mockUsers.filter((user) => {
+  useEffect(() => {
+    dispatch(getUsers({ page: currentPage, limit: pageSize }));
+  }, [currentPage, pageSize]);
+
+  const filteredUsers = users.map((user) => ({
+      name: user.first_name + ' ' + user.last_name,
+      createdAt: new Date(user.created_at).toLocaleDateString('en-GB'),
+      ...user,
+  })).filter((user) => {
     const matchesSearch = user.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
       user.email.toLowerCase().includes(searchQuery.toLowerCase());
     const matchesRole = roleFilter === 'all' || user.role === roleFilter;
@@ -55,16 +73,17 @@ export default function UsersPage() {
 
   const getRoleBadgeColor = (role) => {
     const colors = {
-      Student: 'bg-blue-100 text-blue-700',
-      Company: 'bg-purple-100 text-purple-700',
-      Manager: 'bg-green-100 text-green-700',
-      Admin: 'bg-orange-100 text-orange-700',
+      Student: 'bg-blue-100 text-blue-700 hover:bg-blue-700 hover:text-white',
+      Employer: 'bg-purple-100 text-purple-700 hover:bg-purple-700 hover:text-white',
+      Company: 'bg-purple-100 text-purple-700 hover:bg-purple-700 hover:text-white',
+      Manager: 'bg-green-100 text-green-700 hover:bg-green-700 hover:text-white',
+      Admin: 'bg-orange-100 text-orange-700 hover:bg-orange-700 hover:text-white',
     };
     return colors[role] || 'bg-gray-100 text-gray-700';
   };
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-4">
       <div className="flex items-center justify-between">
         <div>
           <h3 className="text-gray-900 mb-1 font-semibold">User Management</h3>
@@ -77,7 +96,7 @@ export default function UsersPage() {
       </div>
 
       <div className="bg-white rounded-lg border border-gray-200">
-        <div className="p-4 border-b border-gray-200">
+        <div className="px-4 py-2 border-b border-gray-200">
           <div className="flex items-center gap-4">
             <div className="flex-1 relative">
               <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
@@ -134,11 +153,13 @@ export default function UsersPage() {
                     </Badge>
                   </TableCell>
                   <TableCell className="text-center">
-                    <Badge className={`${user.status === 'Active' ? 'bg-green-400 text-white border-2 border-accent-green/50' : 'bg-gray-100'} px-4 py-1`}>
-                      {user.status}
+                    <Badge className={`${user.is_active ? 'bg-green-500 text-white border-2 border-accent-green/50 hover:bg-green-500' : 'bg-gray-100'} px-4 py-1`}>
+                      {user.is_active ? 'Active' : 'Inactive'}
                     </Badge>
                   </TableCell>
-                  <TableCell className="text-gray-600 text-center">{user.createdAt}</TableCell>
+                  <TableCell className="text-gray-600 text-center">
+                    {user.createdAt}
+                  </TableCell>
                   <TableCell className="text-right">
                     <DropdownMenu>
                       <DropdownMenuTrigger asChild>
@@ -167,6 +188,17 @@ export default function UsersPage() {
           </Table>
         </div>
       </div>
+      <Pagination align="end" 
+        current={currentPage}
+        total={pagination?.total ?? 0}
+        pageSize={pageSize}
+        onChange={
+          (newPage, newPageSize) => {
+            setCurrentPage(newPage)
+            setPageSize(newPageSize)
+          }
+        }
+      />
 
       {/* Add User Dialog */}
       <Dialog open={isAddDialogOpen} onOpenChange={setIsAddDialogOpen}>

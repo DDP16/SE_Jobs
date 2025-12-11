@@ -1,21 +1,12 @@
-import { useEffect, useState } from 'react';
-import { Filter, MoreVertical, Calendar, ChevronLeft, ChevronRight } from 'lucide-react';
+import { useState } from 'react';
+import { Calendar } from 'lucide-react';
 import {
     Button,
-    Badge,
-    Checkbox,
-    Select,
-    SelectContent,
-    SelectItem,
-    SelectTrigger,
-    SelectValue,
     Popover,
     PopoverContent,
     PopoverTrigger,
 } from '@/components/ui';
 import JobTable from './partials/JobTable';
-import { useDispatch, useSelector } from 'react-redux';
-import { getJobsByCompanyId } from '../../../modules';
 
 const mockJobListings = [
     {
@@ -175,41 +166,12 @@ const mockJobListings = [
 ];
 
 export default function JobListing() {
-    const [currentPage, setCurrentPage] = useState(1);
-    const [pageSize, setPageSize] = useState(10);
-
-    const dispatch = useDispatch();
-    const id = useSelector((state) => state.auth.userId);
-    const companyId = useSelector((state) => state.auth.user.company.id);
-    const jobs = useSelector((state) => state.jobs.jobs);
-    const pagination = useSelector((state) => state.jobs.pagination);
-
-    useEffect(() => {
-        dispatch(getJobsByCompanyId({companyId: companyId, page: currentPage, limit: pageSize}));
-    }, [currentPage, pageSize]);
-
-    // const [selectedIds, setSelectedIds] = useState([]);
     const [dateRange] = useState('July 19 - July 25');
 
-    const startIndex = (currentPage - 1) * pageSize;
-    const endIndex = startIndex + pageSize;
+    // const startIndex = (currentPage - 1) * pageSize;
+    // const endIndex = startIndex + pageSize;
 
-    const currentData = jobs;
     // const currentData = mockJobListings.slice(startIndex, endIndex);
-
-    // const toggleSelectAll = () => {
-    //     if (selectedIds.length === currentData.length) {
-    //         setSelectedIds([]);
-    //     } else {
-    //         setSelectedIds(currentData.map((job) => job.id));
-    //     }
-    // };
-
-    // const toggleSelect = (id) => {
-    //     setSelectedIds((prev) =>
-    //         prev.includes(id) ? prev.filter((selectedId) => selectedId !== id) : [...prev, id]
-    //     );
-    // };
 
     return (
         <div className="space-y-6 p-4 lg:p-6 2xl:p-8 flex flex-col">
@@ -235,16 +197,7 @@ export default function JobListing() {
             </div>
 
             <div className="bg-white rounded-lg border border-gray-200">
-                <JobTable 
-                    currentData={currentData}
-                    currentPage={currentPage}
-                    pageSize={pageSize}
-                    total={pagination?.total ?? 0}
-                    onChangePage={(newPage, newPageSize) => {
-                        setCurrentPage(newPage);
-                        setPageSize(newPageSize);
-                    }}
-                />
+                <JobTable />
             </div>
         </div>
     );
