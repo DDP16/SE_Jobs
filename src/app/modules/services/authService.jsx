@@ -248,6 +248,7 @@ const authSlice = createSlice({
     isAuthenticated: authStorage.isAuthenticated || false,
     user: null,
     status: "idle", // 'idle' | 'loading' | 'succeeded' | 'failed'
+    isLoadingGetMe: false,
     error: null,
   },
   reducers: {
@@ -288,10 +289,12 @@ const authSlice = createSlice({
       })
       .addCase(getMe.pending, (state) => {
         state.status = "loading";
+        state.isLoadingGetMe = true;
         state.error = null;
       })
       .addCase(getMe.fulfilled, (state, action) => {
         state.status = "succeeded";
+        state.isLoadingGetMe = false;
         state.user = action.payload;
         state.userId = action.payload.user_id;
         state.userRole = action.payload.role;
@@ -303,6 +306,7 @@ const authSlice = createSlice({
       })
       .addCase(getMe.rejected, (state, action) => {
         state.status = "failed";
+        state.isLoadingGetMe = false;
         state.error = action.payload;
       })
       .addCase(logout.pending, (state) => {

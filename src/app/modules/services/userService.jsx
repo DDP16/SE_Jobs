@@ -80,6 +80,7 @@ const initialState = {
     user: null,
     userItems: [],
     status: "idle", // 'idle' | 'loading' | 'succeeded' | 'failed'
+    pagination: null,
     error: null,
 }
 
@@ -96,6 +97,7 @@ const userSlice = createSlice({
             .addCase(getUsers.fulfilled, (state, action) => {
                 state.status = "succeeded";
                 state.userItems = action.payload.data;
+                state.pagination = action.payload.pagination;
             })
             .addCase(getUsers.rejected, (state, action) => {
                 state.status = "failed";

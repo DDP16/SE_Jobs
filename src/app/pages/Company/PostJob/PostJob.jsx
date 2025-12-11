@@ -47,9 +47,6 @@ export default function PostJob() {
   const currentUser = useSelector((state) => state.auth.user);
   const authStatus = useSelector((state) => state.auth.status);
 
-  console.log("PostJob authStatus:", authStatus);
-  console.log("PostJob currentUser:", currentUser);
-
   const companyId = currentUser?.company?.id;
   // const companyBranchId = 1;
 
@@ -62,38 +59,25 @@ export default function PostJob() {
   const [jobTitle, setJobTitle] = useState("");
   const [employmentTypes, setEmploymentTypes] = useState([]);
   const [salaryRange, setSalaryRange] = useState([5000, 22000]);
+  const [salaryCurrency, setSalaryCurrency] = useState("USD");
   const [skills, setSkills] = useState([]);
   const [newSkill, setNewSkill] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("");
+  const [selectedLevel, setSelectedLevel] = useState("");
   const [jobDescription, setJobDescription] = useState("");
   const [responsibilities, setResponsibilities] = useState("");
   const [whoYouAre, setWhoYouAre] = useState("");
   const [niceToHaves, setNiceToHaves] = useState("");
-  const [benefits, setBenefits] = useState([
-    {
-      id: "1",
-      icon: "Heart",
-      title: "Full Healthcare",
-      description: "We believe in thriving communities and that starts with our team being happy and healthy.",
-    },
-    {
-      id: "2",
-      icon: "Plane",
-      title: "Unlimited Vacation",
-      description: "We believe you should have a flexible schedule that makes space for family, wellness, and fun.",
-    },
-    {
-      id: "3",
-      icon: "Video",
-      title: "Skill Development",
-      description:
-        "We believe in always learning and leveling up our skills. Whether it's a conference or online course.",
-    },
-  ]);
+  const [benefits, setBenefits] = useState([]);
 
   const [employmentTypeIds, setEmploymentTypeIds] = useState([]);
   const [skillIds, setSkillIds] = useState([]);
   const [categoryIds, setCategoryIds] = useState([]);
+  const [levelId, setLevelId] = useState(null);
+
+  useEffect(() => {
+    console.log(benefits);
+  }, [benefits]);
 
   const steps = [
     { number: 1, title: "Job Information", icon: FileText },
@@ -106,7 +90,7 @@ export default function PostJob() {
   const toggleEmploymentType = (type) => {
     setEmploymentTypes((prev) => (prev.includes(type) ? prev.filter((t) => t !== type) : [...prev, type]));
 
-    const et = apiEmploymentTypes.find((item) => item.name === type);
+    const et = apiEmploymentTypes.find((e) => e.name.toLowerCase() === type.toLowerCase());
     if (et) {
       setEmploymentTypeIds((prev) => (prev.includes(et.id) ? prev.filter((id) => id !== et.id) : [...prev, et.id]));
     }
@@ -134,9 +118,15 @@ export default function PostJob() {
 
   const handleCategorySelect = (categoryName) => {
     setSelectedCategory(categoryName);
-    const cat = categories.find((c) => c.name === categoryName);
+    const cat = categories.find((c) => c.name.toLowerCase() === categoryName.toLowerCase());
     setCategoryIds(cat ? [cat.id] : []);
   };
+
+  const handleLevelSelect = (levelName) => {
+    setSelectedLevel(levelName);
+    const lvl = levels.find((l) => l.name.toLowerCase() === levelName.toLowerCase());
+    setLevelId(lvl ? lvl.id : null);
+  }
 
   const addSkillFromApi = (skillName) => {
     if (!skills.includes(skillName)) {
@@ -182,15 +172,19 @@ export default function PostJob() {
       responsibilities: responsibilities ? [responsibilities] : [],
       requirement: whoYouAre ? [whoYouAre] : [],
       nice_to_haves: niceToHaves ? [niceToHaves] : [],
-      benefit: benefits.map((b) => b.description),
+      benefit: benefits.map((b) => ({ icon: b.icon, title: b.title, description: b.description })),
       salary_from: salaryRange[0],
       salary_to: salaryRange[1],
-      salary_currency: "USD",
+      salary_currency: salaryCurrency,
+      salary_text: `${salaryRange[0]} - ${salaryRange[1]} ${salaryCurrency}`,
       category_ids: categoryIds,
+      level_ids: levelId ? [levelId] : [],
       required_skill_ids: skillIds,
       employment_type_ids: employmentTypeIds,
       status: "Pending",
     };
+
+    console.log("Submitting job with payload:", payload);
 
     try {
       await dispatch(createJob(payload)).unwrap();
@@ -268,9 +262,14 @@ export default function PostJob() {
             toggleEmploymentType={toggleEmploymentType}
             salaryRange={salaryRange}
             setSalaryRange={setSalaryRange}
+            salaryCurrency={salaryCurrency}
+            setSalaryCurrency={setSalaryCurrency}
             selectedCategory={selectedCategory}
             handleCategorySelect={handleCategorySelect}
             categories={categories}
+            levels={levels}
+            selectedLevel={selectedLevel}
+            handleLevelSelect={handleLevelSelect}
             skills={skills}
             newSkill={newSkill}
             setNewSkill={setNewSkill}

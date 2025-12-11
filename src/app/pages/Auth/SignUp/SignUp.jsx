@@ -44,7 +44,7 @@ export default function SignUp() {
     }
 
     if (!password || !validatePassword(password)) {
-      setPasswordError("Password must be at least 6 characters.");
+      setPasswordError("Password must be at least 8 characters.");
       valid = false;
     } else {
       setPasswordError("");
@@ -77,6 +77,9 @@ export default function SignUp() {
         if (register.fulfilled.match(result)) {
           showSuccess("Registration successful! Please sign in.");
           delay(() => {nav("/signin");}, 1000);
+        } else {
+          console.error("Registration failed: ", result);
+          showError("Registration failed: " + (result.payload || "Unknown error"));
         }
       } catch (error) {
         showError(error.message || "Registration failed");

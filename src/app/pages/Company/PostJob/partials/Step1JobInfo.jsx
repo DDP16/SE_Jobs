@@ -1,14 +1,14 @@
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { Button } from "@/components/ui/button";
-import { ChevronDown, X, Search } from "lucide-react";
-import { Checkbox } from "@/components/ui/checkbox";
-import {
+import { 
+  Input,
+  Label,
+  Button,
+  Checkbox,
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
+} from "../../../../components/ui";
+import { ChevronDown, X, Search } from "lucide-react";
 import { useState, useMemo } from "react";
 
 export default function Step1JobInfo({
@@ -19,10 +19,15 @@ export default function Step1JobInfo({
   toggleEmploymentType,
   salaryRange,
   setSalaryRange,
+  salaryCurrency,
+  setSalaryCurrency,
   selectedCategory,
   handleCategorySelect,
+  selectedLevel,
+  handleLevelSelect,
   categories,
   skills,
+  levels,
   newSkill,
   setNewSkill,
   addSkill,
@@ -31,9 +36,10 @@ export default function Step1JobInfo({
   onSkillSelect,
 }) {
   const [searchQuery, setSearchQuery] = useState("");
-  console.log("API Skills:", apiSkills);
-  console.log("Search Query:", searchQuery);
-  console.log("categories", categories);
+  const [tempSalaryRange, setTempSalaryRange] = useState(salaryRange);
+  // console.log("API Skills:", apiSkills);
+  // console.log("Search Query:", searchQuery);
+  // console.log("categories", categories);
 
   const filteredSkills = useMemo(() => {
     if (!searchQuery.trim()) return [];
@@ -43,6 +49,24 @@ export default function Step1JobInfo({
   const handleSkillSelect = (skillName) => {
     onSkillSelect(skillName);
     setSearchQuery("");
+  };
+
+  const handleSalaryBlur = (index) => {
+    if (index === 0) {
+      const newMin = Math.min(tempSalaryRange[0], tempSalaryRange[1]);
+      setSalaryRange([newMin, tempSalaryRange[1]]);
+      setTempSalaryRange([newMin, tempSalaryRange[1]]);
+    } else {
+      const newMax = Math.max(tempSalaryRange[1], tempSalaryRange[0]);
+      setSalaryRange([tempSalaryRange[0], newMax]);
+      setTempSalaryRange([tempSalaryRange[0], newMax]);
+    }
+  };
+
+  const handleSalaryKeyDown = (e, index) => {
+    if (e.key === 'Enter') {
+      e.target.blur();
+    }
   };
 
   return (
@@ -113,12 +137,13 @@ export default function Step1JobInfo({
                 <span className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground">$</span>
                 <Input
                   type="number"
-                  value={salaryRange[0]}
+                  value={tempSalaryRange[0]}
                   onChange={(e) => {
                     const val = parseInt(e.target.value) || 0;
-                    const newMin = Math.min(val, salaryRange[1]);
-                    setSalaryRange([newMin, salaryRange[1]]);
+                    setTempSalaryRange([val, tempSalaryRange[1]]);
                   }}
+                  onBlur={() => handleSalaryBlur(0)}
+                  onKeyDown={(e) => handleSalaryKeyDown(e, 0)}
                   className="pl-7 bg-white border-border"
                 />
               </div>
@@ -129,16 +154,27 @@ export default function Step1JobInfo({
                 <span className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground">$</span>
                 <Input
                   type="number"
-                  value={salaryRange[1]}
+                  value={tempSalaryRange[1]}
                   onChange={(e) => {
                     const val = parseInt(e.target.value) || 0;
-                    const newMax = Math.max(val, salaryRange[0]);
-                    setSalaryRange([salaryRange[0], newMax]);
+                    setTempSalaryRange([tempSalaryRange[0], val]);
                   }}
+                  onBlur={() => handleSalaryBlur(1)}
+                  onKeyDown={(e) => handleSalaryKeyDown(e, 1)}
                   className="pl-7 bg-white border-border"
                 />
               </div>
             </div>
+            <select
+              value={salaryCurrency}
+              onChange={(e) => setSalaryCurrency(e.target.value)}
+              className="px-6 border border-border rounded-md bg-white h-10"
+            >
+              <option value="USD">USD</option>
+              <option value="EUR">EUR</option>
+              <option value="GBP">GBP</option>
+              <option value="VND">VND</option>
+            </select>
           </div>
           <div className="relative h-6 pt-1 select-none">
             <div className="absolute top-1/2 -translate-y-1/2 w-full h-2 rounded-full bg-primary/20"></div>
@@ -146,7 +182,7 @@ export default function Step1JobInfo({
               className="absolute top-1/2 -translate-y-1/2 h-2 rounded-full bg-primary transition-all pointer-events-none"
               style={{
                 left: `${(salaryRange[0] / 50000) * 100}%`,
-                width: `${((salaryRange[1] - salaryRange[0]) / 50000) * 100}%`,
+                width: `${((Math.min(salaryRange[1], 50000) - Math.min(salaryRange[0], 50000)) / 50000) * 100}%`,
               }}
             />
             <div
@@ -180,7 +216,7 @@ export default function Step1JobInfo({
             <div
               className="absolute w-5 h-5 rounded-full bg-primary shadow-lg cursor-grab active:cursor-grabbing hover:scale-110 transition-transform z-10"
               style={{
-                left: `${(salaryRange[1] / 50000) * 100}%`,
+                left: `${(Math.min(salaryRange[1], 50000) / 50000) * 100}%`,
                 top: "50%",
                 transform: `translate(-50%, -50%)`,
               }}
@@ -209,39 +245,74 @@ export default function Step1JobInfo({
         </div>
       </div>
 
-      {/* ✅ FIXED: Category dropdown */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-4 items-start border-b border-border border-gray-300 pb-6">
-        <div>
-          <Label className="text-foreground font-semibold text-lg">Categories</Label>
-          <p className="text-normal font-regular text-muted-foreground mt-1">Select a job category</p>
-        </div>
-        <div className="md:col-span-2">
-          <DropdownMenu className="rounded-lg">
-            <DropdownMenuTrigger asChild>
-              <Button
-                variant="outline"
-                className=" justify-between bg-white border-border hover:bg-white rounded-lg"
+      <div className="grid grid-cols-1 md:grid-cols-2 border-b border-border border-gray-300 pb-6 gap-10">
+        <div className="grid grid-cols-1 md:grid-cols-5 gap-4 items-center">
+          <div className="md:col-span-2">
+            <Label className="text-foreground font-semibold text-lg">Categories</Label>
+            <p className="text-normal font-regular text-muted-foreground mt-1">Select a job category</p>
+          </div>
+          <div className="md:col-span-3">
+            <DropdownMenu className="rounded-lg">
+              <DropdownMenuTrigger asChild>
+                <Button
+                  variant="outline"
+                  className=" justify-between bg-white border-border hover:bg-white rounded-lg w-full"
+                >
+                  {selectedCategory || "Select Category"}
+                  <ChevronDown className="ml-2 h-4 w-4 opacity-50" />
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent 
+                side="bottom" 
+                align="end" 
+                className="bg-white rounded-lg overflow-y-auto max-h-[25vh] scrollbar-hide w-(--radix-dropdown-menu-trigger-width)"
+                style={{
+                  scrollbarWidth: 'none',
+                  msOverflowStyle: 'none'
+                }}
               >
-                {selectedCategory || "Select Category"}
-                <ChevronDown className="ml-2 h-4 w-4 opacity-50" />
-              </Button>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent 
-              side="bottom" 
-              align="center" 
-              className="bg-white rounded-lg overflow-y-auto max-h-60 scrollbar-hide"
-              style={{
-                scrollbarWidth: 'none',
-                msOverflowStyle: 'none'
-              }}
-            >
-              {categories.map((cat) => (
-                <DropdownMenuItem key={cat.id} onClick={() => handleCategorySelect(cat.name)}>
-                  {cat.name}
-                </DropdownMenuItem>
-              ))}
-            </DropdownMenuContent>
-          </DropdownMenu>
+                {categories.map((cat) => (
+                  <DropdownMenuItem key={cat.id} onClick={() => handleCategorySelect(cat.name)}>
+                    {cat.name}
+                  </DropdownMenuItem>
+                ))}
+              </DropdownMenuContent>
+            </DropdownMenu>
+          </div>
+        </div>
+        <div className="grid grid-cols-1 md:grid-cols-5 gap-4 items-center">
+          <div className="md:col-span-2">
+            <Label className="text-foreground font-semibold text-lg">Levels</Label>
+            <p className="text-normal font-regular text-muted-foreground mt-1">Select a job level</p>
+          </div>
+          <div className="md:col-span-3">
+            <DropdownMenu className="rounded-lg">
+              <DropdownMenuTrigger asChild>
+                <Button
+                  variant="outline"
+                  className=" justify-between bg-white border-border hover:bg-white rounded-lg w-full"
+                >
+                  {selectedLevel || "Select Level"}
+                  <ChevronDown className="ml-2 h-4 w-4 opacity-50" />
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent 
+                side="bottom" 
+                align="center" 
+                className="bg-white rounded-lg overflow-y-auto max-h-[25vh] scrollbar-hide w-(--radix-dropdown-menu-trigger-width)"
+                style={{
+                  scrollbarWidth: 'none',
+                  msOverflowStyle: 'none'
+                }}
+              >
+                {levels.map((level) => (
+                  <DropdownMenuItem key={level.id} onClick={() => handleLevelSelect(level.name)}>
+                    {level.name}
+                  </DropdownMenuItem>
+                ))}
+              </DropdownMenuContent>
+            </DropdownMenu>
+          </div>
         </div>
       </div>
 
