@@ -146,7 +146,7 @@ export default function Header() {
               {isLoggedIn ? (
                 <>
                   {/* notifications component (handles its own state) */}
-                  <NotificationsMenu compact />
+                  <NotificationsPopup compact />
 
                   <IconButton
                     onClick={handleUserMenuOpen}
@@ -166,7 +166,7 @@ export default function Header() {
                           fontWeight: 600
                         }}
                       >
-                        {userName.charAt(0).toUpperCase()}
+                        {(userName && typeof userName === 'string' && userName.length > 0) ? userName.charAt(0).toUpperCase() : ''}
                       </Avatar>
                   </IconButton>
                 </>
@@ -473,13 +473,13 @@ export default function Header() {
             My Jobs
           </MenuItem>
           <Divider />
-          <MenuItem onClick={() => navigateAndClose('/profile/notifications')}>
+          {/* <MenuItem onClick={() => navigateAndClose('/profile/notifications')}>
             <ListItemIcon>
               <NotificationsIcon fontSize="small" />
             </ListItemIcon>
             Notifications
           </MenuItem>
-          <Divider />
+          <Divider /> */}
           <MenuItem onClick={() => navigateAndClose('/profile/settings')}>
             <ListItemIcon>
               <SettingsIcon fontSize="small" />

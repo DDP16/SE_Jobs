@@ -214,7 +214,7 @@ export default function Profile() {
                     </Box>
 
                     {/* Right Sidebar - Completion (hidden on small screens) */}
-                    <Box sx={{ display: { xs: 'none', md: 'block' } }}>
+                    <Box sx={{ width: 320, minWidth: 0, flexShrink: 0, display: { xs: 'none', md: 'block' }, mt: 0 }}>
                         <ProfileCompletionCard
                             completionPercentage={completionPercentage}
                         />
