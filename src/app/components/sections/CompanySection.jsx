@@ -64,7 +64,7 @@ export default function CompanySection() {
                         <Typography
                             variant="h2"
                             sx={{
-                                fontSize: { xs: '2rem', md: '2.5rem' },
+                                fontSize: { xs: '1.875rem', md: '2.25rem' },
                                 fontWeight: 700,
                                 color: 'text.primary'
                             }}

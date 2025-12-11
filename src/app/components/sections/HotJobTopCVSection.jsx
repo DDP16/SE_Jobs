@@ -23,7 +23,10 @@ export default function HotJobTopCVSection() {
 
     const handlePageChange = (page) => {
         setCurrentPage(page);
-        window.scrollTo({ top: 0, behavior: 'smooth' });
+        const section = document.getElementById('hotjob-topcv-section');
+        if (section) {
+            section.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
     };
 
     // Generate smart pagination numbers
@@ -72,14 +75,14 @@ export default function HotJobTopCVSection() {
         // Handle job actions
     };
 
-    return (
-        <div className="py-8 md:py-16 bg-gray-50">
+        return (
+        <div id="hotjob-topcv-section" className="py-6 md:py-10 bg-gray-50">
             <div className="container mx-auto px-4 sm:px-6 md:px-8 max-w-7xl">
                 {/* Header */}
-                <div className="flex justify-between items-center mb-8">
-                    <h2 className="text-3xl md:text-4xl font-bold text-gray-900">
+                <div className="flex justify-between items-center mb-6">
+                    <h3 className="text-3xl md:text-4xl font-bold text-gray-900">
                         Hot jobs from <span className="text-green-600">TopCV</span>
-                    </h2>
+                    </h3>
                     <button className="hidden md:flex items-center gap-2 text-blue-600 hover:text-blue-700 font-medium transition-colors">
                         Show all jobs
                         <ArrowForward className="w-5 h-5" />
@@ -88,7 +91,7 @@ export default function HotJobTopCVSection() {
 
                 {/* Loading State */}
                 {status === 'loading' && (
-                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6 mb-8">
+                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6 mb-6">
                         {[...Array(9)].map((_, index) => (
                             <div key={index} className="h-40 bg-gray-200 rounded-lg animate-pulse"></div>
                         ))}
@@ -97,7 +100,7 @@ export default function HotJobTopCVSection() {
 
                 {/* 3x3 Grid */}
                 {status !== 'loading' && (
-                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6 mb-8">
+                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6 mb-6">
                         {jobs.map((job) => (
                             <div key={job.id || job.external_id || job._id} className="h-full">
                                 <JobCard
@@ -111,7 +114,7 @@ export default function HotJobTopCVSection() {
 
                 {/* Pagination */}
                 {totalPages > 1 && (
-                    <div className="flex justify-center items-center gap-2 mt-8">
+                    <div className="flex justify-center items-center gap-2 mt-6">
                         {/* Previous Button */}
                         <button
                             onClick={() => handlePageChange(currentPage - 1)}
@@ -174,7 +177,7 @@ export default function HotJobTopCVSection() {
 
                 {/* Show message if no jobs and not loading */}
                 {status !== 'loading' && jobs.length === 0 && (
-                    <div className="text-center py-16">
+                    <div className="text-center py-10">
                         <p className="text-gray-500 text-lg">No jobs available at the moment.</p>
                     </div>
                 )}
