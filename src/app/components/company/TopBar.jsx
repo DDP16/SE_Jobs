@@ -1,8 +1,10 @@
 import { Bell, Plus, ChevronDown } from "lucide-react";
 import { Button, DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "../ui";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 export default function TopBar() {
+  const nav = useNavigate();
+
   return (
     <header className="h-16 border-b border-l border-gray-300 bg-neutral-100 z-10 flex items-center justify-between px-6">
       <DropdownMenu>
@@ -28,9 +30,16 @@ export default function TopBar() {
         <button className="relative p-2 hover:bg-accent rounded-md transition-colors">
           <Bell className="w-5 h-5 text-muted-foreground" />
         </button>
-        <Button className="bg-primary hover:bg-primary/90 text-white rounded-lg hover:scale-105 hover:shadow-lg transition-all" >
+        <Button
+          className="
+            bg-primary text-white rounded-lg 
+            hover:bg-primary/90 hover:scale-105 hover:shadow-lg
+            transition-all cursor-pointer
+          "
+          onClick={() => {nav('/post-job')}}
+        >
           <Plus className="w-4 h-4" />
-          <Link className="" to="/post-job">Post a job</Link>
+          <div>Post a job</div>
         </Button>
       </div>
     </header>

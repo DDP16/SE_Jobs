@@ -1,6 +1,6 @@
 import { Routes, Route, Outlet } from "react-router-dom";
 import CompanyLayout from "../layouts/CompanyLayout";
-import PageNotFound from "@/layouts/PageNotFound";
+import PageNotFound from "../layouts/PageNotFound";
 import {
     ApplicantDetails,
     CompanyProfile,

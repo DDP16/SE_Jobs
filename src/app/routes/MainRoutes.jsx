@@ -35,14 +35,14 @@ export default function MainRoutes() {
         </div>
       ) : (
         <BrowserRouter>
-          <AdminRoutes />
-          {/* {isAuthenticated && userRole?.toLowerCase() === Role.ADMIN.toLowerCase() ? (
+          {isAuthenticated && userRole?.toLowerCase() === Role.ADMIN.toLowerCase() ? (
             <AdminRoutes />
           ) : isAuthenticated && userRole?.toLowerCase() === Role.EMPLOYER.toLowerCase() ? (
             <CompanyRoutes />
           ) : (
             <UserRoutes />
-          )} */}
+          )}
+          {/* <CompanyRoutes /> */}
         </BrowserRouter>
       )}
     </ThemeProvider>

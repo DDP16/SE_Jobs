@@ -2,6 +2,7 @@
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Button } from "@/components/ui/button";
+import { motion } from "framer-motion";
 
 import {
   FileText,
@@ -33,6 +34,7 @@ import { getSkills } from "../../../modules/services/skillsService";
 import { getLevels } from "../../../modules/services/levelsService";
 import { createJob } from "../../../modules/services/jobsService";
 import { useNavigate } from "react-router-dom";
+import { FuzzyText } from "../../../components";
 
 export default function PostJob() {
   const dispatch = useDispatch();
@@ -199,7 +201,18 @@ export default function PostJob() {
   }
 
   if (!currentUser || !currentUser.company) {
-    return <div>Company profile not found.</div>;
+    return (
+      <motion.div
+        className="flex h-full items-center justify-center gap-6 text-center px-4"
+        initial={{ opacity: 0, y: -20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.5, ease: "easeOut" }}
+      >
+        <FuzzyText color="black" fontSize={32} baseIntensity={0.1} hoverIntensity={0.3}>
+          Company profile not found.
+        </FuzzyText>
+      </motion.div>
+    );
   }
 
   const nav = useNavigate();

@@ -106,7 +106,6 @@ export default function CompanySidebar() {
           onClick={() => {
             // Dispatch logout action
             dispatch(logout());
-            window.history.go(-(window.history.length - 1));
             nav("/", { replace: true });
           }}
         >
