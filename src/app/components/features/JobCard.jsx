@@ -335,8 +335,8 @@ export default function JobCard({
                             variant="square"
                             sx={{
                                 bgcolor: '#ffffff',
-                                width: 48,
-                                height: 48,
+                                width: 60,
+                                height: 60,
                                 fontSize: '1rem',
                                 fontWeight: 'bold',
                                 borderRadius: 2,
