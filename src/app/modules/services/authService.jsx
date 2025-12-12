@@ -121,7 +121,8 @@ export const register = createAsyncThunk(
       last_name,
       confirm_password,
       role = 'student',
-      company
+      company,
+      company_branches,
     },
     { rejectWithValue } 
   ) => {
@@ -133,6 +134,7 @@ export const register = createAsyncThunk(
       confirm_password,
       role,
       company,
+      company_branches,
     };
 
     try {

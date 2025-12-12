@@ -51,12 +51,32 @@ const openExternalUrl = (url) => {
     }
 };
 
+const getTimeAgo = (dateString) => {
+    if (!dateString) return null;
+    try {
+        const date = new Date(dateString);
+        const now = new Date();
+        const diffMs = now - date;
+        const diffHours = Math.floor(diffMs / (1000 * 60 * 60));
+        const diffDays = Math.floor(diffMs / (1000 * 60 * 60 * 24));
+        
+        if (diffHours < 1) return 'Vừa đăng';
+        if (diffHours < 24) return `Đăng ${diffHours} giờ trước`;
+        if (diffDays < 7) return `Đăng ${diffDays} ngày trước`;
+        if (diffDays < 30) return `Đăng ${Math.floor(diffDays / 7)} tuần trước`;
+        return `Đăng ${Math.floor(diffDays / 30)} tháng trước`;
+    } catch {
+        return null;
+    }
+};
+
 export default function JobCard({
     job = {},
     onBookmark,
     onClick,
     isBookmarked = false,
-    showPopup = true
+    showPopup = true,
+    variant = 'grid'
 }) {
     const navigate = useNavigate();
     const theme = useTheme();
@@ -111,7 +131,9 @@ export default function JobCard({
         company: job.company,
         location: Array.isArray(job.locations) && job.locations.length > 0
             ? job.locations[0]
-            : job.location || job.company_branches?.location,
+            : (Array.isArray(job.workLocation) && job.workLocation.length > 0
+                ? job.workLocation[0]
+                : (job.location || job.company_branches?.location || job.shortCity)),
         type: job.type || (Array.isArray(job.employment_types) && job.employment_types.length > 0
             ? job.employment_types.map(et => et.name || et).join(', ')
             : null),
@@ -128,21 +150,25 @@ export default function JobCard({
             : null),
         locations: Array.isArray(job.locations)
             ? job.locations
-            : (job.location ? [job.location] : (job.company_branches?.location ? [job.company_branches.location] : [])),
-        description: job.description || "Job description...",
+            : (Array.isArray(job.workLocation)
+                ? job.workLocation
+                : (job.location ? [job.location] : (job.shortCity ? [job.shortCity] : []))),
+        description: job.description,
         responsibilities: job.responsibilities || [],
         requirements: job.requirements || [],
         requirement: job.requirement || [],
         nice_to_haves: job.nice_to_haves || [],
         niceToHaves: job.niceToHaves || [],
-        working_time: job.working_time,
+        working_time: job.working_time || (Array.isArray(job.workingTime) && job.workingTime.length > 0 ? job.workingTime.join(', ') : null),
         logo: job.logo,
         isFeatured: job.isFeatured,
-        is_diamond: job.is_diamond,
-        is_job_flash_active: job.is_job_flash_active,
-        is_hot: job.is_hot,
-        created_at: job.created_at,
-        createdAt: job.createdAt
+        is_diamond: job.is_diamond || job.isDiamond,
+        is_job_flash_active: job.is_job_flash_active || job.isJobFlashActive,
+        is_hot: job.is_hot || job.isHot,
+        created_at: job.created_at || job.createdAt,
+        createdAt: job.createdAt || job.created_at,
+        position: job.position,
+        quantity: job.quantity
     }), [job]);
 
     const {
@@ -177,9 +203,10 @@ export default function JobCard({
         : companyData?.name || "Company Name";
 
     const companyLogoUrl = logo || companyData?.logo;
-    const companyLogoInitial = (companyName && companyName !== "Company Name" && companyName.length > 0)
-        ? companyName.charAt(0).toUpperCase()
-        : "SE";
+    // const companyLogoInitial = (companyName && companyName !== "Company Name" && companyName.length > 0)
+    //     ? companyName.charAt(0).toUpperCase()
+    //     : "SE";
+    const companyLogoInitial = "SE";
 
     const displaySalary = salary_text ||
         (salary_from && salary_to
@@ -259,108 +286,85 @@ export default function JobCard({
                     display: 'flex',
                     flexDirection: 'column',
                     position: 'relative',
-                    minHeight: '150px',
-                    minWidth: '260px',
+                    minHeight: '120px',
+                    minWidth: '280px',
                     maxWidth: '100%',
                     cursor: onClick ? 'pointer' : 'default',
+                    border: '1px solid',
+                    borderColor: 'divider',
+                    boxShadow: '0 1px 3px rgba(0,0,0,0.08)',
                     '&:hover': {
-                        transform: 'translateY(-1px)',
-                        transition: 'transform 0.2s ease-in-out',
-                        '& .featured-badge': {
-                            opacity: 1,
-                            transform: 'scale(1.05)',
-                            transition: 'all 0.2s ease-in-out'
-                        }
+                        boxShadow: '0 4px 12px rgba(0,0,0,0.12)',
+                        borderColor: 'primary.light',
+                        transition: 'all 0.2s ease-in-out',
                     }
                 }}
             >
-                {isJobFeatured && (
-                    <Box
-                        className="featured-badge"
-                        sx={{
-                            position: 'absolute',
-                            top: 8,
-                            right: 8,
-                            zIndex: 1,
-                            opacity: 0.5,
-                            transition: 'all 0.2s ease-in-out'
-                        }}
-                    >
-                        <Chip
-                            label="Featured"
-                            size="small"
-                            color="warning"
-                            sx={{
-                                bgcolor: 'warning.main',
-                                color: 'white',
-                                fontWeight: 600,
-                                fontSize: '0.75rem',
-                                height: '24px',
-                                boxShadow: '0 2px 4px rgba(0,0,0,0.1)'
-                            }}
-                        />
-                    </Box>
-                )}
+                <CardContent sx={{ 
+                    flexGrow: 1, 
+                    p: variant === 'list' ? 2.5 : 2,
+                    display: 'flex',
+                    flexDirection: 'column',
+                    '&:last-child': {
+                        paddingBottom: variant === 'list' ? 2.5 : 2
+                    }
+                }}>
+                    {variant === 'list' && (
+                        <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 1.5 }}>
+                            <Typography variant="caption" sx={{ color: 'text.disabled', fontSize: '0.75rem' }}>
+                                {getTimeAgo(created_at || createdAt) || 'Đăng gần đây'}
+                            </Typography>
+                            {isJobFeatured && (
+                                <Chip
+                                    label="HOT"
+                                    size="small"
+                                    sx={{
+                                        bgcolor: '#FF6B2C',
+                                        color: 'white',
+                                        fontWeight: 700,
+                                        fontSize: '0.75rem',
+                                        height: '24px',
+                                        borderRadius: '6px',
+                                        '& .MuiChip-label': {
+                                            px: 1.5
+                                        }
+                                    }}
+                                />
+                            )}
+                        </Box>
+                    )}
 
-                <IconButton
-                    size="small"
-                    onClick={(e) => {
-                        e.stopPropagation();
-                        onBookmark?.(job);
-                    }}
-                    sx={{
-                        position: 'absolute',
-                        bottom: 8,
-                        right: 8,
-                        zIndex: 1,
-                        bgcolor: 'background.paper',
-                        boxShadow: '0 2px 8px rgba(0,0,0,0.1)',
-                        transition: 'all 0.2s ease-in-out',
-                        '&:hover': {
-                            bgcolor: 'primary.main',
-                            color: 'white',
-                            transform: 'scale(1.1)',
-                            boxShadow: '0 4px 12px rgba(0,0,0,0.15)'
-                        },
-                        color: isBookmarked ? 'primary.main' : 'text.secondary'
-                    }}
-                >
-                    {isBookmarked ? <Bookmark fontSize="small" /> : <BookmarkBorder fontSize="small" />}
-                </IconButton>
-
-                <CardContent sx={{ flexGrow: 1, p: 1.25 }}>
-                    <Box sx={{ display: 'flex', alignItems: 'flex-start', gap: 1.25 }}>
+                    <Box sx={{ display: 'flex', alignItems: 'flex-start', gap: 2, mb: variant === 'list' ? 1.5 : 1.25 }}>
                         <Avatar
                             src={companyLogoUrl}
                             variant="square"
                             sx={{
-                                bgcolor: '#ffffff',
-                                width: 60,
-                                height: 60,
-                                fontSize: '1rem',
+                                bgcolor: companyLogoUrl !== '' ? '#ffffff' : '#f44336',
+                                width: variant === 'list' ? 72 : 64,
+                                height: variant === 'list' ? 72 : 64,
+                                fontSize: '1.25rem',
                                 fontWeight: 'bold',
-                                borderRadius: 2,
-                                flexShrink: 0
+                                borderRadius: 1.5,
+                                flexShrink: 0,
+                                border: '1px solid',
+                                borderColor: 'divider',
+                                boxShadow: '0 1px 3px rgba(0,0,0,0.08)'
                             }}
                         >
                             {companyLogoInitial}
                         </Avatar>
 
-                        <Box sx={{ flexGrow: 1, minWidth: 0, flex: 1 }}>
-                            <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.5 }} {...hoverProps}>
+                        <Box sx={{ flexGrow: 1, minWidth: 0, flex: 1, pr: variant === 'list' ? 0 : 6 }}>
+                            <Box sx={{ display: 'flex', alignItems: 'flex-start', gap: 0.5, mb: 0.5 }} {...hoverProps}>
                                 <Typography
-                                    variant="subtitle1"
+                                    variant="h6"
                                     sx={{
                                         fontWeight: 600,
-                                        mb: 0.25,
-                                        fontSize: '0.95rem',
-                                        pr: isJobFeatured ? 10 : 0,
-                                        lineHeight: 1.3,
+                                        fontSize: variant === 'list' ? '1.05rem' : '0.98rem',
+                                        lineHeight: 1.32,
                                         cursor: showPopup ? 'pointer' : 'default',
-                                        position: 'relative',
                                         color: 'text.primary',
-                                        transition: 'all 0.2s ease-in-out',
-                                        // Clamp to 2 lines
+                                        transition: 'color 0.2s ease-in-out',
                                         display: '-webkit-box',
                                         WebkitLineClamp: 2,
                                         WebkitBoxOrient: 'vertical',
@@ -376,39 +380,206 @@ export default function JobCard({
                                     {title}
                                 </Typography>
                             </Box>
+                            
                             <Typography
                                 variant="body2"
-                                color="text.secondary"
                                 sx={{
-                                    mb: 0.75,
-                                    fontSize: '0.875rem',
-                                    lineHeight: 1.2,
-                                    // Clamp to 1 line
+                                    fontSize: '0.8rem',
+                                    lineHeight: 1.35,
+                                    color: 'text.secondary',
+                                    textTransform: 'uppercase',
+                                    letterSpacing: '0.5px',
+                                    fontWeight: 400,
                                     display: '-webkit-box',
                                     WebkitLineClamp: 1,
                                     WebkitBoxOrient: 'vertical',
                                     overflow: 'hidden',
-                                    textOverflow: 'ellipsis'
+                                    textOverflow: 'ellipsis',
+                                    mb: variant === 'list' ? 1 : 0
                                 }}
                             >
                                 {companyName}
                             </Typography>
 
-                            <Stack direction="row" spacing={0.5} sx={{ mb: 0.75, flexWrap: 'wrap', gap: 0.5 }}>
-                                {type && <Badge label={type} color="secondary" size="small" />}
-                                <Badge label={displaySalary} color="success" size="small" />
-                            </Stack>
 
+                        </Box>
+
+                        {variant !== 'list' && (
+                            <IconButton
+                                size="small"
+                                onClick={(e) => {
+                                    e.stopPropagation();
+                                    onBookmark?.(job);
+                                }}
+                                sx={{
+                                    color: isBookmarked ? 'error.main' : 'text.disabled',
+                                    transition: 'all 0.2s ease-in-out',
+                                    '&:hover': {
+                                        color: isBookmarked ? 'error.dark' : 'text.secondary',
+                                        transform: 'scale(1.1)',
+                                    }
+                                }}
+                            >
+                                {isBookmarked ? <Bookmark /> : <BookmarkBorder />}
+                            </IconButton>
+                        )}
+                    </Box>
+
+
+
+                    {variant === 'list' ? (
+                        <Box sx={{ mb: 1.5 }}>
+                            <Chip
+                                label={displaySalary}
+                                size="small"
+                                sx={{
+                                    bgcolor: '#1976d2',
+                                    color: 'white',
+                                    fontSize: '0.875rem',
+                                    fontWeight: 600,
+                                    height: '32px',
+                                    borderRadius: '4px',
+                                    mb: 1.5,
+                                    '& .MuiChip-label': {
+                                        px: 2,
+                                        py: 0.5
+                                    }
+                                }}
+                            />
+                            
+                            <Stack direction="row" spacing={1} sx={{ flexWrap: 'wrap', gap: 1 }}>
+                                {normalizedJob.locations && Array.isArray(normalizedJob.locations) && normalizedJob.locations.length > 0 ? (
+                                    normalizedJob.locations.slice(0, 2).map((loc, index) => (
+                                        <Chip
+                                            key={index}
+                                            label={loc}
+                                            size="small"
+                                            sx={{
+                                                bgcolor: '#f5f5f5',
+                                                color: 'text.secondary',
+                                                fontSize: '0.8125rem',
+                                                fontWeight: 500,
+                                                height: '32px',
+                                                borderRadius: '20px',
+                                                border: 'none',
+                                                '& .MuiChip-label': {
+                                                    px: 2
+                                                }
+                                            }}
+                                        />
+                                    ))
+                                ) : location ? (
+                                    <Chip
+                                        label={location}
+                                        size="small"
+                                        sx={{
+                                            bgcolor: '#f5f5f5',
+                                            color: 'text.secondary',
+                                            fontSize: '0.8125rem',
+                                            fontWeight: 500,
+                                            height: '32px',
+                                            borderRadius: '20px',
+                                            border: 'none',
+                                            '& .MuiChip-label': {
+                                                px: 2
+                                            }
+                                        }}
+                                    />
+                                ) : null}
+                                
+                                {normalizedJob.experience && (
+                                    <Chip
+                                        label={normalizedJob.experience}
+                                        size="small"
+                                        sx={{
+                                            bgcolor: '#f5f5f5',
+                                            color: 'text.secondary',
+                                            fontSize: '0.8125rem',
+                                            fontWeight: 500,
+                                            height: '32px',
+                                            borderRadius: '20px',
+                                            border: 'none',
+                                            '& .MuiChip-label': {
+                                                px: 2
+                                            }
+                                        }}
+                                    />
+                                )}
+                            </Stack>
+                        </Box>
+                    ) : (
+                        <Stack 
+                            direction="row" 
+                            spacing={1} 
+                            sx={{ 
+                                alignItems: 'center',
+                                flexWrap: 'nowrap',
+                                pl: 0
+                            }}
+                        >
+                            <Chip
+                                label={displaySalary}
+                                size="small"
+                                sx={{
+                                    bgcolor: '#1976d2',
+                                    color: 'white',
+                                    fontSize: '0.8rem',
+                                    fontWeight: 500,
+                                    height: '28px',
+                                    borderRadius: '8px',
+                                    flexShrink: 0,
+                                    '& .MuiChip-label': {
+                                        px: 1.5,
+                                        py: 0.3
+                                    }
+                                }}
+                            />
                             {location && (
-                                <Badge
+                                <Chip
                                     label={location}
-                                    variant="outlined"
                                     size="small"
-                                    sx={{ mt: 0 }}
+                                    variant="outlined"
+                                    sx={{ 
+                                        fontSize: '0.8rem',
+                                        height: '28px',
+                                        borderRadius: '8px',
+                                        borderColor: '#1976d2',
+                                        color: '#1976d2',
+                                        fontWeight: 500,
+                                        flexShrink: 0,
+                                        '& .MuiChip-label': {
+                                            px: 1.5,
+                                            py: 0.3
+                                        }
+                                    }}
                                 />
                             )}
+                        </Stack>
+                    )}
+
+
+
+                    {variant === 'list' && (
+                        <Box sx={{ display: 'flex', justifyContent: 'flex-end', pt: 1 }}>
+                            <IconButton
+                                size="small"
+                                onClick={(e) => {
+                                    e.stopPropagation();
+                                    onBookmark?.(job);
+                                }}
+                                sx={{
+                                    color: isBookmarked ? 'error.main' : 'text.disabled',
+                                    transition: 'all 0.2s ease-in-out',
+                                    '&:hover': {
+                                        color: isBookmarked ? 'error.dark' : 'text.secondary',
+                                        transform: 'scale(1.1)',
+                                    }
+                                }}
+                            >
+                                {isBookmarked ? <Bookmark /> : <BookmarkBorder />}
+                            </IconButton>
                         </Box>
-                    </Box>
+                    )}
                 </CardContent>
             </Card>
 
