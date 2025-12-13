@@ -127,7 +127,7 @@
       "employees": "Nhân viên",
       "location": "Địa điểm",
       "locations": "{{count}} quốc gia",
-      "industry": "Ngành nghề",
+      "industry": "Loại công ty",
       "jobs_count": "{{count}} việc làm",
       "following": "Đang theo dõi",
       "follow_company": "Theo dõi công ty"

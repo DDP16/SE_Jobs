@@ -24,3 +24,5 @@ export { getLevels } from "./services/levelsService";
 export { getEducations } from "./services/educationsService";
 export { uploadMedia, deleteMedia } from "./services/mediaService";
 export { getCompanyTypes } from "./services/companyTypeService";
+export { getProjectsByStudentId, getProject, createProject, updateProject, deleteProject } from "./services/projectsService";
+export { getCertificatesByStudentId, getCertificate, createCertificate, updateCertificate, deleteCertificate } from "./services/certificateService";
