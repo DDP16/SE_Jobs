@@ -10,21 +10,36 @@ import {
 } from "@mui/icons-material";
 import { srcAsset } from "../../../../lib";
 import { useTranslation } from "react-i18next";
-import { Image } from 'antd';
 
 export default function CompanyHeader({ company = {} }) {
   const { t } = useTranslation();
   const [isFollowing, setIsFollowing] = useState(false);
-  const {
-    name = "Company Name",
-    logo = "C",
-    location = "Location",
-    industry = "Industry",
-    jobsCount = 0,
-    founded = new Date("2011-07-31"),
-    employees = 4000,
-    locationCount = 20,
-  } = company;
+  console.log("company from CompanyHeader:", company);
+
+  // Extract data from company object
+  const name = company.name || "";
+  const logo = company.logo || srcAsset.nomadIcon;
+
+  // Get location from first branch if available
+  const firstBranch = company.company_branches?.[0];
+  const location = firstBranch
+    ? `${firstBranch.address || ""}, ${firstBranch.provinces?.name || ""}, ${firstBranch.countries?.name || ""}`.trim()
+    : "";
+
+  // Get industry from company_types array
+  const industry = company.company_types?.length > 0
+    ? company.company_types.map(type => type.name).join(", ")
+    : "Industry";
+
+  // Get other data
+  const jobsCount = company.jobsCount || 0;
+  const employees = company.employee_count || 0;
+  const locationCount = company.company_branches?.length || 0;
+
+  // Parse founded date from created_at or use default
+  const founded = company.created_at
+    ? new Date(company.created_at)
+    : new Date("2011-07-31");
 
   const formatFoundedDate = (date) => {
     return date.toLocaleDateString(t("languageDate"), {
@@ -35,11 +50,11 @@ export default function CompanyHeader({ company = {} }) {
   };
 
   const stats = [
-    {
-      icon: <CalendarToday sx={{ fontSize: 20, color: "primary.main" }} />,
-      label: t("company.header.founded"),
-      value: formatFoundedDate(founded),
-    },
+    // {
+    //   icon: <CalendarToday sx={{ fontSize: 20, color: "primary.main" }} />,
+    //   label: t("company.header.founded"),
+    //   value: formatFoundedDate(founded),
+    // },
     {
       icon: <People sx={{ fontSize: 20, color: "primary.main" }} />,
       label: t("company.header.employees"),
@@ -83,13 +98,35 @@ export default function CompanyHeader({ company = {} }) {
       >
         {/* Left Side - Company Info */}
         <Box sx={{ display: "flex", gap: { xs: 1.5, md: 2 }, alignItems: "center", flex: 1, width: "100%" }}>
-          <Image
-            src={srcAsset.nomadIcon}
-            alt="Nomad Logo"
-            width={100}
-            height={100}
-            fallback={srcAsset.fallback}
-          />
+          <Box
+            sx={{
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              flexShrink: 0,
+              width: { xs: 80, sm: 90, md: 100, lg: 120 },
+              height: { xs: 80, sm: 90, md: 100, lg: 120 },
+              borderRadius: 2,
+              overflow: "hidden",
+              bgcolor: "background.paper",
+              borderColor: "divider",
+              p: 1.5,
+            }}
+          >
+            <img
+              src={logo}
+              alt={`${name} Logo`}
+              style={{
+                width: "100%",
+                height: "100%",
+                objectFit: "contain",
+                display: "block",
+              }}
+              onError={(e) => {
+                e.target.src = srcAsset.fallback;
+              }}
+            />
+          </Box>
           <Box sx={{ minWidth: 0, flex: 1 }}>
             <Typography
               variant="h5"
@@ -119,12 +156,12 @@ export default function CompanyHeader({ company = {} }) {
                   {location}
                 </Typography>
               </Box>
-              <Typography variant="body2" color="text.secondary" sx={{ fontSize: { xs: "0.75rem", sm: "0.875rem" } }}>
+              {/* <Typography variant="body2" color="text.secondary" sx={{ fontSize: { xs: "0.75rem", sm: "0.875rem" } }}>
                 •
               </Typography>
               <Typography variant="body2" color="text.secondary" sx={{ fontSize: { xs: "0.75rem", sm: "0.875rem" } }}>
                 {industry}
-              </Typography>
+              </Typography> */}
               {jobsCount > 0 && (
                 <>
                   <Typography variant="body2" color="text.secondary" sx={{ fontSize: { xs: "0.75rem", sm: "0.875rem" } }}>
@@ -204,7 +241,7 @@ export default function CompanyHeader({ company = {} }) {
         </Box>
 
         {/* Right Side - Follow Button */}
-        <Box
+        {/* <Box
           sx={{
             width: { xs: "100%", md: "auto" },
             mt: { xs: 0.5, md: 0 },
@@ -227,7 +264,7 @@ export default function CompanyHeader({ company = {} }) {
           >
             {isFollowing ? t("company.header.following") : t("company.header.follow_company")}
           </Button>
-        </Box>
+        </Box> */}
       </Box>
     </Box>
   );
