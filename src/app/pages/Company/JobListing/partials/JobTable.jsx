@@ -1,7 +1,11 @@
-import { Table } from "antd";
+import { Spin, Table } from "antd";
+import { LoadingOutlined } from '@ant-design/icons';
 import { Badge } from "@/components/ui";
 import { Button, DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "../../../../components/ui";
 import { Edit, Eye, MoreVertical, Trash2, Diamond, Flame, Zap } from "lucide-react";
+import { useDispatch, useSelector } from "react-redux";
+import { getJobsByCompanyId } from "../../../../modules";
+import { useEffect, useState } from "react";
 
 const columns = [
     {
@@ -132,24 +136,48 @@ const columns = [
     },
 ];
 
-export default function JobTable({ currentData, currentPage, pageSize, total, onChangePage }) {
+export default function JobTable() {
+    const [currentPage, setCurrentPage] = useState(1);
+    const [pageSize, setPageSize] = useState(10);
+
+    const dispatch = useDispatch();
+    const companyId = useSelector((state) => state.auth.user.company.id);
+    const status = useSelector((state) => state.jobs.status);
+    const jobs = useSelector((state) => state.jobs.jobs);
+    const pagination = useSelector((state) => state.jobs.pagination);
+
+    useEffect(() => {
+        dispatch(getJobsByCompanyId({companyId: companyId, page: currentPage, limit: pageSize}));
+    }, [currentPage, pageSize]);
+
+    const currentData = jobs;
+
     return (
-        <div className="relative flex flex-col h-[60vh]">
-            <Table
-                columns={columns}
-                dataSource={currentData}
-                rowKey="id"
-                pagination={{
-                    current: currentPage,
-                    pageSize: pageSize,
-                    total: total,
-                    onChange: (newPage, newPageSize) => {
-                        onChangePage(newPage, newPageSize);
-                    },
-                }}
-                scroll={{ y: '60vh', x: 'max-content' }}
-                className="custom-ant-table flex-1"
-            />
-        </div>
+        <>
+            {status === 'loading' ? (
+                <div className="flex items-center justify-center h-[60vh]">
+                    <Spin indicator={<LoadingOutlined spin />} size="large" />
+                </div>
+            ) : (
+                <div className="relative flex flex-col h-[60vh]">
+                    <Table
+                        columns={columns}
+                        dataSource={currentData}
+                        rowKey="id"
+                        pagination={{
+                            current: currentPage,
+                            pageSize: pageSize,
+                            total: pagination?.total ?? 0,
+                            onChange: (newPage, newPageSize) => {
+                                setCurrentPage(newPage);
+                                setPageSize(newPageSize);
+                            },
+                        }}
+                        scroll={{ y: '60vh', x: 'max-content' }}
+                        className="custom-ant-table flex-1"
+                    />
+                </div>
+            )}
+        </>
     );
 }

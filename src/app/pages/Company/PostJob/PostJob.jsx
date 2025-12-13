@@ -1,6 +1,5 @@
 // src/app/pages/Company/PostJob/PostJob.jsx
 import { useEffect, useState } from "react";
-import { useTranslation } from "react-i18next";
 import { useDispatch, useSelector } from "react-redux";
 import { Button } from "@/components/ui/button";
 
@@ -36,7 +35,6 @@ import { createJob } from "../../../modules/services/jobsService";
 import { useNavigate } from "react-router-dom";
 
 export default function PostJob() {
-  const { t } = useTranslation();
   const dispatch = useDispatch();
 
   useEffect(() => {
@@ -48,9 +46,6 @@ export default function PostJob() {
 
   const currentUser = useSelector((state) => state.auth.user);
   const authStatus = useSelector((state) => state.auth.status);
-
-  // console.log("PostJob authStatus:", authStatus);
-  // console.log("PostJob currentUser:", currentUser);
 
   const companyId = currentUser?.company?.id;
   // const companyBranchId = 1;
@@ -64,44 +59,30 @@ export default function PostJob() {
   const [jobTitle, setJobTitle] = useState("");
   const [employmentTypes, setEmploymentTypes] = useState([]);
   const [salaryRange, setSalaryRange] = useState([5000, 22000]);
+  const [salaryCurrency, setSalaryCurrency] = useState("USD");
   const [skills, setSkills] = useState([]);
   const [newSkill, setNewSkill] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("");
+  const [selectedLevel, setSelectedLevel] = useState("");
   const [jobDescription, setJobDescription] = useState("");
   const [responsibilities, setResponsibilities] = useState("");
   const [whoYouAre, setWhoYouAre] = useState("");
   const [niceToHaves, setNiceToHaves] = useState("");
-  const [benefits, setBenefits] = useState([
-    {
-      id: "1",
-      icon: "Heart",
-      title: "Full Healthcare",
-      description: "We believe in thriving communities and that starts with our team being happy and healthy.",
-    },
-    {
-      id: "2",
-      icon: "Plane",
-      title: "Unlimited Vacation",
-      description: "We believe you should have a flexible schedule that makes space for family, wellness, and fun.",
-    },
-    {
-      id: "3",
-      icon: "Video",
-      title: "Skill Development",
-      description:
-        "We believe in always learning and leveling up our skills. Whether it's a conference or online course.",
-    },
-  ]);
+  const [benefits, setBenefits] = useState([]);
 
   const [employmentTypeIds, setEmploymentTypeIds] = useState([]);
   const [skillIds, setSkillIds] = useState([]);
   const [categoryIds, setCategoryIds] = useState([]);
+  const [levelId, setLevelId] = useState(null);
 
-  // const { t } = useTranslation();
+  useEffect(() => {
+    console.log(benefits);
+  }, [benefits]);
+
   const steps = [
-    { number: 1, title: t("postJob.jobInformation"), icon: FileText },
-    { number: 2, title: t("postJob.jobDescription"), icon: Briefcase },
-    { number: 3, title: t("postJob.perksBenefit"), icon: Gift },
+    { number: 1, title: "Job Information", icon: FileText },
+    { number: 2, title: "Job Description", icon: Briefcase },
+    { number: 3, title: "Perks & Benefit", icon: Gift },
   ];
 
   const employmentOptions = ["Full-Time", "Part-Time", "Remote", "Internship", "Contract"];
@@ -109,7 +90,7 @@ export default function PostJob() {
   const toggleEmploymentType = (type) => {
     setEmploymentTypes((prev) => (prev.includes(type) ? prev.filter((t) => t !== type) : [...prev, type]));
 
-    const et = apiEmploymentTypes.find((item) => item.name === type);
+    const et = apiEmploymentTypes.find((e) => e.name.toLowerCase() === type.toLowerCase());
     if (et) {
       setEmploymentTypeIds((prev) => (prev.includes(et.id) ? prev.filter((id) => id !== et.id) : [...prev, et.id]));
     }
@@ -137,8 +118,14 @@ export default function PostJob() {
 
   const handleCategorySelect = (categoryName) => {
     setSelectedCategory(categoryName);
-    const cat = categories.find((c) => c.name === categoryName);
+    const cat = categories.find((c) => c.name.toLowerCase() === categoryName.toLowerCase());
     setCategoryIds(cat ? [cat.id] : []);
+  };
+
+  const handleLevelSelect = (levelName) => {
+    setSelectedLevel(levelName);
+    const lvl = levels.find((l) => l.name.toLowerCase() === levelName.toLowerCase());
+    setLevelId(lvl ? lvl.id : null);
   };
 
   const addSkillFromApi = (skillName) => {
@@ -185,41 +172,37 @@ export default function PostJob() {
       responsibilities: responsibilities ? [responsibilities] : [],
       requirement: whoYouAre ? [whoYouAre] : [],
       nice_to_haves: niceToHaves ? [niceToHaves] : [],
-      benefit: benefits.map((b) => b.description),
+      benefit: benefits.map((b) => ({ icon: b.icon, title: b.title, description: b.description })),
       salary_from: salaryRange[0],
       salary_to: salaryRange[1],
-      salary_currency: "USD",
+      salary_currency: salaryCurrency,
+      salary_text: `${salaryRange[0]} - ${salaryRange[1]} ${salaryCurrency}`,
       category_ids: categoryIds,
+      level_ids: levelId ? [levelId] : [],
       required_skill_ids: skillIds,
       employment_type_ids: employmentTypeIds,
       status: "Pending",
     };
 
+    console.log("Submitting job with payload:", payload);
+
     try {
       await dispatch(createJob(payload)).unwrap();
-      // console.log("Job posted successfully!");
+      console.log("Job posted successfully!");
     } catch (err) {
       console.error("Failed to create job:", err);
     }
   };
 
   if (authStatus === "loading") {
-    return <div>{t("postJob.loadingCompanyProfile")}</div>;
+    return <div>Loading company profile...</div>;
   }
 
   if (!currentUser || !currentUser.company) {
-    return <div>{t("postJob.companyProfileNotFound")}</div>;
+    return <div>Company profile not found.</div>;
   }
 
   const nav = useNavigate();
-
-  if (authStatus === "loading") {
-    return <div>{t("postJob.loadingCompanyProfile")}</div>;
-  }
-
-  if (!currentUser || !currentUser.company) {
-    return <div>{t("postJob.companyProfileNotFound")}</div>;
-  }
 
   return (
     <div className="bg-background p-4 lg:p-6 2xl:p-8 space-y-8">
@@ -227,7 +210,7 @@ export default function PostJob() {
         <Button variant="ghost" size="icon" className="h-10 w-10 cursor-pointer" onClick={() => nav(-1)}>
           <ArrowLeft className="h-5 w-5" />
         </Button>
-        <h4 className="font-bold text-foreground">{t("postJob.postAJob")}</h4>
+        <h4 className="font-bold text-foreground">Post a Job</h4>
       </div>
 
       <div className="flex gap-4">
@@ -262,7 +245,7 @@ export default function PostJob() {
               </div>
               <div className="flex-1">
                 <p className={`text-sm font-medium ${isActive ? "text-primary" : "text-muted-foreground"}`}>
-                  {t("postJob.step", { number: step.number }) || `Step ${step.number}/3`}
+                  Step {step.number}/3
                 </p>
                 <p className={`font-semibold ${isActive ? "text-foreground" : "text-muted-foreground"}`}>
                   {step.title}
@@ -283,9 +266,14 @@ export default function PostJob() {
             toggleEmploymentType={toggleEmploymentType}
             salaryRange={salaryRange}
             setSalaryRange={setSalaryRange}
+            salaryCurrency={salaryCurrency}
+            setSalaryCurrency={setSalaryCurrency}
             selectedCategory={selectedCategory}
             handleCategorySelect={handleCategorySelect}
             categories={categories}
+            levels={levels}
+            selectedLevel={selectedLevel}
+            handleLevelSelect={handleLevelSelect}
             skills={skills}
             newSkill={newSkill}
             setNewSkill={setNewSkill}
@@ -322,7 +310,7 @@ export default function PostJob() {
         <div className="flex justify-between mt-8">
           {currentStep > 1 && (
             <Button variant="outline" size="lg" onClick={() => setCurrentStep(currentStep - 1)} className="px-8">
-              {t("postJob.previous")}
+              Previous
             </Button>
           )}
           {currentStep < 3 ? (
@@ -331,11 +319,11 @@ export default function PostJob() {
               onClick={() => setCurrentStep(currentStep + 1)}
               className="bg-primary hover:bg-primary/90 text-white px-8 ml-auto"
             >
-              {t("postJob.nextStep")}
+              Next Step
             </Button>
           ) : (
             <Button size="lg" onClick={handleSubmit} className="bg-primary hover:bg-primary/90 text-white px-8 ml-auto">
-              {t("postJob.postJob")}
+              Post Job
             </Button>
           )}
         </div>

@@ -40,7 +40,7 @@ export const getJobById = createAsyncThunk(
 
 export const getJobsByCompanyId = createAsyncThunk(
     "jobs/getJobsByCompanyId",
-    async ({companyId, page, limit}, { rejectWithValue }) => {
+    async ({ companyId, page, limit }, { rejectWithValue }) => {
         try {
             const response = await api.get(`${apiBaseUrl}`, {
                 params: { page: page, limit: limit, company_id: companyId },
@@ -129,7 +129,8 @@ const jobsSlice = createSlice({
             })
             .addCase(getJobById.fulfilled, (state, action) => {
                 state.status = "succeeded";
-                state.job = action.payload.data;
+                const jobData = action.payload.formattedJob || action.payload.data || action.payload;
+                state.job = jobData;
             })
             .addCase(getJobById.rejected, (state, action) => {
                 state.status = "failed";

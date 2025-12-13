@@ -1,5 +1,5 @@
 import { Navigate, Outlet, Route, Routes } from "react-router-dom";
-import { CompaniesPage, CompanyDetailPage, AdminDashboard as Dashboard, JobsPage, SettingsPage, StudentDetailPage, StudentsPage, UsersPage } from "@/pages";
+import { CompaniesPage, CompanyDetailPage, AdminDashboard as Dashboard, JobsPage, SettingsPage, StudentDetailPage, StudentsPage, UsersPage } from "../pages";
 import AdminLayout from "@/layouts/AdminLayout";
 import PageNotFound from "@/layouts/PageNotFound";
 

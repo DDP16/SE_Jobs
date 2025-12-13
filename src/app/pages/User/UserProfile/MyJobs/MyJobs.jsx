@@ -200,9 +200,9 @@ export default function MyJobs() {
             </Box>
         );
     };
-
+  
     return (
-        <Box sx={{ bgcolor: 'background.default', minHeight: '100vh', py: 2 }}>
+        <Box sx={{ bgcolor: 'background.default', minHeight: '100vh' }}>
             <Container maxWidth="xl">
                 <Box sx={{ display: 'flex', gap: 3, alignItems: 'flex-start' }}>
 

@@ -21,3 +21,6 @@ export { getCategories } from "./services/categoriesService";
 export { getSkills } from "./services/skillsService";
 export { getEmploymentTypes } from "./services/employmentTypeService";
 export { getLevels } from "./services/levelsService";
+export { getEducations } from "./services/educationsService";
+export { uploadMedia, deleteMedia } from "./services/mediaService";
+export { getCompanyTypes } from "./services/companyTypeService";
