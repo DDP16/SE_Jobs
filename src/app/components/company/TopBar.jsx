@@ -1,26 +1,47 @@
 import { Bell, Plus, ChevronDown } from "lucide-react";
 import { Button, DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "../ui";
 import { Link } from "react-router-dom";
+import { useSelector } from "react-redux";
+import { logout } from "../../modules";
+import { useDispatch } from "react-redux";
+import { useNavigate } from "react-router-dom";
 
 export default function TopBar() {
+  const dispatch = useDispatch();
+  const nav = useNavigate();
+  const company = useSelector((state) => state.auth.user?.company);
   return (
     <header className="h-16 border-b border-l border-gray-300 bg-neutral-100 z-10 flex items-center justify-between px-6">
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
           <button className="flex items-center gap-3 hover:opacity-80 transition-opacity">
-            <div className="w-10 h-10 from-green-400 to-green-600 rounded-lg flex items-center justify-center">
-              <span className="text-white font-bold text-lg">N</span>
+            <div className="w-10 h-10 rounded-lg flex items-center justify-center">
+              {company?.logo ? (
+                <img
+                  src={company.logo}
+                  alt={company.name || 'Company'}
+                  className="w-full h-full object-cover rounded-lg"
+                />
+              ) : (
+                <span className="text-white font-bold text-lg">
+                  {company?.name ? company.name.charAt(0).toUpperCase() : 'C'}
+                </span>
+              )}
             </div>
             <div className="text-left">
               <p className="text-xs text-muted-foreground">Company</p>
-              <p className="text-sm font-semibold text-foreground">Nomad</p>
+              <p className="text-sm font-semibold text-foreground">{company?.name || 'Company'}</p>
             </div>
             <ChevronDown className="w-4 h-4 text-muted-foreground" />
           </button>
         </DropdownMenuTrigger>
         <DropdownMenuContent align="start" className="w-48">
-          <DropdownMenuItem>Nomad</DropdownMenuItem>
-          <DropdownMenuItem>Switch Company</DropdownMenuItem>
+          <DropdownMenuItem>{company?.name || 'Company'}</DropdownMenuItem>
+          <DropdownMenuItem onClick={() => {
+            dispatch(logout());
+            // window.history.go(-(window.history.length - 1));
+            nav("/signin", { replace: true });
+          }}>Switch Company</DropdownMenuItem>
         </DropdownMenuContent>
       </DropdownMenu>
 
