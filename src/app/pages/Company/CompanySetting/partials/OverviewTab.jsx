@@ -1,42 +1,38 @@
 import { useState, useEffect } from 'react';
-import { ChevronDown, Save, Loader2 } from 'lucide-react';
+import { Save, Loader2, ChevronDown } from 'lucide-react';
 import { LogoUpload } from './logoUpload';
 import { TagInput } from './TagInput';
 import { RichTextEditor } from './RichTextEditor';
 import { ContactInfoSection } from './ContactInfoSection';
-import { BackgroundUpload } from './BackgroundUpload';
-import { AddressSection } from './AddressSection';
 import { CompanyTypeSection } from './CompanyTypeSection';
+import { CompanyBranchesSection } from './CompanyBranchesSection';
 import { useDispatch, useSelector } from 'react-redux';
 import { getCompany, updateCompany } from '../../../../modules/services/companyService';
 import { uploadMedia, deleteMedia } from '../../../../modules/services/mediaService';
 import { getCategories } from '../../../../modules/services/categoriesService';
-import { getEmploymentTypes } from '../../../../modules/services/employmentTypeService';
 import { getSkills } from '../../../../modules/services/skillsService';
+import { getCompanyTypes } from '../../../../modules/services/companyTypeService';
+import { getProvinces } from '../../../../modules/services/addressService';
 
-export function OverviewTab({ companyId }) {
+export function OverviewTab({ company, companyId }) {
     const dispatch = useDispatch();
 
     useEffect(() => {
-        if (companyId) {
-            dispatch(getCompany(companyId));
-        }
-    }, [dispatch, companyId]);
-
-    useEffect(() => {
         dispatch(getCategories());
-        dispatch(getEmploymentTypes());
+        dispatch(getCompanyTypes());
         dispatch(getSkills());
+        dispatch(getProvinces(1));
     }, [dispatch]);
 
-    const company = useSelector((state) => state.company.company);
     const updateStatus = useSelector((state) => state.company.status);
     const updateError = useSelector((state) => state.company.error);
     const categories = useSelector((state) => state.categories?.categories ?? []);
-    const employmentTypes = useSelector((state) => state.employmentTypes?.employmentTypes ?? []);
+    const companyTypes = useSelector((state) => state.companyTypes?.companyTypes ?? []);
     const skills = useSelector((state) => state.skills?.skills ?? []);
     const [isUpdating, setIsUpdating] = useState(false);
 
+    // Company branches state
+    const [companyBranches, setCompanyBranches] = useState([]);
 
     const [formData, setFormData] = useState({
         companyName: '',
@@ -45,16 +41,11 @@ export function OverviewTab({ companyId }) {
         website: '',
         email: '',
         phone: '',
-        locations: [],
         employees: '',
         industry: '',
         companyTypes: [],
-        foundedDay: '',
-        foundedMonth: '',
-        foundedYear: '',
         techStack: [],
         description: '',
-        address: null,
     });
 
     // Update formData when company data is loaded
@@ -62,22 +53,31 @@ export function OverviewTab({ companyId }) {
         if (company) {
             setFormData({
                 companyName: company.name || '',
-                website: company.website_url || '',
-                email: company.email || '',
                 logo: company.logo || '',
                 background: company.background || '',
+                website: company.website_url || '',
+                email: company.email || '',
                 phone: company.phone || '',
-                locations: company.locations || [],
                 employees: company.employee_count || '',
                 industry: company.industry || '',
-                companyTypes: company.companyTypes || [],
-                foundedDay: company.foundedDay || '',
-                foundedMonth: company.foundedMonth || '',
-                foundedYear: company.foundedYear || '',
+                companyTypes: company.company_types || [],
                 techStack: company.tech_stack || [],
                 description: company.description || '',
-                address: company.address || null,
             });
+
+            // Load company branches
+            const branches = company.company_branches?.map(branch => ({
+                id: branch.id,
+                name: branch.name || '',
+                address: branch.address || '',
+                country_id: branch.country_id || 1,
+                province_id: branch.province_id || '',
+                ward_id: branch.ward_id || '',
+                provinces: branch.provinces,
+                wards: branch.wards,
+            })) || [];
+
+            setCompanyBranches(branches.length > 0 ? branches : [{ name: '', address: '', country_id: 1, province_id: '', ward_id: '' }]);
         }
     }, [company]);
 
@@ -151,7 +151,7 @@ export function OverviewTab({ companyId }) {
                 }
             }
 
-            // Update company
+            // Update company (branches will use separate API)
             const companyData = {
                 name: formData.companyName,
                 website_url: formData.website,
@@ -159,19 +159,32 @@ export function OverviewTab({ companyId }) {
                 phone: formData.phone,
                 logo: logoUrl,
                 background: backgroundUrl,
-                locations: formData.locations,
                 employee_count: formData.employees ? Number(formData.employees) : null,
                 industry: formData.industry,
-                companyTypes: formData.companyTypes,
-                foundedDay: formData.foundedDay,
-                foundedMonth: formData.foundedMonth,
-                foundedYear: formData.foundedYear,
+                company_types: Array.isArray(formData.companyTypes)
+                    ? formData.companyTypes.map(ct => (typeof ct === 'object' && ct !== null ? ct.id : ct)).filter(Boolean)
+                    : [],
                 tech_stack: formData.techStack,
                 description: formData.description,
-                address: formData.address,
             };
 
             await dispatch(updateCompany({ companyId, companyData })).unwrap();
+
+            // Prepare company branches data for separate API call
+            const branchesData = companyBranches
+                .filter(b => b.name && b.address && b.country_id && b.province_id)
+                .map(b => ({
+                    ...(b.id && { id: b.id }), // Include id only if exists (for update)
+                    name: b.name,
+                    address: b.address,
+                    country_id: Number(b.country_id),
+                    province_id: Number(b.province_id),
+                    ward_id: b.ward_id ? Number(b.ward_id) : null,
+                }));
+
+            // TODO: Call separate API for company branches
+            // await dispatch(updateCompanyBranches({ companyId, branches: branchesData })).unwrap();
+
             dispatch(getCompany(companyId));
         } catch (error) {
             console.error('Failed to update company:', error);
@@ -180,12 +193,7 @@ export function OverviewTab({ companyId }) {
         }
     };
 
-    const locationSuggestions = ['England', 'Japan', 'Australia', 'United States', 'Canada', 'Germany', 'France', 'Singapore'];
-    const techStackSuggestions = skills.map((skill) => skill.name) || [];
-
-    const days = Array.from({ length: 31 }, (_, i) => (i + 1).toString());
-    const months = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
-    const years = Array.from({ length: 50 }, (_, i) => (new Date().getFullYear() - i).toString());
+    const techStackSuggestions = skills.map(skill => skill.name);
 
     return (
         <form onSubmit={handleSubmit} className="space-y-8">
@@ -201,16 +209,6 @@ export function OverviewTab({ companyId }) {
                     <LogoUpload
                         currentLogo={company?.logo || "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Cpath fill='%2334d399' d='M30,20 L50,30 L50,60 L30,70 L10,60 L10,30 Z'/%3E%3Cpath fill='%2310b981' d='M50,30 L70,20 L90,30 L90,60 L70,70 L50,60 Z'/%3E%3C/svg%3E"}
                         onLogoChange={(file) => handleInputChange('logo', file)}
-                    />
-                </div>
-
-                {/* Company Background */}
-                <div className="mb-8">
-                    <h4 className="mb-1">Company Background Image</h4>
-                    <p className="text-gray-500 mb-4">This image will be shown as cover/background on your company profile.</p>
-                    <BackgroundUpload
-                        currentBackground={company?.background || null}
-                        onBackgroundChange={(file) => handleInputChange('background', file)}
                     />
                 </div>
 
@@ -256,16 +254,6 @@ export function OverviewTab({ companyId }) {
                             />
                         </div>
 
-                        {/* Location */}
-                        <div className="lg:col-span-2">
-                            <TagInput
-                                label="Location"
-                                tags={formData.locations || []}
-                                onTagsChange={(tags) => setFormData({ ...formData, locations: tags })}
-                                suggestions={locationSuggestions}
-                                placeholder="Select locations"
-                            />
-                        </div>
 
                         {/* Employee */}
                         <div>
@@ -296,9 +284,9 @@ export function OverviewTab({ companyId }) {
                                     onChange={(e) => handleInputChange('industry', e.target.value)}
                                     className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-600 focus:border-transparent appearance-none bg-white"
                                 >
-                                        {categories.map((category) => (
-                                            <option key={category.id} value={category.name}>{category.name}</option>
-                                        ))}
+                                    {categories.map((category) => (
+                                        <option key={category.id} value={category.name}>{category.name}</option>
+                                    ))}
                                 </select>
                                 <ChevronDown className="absolute right-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400 pointer-events-none" />
                             </div>
@@ -307,62 +295,18 @@ export function OverviewTab({ companyId }) {
                         {/* Company Types */}
                         <div className="lg:col-span-2">
                             <CompanyTypeSection
-                                companyTypes={formData.companyTypes || []}
+                                companyTypes={formData.companyTypes}
                                 onCompanyTypesChange={(types) => setFormData({ ...formData, companyTypes: types })}
+                                companyTypeSuggestions={companyTypes.map(ct => ct?.name || '').filter(Boolean)}
+                                allCompanyTypes={companyTypes}
                             />
-                        </div>
-
-                        {/* Date Founded */}
-                        <div className="lg:col-span-2">
-                            <label className="block mb-2 text-gray-700">Date Founded</label>
-                            <div className="grid grid-cols-3 gap-4">
-                                <div className="relative">
-                                    <select
-                                        value={formData.foundedDay || ''}
-                                        onChange={(e) => handleInputChange('foundedDay', e.target.value)}
-                                        className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-600 focus:border-transparent appearance-none bg-white"
-                                    >
-                                        <option value="">Day</option>
-                                        {days.map(day => (
-                                            <option key={day} value={day}>{day}</option>
-                                        ))}
-                                    </select>
-                                    <ChevronDown className="absolute right-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400 pointer-events-none" />
-                                </div>
-                                <div className="relative">
-                                    <select
-                                        value={formData.foundedMonth || ''}
-                                        onChange={(e) => handleInputChange('foundedMonth', e.target.value)}
-                                        className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-600 focus:border-transparent appearance-none bg-white"
-                                    >
-                                        <option value="">Month</option>
-                                        {months.map(month => (
-                                            <option key={month} value={month}>{month}</option>
-                                        ))}
-                                    </select>
-                                    <ChevronDown className="absolute right-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400 pointer-events-none" />
-                                </div>
-                                <div className="relative">
-                                    <select
-                                        value={formData.foundedYear || ''}
-                                        onChange={(e) => handleInputChange('foundedYear', e.target.value)}
-                                        className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-600 focus:border-transparent appearance-none bg-white"
-                                    >
-                                        <option value="">Year</option>
-                                        {years.map(year => (
-                                            <option key={year} value={year}>{year}</option>
-                                        ))}
-                                    </select>
-                                    <ChevronDown className="absolute right-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400 pointer-events-none" />
-                                </div>
-                            </div>
                         </div>
 
                         {/* Tech Stack */}
                         <div className="lg:col-span-2">
                             <TagInput
                                 label="Tech Stack"
-                                tags={formData.techStack || []}
+                                tags={formData.techStack}
                                 onTagsChange={(tags) => setFormData({ ...formData, techStack: tags })}
                                 suggestions={techStackSuggestions}
                                 placeholder="Select technologies"
@@ -372,10 +316,11 @@ export function OverviewTab({ companyId }) {
                 </div>
             </section>
 
-            {/* Company Address */}
-            <AddressSection
-                address={formData.address}
-                onAddressChange={(address) => setFormData({ ...formData, address })}
+            {/* Company Branches */}
+            <CompanyBranchesSection
+                companyBranches={companyBranches}
+                onBranchesChange={setCompanyBranches}
+                companyName={formData.companyName}
             />
 
             {/* About Company */}
@@ -390,7 +335,7 @@ export function OverviewTab({ companyId }) {
                             Description
                         </label>
                         <RichTextEditor
-                            value={formData.description || ''}
+                            value={formData.description}
                             onChange={(value) => setFormData({ ...formData, description: value })}
                             maxLength={500}
                             placeholder="Enter company description..."

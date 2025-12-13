@@ -63,8 +63,17 @@ export default function EducationSection({ educations, showAll, onToggleShowAll,
         </Typography>
       ) : (
         <>
-          {displayedEducations.map((edu) => (
-            <Box key={edu.id} sx={{ mb: 4, '&:last-child': { mb: 0 } }}>
+          {displayedEducations.map((edu, index) => (
+            <Box
+              key={edu.id}
+              sx={{
+                pb: displayedEducations.length > 1 && index < displayedEducations.length - 1 ? 3 : 0,
+                mb: displayedEducations.length > 1 && index < displayedEducations.length - 1 ? 3 : 0,
+                borderBottom: displayedEducations.length > 1 && index < displayedEducations.length - 1 ? '1px solid' : 'none',
+                borderColor: 'divider',
+                '&:last-child': { mb: 0, pb: 0 }
+              }}
+            >
               <Box sx={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', mb: 0.5 }}>
                 <Typography variant="body1" sx={{ fontWeight: 600 }}>{edu.school}</Typography>
                 <Box sx={{ display: 'flex', gap: 0.5 }}>

@@ -41,7 +41,7 @@ export default function NotificationsTab() {
         </div>
         <div className="lg:col-span-8 space-y-6">
           <motion.div
-            whileHover={{ backgroundColor: "rgba(99, 102, 241, 0.02)" }}
+            whileHover={{ backgroundColor: "rgba(37, 99, 235, 0.02)" }}
             className="rounded-lg cursor-pointer transition-colors"
             onClick={() => handleNotificationChange("applications")}
           >
@@ -50,7 +50,7 @@ export default function NotificationsTab() {
                 <motion.div
                   whileTap={{ scale: 0.9 }}
                   className={`w-5 h-5 rounded flex items-center justify-center transition-all ${notifications.applications
-                    ? "bg-indigo-600"
+                    ? "bg-blue-600"
                     : "border-2 border-gray-300 bg-white"
                     }`}
                 >
@@ -75,7 +75,7 @@ export default function NotificationsTab() {
           </motion.div>
 
           <motion.div
-            whileHover={{ backgroundColor: "rgba(99, 102, 241, 0.02)" }}
+            whileHover={{ backgroundColor: "rgba(37, 99, 235, 0.02)" }}
             className="rounded-lg cursor-pointer transition-colors"
             onClick={() => handleNotificationChange("jobs")}
           >
@@ -84,7 +84,7 @@ export default function NotificationsTab() {
                 <motion.div
                   whileTap={{ scale: 0.9 }}
                   className={`w-5 h-5 rounded flex items-center justify-center transition-all ${notifications.jobs
-                    ? "bg-indigo-600"
+                    ? "bg-blue-600"
                     : "border-2 border-gray-300 bg-white"
                     }`}
                 >
@@ -109,7 +109,7 @@ export default function NotificationsTab() {
           </motion.div>
 
           <motion.div
-            whileHover={{ backgroundColor: "rgba(99, 102, 241, 0.02)" }}
+            whileHover={{ backgroundColor: "rgba(37, 99, 235, 0.02)" }}
             className="rounded-lg cursor-pointer transition-colors"
             onClick={() => handleNotificationChange("recommendations")}
           >
@@ -118,7 +118,7 @@ export default function NotificationsTab() {
                 <motion.div
                   whileTap={{ scale: 0.9 }}
                   className={`w-5 h-5 rounded flex items-center justify-center transition-all ${notifications.recommendations
-                    ? "bg-indigo-600"
+                    ? "bg-blue-600"
                     : "border-2 border-gray-300 bg-white"
                     }`}
                 >
@@ -145,7 +145,7 @@ export default function NotificationsTab() {
           <motion.button
             whileHover={{ scale: 1.02 }}
             whileTap={{ scale: 0.98 }}
-            className="px-6 py-3 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition-colors"
+            className="px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
           >
             {t("save")}
           </motion.button>

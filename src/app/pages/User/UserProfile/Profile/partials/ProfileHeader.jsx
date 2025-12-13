@@ -46,14 +46,14 @@ export default function ProfileHeader({ user, onEdit }) {
               <PhoneIcon sx={{ fontSize: 18, color: 'text.disabled' }} />
               <Typography variant="body2" color="text.secondary">{user.phone}</Typography>
             </Box>
-            <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+            {/* <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
               <PersonIcon sx={{ fontSize: 18, color: 'text.disabled' }} />
               <Typography variant="body2" color="text.secondary">Ngày sinh</Typography>
             </Box>
             <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
               <PersonIcon sx={{ fontSize: 18, color: 'text.disabled' }} />
               <Typography variant="body2" color="text.secondary">Giới tính</Typography>
-            </Box>
+            </Box> */}
             <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
               <LocationOnIcon sx={{ fontSize: 18, color: 'text.disabled' }} />
               <Typography variant="body2" color="text.secondary">{user.location}</Typography>

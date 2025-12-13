@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import { Container, Box, CircularProgress, Typography } from '@mui/material';
 import { useSelector, useDispatch } from 'react-redux';
 
@@ -24,8 +24,6 @@ import { useProfileHandlers } from './hooks/useProfileHandlers';
 // Components
 import { ProfileModals } from './components/ProfileModals';
 
-import { getEducationByStudentId } from '../../../../modules/services/educationsService';
-
 export default function Profile() {
     const dispatch = useDispatch();
 
@@ -44,17 +42,6 @@ export default function Profile() {
         dispatch,
         currentUser,
     });
-
-    // Fetch profile data (education, experience, etc.) once when component mounts
-    useEffect(() => {
-        if (currentUser && currentUser.user_id) {
-            // Import and dispatch your data fetching actions here
-            // Example: dispatch(getEducations(currentUser.user_id));
-            // dispatch(getExperiences(currentUser.user_id));
-            // dispatch(getSkills(currentUser.user_id));
-            dispatch(getEducationByStudentId(currentUser.student_info.id));
-        }
-    }, [currentUser?.user_id, dispatch]);
 
     // Show loading if no user data yet (after reload)
     if (!currentUser && authStatus === 'loading') {
@@ -205,12 +192,12 @@ export default function Profile() {
                             onAdd={() => { setSelectedCertificate(null); openModal('certificates'); }}
                         />
 
-                        <AwardsSection
+                        {/* <AwardsSection
                             awards={awards}
                             onEdit={handleEditAward}
                             onDelete={handlers.handleDeleteAward}
                             onAdd={() => { setSelectedAward(null); openModal('awards'); }}
-                        />
+                        /> */}
                     </Box>
 
                     {/* Right Sidebar - Completion (hidden on small screens) */}
@@ -228,13 +215,14 @@ export default function Profile() {
                 openModal={openModal}
                 closeModal={closeModal}
                 user={user}
+                about={about}
                 selectedExperience={selectedExperience}
                 selectedEducation={selectedEducation}
                 selectedSkillGroup={selectedSkillGroup}
                 selectedProject={selectedProject}
                 selectedCertificate={selectedCertificate}
                 selectedAward={selectedAward}
-                    skills={skills}
+                skills={skills}
                 setSelectedExperience={setSelectedExperience}
                 setSelectedEducation={setSelectedEducation}
                 setSelectedSkillGroup={setSelectedSkillGroup}

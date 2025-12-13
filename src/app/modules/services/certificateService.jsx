@@ -1,7 +1,7 @@
 import api from "../AxiosInstance";
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 
-const apiBaseUrl = "/api/certificates";
+const apiBaseUrl = "/api/certifications";
 
 // Redux slice and thunks for certificates
 
@@ -113,7 +113,6 @@ const certificatesSlice = createSlice({
             })
             .addCase(createCertificate.fulfilled, (state, action) => {
                 state.status = "succeeded";
-                // Optionally push to certificates
                 if (action.payload.data) {
                     state.certificates.push(action.payload.data);
                 }

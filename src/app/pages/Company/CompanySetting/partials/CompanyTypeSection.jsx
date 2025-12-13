@@ -1,17 +1,20 @@
 import { TagInput } from './TagInput';
 
-export function CompanyTypeSection({ companyTypes, onCompanyTypesChange }) {
-    const companyTypeSuggestions = [
-        'Product',
-        'Outsourcing',
-        'Service',
-        'Startup',
-        'Agency',
-        'Enterprise',
-        'MNC (Multinational Corporation)',
-        'SME (Small and Medium Enterprise)',
-        'Non-profit'
-    ];
+export function CompanyTypeSection({ companyTypes, onCompanyTypesChange, companyTypeSuggestions = [], allCompanyTypes = [] }) {
+    const handleTagsChange = (tags) => {
+        // Transform string tags to objects if needed
+        const transformedTags = tags.map(tag => {
+            if (typeof tag === 'object' && tag !== null) {
+                return tag;
+            }
+            if (typeof tag === 'string') {
+                const matchingType = allCompanyTypes.find(ct => ct.name === tag || ct.id === tag);
+                return matchingType || tag; // Return object if found, otherwise keep string
+            }
+            return tag;
+        });
+        onCompanyTypesChange(transformedTags);
+    };
 
     return (
         <section className="mb-8">
@@ -21,7 +24,7 @@ export function CompanyTypeSection({ companyTypes, onCompanyTypesChange }) {
             <TagInput
                 label="Company Types"
                 tags={companyTypes}
-                onTagsChange={onCompanyTypesChange}
+                onTagsChange={handleTagsChange}
                 suggestions={companyTypeSuggestions}
                 placeholder="Select company types"
             />

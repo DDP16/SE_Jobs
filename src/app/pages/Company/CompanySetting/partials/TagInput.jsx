@@ -6,7 +6,21 @@ export function TagInput({ label, tags, onTagsChange, placeholder, suggestions =
     const [inputValue, setInputValue] = useState('');
 
     const addTag = (tag) => {
-        if (tag && !tags.includes(tag)) {
+        if (!tag) return;
+
+        const tagExists = tags.some(existingTag => {
+            if (typeof existingTag === 'object' && existingTag !== null) {
+                return typeof tag === 'object' && tag !== null
+                    ? existingTag.id === tag.id || existingTag.name === tag.name
+                    : existingTag.name === tag || existingTag.id === tag;
+            } else {
+                return typeof tag === 'object' && tag !== null
+                    ? tag.name === existingTag || tag.id === existingTag
+                    : existingTag === tag;
+            }
+        });
+
+        if (!tagExists) {
             onTagsChange([...tags, tag]);
         }
         setInputValue('');
@@ -14,7 +28,13 @@ export function TagInput({ label, tags, onTagsChange, placeholder, suggestions =
     };
 
     const removeTag = (tagToRemove) => {
-        onTagsChange(tags.filter(tag => tag !== tagToRemove));
+        onTagsChange(tags.filter(tag => {
+            // Handle both string and object comparison
+            if (typeof tag === 'object' && tag !== null && typeof tagToRemove === 'object' && tagToRemove !== null) {
+                return tag.id !== tagToRemove.id && tag.name !== tagToRemove.name;
+            }
+            return tag !== tagToRemove;
+        }));
     };
 
     const handleKeyDown = (e) => {
@@ -24,7 +44,15 @@ export function TagInput({ label, tags, onTagsChange, placeholder, suggestions =
         }
     };
 
-    const availableSuggestions = suggestions.filter(s => !tags.includes(s));
+    const availableSuggestions = suggestions.filter(s => {
+        // Check if suggestion already exists in tags (handle both string and object)
+        return !tags.some(tag => {
+            if (typeof tag === 'object' && tag !== null) {
+                return tag.name === s || tag.id === s;
+            }
+            return tag === s;
+        });
+    });
 
     return (
         <div>
@@ -34,24 +62,29 @@ export function TagInput({ label, tags, onTagsChange, placeholder, suggestions =
                     className="min-h-[48px] w-full px-3 py-2 border border-gray-300 rounded-lg focus-within:ring-2 focus-within:ring-blue-600 focus-within:border-transparent cursor-text flex flex-wrap gap-2 items-center"
                     onClick={() => setIsOpen(!isOpen)}
                 >
-                    {tags.map((tag) => (
-                        <span
-                            key={tag}
-                            className="inline-flex items-center gap-1 px-2 py-1 bg-blue-50 text-blue-700 rounded"
-                        >
-                            {tag}
-                            <button
-                                type="button"
-                                onClick={(e) => {
-                                    e.stopPropagation();
-                                    removeTag(tag);
-                                }}
-                                className="hover:bg-blue-100 rounded"
+                    {tags.map((tag, index) => {
+                        // Handle both object {id, name} and string
+                        const tagKey = typeof tag === 'object' && tag !== null ? (tag.id || tag.name || index) : tag;
+                        const tagDisplay = typeof tag === 'object' && tag !== null ? (tag.name || tag.id || '') : tag;
+                        return (
+                            <span
+                                key={tagKey}
+                                className="inline-flex items-center gap-1 px-2 py-1 bg-blue-50 text-blue-700 rounded"
                             >
-                                <X className="w-3 h-3" />
-                            </button>
-                        </span>
-                    ))}
+                                {tagDisplay}
+                                <button
+                                    type="button"
+                                    onClick={(e) => {
+                                        e.stopPropagation();
+                                        removeTag(tag);
+                                    }}
+                                    className="hover:bg-blue-100 rounded"
+                                >
+                                    <X className="w-3 h-3" />
+                                </button>
+                            </span>
+                        );
+                    })}
                     <input
                         type="text"
                         value={inputValue}

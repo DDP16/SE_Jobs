@@ -7,30 +7,42 @@ import { X, Bold, Italic, Underline, List } from "lucide-react";
 import { Lightbulb } from "lucide-react";
 import { useSelector } from "react-redux";
 
-export default function AboutModal({ open, onOpenChange, onSave }) {
+export default function AboutModal({ open, onOpenChange, onSave, initialData }) {
     const currentUser = useSelector((state) => state.auth.user);
-    const [content, setContent] = useState(currentUser?.about || "");
+    const [content, setContent] = useState("");
     const [charCount, setCharCount] = useState(0);
     const editorRef = useRef(null);
     const maxChars = 2500;
 
-    // Update content when currentUser changes
+    // Update content when initialData or modal opens
     useEffect(() => {
-        if (currentUser) {
-            const introContent = currentUser?.about || "";
+        if (open) {
+            // Priority: initialData > currentUser.student_info.about > currentUser.about
+            const introContent = initialData?.about ||
+                initialData?.content ||
+                currentUser?.student_info?.about ||
+                currentUser?.about ||
+                "";
             setContent(introContent);
             setCharCount(introContent.length);
-            if (editorRef.current) {
-                editorRef.current.innerHTML = introContent;
-            }
+
+            // Use setTimeout to ensure editor is mounted
+            const timer = setTimeout(() => {
+                if (editorRef.current) {
+                    editorRef.current.innerHTML = introContent;
+                }
+            }, 0);
+
+            return () => clearTimeout(timer);
         } else {
+            // Reset when modal closes
             setContent("");
             setCharCount(0);
             if (editorRef.current) {
                 editorRef.current.innerHTML = "";
             }
         }
-    }, [currentUser, open]);
+    }, [initialData, currentUser, open]);
 
     const handleContentChange = () => {
         if (editorRef.current) {

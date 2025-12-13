@@ -20,34 +20,32 @@ export default function UserProfileSettings() {
           <div className="flex gap-8">
             <button
               onClick={() => setActiveTab("account")}
-              className={`pb-3 px-1 relative transition-colors ${
-                activeTab === "account"
-                  ? "text-gray-900"
-                  : "text-gray-500 hover:text-gray-700"
-              }`}
+              className={`pb-3 px-1 relative transition-colors ${activeTab === "account"
+                ? "text-gray-900"
+                : "text-gray-500 hover:text-gray-700"
+                }`}
             >
               {t("setting.my_account")}
               {activeTab === "account" && (
                 <motion.div
                   layoutId="activeTab"
-                  className="absolute bottom-0 left-0 right-0 h-0.5 bg-indigo-600"
+                  className="absolute bottom-0 left-0 right-0 h-0.5 bg-blue-600"
                   transition={{ type: "spring", stiffness: 500, damping: 30 }}
                 />
               )}
             </button>
             <button
               onClick={() => setActiveTab("notifications")}
-              className={`pb-3 px-1 relative transition-colors ${
-                activeTab === "notifications"
-                  ? "text-gray-900"
-                  : "text-gray-500 hover:text-gray-700"
-              }`}
+              className={`pb-3 px-1 relative transition-colors ${activeTab === "notifications"
+                ? "text-gray-900"
+                : "text-gray-500 hover:text-gray-700"
+                }`}
             >
               {t("setting.notifications")}
               {activeTab === "notifications" && (
                 <motion.div
                   layoutId="activeTab"
-                  className="absolute bottom-0 left-0 right-0 h-0.5 bg-indigo-600"
+                  className="absolute bottom-0 left-0 right-0 h-0.5 bg-blue-600"
                   transition={{ type: "spring", stiffness: 500, damping: 30 }}
                 />
               )}

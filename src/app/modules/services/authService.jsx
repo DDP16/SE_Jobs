@@ -124,7 +124,7 @@ export const register = createAsyncThunk(
       company,
       company_branches,
     },
-    { rejectWithValue } 
+    { rejectWithValue }
   ) => {
     const reqData = {
       email,
@@ -203,41 +203,80 @@ export const getMe = createAsyncThunk("auth/getMe", async (_, { rejectWithValue 
 });
 
 export const logout = createAsyncThunk(
-    "auth/logout",
-    async (_, { rejectWithValue }) => {
-        try {
-            const result = await new Promise((resolve, reject) => {
-                post(
-                    "/api/auth/logout",
-                    {},
-                    async (res) => {
-                        try {
-                            const data = await res.json();
-                            if (res.ok) {
-                                resolve(data);
-                                clearAuthStorage();
-                            } else {
-                                reject(data.message || "Logout failed");
-                            }
-                        } catch (error) {
-                            reject(error.message || "Logout processing error");
-                        }
-                    },
-                    async (res) => {
-                        try {
-                            const data = await res.json();
-                            reject(data.message || "Logout failed");
-                        } catch (error) {
-                            reject("Logout failed");
-                        }
-                    }
-                );
-            });
-            return result;
-        } catch (error) {
-            return rejectWithValue(error);
-        }
+  "auth/logout",
+  async (_, { rejectWithValue }) => {
+    try {
+      const result = await new Promise((resolve, reject) => {
+        post(
+          "/api/auth/logout",
+          {},
+          async (res) => {
+            try {
+              const data = await res.json();
+              if (res.ok) {
+                resolve(data);
+                clearAuthStorage();
+              } else {
+                reject(data.message || "Logout failed");
+              }
+            } catch (error) {
+              reject(error.message || "Logout processing error");
+            }
+          },
+          async (res) => {
+            try {
+              const data = await res.json();
+              reject(data.message || "Logout failed");
+            } catch (error) {
+              reject("Logout failed");
+            }
+          }
+        );
+      });
+      return result;
+    } catch (error) {
+      return rejectWithValue(error);
     }
+  }
+);
+
+export const resetPassword = createAsyncThunk(
+  "auth/resetPassword",
+  async ({ token, new_password }, { rejectWithValue }) => {
+    const reqData = { token, new_password };
+
+    try {
+      const result = await new Promise((resolve, reject) => {
+        post(
+          "/api/auth/reset-password",
+          reqData,
+          async (res) => {
+            try {
+              const data = await res.json();
+              if (res.ok) {
+                resolve(data);
+              } else {
+                reject(data.message || "Reset password failed");
+              }
+            } catch (error) {
+              reject(error.message || "Reset password processing error");
+            }
+          },
+          async (res) => {
+            try {
+              const data = await res.json();
+              reject(data.message || "Reset password failed");
+            } catch (error) {
+              reject("Reset password failed");
+            }
+          }
+        );
+      });
+      return result;
+    } catch (error) {
+      return rejectWithValue(error);
+    }
+  }
 );
 
 const authStorage = getAuthStorage();
@@ -325,6 +364,19 @@ const authSlice = createSlice({
         clearAuthStorage();
       })
       .addCase(logout.rejected, (state, action) => {
+        state.status = "failed";
+        state.error = action.payload;
+      })
+      // Reset Password
+      .addCase(resetPassword.pending, (state) => {
+        state.status = "loading";
+        state.error = null;
+      })
+      .addCase(resetPassword.fulfilled, (state, action) => {
+        state.status = "succeeded";
+        state.error = null;
+      })
+      .addCase(resetPassword.rejected, (state, action) => {
         state.status = "failed";
         state.error = action.payload;
       });
