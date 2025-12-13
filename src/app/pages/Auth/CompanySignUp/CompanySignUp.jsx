@@ -15,16 +15,32 @@ import {
 import { CustomAlert, LangButtonGroup } from "@/components";
 import { Button, Input } from "@/components/ui";
 import { srcAsset } from "../../../lib";
-import { register, validateEmail, validatePassword, getCompanyTypes } from "../../../modules";
+import { register, validateEmail, validatePassword, getCompanyTypes, getProvinces, getWards } from "../../../modules";
 import { useCustomAlert } from "../../../hooks/useCustomAlert";
 
 export default function CompanySignUp() {
   const dispatch = useDispatch();
   useEffect(() => {
     dispatch(getCompanyTypes());
+    dispatch(getProvinces(1)); // Fetch provinces for Vietnam by default
   }, [dispatch]);
-  
+
+    const [companyBranches, setCompanyBranches] = useState([
+      { name: '', address: '', country_id: 1, province_id: '', ward_id: '' }
+    ]);
+
+    const [branchesError, setBranchesError] = useState([]);
+    const [provinceSearchTerms, setProvinceSearchTerms] = useState(['']);
+    const [wardSearchTerms, setWardSearchTerms] = useState(['']);
+    const [showProvinceDropdowns, setShowProvinceDropdowns] = useState([false]);
+    const [showWardDropdowns, setShowWardDropdowns] = useState([false]);
+
   const companyTypes = useSelector(state => state.companyTypes.companyTypes || []);
+  const provincesRaw = useSelector(state => state.address?.provinces?.data);
+  const wardsRaw = useSelector(state => state.address?.wards?.data);
+  const provinces = Array.isArray(provincesRaw) ? provincesRaw : [];
+  const wards = Array.isArray(wardsRaw) ? wardsRaw : [];
+  const countries = [{ id: 1, name: 'Việt Nam' }];
   const [companyType, setCompanyType] = useState([]);
   const [showCompanyTypeDropdown, setShowCompanyTypeDropdown] = useState(false);
 
@@ -59,7 +75,8 @@ export default function CompanySignUp() {
 
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
-  const [email, setEmail] = useState("");
+  const [loginEmail, setLoginEmail] = useState("");
+  const [companyEmail, setCompanyEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [lastName, setLastName] = useState("");
@@ -69,7 +86,8 @@ export default function CompanySignUp() {
   const [websiteUrl, setWebsiteUrl] = useState("");
   const [agreeTerms, setAgreeTerms] = useState(false);
 
-  const [emailError, setEmailError] = useState("");
+  const [loginEmailError, setLoginEmailError] = useState("");
+  const [companyEmailError, setCompanyEmailError] = useState("");
   const [passwordError, setPasswordError] = useState("");
   const [confirmPasswordError, setConfirmPasswordError] = useState("");
   const [lastNameError, setLastNameError] = useState("");
@@ -82,7 +100,8 @@ export default function CompanySignUp() {
     e.preventDefault();
 
     // Reset all errors
-    setEmailError("");
+    setLoginEmailError("");
+    setCompanyEmailError("");
     setPasswordError("");
     setConfirmPasswordError("");
     setLastNameError("");
@@ -94,11 +113,18 @@ export default function CompanySignUp() {
     let valid = true;
 
     // Validate email
-    if (!email) {
-      setEmailError("Email đăng nhập không được để trống");
+    if (!loginEmail) {
+      setLoginEmailError("Email đăng nhập không được để trống");
       valid = false;
-    } else if (!validateEmail(email)) {
-      setEmailError("Vui lòng nhập địa chỉ email hợp lệ");
+    } else if (!validateEmail(loginEmail)) {
+      setLoginEmailError("Vui lòng nhập địa chỉ email hợp lệ");
+      valid = false;
+    }
+    if (!companyEmail) {
+      setCompanyEmailError("Email doanh nghiệp không được để trống");
+      valid = false;
+    } else if (!validateEmail(companyEmail)) {
+      setCompanyEmailError("Vui lòng nhập địa chỉ email doanh nghiệp hợp lệ");
       valid = false;
     }
 
@@ -151,10 +177,25 @@ export default function CompanySignUp() {
       valid = false;
     }
 
+    // Validate branches (simple: all required fields must be filled)
+    let branchesValid = true;
+    const newBranchesError = companyBranches.map((b) => {
+      const err = {};
+      if (!b.name) err.name = 'Tên chi nhánh không được để trống';
+      if (!b.address) err.address = 'Địa chỉ không được để trống';
+      if (!b.country_id) err.country_id = 'Chọn quốc gia';
+      if (!b.province_id) err.province_id = 'Chọn tỉnh/thành';
+      if (!b.ward_id) err.ward_id = 'Chọn phường/xã';
+      if (Object.keys(err).length > 0) branchesValid = false;
+      return err;
+    });
+    setBranchesError(newBranchesError);
+    if (!branchesValid) valid = false;
+
     if (valid) {
       try {
         const payload = {
-          email,
+          email: loginEmail,
           first_name: firstName,
           last_name: lastName,
           password,
@@ -164,8 +205,16 @@ export default function CompanySignUp() {
             name: companyName,
             company_types: companyType,
             phone,
-            email,
-            // website_url: websiteUrl,
+            email: companyEmail,
+            website_url: websiteUrl,
+            company_branches: companyBranches.map(b => ({
+              ...b,
+              country_id: b.country_id || null,
+              province_id: b.province_id || null,
+              ward_id: b.ward_id || null,
+              created_at: new Date().toISOString(),
+              updated_at: new Date().toISOString()
+            }))
           }
         };
 
@@ -212,29 +261,37 @@ export default function CompanySignUp() {
                   <label className="block text-sm font-medium text-gray-900">
                     Họ <span className="text-red-500">*</span>
                   </label>
-                  <Input
-                    type="text"
-                    placeholder="Họ"
-                    value={lastName}
-                    onChange={e => setLastName(e.target.value)}
-                    startAdornment={<PersonIcon className="text-gray-400" />}
-                    error={!!lastNameError}
-                    helperText={lastNameError}
-                  />
+                  <div className="relative">
+                    <PersonIcon className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 z-10" style={{ fontSize: '20px' }} />
+                    <input
+                      type="text"
+                      placeholder="Họ"
+                      value={lastName}
+                      onChange={e => setLastName(e.target.value)}
+                      className={`w-full h-12 rounded-lg border px-3 pl-10 focus:border-blue-500 focus:ring-blue-500 ${lastNameError ? 'border-red-500' : 'border-gray-300'}`}
+                    />
+                  </div>
+                  {lastNameError && (
+                    <p className="text-xs text-red-500 mt-1">{lastNameError}</p>
+                  )}
                 </div>
                 <div className="flex-1">
                   <label className="block text-sm font-medium text-gray-900">
                     Tên <span className="text-red-500">*</span>
                   </label>
-                  <Input
-                    type="text"
-                    placeholder="Tên"
-                    value={firstName}
-                    onChange={e => setFirstName(e.target.value)}
-                    startAdornment={<PersonIcon className="text-gray-400" />}
-                    error={!!firstNameError}
-                    helperText={firstNameError}
-                  />
+                  <div className="relative">
+                    <PersonIcon className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 z-10" style={{ fontSize: '20px' }} />
+                    <input
+                      type="text"
+                      placeholder="Tên"
+                      value={firstName}
+                      onChange={e => setFirstName(e.target.value)}
+                      className={`w-full h-12 rounded-lg border px-3 pl-10 focus:border-blue-500 focus:ring-blue-500 ${firstNameError ? 'border-red-500' : 'border-gray-300'}`}
+                    />
+                  </div>
+                  {firstNameError && (
+                    <p className="text-xs text-red-500 mt-1">{firstNameError}</p>
+                  )}
                 </div>
               </div>
               {/* Email */}
@@ -244,20 +301,20 @@ export default function CompanySignUp() {
                 </label>
                 <div className="relative">
                   <MailIcon className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 z-10" style={{ fontSize: '20px' }} />
-                  <Input
+                  <input
                     id="email"
                     type="email"
                     placeholder="Email đăng nhập"
-                    value={email}
-                    onChange={(e) => setEmail(e.target.value)}
-                    className={`w-full h-12 rounded-lg border-gray-300 focus:border-blue-500 focus:ring-blue-500 pl-10 ${emailError ? 'border-red-500' : ''}`}
+                    value={loginEmail}
+                    onChange={(e) => setLoginEmail(e.target.value)}
+                    className={`w-full h-12 rounded-lg border px-3 pl-10 focus:border-blue-500 focus:ring-blue-500 ${loginEmailError ? 'border-red-500' : 'border-gray-300'}`}
                   />
-                  {emailError && (
+                  {loginEmailError && (
                     <ErrorIcon className="absolute right-3 top-1/2 -translate-y-1/2 text-red-500 z-10" style={{ fontSize: '16px' }} />
                   )}
                 </div>
-                {emailError && (
-                  <p className="text-xs text-red-500 mt-1">{emailError}</p>
+                {loginEmailError && (
+                  <p className="text-xs text-red-500 mt-1">{loginEmailError}</p>
                 )}
               </div>
             </div>
@@ -268,13 +325,13 @@ export default function CompanySignUp() {
               </label>
               <div className="relative">
                 <LockIcon className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 z-10" style={{ fontSize: '20px' }} />
-                <Input
+                <input
                   id="password"
                   type={showPassword ? "text" : "password"}
                   placeholder="Mật khẩu"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
-                  className={`w-full h-12 rounded-lg border-gray-300 focus:border-blue-500 focus:ring-blue-500 pl-10 pr-12 ${passwordError ? 'border-red-500' : ''}`}
+                  className={`w-full h-12 rounded-lg border px-3 pl-10 pr-12 focus:border-blue-500 focus:ring-blue-500 ${passwordError ? 'border-red-500' : 'border-gray-300'}`}
                 />
                 {passwordError && (
                   <ErrorIcon className="absolute right-12 top-1/2 -translate-y-1/2 text-red-500 z-10" style={{ fontSize: '16px' }} />
@@ -298,13 +355,13 @@ export default function CompanySignUp() {
               </label>
               <div className="relative">
                 <LockIcon className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 z-10" style={{ fontSize: '20px' }} />
-                <Input
+                <input
                   id="confirmPassword"
                   type={showConfirmPassword ? "text" : "password"}
                   placeholder="Nhập lại mật khẩu"
                   value={confirmPassword}
                   onChange={(e) => setConfirmPassword(e.target.value)}
-                  className={`w-full h-12 rounded-lg border-gray-300 focus:border-blue-500 focus:ring-blue-500 pl-10 pr-12 ${confirmPasswordError ? 'border-red-500' : ''}`}
+                  className={`w-full h-12 rounded-lg border px-3 pl-10 pr-12 focus:border-blue-500 focus:ring-blue-500 ${confirmPasswordError ? 'border-red-500' : 'border-gray-300'}`}
                 />
                 {confirmPasswordError && (
                   <ErrorIcon className="absolute right-12 top-1/2 -translate-y-1/2 text-red-500 z-10" style={{ fontSize: '16px' }} />
@@ -334,13 +391,13 @@ export default function CompanySignUp() {
               </label>
               <div className="relative">
                 <BusinessIcon className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 z-10" style={{ fontSize: '20px' }} />
-                <Input
+                <input
                   id="companyName"
                   type="text"
                   placeholder="Tên công ty"
                   value={companyName}
                   onChange={(e) => setCompanyName(e.target.value)}
-                  className={`w-full h-12 rounded-lg border-gray-300 focus:border-blue-500 focus:ring-blue-500 pl-10 ${companyNameError ? 'border-red-500' : ''}`}
+                  className={`w-full h-12 rounded-lg border px-3 pl-10 focus:border-blue-500 focus:ring-blue-500 ${companyNameError ? 'border-red-500' : 'border-gray-300'}`}
                 />
                 {companyNameError && (
                   <ErrorIcon className="absolute right-3 top-1/2 -translate-y-1/2 text-red-500 z-10" style={{ fontSize: '16px' }} />
@@ -427,13 +484,13 @@ export default function CompanySignUp() {
               </label>
               <div className="relative">
                 <BusinessIcon className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 z-10" style={{ fontSize: '20px' }} />
-                <Input
+                <input
                   id="websiteUrl"
                   type="text"
                   placeholder="https://example.com"
                   value={websiteUrl}
                   onChange={(e) => setWebsiteUrl(e.target.value)}
-                  className={`w-full h-12 rounded-lg border-gray-300 focus:border-blue-500 focus:ring-blue-500 pl-10 ${websiteUrlError ? 'border-red-500' : ''}`}
+                  className={`w-full h-12 rounded-lg border px-3 pl-10 focus:border-blue-500 focus:ring-blue-500 ${websiteUrlError ? 'border-red-500' : 'border-gray-300'}`}
                 />
                 {websiteUrlError && (
                   <ErrorIcon className="absolute right-3 top-1/2 -translate-y-1/2 text-red-500 z-10" style={{ fontSize: '16px' }} />
@@ -451,13 +508,13 @@ export default function CompanySignUp() {
               </label>
               <div className="relative">
                 <PhoneIcon className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 z-10" style={{ fontSize: '20px' }} />
-                <Input
+                <input
                   id="phone"
                   type="text"
                   placeholder="Số điện thoại"
                   value={phone}
                   onChange={(e) => setPhone(e.target.value)}
-                  className={`w-full h-12 rounded-lg border-gray-300 focus:border-blue-500 focus:ring-blue-500 pl-10 ${phoneError ? 'border-red-500' : ''}`}
+                  className={`w-full h-12 rounded-lg border px-3 pl-10 focus:border-blue-500 focus:ring-blue-500 ${phoneError ? 'border-red-500' : 'border-gray-300'}`}
                 />
                 {phoneError && (
                   <ErrorIcon className="absolute right-3 top-1/2 -translate-y-1/2 text-red-500 z-10" style={{ fontSize: '16px' }} />
@@ -474,23 +531,247 @@ export default function CompanySignUp() {
                 </label>
                 <div className="relative">
                   <MailIcon className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 z-10" style={{ fontSize: '20px' }} />
-                  <Input
+                  <input
                     id="companyEmail"
                     type="email"
                     placeholder="Email doanh nghiệp"
-                    value={email}
-                    onChange={(e) => setEmail(e.target.value)}
-                    className={`w-full h-12 rounded-lg border-gray-300 focus:border-blue-500 focus:ring-blue-500 pl-10 ${emailError ? 'border-red-500' : ''}`}
+                    value={companyEmail}
+                    onChange={(e) => setCompanyEmail(e.target.value)}
+                    className={`w-full h-12 rounded-lg border px-3 pl-10 focus:border-blue-500 focus:ring-blue-500 ${companyEmailError ? 'border-red-500' : 'border-gray-300'}`}
                   />
-                  {emailError && (
+                  {companyEmailError && (
                     <ErrorIcon className="absolute right-3 top-1/2 -translate-y-1/2 text-red-500 z-10" style={{ fontSize: '16px' }} />
                   )}
                 </div>
-                {emailError && (
-                  <p className="text-xs text-red-500 mt-1">{emailError}</p>
+                {companyEmailError && (
+                  <p className="text-xs text-red-500 mt-1">{companyEmailError}</p>
                 )}
               </div>
           </div>
+
+                   {/* Company Branches */}
+            <div className="space-y-4 pt-4 border-t border-gray-200">
+              <h4 className="text-lg font-semibold text-gray-900 mb-2">Chi nhánh công ty</h4>
+              {companyBranches.map((branch, idx) => (
+                <div key={idx} className="border rounded-lg p-4 mb-2 relative">
+                  <div className="flex flex-col md:flex-row gap-4 mb-2">
+                    <div className="flex-1">
+                      <label className="block text-sm font-medium text-gray-900">Tên chi nhánh <span className="text-red-500">*</span></label>
+                      <input 
+                        type="text" 
+                        placeholder={companyName || 'Tên chi nhánh'} 
+                        value={branch.name} 
+                        onChange={e => {
+                          const arr = [...companyBranches]; arr[idx].name = e.target.value; setCompanyBranches(arr);
+                        }}
+                        className={`w-full h-12 rounded-lg border px-3 focus:border-blue-500 focus:ring-blue-500 ${branchesError[idx]?.name ? 'border-red-500' : 'border-gray-300'}`}
+                      />
+                      {branchesError[idx]?.name && (
+                        <p className="text-xs text-red-500 mt-1">{branchesError[idx]?.name}</p>
+                      )}
+                    </div>
+                    <div className="flex-1">
+                      <label className="block text-sm font-medium text-gray-900">Địa chỉ <span className="text-red-500">*</span></label>
+                      <input 
+                        type="text" 
+                        placeholder="Địa chỉ chi nhánh"
+                        value={branch.address} 
+                        onChange={e => {
+                          const arr = [...companyBranches]; arr[idx].address = e.target.value; setCompanyBranches(arr);
+                        }}
+                        className={`w-full h-12 rounded-lg border px-3 focus:border-blue-500 focus:ring-blue-500 ${branchesError[idx]?.address ? 'border-red-500' : 'border-gray-300'}`}
+                      />
+                      {branchesError[idx]?.address && (
+                        <p className="text-xs text-red-500 mt-1">{branchesError[idx]?.address}</p>
+                      )}
+                    </div>
+                  </div>
+                  <div className="flex flex-col md:flex-row gap-4">
+                    <div className="flex-1">
+                      <label className="block text-sm font-medium text-gray-900">Quốc gia <span className="text-red-500">*</span></label>
+                      <select
+                        className={`w-full h-12 rounded-lg border-gray-300 focus:border-blue-500 focus:ring-blue-500 px-3 ${branchesError[idx]?.country_id ? 'border-red-500' : ''}`}
+                        value={branch.country_id}
+                        onChange={e => {
+                          const arr = [...companyBranches];
+                          arr[idx].country_id = e.target.value;
+                          arr[idx].province_id = '';
+                          arr[idx].ward_id = '';
+                          setCompanyBranches(arr);
+                          
+                          // Fetch provinces for selected country
+                          if (e.target.value) {
+                            dispatch(getProvinces(e.target.value));
+                          }
+                        }}
+                      >
+                        <option value="">Chọn quốc gia</option>
+                        {countries.map((country) => (
+                          <option key={country.id} value={country.id}>{country.name}</option>
+                        ))}
+                      </select>
+                      {branchesError[idx]?.country_id && (
+                        <p className="text-xs text-red-500 mt-1">{branchesError[idx]?.country_id}</p>
+                      )}
+                    </div>
+                    <div className="flex-1 relative">
+                      <label className="block text-sm font-medium text-gray-900">Tỉnh/Thành <span className="text-red-500">*</span></label>
+                      <input
+                        type="text"
+                        placeholder="Nhập để tìm tỉnh/thành"
+                        value={provinceSearchTerms[idx] || ''}
+                        onChange={e => {
+                          const newTerms = [...provinceSearchTerms];
+                          newTerms[idx] = e.target.value;
+                          setProvinceSearchTerms(newTerms);
+                          
+                          const newShowDropdowns = [...showProvinceDropdowns];
+                          newShowDropdowns[idx] = true;
+                          setShowProvinceDropdowns(newShowDropdowns);
+                        }}
+                        onFocus={() => {
+                          const newShowDropdowns = [...showProvinceDropdowns];
+                          newShowDropdowns[idx] = true;
+                          setShowProvinceDropdowns(newShowDropdowns);
+                        }}
+                        className={`w-full h-12 rounded-lg border px-3 focus:border-blue-500 focus:ring-blue-500 ${branchesError[idx]?.province_id ? 'border-red-500' : 'border-gray-300'}`}
+                      />
+                      {showProvinceDropdowns[idx] && (
+                        <div className="absolute top-full left-0 right-0 mt-1 bg-white border border-gray-300 rounded-lg shadow-lg max-h-60 overflow-y-auto z-50">
+                          {provinces
+                            .filter(prov => 
+                              String(prov.country_id) === String(branch.country_id) &&
+                              prov.name.toLowerCase().includes((provinceSearchTerms[idx] || '').toLowerCase())
+                            )
+                            .map((prov) => (
+                              <div
+                                key={prov.id}
+                                className="px-4 py-2 hover:bg-gray-100 cursor-pointer"
+                                onClick={() => {
+                                  const arr = [...companyBranches];
+                                  arr[idx].province_id = Number(prov.id);
+                                  arr[idx].ward_id = '';
+                                  setCompanyBranches(arr);
+                                  
+                                  const newTerms = [...provinceSearchTerms];
+                                  newTerms[idx] = prov.name;
+                                  setProvinceSearchTerms(newTerms);
+                                  
+                                  const newShowDropdowns = [...showProvinceDropdowns];
+                                  newShowDropdowns[idx] = false;
+                                  setShowProvinceDropdowns(newShowDropdowns);
+                                  
+                                  const newWardTerms = [...wardSearchTerms];
+                                  newWardTerms[idx] = '';
+                                  setWardSearchTerms(newWardTerms);
+                                  
+                                  dispatch(getWards(prov.id));
+                                }}
+                              >
+                                {prov.name}
+                              </div>
+                            ))
+                          }
+                          {provinces.filter(prov => 
+                            String(prov.country_id) === String(branch.country_id) &&
+                            prov.name.toLowerCase().includes((provinceSearchTerms[idx] || '').toLowerCase())
+                          ).length === 0 && (
+                            <div className="px-4 py-2 text-gray-500">Không tìm thấy tỉnh/thành</div>
+                          )}
+                        </div>
+                      )}
+                      {branchesError[idx]?.province_id && (
+                        <p className="text-xs text-red-500 mt-1">{branchesError[idx]?.province_id}</p>
+                      )}
+                    </div>
+                    <div className="flex-1 relative">
+                      <label className="block text-sm font-medium text-gray-900">Phường/Xã <span className="text-red-500">*</span></label>
+                      <input
+                        type="text"
+                        placeholder={!branch.province_id ? "Chọn tỉnh/thành trước" : "Nhập để tìm phường/xã"}
+                        value={wardSearchTerms[idx] || ''}
+                        onChange={e => {
+                          const newTerms = [...wardSearchTerms];
+                          newTerms[idx] = e.target.value;
+                          setWardSearchTerms(newTerms);
+                          
+                          const newShowDropdowns = [...showWardDropdowns];
+                          newShowDropdowns[idx] = true;
+                          setShowWardDropdowns(newShowDropdowns);
+                        }}
+                        onFocus={() => {
+                          if (branch.province_id) {
+                            const newShowDropdowns = [...showWardDropdowns];
+                            newShowDropdowns[idx] = true;
+                            setShowWardDropdowns(newShowDropdowns);
+                          }
+                        }}
+                        disabled={!branch.province_id}
+                        className={`w-full h-12 rounded-lg border px-3 focus:border-blue-500 focus:ring-blue-500 ${branchesError[idx]?.ward_id ? 'border-red-500' : 'border-gray-300'} ${!branch.province_id ? 'bg-gray-100' : ''}`}
+                      />
+                      {showWardDropdowns[idx] && branch.province_id && (
+                        <div className="absolute top-full left-0 right-0 mt-1 bg-white border border-gray-300 rounded-lg shadow-lg max-h-60 overflow-y-auto z-50">
+                          {wards
+                            .filter(ward => 
+                              String(ward.province_id) === String(branch.province_id) &&
+                              ward.name.toLowerCase().includes((wardSearchTerms[idx] || '').toLowerCase())
+                            )
+                            .map((ward) => (
+                              <div
+                                key={ward.id}
+                                className="px-4 py-2 hover:bg-gray-100 cursor-pointer"
+                                onClick={() => {
+                                  const arr = [...companyBranches];
+                                  arr[idx].ward_id = Number(ward.id);
+                                  setCompanyBranches(arr);
+                                  
+                                  const newTerms = [...wardSearchTerms];
+                                  newTerms[idx] = ward.name;
+                                  setWardSearchTerms(newTerms);
+                                  
+                                  const newShowDropdowns = [...showWardDropdowns];
+                                  newShowDropdowns[idx] = false;
+                                  setShowWardDropdowns(newShowDropdowns);
+                                }}
+                              >
+                                {ward.name}
+                              </div>
+                            ))
+                          }
+                          {wards.filter(ward => 
+                            String(ward.province_id) === String(branch.province_id) &&
+                            ward.name.toLowerCase().includes((wardSearchTerms[idx] || '').toLowerCase())
+                          ).length === 0 && (
+                            <div className="px-4 py-2 text-gray-500">Không tìm thấy phường/xã</div>
+                          )}
+                        </div>
+                      )}
+                      {branchesError[idx]?.ward_id && (
+                        <p className="text-xs text-red-500 mt-1">{branchesError[idx]?.ward_id}</p>
+                      )}
+                    </div>
+                  </div>
+                  {companyBranches.length > 1 && (
+                    <button type="button" className="absolute top-2 right-2 text-red-500 hover:text-red-700" onClick={() => {
+                      setCompanyBranches(companyBranches.filter((_, i) => i !== idx));
+                      setProvinceSearchTerms(provinceSearchTerms.filter((_, i) => i !== idx));
+                      setWardSearchTerms(wardSearchTerms.filter((_, i) => i !== idx));
+                      setShowProvinceDropdowns(showProvinceDropdowns.filter((_, i) => i !== idx));
+                      setShowWardDropdowns(showWardDropdowns.filter((_, i) => i !== idx));
+                    }}>Xóa</button>
+                  )}
+                </div>
+              ))}
+              <button type="button" className="bg-blue-100 text-blue-700 px-4 py-2 rounded hover:bg-blue-200" onClick={() => {
+                setCompanyBranches([...companyBranches, { name: '', address: '', country_id: 1, province_id: '', ward_id: '' }]);
+                setProvinceSearchTerms([...provinceSearchTerms, '']);
+                setWardSearchTerms([...wardSearchTerms, '']);
+                setShowProvinceDropdowns([...showProvinceDropdowns, false]);
+                setShowWardDropdowns([...showWardDropdowns, false]);
+              }}>
+                Thêm chi nhánh
+              </button>
+            </div>
 
           {/* Terms and Privacy */}
           <div className="pt-4">
