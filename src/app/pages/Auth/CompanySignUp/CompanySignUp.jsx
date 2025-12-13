@@ -25,15 +25,15 @@ export default function CompanySignUp() {
     dispatch(getProvinces(1)); // Fetch provinces for Vietnam by default
   }, [dispatch]);
 
-    const [companyBranches, setCompanyBranches] = useState([
-      { name: '', address: '', country_id: 1, province_id: '', ward_id: '' }
-    ]);
+  const [companyBranches, setCompanyBranches] = useState([
+    { name: '', address: '', country_id: 1, province_id: '', ward_id: '' }
+  ]);
 
-    const [branchesError, setBranchesError] = useState([]);
-    const [provinceSearchTerms, setProvinceSearchTerms] = useState(['']);
-    const [wardSearchTerms, setWardSearchTerms] = useState(['']);
-    const [showProvinceDropdowns, setShowProvinceDropdowns] = useState([false]);
-    const [showWardDropdowns, setShowWardDropdowns] = useState([false]);
+  const [branchesError, setBranchesError] = useState([]);
+  const [provinceSearchTerms, setProvinceSearchTerms] = useState(['']);
+  const [wardSearchTerms, setWardSearchTerms] = useState(['']);
+  const [showProvinceDropdowns, setShowProvinceDropdowns] = useState([false]);
+  const [showWardDropdowns, setShowWardDropdowns] = useState([false]);
 
   const companyTypes = useSelector(state => state.companyTypes.companyTypes || []);
   const provincesRaw = useSelector(state => state.address?.provinces?.data);
@@ -52,11 +52,11 @@ export default function CompanySignUp() {
         setShowCompanyTypeDropdown(false);
       }
     };
-    
+
     if (showCompanyTypeDropdown) {
       document.addEventListener('mousedown', handleClickOutside);
     }
-    
+
     return () => {
       document.removeEventListener('mousedown', handleClickOutside);
     };
@@ -65,7 +65,7 @@ export default function CompanySignUp() {
   const toggleCompanyType = (id) => {
     setCompanyType((prevTypes) => {
       const index = prevTypes.indexOf(id);
-      return index > -1 
+      return index > -1
         ? prevTypes.filter(item => item !== id)
         : [...prevTypes, id];
     });
@@ -251,8 +251,15 @@ export default function CompanySignUp() {
       >
         <form onSubmit={handleSubmit}>
           <div className="flex flex-col gap-6">
-            <div className="flex flex-col gap-2">
+            <div className="flex justify-between items-center gap-4">
               <h3 className="text-2xl md:text-3xl font-medium text-gray-900">Đăng ký tài khoản</h3>
+              <button
+                type="button"
+                onClick={() => nav('/signin')}
+                className="text-sm text-blue-600 hover:text-blue-700 hover:underline transition-colors"
+              >
+                Bạn đã có tài khoản? Đăng nhập
+              </button>
             </div>
             <div className="flex flex-col gap-4">
               {/* Name Fields */}
@@ -380,150 +387,150 @@ export default function CompanySignUp() {
             </div>
             {/* ...rest of the form fields (company, phone, etc.) ... */}
 
-          {/* Section: Thông tin nhà tuyển dụng */}
-          <div className="space-y-4 pt-4 border-t border-gray-200">
-            <h4 className="text-lg font-semibold text-gray-900 mb-4">Thông tin nhà tuyển dụng</h4>
+            {/* Section: Thông tin nhà tuyển dụng */}
+            <div className="space-y-4 pt-4 border-t border-gray-200">
+              <h4 className="text-lg font-semibold text-gray-900 mb-4">Thông tin nhà tuyển dụng</h4>
 
-            {/* Company Name */}
-            <div className="space-y-2">
-              <label htmlFor="companyName" className="block text-sm font-medium text-gray-900">
-                Tên công ty <span className="text-red-500">*</span>
-              </label>
-              <div className="relative">
-                <BusinessIcon className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 z-10" style={{ fontSize: '20px' }} />
-                <input
-                  id="companyName"
-                  type="text"
-                  placeholder="Tên công ty"
-                  value={companyName}
-                  onChange={(e) => setCompanyName(e.target.value)}
-                  className={`w-full h-12 rounded-lg border px-3 pl-10 focus:border-blue-500 focus:ring-blue-500 ${companyNameError ? 'border-red-500' : 'border-gray-300'}`}
-                />
-                {companyNameError && (
-                  <ErrorIcon className="absolute right-3 top-1/2 -translate-y-1/2 text-red-500 z-10" style={{ fontSize: '16px' }} />
-                )}
-              </div>
-              {companyNameError && (
-                <p className="text-xs text-red-500 mt-1">{companyNameError}</p>
-              )}
-            </div>
-            {/* Company Type */}
-            <div className="space-y-2">
-              <label htmlFor="companyType" className="block text-sm font-medium text-gray-900">
-                Loại hình công ty <span className="text-red-500">*</span>
-              </label>
-              <div className="relative" id="company-type-dropdown">
-                <div 
-                  className="w-full min-h-12 rounded-lg border border-gray-300 hover:border-blue-500 bg-white cursor-pointer"
-                  onClick={() => setShowCompanyTypeDropdown(!showCompanyTypeDropdown)}
-                >
-                  <div className="flex flex-wrap gap-2 p-2 min-h-12">
-                    {companyType.length === 0 ? (
-                      <span className="text-gray-400 py-1.5 px-1">Chọn loại hình công ty</span>
-                    ) : (
-                      companyType.map(id => {
-                        const found = companyTypes.find(type => type.id === id);
-                        return (
-                          <span 
-                            key={id}
-                            className="inline-flex items-center gap-1 bg-blue-100 text-blue-800 px-2 py-1 rounded text-sm"
-                          >
-                            {found ? found.name : id}
-                            <button
-                              type="button"
-                              onClick={(e) => {
-                                e.stopPropagation();
-                                setCompanyType(prev => prev.filter(k => k !== id));
-                              }}
-                              className="hover:bg-blue-200 rounded-full p-0.5"
-                            >
-                              <svg className="w-3 h-3" fill="currentColor" viewBox="0 0 20 20">
-                                <path fillRule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clipRule="evenodd" />
-                              </svg>
-                            </button>
-                          </span>
-                        );
-                      })
-                    )}
-                  </div>
+              {/* Company Name */}
+              <div className="space-y-2">
+                <label htmlFor="companyName" className="block text-sm font-medium text-gray-900">
+                  Tên công ty <span className="text-red-500">*</span>
+                </label>
+                <div className="relative">
+                  <BusinessIcon className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 z-10" style={{ fontSize: '20px' }} />
+                  <input
+                    id="companyName"
+                    type="text"
+                    placeholder="Tên công ty"
+                    value={companyName}
+                    onChange={(e) => setCompanyName(e.target.value)}
+                    className={`w-full h-12 rounded-lg border px-3 pl-10 focus:border-blue-500 focus:ring-blue-500 ${companyNameError ? 'border-red-500' : 'border-gray-300'}`}
+                  />
+                  {companyNameError && (
+                    <ErrorIcon className="absolute right-3 top-1/2 -translate-y-1/2 text-red-500 z-10" style={{ fontSize: '16px' }} />
+                  )}
                 </div>
-                {showCompanyTypeDropdown && (
-                  <div className="absolute top-full left-0 right-0 mt-1 bg-white border border-gray-300 rounded-lg shadow-lg max-h-60 overflow-y-auto z-50">
-                    {companyTypes.map((type) => {
-                      const isChecked = companyType.includes(type.id);
-                      
-                      return (
-                        <div
-                          key={type.id}
-                          className="flex items-center gap-2 px-4 py-2 hover:bg-gray-100 cursor-pointer"
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            e.preventDefault();
-                            toggleCompanyType(type.id);
-                          }}
-                        >
-                          <input
-                            type="checkbox"
-                            checked={isChecked}
-                            readOnly
-                            className="w-4 h-4 text-blue-600 rounded border-gray-300 focus:ring-blue-500 pointer-events-none"
-                          />
-                          <span className="text-sm text-gray-900">{type.name}</span>
-                        </div>
-                      );
-                    })}
+                {companyNameError && (
+                  <p className="text-xs text-red-500 mt-1">{companyNameError}</p>
+                )}
+              </div>
+              {/* Company Type */}
+              <div className="space-y-2">
+                <label htmlFor="companyType" className="block text-sm font-medium text-gray-900">
+                  Loại hình công ty <span className="text-red-500">*</span>
+                </label>
+                <div className="relative" id="company-type-dropdown">
+                  <div
+                    className="w-full min-h-12 rounded-lg border border-gray-300 hover:border-blue-500 bg-white cursor-pointer"
+                    onClick={() => setShowCompanyTypeDropdown(!showCompanyTypeDropdown)}
+                  >
+                    <div className="flex flex-wrap gap-2 p-2 min-h-12">
+                      {companyType.length === 0 ? (
+                        <span className="text-gray-400 py-1.5 px-1">Chọn loại hình công ty</span>
+                      ) : (
+                        companyType.map(id => {
+                          const found = companyTypes.find(type => type.id === id);
+                          return (
+                            <span
+                              key={id}
+                              className="inline-flex items-center gap-1 bg-blue-100 text-blue-800 px-2 py-1 rounded text-sm"
+                            >
+                              {found ? found.name : id}
+                              <button
+                                type="button"
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                  setCompanyType(prev => prev.filter(k => k !== id));
+                                }}
+                                className="hover:bg-blue-200 rounded-full p-0.5"
+                              >
+                                <svg className="w-3 h-3" fill="currentColor" viewBox="0 0 20 20">
+                                  <path fillRule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clipRule="evenodd" />
+                                </svg>
+                              </button>
+                            </span>
+                          );
+                        })
+                      )}
+                    </div>
                   </div>
-                )}
-              </div>
-            </div>
+                  {showCompanyTypeDropdown && (
+                    <div className="absolute top-full left-0 right-0 mt-1 bg-white border border-gray-300 rounded-lg shadow-lg max-h-60 overflow-y-auto z-50">
+                      {companyTypes.map((type) => {
+                        const isChecked = companyType.includes(type.id);
 
-             {/* Company URL */}
-             <div className="space-y-2">
-              <label htmlFor="websiteUrl" className="block text-sm font-medium text-gray-900">
-                Đường dẫn website
-              </label>
-              <div className="relative">
-                <BusinessIcon className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 z-10" style={{ fontSize: '20px' }} />
-                <input
-                  id="websiteUrl"
-                  type="text"
-                  placeholder="https://example.com"
-                  value={websiteUrl}
-                  onChange={(e) => setWebsiteUrl(e.target.value)}
-                  className={`w-full h-12 rounded-lg border px-3 pl-10 focus:border-blue-500 focus:ring-blue-500 ${websiteUrlError ? 'border-red-500' : 'border-gray-300'}`}
-                />
+                        return (
+                          <div
+                            key={type.id}
+                            className="flex items-center gap-2 px-4 py-2 hover:bg-gray-100 cursor-pointer"
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              e.preventDefault();
+                              toggleCompanyType(type.id);
+                            }}
+                          >
+                            <input
+                              type="checkbox"
+                              checked={isChecked}
+                              readOnly
+                              className="w-4 h-4 text-blue-600 rounded border-gray-300 focus:ring-blue-500 pointer-events-none"
+                            />
+                            <span className="text-sm text-gray-900">{type.name}</span>
+                          </div>
+                        );
+                      })}
+                    </div>
+                  )}
+                </div>
+              </div>
+
+              {/* Company URL */}
+              <div className="space-y-2">
+                <label htmlFor="websiteUrl" className="block text-sm font-medium text-gray-900">
+                  Đường dẫn website
+                </label>
+                <div className="relative">
+                  <BusinessIcon className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 z-10" style={{ fontSize: '20px' }} />
+                  <input
+                    id="websiteUrl"
+                    type="text"
+                    placeholder="https://example.com"
+                    value={websiteUrl}
+                    onChange={(e) => setWebsiteUrl(e.target.value)}
+                    className={`w-full h-12 rounded-lg border px-3 pl-10 focus:border-blue-500 focus:ring-blue-500 ${websiteUrlError ? 'border-red-500' : 'border-gray-300'}`}
+                  />
+                  {websiteUrlError && (
+                    <ErrorIcon className="absolute right-3 top-1/2 -translate-y-1/2 text-red-500 z-10" style={{ fontSize: '16px' }} />
+                  )}
+                </div>
                 {websiteUrlError && (
-                  <ErrorIcon className="absolute right-3 top-1/2 -translate-y-1/2 text-red-500 z-10" style={{ fontSize: '16px' }} />
+                  <p className="text-xs text-red-500 mt-1">{websiteUrlError}</p>
                 )}
               </div>
-              {websiteUrlError && (
-                <p className="text-xs text-red-500 mt-1">{websiteUrlError}</p>
-              )}
-            </div>
 
-            {/* Phone */}
-            <div className="space-y-2">
-              <label htmlFor="phone" className="block text-sm font-medium text-gray-900">
-                Số điện thoại <span className="text-red-500">*</span>
-              </label>
-              <div className="relative">
-                <PhoneIcon className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 z-10" style={{ fontSize: '20px' }} />
-                <input
-                  id="phone"
-                  type="text"
-                  placeholder="Số điện thoại"
-                  value={phone}
-                  onChange={(e) => setPhone(e.target.value)}
-                  className={`w-full h-12 rounded-lg border px-3 pl-10 focus:border-blue-500 focus:ring-blue-500 ${phoneError ? 'border-red-500' : 'border-gray-300'}`}
-                />
+              {/* Phone */}
+              <div className="space-y-2">
+                <label htmlFor="phone" className="block text-sm font-medium text-gray-900">
+                  Số điện thoại <span className="text-red-500">*</span>
+                </label>
+                <div className="relative">
+                  <PhoneIcon className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 z-10" style={{ fontSize: '20px' }} />
+                  <input
+                    id="phone"
+                    type="text"
+                    placeholder="Số điện thoại"
+                    value={phone}
+                    onChange={(e) => setPhone(e.target.value)}
+                    className={`w-full h-12 rounded-lg border px-3 pl-10 focus:border-blue-500 focus:ring-blue-500 ${phoneError ? 'border-red-500' : 'border-gray-300'}`}
+                  />
+                  {phoneError && (
+                    <ErrorIcon className="absolute right-3 top-1/2 -translate-y-1/2 text-red-500 z-10" style={{ fontSize: '16px' }} />
+                  )}
+                </div>
                 {phoneError && (
-                  <ErrorIcon className="absolute right-3 top-1/2 -translate-y-1/2 text-red-500 z-10" style={{ fontSize: '16px' }} />
+                  <p className="text-xs text-red-500 mt-1">{phoneError}</p>
                 )}
               </div>
-              {phoneError && (
-                <p className="text-xs text-red-500 mt-1">{phoneError}</p>
-              )}
-            </div>
 
               <div className="space-y-2">
                 <label htmlFor="companyEmail" className="block text-sm font-medium text-gray-900">
@@ -547,9 +554,9 @@ export default function CompanySignUp() {
                   <p className="text-xs text-red-500 mt-1">{companyEmailError}</p>
                 )}
               </div>
-          </div>
+            </div>
 
-                   {/* Company Branches */}
+            {/* Company Branches */}
             <div className="space-y-4 pt-4 border-t border-gray-200">
               <h4 className="text-lg font-semibold text-gray-900 mb-2">Chi nhánh công ty</h4>
               {companyBranches.map((branch, idx) => (
@@ -557,10 +564,10 @@ export default function CompanySignUp() {
                   <div className="flex flex-col md:flex-row gap-4 mb-2">
                     <div className="flex-1">
                       <label className="block text-sm font-medium text-gray-900">Tên chi nhánh <span className="text-red-500">*</span></label>
-                      <input 
-                        type="text" 
-                        placeholder={companyName || 'Tên chi nhánh'} 
-                        value={branch.name} 
+                      <input
+                        type="text"
+                        placeholder={companyName || 'Tên chi nhánh'}
+                        value={branch.name}
                         onChange={e => {
                           const arr = [...companyBranches]; arr[idx].name = e.target.value; setCompanyBranches(arr);
                         }}
@@ -572,10 +579,10 @@ export default function CompanySignUp() {
                     </div>
                     <div className="flex-1">
                       <label className="block text-sm font-medium text-gray-900">Địa chỉ <span className="text-red-500">*</span></label>
-                      <input 
-                        type="text" 
+                      <input
+                        type="text"
                         placeholder="Địa chỉ chi nhánh"
-                        value={branch.address} 
+                        value={branch.address}
                         onChange={e => {
                           const arr = [...companyBranches]; arr[idx].address = e.target.value; setCompanyBranches(arr);
                         }}
@@ -598,7 +605,7 @@ export default function CompanySignUp() {
                           arr[idx].province_id = '';
                           arr[idx].ward_id = '';
                           setCompanyBranches(arr);
-                          
+
                           // Fetch provinces for selected country
                           if (e.target.value) {
                             dispatch(getProvinces(e.target.value));
@@ -624,7 +631,7 @@ export default function CompanySignUp() {
                           const newTerms = [...provinceSearchTerms];
                           newTerms[idx] = e.target.value;
                           setProvinceSearchTerms(newTerms);
-                          
+
                           const newShowDropdowns = [...showProvinceDropdowns];
                           newShowDropdowns[idx] = true;
                           setShowProvinceDropdowns(newShowDropdowns);
@@ -639,7 +646,7 @@ export default function CompanySignUp() {
                       {showProvinceDropdowns[idx] && (
                         <div className="absolute top-full left-0 right-0 mt-1 bg-white border border-gray-300 rounded-lg shadow-lg max-h-60 overflow-y-auto z-50">
                           {provinces
-                            .filter(prov => 
+                            .filter(prov =>
                               String(prov.country_id) === String(branch.country_id) &&
                               prov.name.toLowerCase().includes((provinceSearchTerms[idx] || '').toLowerCase())
                             )
@@ -652,19 +659,19 @@ export default function CompanySignUp() {
                                   arr[idx].province_id = Number(prov.id);
                                   arr[idx].ward_id = '';
                                   setCompanyBranches(arr);
-                                  
+
                                   const newTerms = [...provinceSearchTerms];
                                   newTerms[idx] = prov.name;
                                   setProvinceSearchTerms(newTerms);
-                                  
+
                                   const newShowDropdowns = [...showProvinceDropdowns];
                                   newShowDropdowns[idx] = false;
                                   setShowProvinceDropdowns(newShowDropdowns);
-                                  
+
                                   const newWardTerms = [...wardSearchTerms];
                                   newWardTerms[idx] = '';
                                   setWardSearchTerms(newWardTerms);
-                                  
+
                                   dispatch(getWards(prov.id));
                                 }}
                               >
@@ -672,12 +679,12 @@ export default function CompanySignUp() {
                               </div>
                             ))
                           }
-                          {provinces.filter(prov => 
+                          {provinces.filter(prov =>
                             String(prov.country_id) === String(branch.country_id) &&
                             prov.name.toLowerCase().includes((provinceSearchTerms[idx] || '').toLowerCase())
                           ).length === 0 && (
-                            <div className="px-4 py-2 text-gray-500">Không tìm thấy tỉnh/thành</div>
-                          )}
+                              <div className="px-4 py-2 text-gray-500">Không tìm thấy tỉnh/thành</div>
+                            )}
                         </div>
                       )}
                       {branchesError[idx]?.province_id && (
@@ -694,7 +701,7 @@ export default function CompanySignUp() {
                           const newTerms = [...wardSearchTerms];
                           newTerms[idx] = e.target.value;
                           setWardSearchTerms(newTerms);
-                          
+
                           const newShowDropdowns = [...showWardDropdowns];
                           newShowDropdowns[idx] = true;
                           setShowWardDropdowns(newShowDropdowns);
@@ -712,7 +719,7 @@ export default function CompanySignUp() {
                       {showWardDropdowns[idx] && branch.province_id && (
                         <div className="absolute top-full left-0 right-0 mt-1 bg-white border border-gray-300 rounded-lg shadow-lg max-h-60 overflow-y-auto z-50">
                           {wards
-                            .filter(ward => 
+                            .filter(ward =>
                               String(ward.province_id) === String(branch.province_id) &&
                               ward.name.toLowerCase().includes((wardSearchTerms[idx] || '').toLowerCase())
                             )
@@ -724,11 +731,11 @@ export default function CompanySignUp() {
                                   const arr = [...companyBranches];
                                   arr[idx].ward_id = Number(ward.id);
                                   setCompanyBranches(arr);
-                                  
+
                                   const newTerms = [...wardSearchTerms];
                                   newTerms[idx] = ward.name;
                                   setWardSearchTerms(newTerms);
-                                  
+
                                   const newShowDropdowns = [...showWardDropdowns];
                                   newShowDropdowns[idx] = false;
                                   setShowWardDropdowns(newShowDropdowns);
@@ -738,12 +745,12 @@ export default function CompanySignUp() {
                               </div>
                             ))
                           }
-                          {wards.filter(ward => 
+                          {wards.filter(ward =>
                             String(ward.province_id) === String(branch.province_id) &&
                             ward.name.toLowerCase().includes((wardSearchTerms[idx] || '').toLowerCase())
                           ).length === 0 && (
-                            <div className="px-4 py-2 text-gray-500">Không tìm thấy phường/xã</div>
-                          )}
+                              <div className="px-4 py-2 text-gray-500">Không tìm thấy phường/xã</div>
+                            )}
                         </div>
                       )}
                       {branchesError[idx]?.ward_id && (
@@ -773,49 +780,49 @@ export default function CompanySignUp() {
               </button>
             </div>
 
-          {/* Terms and Privacy */}
-          <div className="pt-4">
-            <FormControlLabel
-              control={
-                <Checkbox
-                  checked={agreeTerms}
-                  onChange={(e) => setAgreeTerms(e.target.checked)}
-                  sx={{
-                    color: '#0041D9',
-                    '&.Mui-checked': {
+            {/* Terms and Privacy */}
+            <div className="pt-4">
+              <FormControlLabel
+                control={
+                  <Checkbox
+                    checked={agreeTerms}
+                    onChange={(e) => setAgreeTerms(e.target.checked)}
+                    sx={{
                       color: '#0041D9',
-                    },
-                  }}
-                />
-              }
-              label={
-                <span className="text-sm text-gray-700">
-                  Tôi đã đọc và đồng ý với{' '}
-                  <Link to="/terms" className="text-blue-600 hover:underline">
-                    Điều khoản dịch vụ
-                  </Link>
-                  {' '}và{' '}
-                  <Link to="/privacy" className="text-blue-600 hover:underline">
-                    Chính sách bảo mật
-                  </Link>
-                  {' '}của SE JOBS.
-                </span>
-              }
-            />
-          </div>
+                      '&.Mui-checked': {
+                        color: '#0041D9',
+                      },
+                    }}
+                  />
+                }
+                label={
+                  <span className="text-sm text-gray-700">
+                    Tôi đã đọc và đồng ý với{' '}
+                    <Link to="/terms" className="text-blue-600 hover:underline">
+                      Điều khoản dịch vụ
+                    </Link>
+                    {' '}và{' '}
+                    <Link to="/privacy" className="text-blue-600 hover:underline">
+                      Chính sách bảo mật
+                    </Link>
+                    {' '}của SE JOBS.
+                  </span>
+                }
+              />
+            </div>
 
-          {/* Submit Button */}
-          <Button
-            type="submit"
-            disabled={!agreeTerms}
-            className={`w-full rounded-lg h-12 text-base font-semibold ${agreeTerms
-              ? 'bg-blue-600 hover:bg-blue-700 text-white'
-              : 'bg-gray-300 text-gray-500 cursor-not-allowed'
-              }`}
-          >
-            Hoàn tất
-          </Button>
-        </div>
+            {/* Submit Button */}
+            <Button
+              type="submit"
+              disabled={!agreeTerms}
+              className={`w-full rounded-lg h-12 text-base font-semibold ${agreeTerms
+                ? 'bg-blue-600 hover:bg-blue-700 text-white'
+                : 'bg-gray-300 text-gray-500 cursor-not-allowed'
+                }`}
+            >
+              Hoàn tất
+            </Button>
+          </div>
         </form>
       </motion.div>
       <CustomAlert

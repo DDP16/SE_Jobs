@@ -108,8 +108,9 @@ const companiesSlice = createSlice({
                 state.error = null;
             })
             .addCase(getCompany.fulfilled, (state, action) => {
-                state.status = "succeeded";
-                state.company = action.payload?.data ?? action.payload ?? null;
+                state.status = "succeeded"
+                const companyData = action.payload?.data || action.payload || null;
+                state.company = companyData;
             })
             .addCase(getCompany.rejected, (state, action) => {
                 state.status = "failed";
