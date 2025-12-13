@@ -19,7 +19,7 @@ export default function ProjectsModal({ open, onOpenChange, initialData, onSave 
         endMonth: initialData?.endMonth || "",
         endYear: initialData?.endYear || "",
         description: initialData?.description || "",
-        websiteLink: initialData?.websiteLink || initialData?.website || "",
+        websiteLink: initialData?.website_link || "",
     });
     const [charCount, setCharCount] = useState(0);
     const editorRef = useRef(null);
@@ -38,12 +38,9 @@ export default function ProjectsModal({ open, onOpenChange, initialData, onSave 
                 endMonth: initialData?.endMonth || "",
                 endYear: initialData?.endYear || "",
                 description: description,
-                websiteLink: initialData?.websiteLink || initialData?.website || "",
+                websiteLink: initialData?.websiteLink || initialData?.website || initialData?.website_link || "",
             });
             setCharCount(description.length);
-            if (editorRef.current) {
-                editorRef.current.innerHTML = description;
-            }
             setErrors({});
         } else {
             setFormData({
@@ -57,12 +54,28 @@ export default function ProjectsModal({ open, onOpenChange, initialData, onSave 
                 websiteLink: "",
             });
             setCharCount(0);
-            if (editorRef.current) {
-                editorRef.current.innerHTML = "";
-            }
             setErrors({});
         }
     }, [initialData, open]);
+
+    // Set description to editor after modal opens and editor is mounted
+    useEffect(() => {
+        if (!open) return;
+
+        // Use setTimeout to ensure editor is mounted
+        const timer = setTimeout(() => {
+            if (initialData && editorRef.current) {
+                const description = initialData?.description || "";
+                editorRef.current.innerHTML = description;
+                setCharCount(description.length);
+            } else if (!initialData && editorRef.current) {
+                editorRef.current.innerHTML = "";
+                setCharCount(0);
+            }
+        }, 0);
+
+        return () => clearTimeout(timer);
+    }, [open, initialData]);
 
     const handleChange = (field, value) => {
         setFormData((prev) => {
@@ -128,7 +141,18 @@ export default function ProjectsModal({ open, onOpenChange, initialData, onSave 
     };
 
     const handleSave = () => {
-        const { isValid, errors: validationErrors, sanitizedData } = validateProjectForm(formData);
+        // Ensure description is updated from editor before saving
+        if (editorRef.current) {
+            const html = editorRef.current.innerHTML;
+            setFormData((prev) => ({ ...prev, description: html }));
+        }
+
+        // Get the latest formData with description from editor
+        const currentFormData = editorRef.current
+            ? { ...formData, description: editorRef.current.innerHTML }
+            : formData;
+
+        const { isValid, errors: validationErrors, sanitizedData } = validateProjectForm(currentFormData);
 
         if (!isValid) {
             setErrors(validationErrors);
