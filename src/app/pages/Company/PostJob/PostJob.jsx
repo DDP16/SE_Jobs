@@ -128,7 +128,7 @@ export default function PostJob() {
     setSelectedLevel(levelName);
     const lvl = levels.find((l) => l.name.toLowerCase() === levelName.toLowerCase());
     setLevelId(lvl ? lvl.id : null);
-  }
+  };
 
   const addSkillFromApi = (skillName) => {
     if (!skills.includes(skillName)) {
@@ -234,21 +234,25 @@ export default function PostJob() {
           return (
             <div
               key={step.number}
-              className={`flex-1 flex items-center gap-3 p-4 rounded-lg transition-colors cursor-pointer ${isActive
+              className={`flex-1 flex items-center gap-3 p-4 rounded-lg transition-colors cursor-pointer ${
+                isActive
                   ? "bg-primary/10 border-2 border-primary"
                   : isCompleted
-                    ? "bg-primary/5 border-2 border-primary/30"
-                    : "bg-input border-2 border-border"
-                }`}
-              onClick={() => { setCurrentStep(step.number) }}
+                  ? "bg-primary/5 border-2 border-primary/30"
+                  : "bg-input border-2 border-border"
+              }`}
+              onClick={() => {
+                setCurrentStep(step.number);
+              }}
             >
               <div
-                className={`flex items-center justify-center w-12 h-12 rounded-full transition-colors ${isActive
+                className={`flex items-center justify-center w-12 h-12 rounded-full transition-colors ${
+                  isActive
                     ? "bg-primary text-white"
                     : isCompleted
-                      ? "bg-primary/20 text-primary"
-                      : "bg-input text-muted-foreground border border-border"
-                  }`}
+                    ? "bg-primary/20 text-primary"
+                    : "bg-input text-muted-foreground border border-border"
+                }`}
               >
                 <Icon className="h-6 w-6" />
               </div>
@@ -331,11 +335,7 @@ export default function PostJob() {
               Next Step
             </Button>
           ) : (
-            <Button
-              size="lg"
-              onClick={handleSubmit}
-              className="bg-primary hover:bg-primary/90 text-white px-8 ml-auto"
-            >
+            <Button size="lg" onClick={handleSubmit} className="bg-primary hover:bg-primary/90 text-white px-8 ml-auto">
               Post Job
             </Button>
           )}

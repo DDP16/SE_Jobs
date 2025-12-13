@@ -10,7 +10,7 @@ import { Role } from "@/lib/enums";
 import { getMe } from "../modules";
 import { Spin } from "antd";
 import { LoadingOutlined } from '@ant-design/icons';
-import {getCategories} from "../modules";
+import { getCategories } from "../modules";
 
 export default function MainRoutes() {
   const dispatch = useDispatch();
@@ -35,6 +35,7 @@ export default function MainRoutes() {
         </div>
       ) : (
         <BrowserRouter>
+          {/* <AdminRoutes /> */}
           {isAuthenticated && userRole?.toLowerCase() === Role.ADMIN.toLowerCase() ? (
             <AdminRoutes />
           ) : isAuthenticated && userRole?.toLowerCase() === Role.EMPLOYER.toLowerCase() ? (
@@ -42,7 +43,6 @@ export default function MainRoutes() {
           ) : (
             <UserRoutes />
           )}
-          {/* <CompanyRoutes /> */}
         </BrowserRouter>
       )}
     </ThemeProvider>

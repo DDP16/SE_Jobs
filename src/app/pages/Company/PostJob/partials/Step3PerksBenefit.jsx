@@ -5,22 +5,23 @@ import { Textarea } from "@/components/ui/textarea";
 import { Plus, X, Heart, Plane, Video, Home, Coffee, Zap, Gift } from "lucide-react";
 import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from "@/components/ui/select";
 
+import { useTranslation } from "react-i18next";
+
 export default function Step3PerksBenefit({ benefits, addBenefit, removeBenefit, setBenefits, getBenefitIcon }) {
+  const { t } = useTranslation();
   return (
     <div className="space-y-8">
       {/* Basic Information */}
       <div className="border-border border-b border-gray-300">
-        <p className="text-lg font-semibold mb-2 text-foreground">Basic Information</p>
-        <p className="text-normal font-regular text-muted-foreground mb-6">List out your top perks and benefits.</p>
+        <p className="text-lg font-semibold mb-2 text-foreground">{t("postJob.basicInformation")}</p>
+        <p className="text-normal font-regular text-muted-foreground mb-6">{t("postJob.perksBenefitDesc")}</p>
       </div>
 
       {/* Perks and Benefits */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4 items-start">
         <div>
-          <Label className="text-foreground font-semibold text-lg">Perks and Benefits</Label>
-          <p className="text-normal font-regular text-muted-foreground mt-1">
-            Encourage more people to apply by sharing the attractive rewards and benefits you offer your employees
-          </p>
+          <Label className="text-foreground font-semibold text-lg">{t("postJob.perksBenefit")}</Label>
+          <p className="text-normal font-regular text-muted-foreground mt-1">{t("postJob.perksBenefitHint")}</p>
         </div>
         <div className="md:col-span-2">
           <Button
@@ -31,7 +32,7 @@ export default function Step3PerksBenefit({ benefits, addBenefit, removeBenefit,
             className="text-primary bg-white hover:text-white hover:bg-primary/90 mb-4 transition-all"
           >
             <Plus className="h-4 w-4 mr-1" />
-            Add Benefit
+            {t("postJob.addBenefit")}
           </Button>
 
           {/* Benefits Grid */}
@@ -86,7 +87,7 @@ export default function Step3PerksBenefit({ benefits, addBenefit, removeBenefit,
                               benefits.map((b) => (b.id === benefit.id ? { ...b, title: e.target.value } : b))
                             );
                           }}
-                          placeholder="Benefit title"
+                          placeholder={t("postJob.benefitTitlePlaceholder")}
                           className="text-lg font-semibold"
                         />
                       </div>
@@ -97,7 +98,7 @@ export default function Step3PerksBenefit({ benefits, addBenefit, removeBenefit,
                             benefits.map((b) => (b.id === benefit.id ? { ...b, description: e.target.value } : b))
                           );
                         }}
-                        placeholder="Benefit description"
+                        placeholder={t("postJob.benefitDescriptionPlaceholder")}
                         className="min-h-20]"
                       />
                       <div className="flex justify-end gap-2">
@@ -114,7 +115,7 @@ export default function Step3PerksBenefit({ benefits, addBenefit, removeBenefit,
                             }
                           }}
                         >
-                          {benefit.title.trim() ? "Save" : "Cancel"}
+                          {benefit.title.trim() ? t("postJob.save") : t("postJob.cancel")}
                         </Button>
                       </div>
                     </div>
@@ -124,7 +125,7 @@ export default function Step3PerksBenefit({ benefits, addBenefit, removeBenefit,
                         onClick={() => removeBenefit(benefit.id)}
                         className="absolute top-3 right-3 w-6 h-6 rounded-full bg-muted hover:bg-destructive/10 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity"
                       >
-                        <X className="h-6 w-6 text-accent-red hover:text-red-500 hover:font-bold"/>
+                        <X className="h-6 w-6 text-accent-red hover:text-red-500 hover:font-bold" />
                       </button>
 
                       <div className="mb-4">
@@ -147,7 +148,7 @@ export default function Step3PerksBenefit({ benefits, addBenefit, removeBenefit,
                             setBenefits(benefits.map((b) => (b.id === benefit.id ? { ...b, isEditing: true } : b)));
                           }}
                         >
-                          Edit
+                          {t("postJob.edit")}
                         </Button>
                       </div>
                     </>
