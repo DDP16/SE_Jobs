@@ -9,6 +9,7 @@ export default function CompanySetting() {
   const dispatch = useDispatch();
   const currentUser = useSelector((state) => state.auth.user);
   const companyId = currentUser?.company?.id;
+  const companyData = useSelector((state) => state.company.company);
   const [activeTab, setActiveTab] = useState('overview');
 
   useEffect(() => {
@@ -26,8 +27,8 @@ export default function CompanySetting() {
           <div className="mb-3 md:mb-4">
             <TabNavigation activeTab={activeTab} onTabChange={setActiveTab} />
           </div>
-          {activeTab === 'overview' && <OverviewTab companyId={companyId} />}
-          {activeTab === 'social-links' && <SocialLinksTab companyId={companyId} />}
+          {activeTab === 'overview' && <OverviewTab company={companyData} companyId={companyId} />}
+          {activeTab === 'social-links' && <SocialLinksTab company={companyData} />}
         </div>
       </div>
     </div>
