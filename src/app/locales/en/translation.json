@@ -127,7 +127,7 @@
             "employees": "Employees",
             "location": "Location",
             "locations": "{{count}} countries",
-            "industry": "Industry",
+            "industry": "Company Type",
             "jobs_count": "{{count}} jobs",
             "following": "Following",
             "follow_company": "Follow Company"
