@@ -1,8 +1,10 @@
 import React, { useState } from "react";
+import { useTranslation } from "react-i18next";
 import { Calendar, ChevronRight, TrendingUp, TrendingDown, Eye, FileCheck } from "lucide-react";
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from "recharts";
 
 const Dashboard = () => {
+  const { t } = useTranslation();
   const [timePeriod, setTimePeriod] = useState("Week");
   const [activeTab, setActiveTab] = useState("Overview");
 
@@ -97,11 +99,13 @@ const Dashboard = () => {
         {/* Header */}
         <div className="flex justify-between items-center mb-6">
           <div>
-            <h1 className="text-2xl font-bold text-gray-900">Good morning, Maria</h1>
-            <p className="text-gray-500 text-sm">Here is your job listings statistic report from July 19 - July 25.</p>
+            <h1 className="text-2xl font-bold text-gray-900">{t("company.dashboard.greeting", { name: "Maria" })}</h1>
+            <p className="text-gray-500 text-sm">
+              {t("company.dashboard.statisticReport", { from: "July 19", to: "July 25" })}
+            </p>
           </div>
           <button className="flex items-center gap-2 px-4 py-2 border border-gray-300 rounded-lg bg-white hover:bg-gray-50">
-            <span className="text-sm">Jul 19 - Jul 25</span>
+            <span className="text-sm">{t("company.dashboard.dateRange", { from: "Jul 19", to: "Jul 25" })}</span>
             <Calendar className="w-4 h-4" />
           </button>
         </div>
@@ -111,21 +115,21 @@ const Dashboard = () => {
           <div className="bg-purple-600 text-white p-6 rounded-xl flex justify-between items-center cursor-pointer hover:bg-purple-700 transition">
             <div>
               <div className="text-4xl font-bold mb-1">76</div>
-              <div className="text-sm opacity-90">New candidates to review</div>
+              <div className="text-sm opacity-90">{t("company.dashboard.newCandidates")}</div>
             </div>
             <ChevronRight className="w-6 h-6" />
           </div>
           <div className="bg-cyan-400 text-white p-6 rounded-xl flex justify-between items-center cursor-pointer hover:bg-cyan-500 transition">
             <div>
               <div className="text-4xl font-bold mb-1">3</div>
-              <div className="text-sm opacity-90">Schedule for today</div>
+              <div className="text-sm opacity-90">{t("company.dashboard.scheduleToday")}</div>
             </div>
             <ChevronRight className="w-6 h-6" />
           </div>
           <div className="bg-blue-500 text-white p-6 rounded-xl flex justify-between items-center cursor-pointer hover:bg-blue-600 transition">
             <div>
               <div className="text-4xl font-bold mb-1">24</div>
-              <div className="text-sm opacity-90">Messages received</div>
+              <div className="text-sm opacity-90">{t("company.dashboard.messagesReceived")}</div>
             </div>
             <ChevronRight className="w-6 h-6" />
           </div>
@@ -136,8 +140,10 @@ const Dashboard = () => {
           <div className="lg:col-span-2 bg-white rounded-xl p-6 shadow-sm">
             <div className="flex justify-between items-center mb-6">
               <div>
-                <h2 className="text-lg font-semibold text-gray-900">Job statistics</h2>
-                <p className="text-sm text-gray-500">Showing Job statistic Jul 19-25</p>
+                <h2 className="text-lg font-semibold text-gray-900">{t("company.dashboard.jobStatistics")}</h2>
+                <p className="text-sm text-gray-500">
+                  {t("company.dashboard.showingJobStatistic", { from: "Jul 19", to: "Jul 25" })}
+                </p>
               </div>
               <div className="flex gap-2">
                 {["Week", "Month", "Year"].map((period) => (
@@ -145,12 +151,10 @@ const Dashboard = () => {
                     key={period}
                     onClick={() => setTimePeriod(period)}
                     className={`px-4 py-2 text-sm font-medium rounded-lg transition ${
-                      timePeriod === period
-                        ? "text-purple-600 bg-purple-50"
-                        : "text-gray-600 hover:bg-gray-50"
+                      timePeriod === period ? "text-purple-600 bg-purple-50" : "text-gray-600 hover:bg-gray-50"
                     }`}
                   >
-                    {period}
+                    {t(`company.dashboard.${period.toLowerCase()}`) || period}
                   </button>
                 ))}
               </div>
@@ -167,7 +171,7 @@ const Dashboard = () => {
                       : "text-gray-500 hover:text-gray-700"
                   }`}
                 >
-                  {tab}
+                  {t(`company.dashboard.${tab.replace(/\s/g, "").toLowerCase()}`) || tab}
                 </button>
               ))}
             </div>
@@ -190,11 +194,11 @@ const Dashboard = () => {
             <div className="flex gap-6 mt-4 justify-center">
               <div className="flex items-center gap-2">
                 <div className="w-3 h-3 bg-blue-400 rounded"></div>
-                <span className="text-sm text-gray-600">Job View</span>
+                <span className="text-sm text-gray-600">{t("company.dashboard.jobView")}</span>
               </div>
               <div className="flex items-center gap-2">
                 <div className="w-3 h-3 bg-emerald-500 rounded"></div>
-                <span className="text-sm text-gray-600">Job Applied</span>
+                <span className="text-sm text-gray-600">{t("company.dashboard.jobApplied")}</span>
               </div>
             </div>
 
@@ -233,16 +237,16 @@ const Dashboard = () => {
           {/* Right Column - Stats */}
           <div className="space-y-6">
             <div className="bg-white rounded-xl p-6 shadow-sm">
-              <h3 className="text-lg font-semibold text-gray-900 mb-4">Job Open</h3>
+              <h3 className="text-lg font-semibold text-gray-900 mb-4">{t("company.dashboard.jobOpen")}</h3>
               <div className="text-5xl font-bold text-gray-900 mb-2">12</div>
-              <div className="text-sm text-gray-500">Jobs Opened</div>
+              <div className="text-sm text-gray-500">{t("company.dashboard.jobsOpened")}</div>
             </div>
 
             <div className="bg-white rounded-xl p-6 shadow-sm">
-              <h3 className="text-lg font-semibold text-gray-900 mb-4">Applicants Summary</h3>
+              <h3 className="text-lg font-semibold text-gray-900 mb-4">{t("company.dashboard.applicantsSummary")}</h3>
               <div className="text-5xl font-bold text-gray-900 mb-4">67</div>
-              <div className="text-sm text-gray-500 mb-4">Applicants</div>
-              
+              <div className="text-sm text-gray-500 mb-4">{t("company.dashboard.applicants")}</div>
+
               <div className="h-2 bg-gray-100 rounded-full overflow-hidden mb-4">
                 <div className="h-full flex">
                   <div className="bg-purple-600" style={{ width: "45%" }}></div>
@@ -256,35 +260,35 @@ const Dashboard = () => {
                 <div className="flex items-center justify-between text-sm">
                   <div className="flex items-center gap-2">
                     <div className="w-3 h-3 bg-purple-600 rounded"></div>
-                    <span className="text-gray-600">Full Time</span>
+                    <span className="text-gray-600">{t("company.dashboard.fullTime")}</span>
                   </div>
                   <span className="font-medium">45</span>
                 </div>
                 <div className="flex items-center justify-between text-sm">
                   <div className="flex items-center gap-2">
                     <div className="w-3 h-3 bg-cyan-400 rounded"></div>
-                    <span className="text-gray-600">Internship</span>
+                    <span className="text-gray-600">{t("company.dashboard.internship")}</span>
                   </div>
                   <span className="font-medium">32</span>
                 </div>
                 <div className="flex items-center justify-between text-sm">
                   <div className="flex items-center gap-2">
                     <div className="w-3 h-3 bg-emerald-400 rounded"></div>
-                    <span className="text-gray-600">Part-Time</span>
+                    <span className="text-gray-600">{t("company.dashboard.partTime")}</span>
                   </div>
                   <span className="font-medium">24</span>
                 </div>
                 <div className="flex items-center justify-between text-sm">
                   <div className="flex items-center gap-2">
                     <div className="w-3 h-3 bg-red-500 rounded"></div>
-                    <span className="text-gray-600">Contract</span>
+                    <span className="text-gray-600">{t("company.dashboard.contract")}</span>
                   </div>
                   <span className="font-medium">30</span>
                 </div>
                 <div className="flex items-center justify-between text-sm">
                   <div className="flex items-center gap-2">
                     <div className="w-3 h-3 bg-blue-400 rounded"></div>
-                    <span className="text-gray-600">Remote</span>
+                    <span className="text-gray-600">{t("company.dashboard.remote")}</span>
                   </div>
                   <span className="font-medium">22</span>
                 </div>
@@ -296,9 +300,9 @@ const Dashboard = () => {
         {/* Job Updates Section */}
         <div className="mt-6 bg-white rounded-xl p-6 shadow-sm">
           <div className="flex justify-between items-center mb-6">
-            <h2 className="text-lg font-semibold text-gray-900">Job Updates</h2>
+            <h2 className="text-lg font-semibold text-gray-900">{t("company.dashboard.jobUpdates")}</h2>
             <button className="flex items-center gap-2 text-purple-600 hover:text-purple-700 font-medium text-sm">
-              View All
+              {t("company.dashboard.viewAll")}
               <ChevronRight className="w-4 h-4" />
             </button>
           </div>
@@ -345,7 +349,10 @@ const Dashboard = () => {
                 </div>
 
                 <p className="text-xs text-gray-500">
-                  <span className="font-medium text-gray-900">{job.applied} applied</span> of {job.capacity} capacity
+                  <span className="font-medium text-gray-900">
+                    {t("company.dashboard.applied", { count: job.applied })}
+                  </span>{" "}
+                  {t("company.dashboard.of", { count: job.capacity })} {t("company.dashboard.capacity")}
                 </p>
               </div>
             ))}
