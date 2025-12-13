@@ -39,6 +39,16 @@ const normalizeUrl = (url, website_url) => {
 
 const getJobId = (job) => job.id || job.job_id || job.jobId || job._id;
 
+// Helper function to check if value is a placeholder "string"
+const isValidValue = (value) => {
+    if (!value) return false;
+    if (typeof value === 'string') {
+        const trimmed = value.trim();
+        return trimmed !== '' && trimmed !== 'string' && trimmed !== 'null' && trimmed !== 'undefined';
+    }
+    return true;
+};
+
 const openExternalUrl = (url) => {
     if (url.includes('topcv.vn')) {
         try {
@@ -207,12 +217,18 @@ export default function JobCard({
     const companyLogoUrl = logo || companyData?.logo;
     const companyLogoInitial = "SE";
 
-    const displaySalary = salary_text ||
-        (salary_from && salary_to
-            ? `${salary_from} - ${salary_to} ${salary_currency || ''}`.trim()
-            : salary_from
-                ? `${salary_from} ${salary_currency || ''}`.trim()
-                : "Salary not specified");
+    const displaySalary = useMemo(() => {
+        if (isValidValue(salary_text)) {
+            return salary_text;
+        }
+        if (salary_from && salary_to && isValidValue(salary_from) && isValidValue(salary_to)) {
+            return `${salary_from} - ${salary_to} ${salary_currency || ''}`.trim();
+        }
+        if (salary_from && isValidValue(salary_from)) {
+            return `${salary_from} ${salary_currency || ''}`.trim();
+        }
+        return "Salary not specified";
+    }, [salary_text, salary_from, salary_to, salary_currency]);
 
     const isTopCV = useMemo(() => {
         return jobUrl && typeof jobUrl === 'string' && jobUrl.includes('topcv.vn');
@@ -349,10 +365,13 @@ export default function JobCard({
                         </Box>
                     )}
 
-                    <Box sx={{ display: 'flex', alignItems: 'flex-start', gap: 2, mb: variant === 'list' ? 1.5 : 1.25 }}>
+                    <Box sx={{ display: 'flex', alignItems: 'center', gap: 2, mb: variant === 'list' ? 1.5 : 1.25 }}>
                         <Avatar
-                            src={isValidUrl(companyLogoUrl) ? companyLogoUrl : undefined}
+                            src={companyLogoUrl || undefined}
                             variant="square"
+                            onError={(e) => {
+                                e.target.style.display = 'none';
+                            }}
                             sx={{
                                 bgcolor: isValidUrl(companyLogoUrl) ? '#ffffff' : primaryColor,
                                 width: variant === 'list' ? 72 : 64,
@@ -363,7 +382,10 @@ export default function JobCard({
                                 flexShrink: 0,
                                 border: '1px solid',
                                 borderColor: 'divider',
-                                boxShadow: '0 1px 3px rgba(0,0,0,0.08)'
+                                boxShadow: '0 1px 3px rgba(0,0,0,0.08)',
+                                '& img': {
+                                    objectFit: 'contain',
+                                }
                             }}
                         >
                             {companyLogoInitial}
@@ -462,26 +484,29 @@ export default function JobCard({
                             />
 
                             {normalizedJob.locations && Array.isArray(normalizedJob.locations) && normalizedJob.locations.length > 0 ? (
-                                normalizedJob.locations.slice(0, 2).map((loc, index) => (
-                                    <Chip
-                                        key={index}
-                                        label={loc}
-                                        size="small"
-                                        sx={{
-                                            bgcolor: '#f5f5f5',
-                                            color: 'text.secondary',
-                                            fontSize: '0.8125rem',
-                                            fontWeight: 500,
-                                            height: '32px',
-                                            borderRadius: '20px',
-                                            border: 'none',
-                                            '& .MuiChip-label': {
-                                                px: 2
-                                            }
-                                        }}
-                                    />
-                                ))
-                            ) : location ? (
+                                normalizedJob.locations
+                                    .filter(loc => isValidValue(loc))
+                                    .slice(0, 2)
+                                    .map((loc, index) => (
+                                        <Chip
+                                            key={index}
+                                            label={loc}
+                                            size="small"
+                                            sx={{
+                                                bgcolor: '#f5f5f5',
+                                                color: 'text.secondary',
+                                                fontSize: '0.8125rem',
+                                                fontWeight: 500,
+                                                height: '32px',
+                                                borderRadius: '20px',
+                                                border: 'none',
+                                                '& .MuiChip-label': {
+                                                    px: 2
+                                                }
+                                            }}
+                                        />
+                                    ))
+                            ) : location && isValidValue(location) ? (
                                 <Chip
                                     label={location}
                                     size="small"
@@ -500,7 +525,7 @@ export default function JobCard({
                                 />
                             ) : null}
 
-                            {normalizedJob.experience && (
+                            {normalizedJob.experience && isValidValue(normalizedJob.experience) && (
                                 <Chip
                                     label={normalizedJob.experience}
                                     size="small"
@@ -546,7 +571,7 @@ export default function JobCard({
                                     }
                                 }}
                             />
-                            {location && (
+                            {location && isValidValue(location) && (
                                 <Chip
                                     label={location}
                                     size="small"

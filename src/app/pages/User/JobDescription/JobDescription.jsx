@@ -76,12 +76,25 @@ export default function JobDescription({
   const jobStatus = useSelector(state => state.jobs.status);
   const jobError = useSelector(state => state.jobs.error);
 
+  // Helper function to get job ID from various fields
+  const getJobIdValue = (job) => {
+    if (!job) return null;
+    return job.id || job.job_id || job.jobId || job._id || job.external_id;
+  };
+
   // Fetch job from API if jobId exists and job prop is not provided
   useEffect(() => {
-    if (jobId && !job) {
-      dispatch(getJobById(jobId));
+    if (!jobId) return;
+    if (job) return;
+
+    // Check if jobFromStore matches the requested jobId
+    const jobFromStoreId = getJobIdValue(jobFromStore);
+    if (jobFromStoreId && jobFromStoreId.toString() === jobId.toString()) {
+      return;
     }
-  }, [jobId, job, dispatch]);
+    // Fetch the job
+    dispatch(getJobById(jobId));
+  }, [jobId, dispatch]);
 
   // Use job prop if provided, otherwise use job from Redux store, fallback to mockJobs
   if (!job) {
@@ -232,11 +245,11 @@ export default function JobDescription({
           <PerksSection job={job} />
         </div>
       }
-      {finalConfig.showCompanySection &&
+      {/* {finalConfig.showCompanySection &&
         <div className="px-10 lg:px-25">
           <CompanySection job={job} />
         </div>
-      }
+      } */}
       {finalConfig.showSimilarJobs &&
         <div className="px-10 lg:px-25">
           <SimilarJobs job={job} />
