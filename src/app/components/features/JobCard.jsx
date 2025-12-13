@@ -40,14 +40,16 @@ const normalizeUrl = (url, website_url) => {
 const getJobId = (job) => job.id || job.job_id || job.jobId || job._id;
 
 const openExternalUrl = (url) => {
-    try {
-        window.open(url, '_blank', 'noopener');
-    } catch (err) {
-        const a = document.createElement('a');
-        a.href = url;
-        a.target = '_blank';
-        a.rel = 'noopener noreferrer';
-        a.click();
+    if (url.includes('topcv.vn')) {
+        try {
+            window.open(url, '_blank', 'noopener');
+        } catch (err) {
+            const a = document.createElement('a');
+            a.href = url;
+            a.target = '_blank';
+            a.rel = 'noopener noreferrer';
+            a.click();
+        }
     }
 };
 
@@ -59,7 +61,7 @@ const getTimeAgo = (dateString) => {
         const diffMs = now - date;
         const diffHours = Math.floor(diffMs / (1000 * 60 * 60));
         const diffDays = Math.floor(diffMs / (1000 * 60 * 60 * 24));
-        
+
         if (diffHours < 1) return 'Vừa đăng';
         if (diffHours < 24) return `Đăng ${diffHours} giờ trước`;
         if (diffDays < 7) return `Đăng ${diffDays} ngày trước`;
@@ -203,9 +205,6 @@ export default function JobCard({
         : companyData?.name || "Company Name";
 
     const companyLogoUrl = logo || companyData?.logo;
-    // const companyLogoInitial = (companyName && companyName !== "Company Name" && companyName.length > 0)
-    //     ? companyName.charAt(0).toUpperCase()
-    //     : "SE";
     const companyLogoInitial = "SE";
 
     const displaySalary = salary_text ||
@@ -214,6 +213,22 @@ export default function JobCard({
             : salary_from
                 ? `${salary_from} ${salary_currency || ''}`.trim()
                 : "Salary not specified");
+
+    const isTopCV = useMemo(() => {
+        return jobUrl && typeof jobUrl === 'string' && jobUrl.includes('topcv.vn');
+    }, [jobUrl]);
+
+    const primaryColor = useMemo(() => {
+        return isTopCV ? '#00B14F' : '#1976d2';
+    }, [isTopCV]);
+
+    const primaryLightColor = useMemo(() => {
+        return isTopCV ? '#00B14F' : theme.palette.primary.light;
+    }, [isTopCV, theme.palette.primary.light]);
+
+    const primaryDarkColor = useMemo(() => {
+        return isTopCV ? '#008B3D' : theme.palette.primary.dark;
+    }, [isTopCV, theme.palette.primary.dark]);
 
     const isJobFeatured = useMemo(() => {
         const jobCreatedAt = created_at || createdAt;
@@ -228,7 +243,7 @@ export default function JobCard({
     }, [created_at, createdAt, isFeatured, is_diamond, is_job_flash_active, is_hot]);
 
     const handleNavigate = useCallback(() => {
-        if (isValidUrl(jobUrl)) {
+        if (isValidUrl(jobUrl) && jobUrl.includes('topcv.vn')) {
             openExternalUrl(jobUrl);
             return;
         }
@@ -295,13 +310,13 @@ export default function JobCard({
                     boxShadow: '0 1px 3px rgba(0,0,0,0.08)',
                     '&:hover': {
                         boxShadow: '0 4px 12px rgba(0,0,0,0.12)',
-                        borderColor: 'primary.light',
+                        borderColor: primaryLightColor,
                         transition: 'all 0.2s ease-in-out',
                     }
                 }}
             >
-                <CardContent sx={{ 
-                    flexGrow: 1, 
+                <CardContent sx={{
+                    flexGrow: 1,
                     p: variant === 'list' ? 2.5 : 2,
                     display: 'flex',
                     flexDirection: 'column',
@@ -336,10 +351,10 @@ export default function JobCard({
 
                     <Box sx={{ display: 'flex', alignItems: 'flex-start', gap: 2, mb: variant === 'list' ? 1.5 : 1.25 }}>
                         <Avatar
-                            src={companyLogoUrl}
+                            src={isValidUrl(companyLogoUrl) ? companyLogoUrl : undefined}
                             variant="square"
                             sx={{
-                                bgcolor: companyLogoUrl !== '' ? '#ffffff' : '#f44336',
+                                bgcolor: isValidUrl(companyLogoUrl) ? '#ffffff' : primaryColor,
                                 width: variant === 'list' ? 72 : 64,
                                 height: variant === 'list' ? 72 : 64,
                                 fontSize: '1.25rem',
@@ -372,7 +387,7 @@ export default function JobCard({
                                         textOverflow: 'ellipsis',
                                         ...(showPopup && {
                                             '&:hover': {
-                                                color: 'primary.main'
+                                                color: primaryColor
                                             }
                                         })
                                     }}
@@ -380,7 +395,7 @@ export default function JobCard({
                                     {title}
                                 </Typography>
                             </Box>
-                            
+
                             <Typography
                                 variant="body2"
                                 sx={{
@@ -428,49 +443,29 @@ export default function JobCard({
 
 
                     {variant === 'list' ? (
-                        <Box sx={{ mb: 1.5 }}>
+                        <Stack direction="row" spacing={1} sx={{ flexWrap: 'wrap', gap: 1, mb: 1.5 }}>
                             <Chip
                                 label={displaySalary}
                                 size="small"
                                 sx={{
-                                    bgcolor: '#1976d2',
+                                    bgcolor: primaryColor,
                                     color: 'white',
                                     fontSize: '0.875rem',
                                     fontWeight: 600,
                                     height: '32px',
                                     borderRadius: '4px',
-                                    mb: 1.5,
                                     '& .MuiChip-label': {
                                         px: 2,
                                         py: 0.5
                                     }
                                 }}
                             />
-                            
-                            <Stack direction="row" spacing={1} sx={{ flexWrap: 'wrap', gap: 1 }}>
-                                {normalizedJob.locations && Array.isArray(normalizedJob.locations) && normalizedJob.locations.length > 0 ? (
-                                    normalizedJob.locations.slice(0, 2).map((loc, index) => (
-                                        <Chip
-                                            key={index}
-                                            label={loc}
-                                            size="small"
-                                            sx={{
-                                                bgcolor: '#f5f5f5',
-                                                color: 'text.secondary',
-                                                fontSize: '0.8125rem',
-                                                fontWeight: 500,
-                                                height: '32px',
-                                                borderRadius: '20px',
-                                                border: 'none',
-                                                '& .MuiChip-label': {
-                                                    px: 2
-                                                }
-                                            }}
-                                        />
-                                    ))
-                                ) : location ? (
+
+                            {normalizedJob.locations && Array.isArray(normalizedJob.locations) && normalizedJob.locations.length > 0 ? (
+                                normalizedJob.locations.slice(0, 2).map((loc, index) => (
                                     <Chip
-                                        label={location}
+                                        key={index}
+                                        label={loc}
                                         size="small"
                                         sx={{
                                             bgcolor: '#f5f5f5',
@@ -485,33 +480,50 @@ export default function JobCard({
                                             }
                                         }}
                                     />
-                                ) : null}
-                                
-                                {normalizedJob.experience && (
-                                    <Chip
-                                        label={normalizedJob.experience}
-                                        size="small"
-                                        sx={{
-                                            bgcolor: '#f5f5f5',
-                                            color: 'text.secondary',
-                                            fontSize: '0.8125rem',
-                                            fontWeight: 500,
-                                            height: '32px',
-                                            borderRadius: '20px',
-                                            border: 'none',
-                                            '& .MuiChip-label': {
-                                                px: 2
-                                            }
-                                        }}
-                                    />
-                                )}
-                            </Stack>
-                        </Box>
+                                ))
+                            ) : location ? (
+                                <Chip
+                                    label={location}
+                                    size="small"
+                                    sx={{
+                                        bgcolor: '#f5f5f5',
+                                        color: 'text.secondary',
+                                        fontSize: '0.8125rem',
+                                        fontWeight: 500,
+                                        height: '32px',
+                                        borderRadius: '20px',
+                                        border: 'none',
+                                        '& .MuiChip-label': {
+                                            px: 2
+                                        }
+                                    }}
+                                />
+                            ) : null}
+
+                            {normalizedJob.experience && (
+                                <Chip
+                                    label={normalizedJob.experience}
+                                    size="small"
+                                    sx={{
+                                        bgcolor: '#f5f5f5',
+                                        color: 'text.secondary',
+                                        fontSize: '0.8125rem',
+                                        fontWeight: 500,
+                                        height: '32px',
+                                        borderRadius: '20px',
+                                        border: 'none',
+                                        '& .MuiChip-label': {
+                                            px: 2
+                                        }
+                                    }}
+                                />
+                            )}
+                        </Stack>
                     ) : (
-                        <Stack 
-                            direction="row" 
-                            spacing={1} 
-                            sx={{ 
+                        <Stack
+                            direction="row"
+                            spacing={1}
+                            sx={{
                                 alignItems: 'center',
                                 flexWrap: 'nowrap',
                                 pl: 0
@@ -521,7 +533,7 @@ export default function JobCard({
                                 label={displaySalary}
                                 size="small"
                                 sx={{
-                                    bgcolor: '#1976d2',
+                                    bgcolor: primaryColor,
                                     color: 'white',
                                     fontSize: '0.8rem',
                                     fontWeight: 500,
@@ -539,12 +551,12 @@ export default function JobCard({
                                     label={location}
                                     size="small"
                                     variant="outlined"
-                                    sx={{ 
+                                    sx={{
                                         fontSize: '0.8rem',
                                         height: '28px',
                                         borderRadius: '8px',
-                                        borderColor: '#1976d2',
-                                        color: '#1976d2',
+                                        borderColor: primaryColor,
+                                        color: primaryColor,
                                         fontWeight: 500,
                                         flexShrink: 0,
                                         '& .MuiChip-label': {
@@ -639,7 +651,7 @@ export default function JobCard({
                                     label={displaySalary}
                                     size="small"
                                     sx={{
-                                        bgcolor: 'success.main',
+                                        bgcolor: primaryColor,
                                         color: 'white',
                                         fontSize: '0.75rem',
                                         height: '24px'
@@ -769,14 +781,14 @@ export default function JobCard({
                                 fullWidth
                                 onClick={handleNavigate}
                                 sx={{
-                                    bgcolor: 'primary.main',
+                                    bgcolor: primaryColor,
                                     color: 'white',
                                     fontWeight: 600,
                                     py: 1.5,
                                     textTransform: 'none',
                                     fontSize: '0.95rem',
                                     '&:hover': {
-                                        bgcolor: 'primary.dark'
+                                        bgcolor: primaryDarkColor
                                     }
                                 }}
                             >

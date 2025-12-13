@@ -1,34 +1,83 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useMemo } from 'react';
 import { ArrowForward } from '@mui/icons-material';
 import JobCard from '../features/JobCard';
 import { useSelector, useDispatch } from 'react-redux';
 import { getJobs, getJobById } from '../../modules/services/jobsService';
 import { useNavigate } from 'react-router-dom';
 
+const EMPTY_PAGINATION = {};
+
+const transformJobData = (job) => {
+    if (!job) return null;
+
+    let salary = "Negotiable";
+    if (job.salary_text) {
+        salary = job.salary_text;
+    } else if (job.salary_from || job.salary_to) {
+        const from = job.salary_from || 0;
+        const to = job.salary_to || 0;
+        const currency = job.salary_currency || "";
+        if (from && to) {
+            salary = `${from} - ${to} ${currency}`;
+        } else if (from) {
+            salary = `From ${from} ${currency}`;
+        } else if (to) {
+            salary = `Up to ${to} ${currency}`;
+        }
+    }
+
+    return {
+        id: job.id || job.external_id,
+        title: job.title || "Job Title",
+        company: job.company?.name || "Company Name", 
+        location: job.location || job.company_branches?.location || "Location",
+        type: job.working_time || job.type || "Full-time",
+        salary: salary,
+        description: job.description || "",
+        categories: job.categories || [],
+        logo: job.company?.logo || job.logo || (job.title ? job.title.charAt(0).toUpperCase() : "J"),
+        isFeatured: job.is_hot || job.is_diamond || false,
+        applied: job.applied || 0,
+        capacity: job.capacity || 10,
+        // Keep original data for reference
+        ...job
+    };
+};
+
 export default function JobSection() {
     const dispatch = useDispatch();
     const navigate = useNavigate();
     const latestJobs = useSelector(state => state.jobs.jobs);
-    const pagination = useSelector(state => state.jobs.pagination || {});
+    const paginationState = useSelector(state => state.jobs.pagination);
     const status = useSelector(state => state.jobs.status);
     const [currentPage, setCurrentPage] = useState(1);
     const jobsPerPage = 9; // 3x3 grid
+
+    // Memoize pagination to avoid creating new object reference
+    const pagination = useMemo(() => {
+        return paginationState || EMPTY_PAGINATION;
+    }, [paginationState]);
 
     useEffect(() => {
         dispatch(getJobs({ page: currentPage, limit: jobsPerPage, sort_by: "job_posted_at", order: "desc" }));
     }, [dispatch, currentPage]);
 
-    // Get pagination info from API
-    const totalPages = pagination.totalPages || Math.ceil(latestJobs.length / jobsPerPage) || 1;
-    const totalItems = pagination.totalItems || latestJobs.length || 0;
+    // Get pagination info from API - memoized
+    const totalPages = useMemo(() => {
+        return pagination.totalPages || Math.ceil((latestJobs?.length || 0) / jobsPerPage) || 1;
+    }, [pagination.totalPages, latestJobs?.length, jobsPerPage]);
+
+    const totalItems = useMemo(() => {
+        return pagination.totalItems || latestJobs?.length || 0;
+    }, [pagination.totalItems, latestJobs?.length]);
 
     const handlePageChange = (page) => {
         setCurrentPage(page);
         window.scrollTo({ top: 0, behavior: 'smooth' });
     };
 
-    // Generate smart pagination numbers
-    const getPageNumbers = () => {
+    // Generate smart pagination numbers - memoized
+    const pageNumbers = useMemo(() => {
         const pages = [];
         const maxVisible = 5;
 
@@ -60,50 +109,13 @@ export default function JobSection() {
             }
         }
         return pages;
-    };
+    }, [totalPages, currentPage]);
 
-    const pageNumbers = getPageNumbers();
-
-    // Transform API data to JobCard format
-    const transformJobData = (job) => {
-        if (!job) return null;
-
-        // Format salary
-        let salary = "Negotiable";
-        if (job.salary_text) {
-            salary = job.salary_text;
-        } else if (job.salary_from || job.salary_to) {
-            const from = job.salary_from || 0;
-            const to = job.salary_to || 0;
-            const currency = job.salary_currency || "";
-            if (from && to) {
-                salary = `${from} - ${to} ${currency}`;
-            } else if (from) {
-                salary = `From ${from} ${currency}`;
-            } else if (to) {
-                salary = `Up to ${to} ${currency}`;
-            }
-        }
-
-        return {
-            id: job.id || job.external_id,
-            title: job.title || "Job Title",
-            company: job.company?.name || "Company Name", // If API includes company object
-            location: job.location || job.company_branches?.location || "Location",
-            type: job.working_time || job.type || "Full-time",
-            salary: salary,
-            description: job.description || "",
-            categories: job.categories || [],
-            logo: job.company?.logo || job.logo || (job.title ? job.title.charAt(0).toUpperCase() : "J"),
-            isFeatured: job.is_hot || job.is_diamond || false,
-            applied: job.applied || 0,
-            capacity: job.capacity || 10,
-            // Keep original data for reference
-            ...job
-        };
-    };
-
-    const transformedJobs = latestJobs.map(transformJobData).filter(Boolean);
+    // Memoize transformed jobs to avoid recreating on every render
+    const transformedJobs = useMemo(() => {
+        if (!latestJobs || !Array.isArray(latestJobs)) return [];
+        return latestJobs.map(transformJobData).filter(Boolean);
+    }, [latestJobs]);
 
     const handleJobAction = (action, job) => {
         switch (action) {
