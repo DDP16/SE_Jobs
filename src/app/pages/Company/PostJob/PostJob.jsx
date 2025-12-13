@@ -1,5 +1,6 @@
 // src/app/pages/Company/PostJob/PostJob.jsx
 import { useEffect, useState } from "react";
+import { useTranslation } from "react-i18next";
 import { useDispatch, useSelector } from "react-redux";
 import { Button } from "@/components/ui/button";
 
@@ -35,6 +36,7 @@ import { createJob } from "../../../modules/services/jobsService";
 import { useNavigate } from "react-router-dom";
 
 export default function PostJob() {
+  const { t } = useTranslation();
   const dispatch = useDispatch();
 
   useEffect(() => {
@@ -47,8 +49,8 @@ export default function PostJob() {
   const currentUser = useSelector((state) => state.auth.user);
   const authStatus = useSelector((state) => state.auth.status);
 
-  console.log("PostJob authStatus:", authStatus);
-  console.log("PostJob currentUser:", currentUser);
+  // console.log("PostJob authStatus:", authStatus);
+  // console.log("PostJob currentUser:", currentUser);
 
   const companyId = currentUser?.company?.id;
   // const companyBranchId = 1;
@@ -95,10 +97,11 @@ export default function PostJob() {
   const [skillIds, setSkillIds] = useState([]);
   const [categoryIds, setCategoryIds] = useState([]);
 
+  // const { t } = useTranslation();
   const steps = [
-    { number: 1, title: "Job Information", icon: FileText },
-    { number: 2, title: "Job Description", icon: Briefcase },
-    { number: 3, title: "Perks & Benefit", icon: Gift },
+    { number: 1, title: t("postJob.jobInformation"), icon: FileText },
+    { number: 2, title: t("postJob.jobDescription"), icon: Briefcase },
+    { number: 3, title: t("postJob.perksBenefit"), icon: Gift },
   ];
 
   const employmentOptions = ["Full-Time", "Part-Time", "Remote", "Internship", "Contract"];
@@ -194,21 +197,29 @@ export default function PostJob() {
 
     try {
       await dispatch(createJob(payload)).unwrap();
-      console.log("Job posted successfully!");
+      // console.log("Job posted successfully!");
     } catch (err) {
       console.error("Failed to create job:", err);
     }
   };
 
   if (authStatus === "loading") {
-    return <div>Loading company profile...</div>;
+    return <div>{t("postJob.loadingCompanyProfile")}</div>;
   }
 
   if (!currentUser || !currentUser.company) {
-    return <div>Company profile not found.</div>;
+    return <div>{t("postJob.companyProfileNotFound")}</div>;
   }
 
   const nav = useNavigate();
+
+  if (authStatus === "loading") {
+    return <div>{t("postJob.loadingCompanyProfile")}</div>;
+  }
+
+  if (!currentUser || !currentUser.company) {
+    return <div>{t("postJob.companyProfileNotFound")}</div>;
+  }
 
   return (
     <div className="bg-background p-4 lg:p-6 2xl:p-8 space-y-8">
@@ -216,7 +227,7 @@ export default function PostJob() {
         <Button variant="ghost" size="icon" className="h-10 w-10 cursor-pointer" onClick={() => nav(-1)}>
           <ArrowLeft className="h-5 w-5" />
         </Button>
-        <h4 className="font-bold text-foreground">Post a Job</h4>
+        <h4 className="font-bold text-foreground">{t("postJob.postAJob")}</h4>
       </div>
 
       <div className="flex gap-4">
@@ -227,27 +238,31 @@ export default function PostJob() {
           return (
             <div
               key={step.number}
-              className={`flex-1 flex items-center gap-3 p-4 rounded-lg transition-colors cursor-pointer ${isActive
+              className={`flex-1 flex items-center gap-3 p-4 rounded-lg transition-colors cursor-pointer ${
+                isActive
                   ? "bg-primary/10 border-2 border-primary"
                   : isCompleted
-                    ? "bg-primary/5 border-2 border-primary/30"
-                    : "bg-input border-2 border-border"
-                }`}
-              onClick={() => { setCurrentStep(step.number) }}
+                  ? "bg-primary/5 border-2 border-primary/30"
+                  : "bg-input border-2 border-border"
+              }`}
+              onClick={() => {
+                setCurrentStep(step.number);
+              }}
             >
               <div
-                className={`flex items-center justify-center w-12 h-12 rounded-full transition-colors ${isActive
+                className={`flex items-center justify-center w-12 h-12 rounded-full transition-colors ${
+                  isActive
                     ? "bg-primary text-white"
                     : isCompleted
-                      ? "bg-primary/20 text-primary"
-                      : "bg-input text-muted-foreground border border-border"
-                  }`}
+                    ? "bg-primary/20 text-primary"
+                    : "bg-input text-muted-foreground border border-border"
+                }`}
               >
                 <Icon className="h-6 w-6" />
               </div>
               <div className="flex-1">
                 <p className={`text-sm font-medium ${isActive ? "text-primary" : "text-muted-foreground"}`}>
-                  Step {step.number}/3
+                  {t("postJob.step", { number: step.number }) || `Step ${step.number}/3`}
                 </p>
                 <p className={`font-semibold ${isActive ? "text-foreground" : "text-muted-foreground"}`}>
                   {step.title}
@@ -307,7 +322,7 @@ export default function PostJob() {
         <div className="flex justify-between mt-8">
           {currentStep > 1 && (
             <Button variant="outline" size="lg" onClick={() => setCurrentStep(currentStep - 1)} className="px-8">
-              Previous
+              {t("postJob.previous")}
             </Button>
           )}
           {currentStep < 3 ? (
@@ -316,15 +331,11 @@ export default function PostJob() {
               onClick={() => setCurrentStep(currentStep + 1)}
               className="bg-primary hover:bg-primary/90 text-white px-8 ml-auto"
             >
-              Next Step
+              {t("postJob.nextStep")}
             </Button>
           ) : (
-            <Button
-              size="lg"
-              onClick={handleSubmit}
-              className="bg-primary hover:bg-primary/90 text-white px-8 ml-auto"
-            >
-              Post Job
+            <Button size="lg" onClick={handleSubmit} className="bg-primary hover:bg-primary/90 text-white px-8 ml-auto">
+              {t("postJob.postJob")}
             </Button>
           )}
         </div>

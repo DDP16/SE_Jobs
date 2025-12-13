@@ -10,6 +10,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { useState, useMemo } from "react";
+import { useTranslation } from "react-i18next";
 
 export default function Step1JobInfo({
   jobTitle,
@@ -31,9 +32,7 @@ export default function Step1JobInfo({
   onSkillSelect,
 }) {
   const [searchQuery, setSearchQuery] = useState("");
-  console.log("API Skills:", apiSkills);
-  console.log("Search Query:", searchQuery);
-  console.log("categories", categories);
+  const { t } = useTranslation();
 
   const filteredSkills = useMemo(() => {
     if (!searchQuery.trim()) return [];
@@ -48,37 +47,33 @@ export default function Step1JobInfo({
   return (
     <div className="space-y-8">
       <div className="border-b border-gray-300">
-        <p className="text-lg font-semibold mb-2 text-foreground">Basic Information</p>
-        <p className="text-normal font-regular text-muted-foreground mb-6">
-          This information will be displayed publicly
-        </p>
+        <p className="text-lg font-semibold mb-2 text-foreground">{t("postJob.basicInformation")}</p>
+        <p className="text-normal font-regular text-muted-foreground mb-6">{t("postJob.basicInformationDesc")}</p>
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4 items-start border-b border-border pb-6 border-gray-300">
         <div>
           <Label htmlFor="jobTitle" className="text-foreground font-semibold text-lg">
-            Job Title
+            {t("postJob.jobTitle")}
           </Label>
-          <p className="text-normal font-regular text-muted-foreground mt-1">Job titles must describe one position</p>
+          <p className="text-normal font-regular text-muted-foreground mt-1">{t("postJob.jobTitleDesc")}</p>
         </div>
         <div className="md:col-span-2">
           <Input
             id="jobTitle"
-            placeholder="e.g. Software Engineer"
+            placeholder={t("postJob.jobTitlePlaceholder")}
             value={jobTitle}
             onChange={(e) => setJobTitle(e.target.value)}
             className="bg-white border-border"
           />
-          <p className="text-normal font-regular text-muted-foreground mt-1">At least 80 characters</p>
+          <p className="text-normal font-regular text-muted-foreground mt-1">{t("postJob.jobTitleHint")}</p>
         </div>
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4 items-start border-b border-border pb-6 border-gray-300">
         <div>
-          <Label className="text-foreground font-semibold text-lg">Type of Employment</Label>
-          <p className="text-normal font-regular text-muted-foreground mt-1">
-            You can select multiple types of employment
-          </p>
+          <Label className="text-foreground font-semibold text-lg">{t("postJob.employmentType")}</Label>
+          <p className="text-normal font-regular text-muted-foreground mt-1">{t("postJob.employmentTypeDesc")}</p>
         </div>
         <div className="md:col-span-2 space-y-3">
           {employmentOptions.map((option) => (
@@ -90,7 +85,7 @@ export default function Step1JobInfo({
                 className="border-border data-[state=checked]:bg-primary data-[state=checked]:border-primary data-[state=checked]:text-white"
               />
               <Label htmlFor={option} className="text-sm font-normal text-foreground cursor-pointer">
-                {option}
+                {t(`postJob.${option.replace("-", "").replace(" ", "").toLowerCase()}`) || option}
               </Label>
             </div>
           ))}
@@ -99,12 +94,8 @@ export default function Step1JobInfo({
 
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4 items-start border-b border-border border-gray-300 pb-6">
         <div>
-          <Label className="text-foreground font-semibold text-lg">
-            Salary
-          </Label>
-          <p className="text-normal font-regular text-muted-foreground mt-1">
-            Please specify the estimated salary range for the role. You can leave this blank.
-          </p>
+          <Label className="text-foreground font-semibold text-lg">{t("postJob.salaryRange")}</Label>
+          <p className="text-normal font-regular text-muted-foreground mt-1">{t("postJob.salaryRangeDesc")}</p>
         </div>
         <div className="md:col-span-2 space-y-6">
           <div className="flex items-center gap-4">
@@ -123,7 +114,7 @@ export default function Step1JobInfo({
                 />
               </div>
             </div>
-            <span className="text-muted-foreground">to</span>
+            <span className="text-muted-foreground">{t("postJob.to")}</span>
             <div className="flex-1">
               <div className="relative">
                 <span className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground">$</span>
@@ -212,27 +203,24 @@ export default function Step1JobInfo({
       {/* ✅ FIXED: Category dropdown */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4 items-start border-b border-border border-gray-300 pb-6">
         <div>
-          <Label className="text-foreground font-semibold text-lg">Categories</Label>
-          <p className="text-normal font-regular text-muted-foreground mt-1">Select a job category</p>
+          <Label className="text-foreground font-semibold text-lg">{t("postJob.category")}</Label>
+          <p className="text-normal font-regular text-muted-foreground mt-1">{t("postJob.categoryDesc")}</p>
         </div>
         <div className="md:col-span-2">
           <DropdownMenu className="rounded-lg">
             <DropdownMenuTrigger asChild>
-              <Button
-                variant="outline"
-                className=" justify-between bg-white border-border hover:bg-white rounded-lg"
-              >
-                {selectedCategory || "Select Category"}
+              <Button variant="outline" className=" justify-between bg-white border-border hover:bg-white rounded-lg">
+                {selectedCategory || t("postJob.selectCategory")}
                 <ChevronDown className="ml-2 h-4 w-4 opacity-50" />
               </Button>
             </DropdownMenuTrigger>
-            <DropdownMenuContent 
-              side="bottom" 
-              align="center" 
+            <DropdownMenuContent
+              side="bottom"
+              align="center"
               className="bg-white rounded-lg overflow-y-auto max-h-60 scrollbar-hide"
               style={{
-                scrollbarWidth: 'none',
-                msOverflowStyle: 'none'
+                scrollbarWidth: "none",
+                msOverflowStyle: "none",
               }}
             >
               {categories.map((cat) => (
@@ -247,8 +235,8 @@ export default function Step1JobInfo({
 
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4 items-start">
         <div>
-          <Label className="text-foreground font-semibold text-lg">Required Skills</Label>
-          <p className="text-normal font-regular text-muted-foreground mt-1">Select from existing skills</p>
+          <Label className="text-foreground font-semibold text-lg">{t("postJob.skills")}</Label>
+          <p className="text-normal font-regular text-muted-foreground mt-1">{t("postJob.skillsDesc")}</p>
         </div>
         <div className="md:col-span-2">
           <div className="relative mb-4">
@@ -256,7 +244,7 @@ export default function Step1JobInfo({
               <Search className="h-4 w-4" />
             </div>
             <Input
-              placeholder="Search skills..."
+              placeholder={t("postJob.searchSkills")}
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               className="pl-10 bg-white border-border"
@@ -276,7 +264,7 @@ export default function Step1JobInfo({
             )}
             {searchQuery && filteredSkills.length === 0 && (
               <div className="absolute z-10 mt-1 w-full bg-white border border-border rounded-md px-4 py-2 text-muted-foreground text-sm">
-                No skills found
+                {t("postJob.noSkillsFound")}
               </div>
             )}
           </div>
