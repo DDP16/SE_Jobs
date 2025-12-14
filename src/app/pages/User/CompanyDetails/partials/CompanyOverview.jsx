@@ -5,7 +5,6 @@ import { useTranslation } from 'react-i18next';
 
 export default function CompanyOverview({ company = {} }) {
     const { t } = useTranslation();
-    console.log("company from CompanyOverview:", company);
 
     const description = company.description || "";
 

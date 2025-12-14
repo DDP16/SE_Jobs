@@ -2,8 +2,32 @@ import { motion } from "framer-motion";
 import { Umbrella, Mountain, Stethoscope, Video, Coffee, Bus, HandHeart } from "lucide-react";
 import { useTranslation } from "react-i18next";
 
-export default function PerksSection() {
+export default function PerksSection({ job }) {
   const { t } = useTranslation();
+
+  // Get benefits from job if provided (data ready but not displayed yet)
+  // const getJobBenefits = () => {
+  //   if (!job) return null;
+  //   
+  //   // Check for applyReasons array
+  //   if (Array.isArray(job.applyReasons) && job.applyReasons.length > 0) {
+  //     return job.applyReasons;
+  //   }
+  //   
+  //   // Check for benefit string
+  //   if (job.benefit) {
+  //     return job.benefit;
+  //   }
+  //   
+  //   // Check for benefits array
+  //   if (Array.isArray(job.benefits) && job.benefits.length > 0) {
+  //     return job.benefits;
+  //   }
+  //   
+  //   return null;
+  // };
+  // 
+  // const jobBenefits = getJobBenefits();
 
   const perks = [
     {
@@ -50,6 +74,56 @@ export default function PerksSection() {
     },
   ];
 
+  // Benefits display from API - commented out, data ready but not displayed yet
+  // if (jobBenefits) {
+  //   // If it's a string (HTML), display it
+  //   if (typeof jobBenefits === 'string') {
+  //     return (
+  //       <motion.section
+  //         initial={{ opacity: 0, y: 40 }}
+  //         animate={{ opacity: 1, y: 0 }}
+  //         transition={{ duration: 0.5, delay: 0.4 }}
+  //       >
+  //         <h4 className="text-2xl font-bold text-foreground mb-2">{t("company.perks_benefits.title")}</h4>
+  //         <p className="text-muted-foreground mb-8">{t("company.perks_benefits.description")}</p>
+  //         <div 
+  //           className="text-muted-foreground leading-relaxed"
+  //           dangerouslySetInnerHTML={{ __html: jobBenefits }}
+  //         />
+  //       </motion.section>
+  //     );
+  //   }
+  //   
+  //   // If it's an array, display as list
+  //   if (Array.isArray(jobBenefits)) {
+  //     return (
+  //       <motion.section
+  //         initial={{ opacity: 0, y: 40 }}
+  //         animate={{ opacity: 1, y: 0 }}
+  //         transition={{ duration: 0.5, delay: 0.4 }}
+  //       >
+  //         <h4 className="text-2xl font-bold text-foreground mb-2">{t("company.perks_benefits.title")}</h4>
+  //         <p className="text-muted-foreground mb-8">{t("company.perks_benefits.description")}</p>
+  //         <ul className="space-y-3">
+  //           {jobBenefits.map((benefit, index) => (
+  //             <motion.li
+  //               key={index}
+  //               initial={{ opacity: 0, x: -20 }}
+  //               animate={{ opacity: 1, x: 0 }}
+  //               transition={{ duration: 0.3, delay: 0.5 + index * 0.1 }}
+  //               className="flex gap-3 text-muted-foreground"
+  //             >
+  //               <span className="text-accent-green">•</span>
+  //               <span>{typeof benefit === 'string' ? benefit : (benefit.name || benefit.description || benefit)}</span>
+  //             </motion.li>
+  //           ))}
+  //         </ul>
+  //       </motion.section>
+  //     );
+  //   }
+  // }
+
+  // Default perks display
   return (
     <motion.section
       initial={{ opacity: 0, y: 40 }}
@@ -58,7 +132,7 @@ export default function PerksSection() {
     >
       <h4 className="text-2xl font-bold text-foreground mb-2">{t("company.perks_benefits.title")}</h4>
       <p className="text-muted-foreground mb-8">{t("company.perks_benefits.description")}</p>
-      
+
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
         {perks.map((perk, index) => (
           <motion.div

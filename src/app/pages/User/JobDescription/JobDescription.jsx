@@ -5,7 +5,6 @@ import { PerksSection } from "../../../components";
 import CompanySection from "./partials/CompanySection";
 import SimilarJobs from "./partials/SimilarJobs";
 import { layoutType } from "../../../lib";
-import { mockJobs } from "../../../../mocks/mockData";
 import { useSearchParams } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
 import { getJobById } from "../../../modules/services/jobsService";
@@ -73,6 +72,7 @@ export default function JobDescription({
 
   // Get job and loading status from Redux store
   const jobFromStore = useSelector(state => state.jobs.job);
+  console.log("jobFromStore:", jobFromStore);
   const jobStatus = useSelector(state => state.jobs.status);
   const jobError = useSelector(state => state.jobs.error);
 
@@ -96,13 +96,9 @@ export default function JobDescription({
     dispatch(getJobById(jobId));
   }, [jobId, dispatch]);
 
-  // Use job prop if provided, otherwise use job from Redux store, fallback to mockJobs
-  if (!job) {
-    if (jobFromStore) {
-      job = jobFromStore;
-    } else if (jobId) {
-      job = mockJobs.find(j => j.id.toString() === jobId);
-    }
+  // Use job prop if provided, otherwise use job from Redux store
+  if (!job && jobFromStore) {
+    job = jobFromStore;
   }
 
   // Show loading state
@@ -221,14 +217,8 @@ export default function JobDescription({
   return (
     <div className={`min-h-screen bg-white mx-auto ${layout !== layoutType.preview ? "space-y-12 pb-12" : "space-y-6 pb-6"}`}>
       <div className={`${layout !== layoutType.preview ? "px-10 lg:px-50 py-8" : "sticky top-0 z-10"} bg-background-lightBlue`}>
-        {/* {finalConfig.showBreadcrumb && (
-          <div className="mb-5">
-            <p className="text-sm text-muted-foreground">
-              Home / Companies / {typeof job?.company === 'string' ? job.company : job?.company?.name || "Company"} / {job?.title || "Job Title"}
-            </p>
-          </div>
-        )} */}
-        {finalConfig.showJobHeader && <JobHeader job={job} />}
+
+        {finalConfig.showJobHeader && <JobHeader job={job} layout={layout} />}
       </div>
 
       <div className={`grid grid-cols-1 ${layout !== layoutType.preview ? "px-10 lg:px-25 lg:grid-cols-3 md:grid-cols-2 gap-8" : "px-10 lg:grid-cols-1 gap-y-8"}`}>
