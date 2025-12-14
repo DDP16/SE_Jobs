@@ -35,27 +35,34 @@ import { getLevels } from "../../../modules/services/levelsService";
 import { createJob } from "../../../modules/services/jobsService";
 import { useNavigate } from "react-router-dom";
 import { FuzzyText } from "../../../components";
+import { getCompanyBranches } from "../../../modules/services/companyBranchesService";
 
 export default function PostJob() {
   const dispatch = useDispatch();
-
-  useEffect(() => {
-    dispatch(getCategories());
-    dispatch(getEmploymentTypes());
-    dispatch(getSkills());
-    dispatch(getLevels());
-  }, [dispatch]);
-
-  const currentUser = useSelector((state) => state.auth.user);
-  const authStatus = useSelector((state) => state.auth.status);
-
-  const companyId = currentUser?.company?.id;
-  // const companyBranchId = 1;
 
   const categories = useSelector((state) => state.categories?.categories ?? []);
   const apiEmploymentTypes = useSelector((state) => state.employmentTypes?.employmentTypes ?? []);
   const apiSkills = useSelector((state) => state.skills?.skills ?? []);
   const levels = useSelector((state) => state.levels?.levels ?? []);
+  const apiCompanyBranches = useSelector((state) => state.companyBranches?.branches ?? []);
+
+  const currentUser = useSelector((state) => state.auth.user);
+  const authStatus = useSelector((state) => state.auth.status);
+  const companyId = currentUser?.company?.id;
+
+  useEffect(() => {
+    if (companyId && categories.length === 0)
+      dispatch(getCategories());
+    if (companyId && apiEmploymentTypes.length === 0)
+      dispatch(getEmploymentTypes());
+    if (companyId && apiSkills.length === 0)
+      dispatch(getSkills());
+    if (companyId && levels.length === 0)
+      dispatch(getLevels());
+    if (companyId && apiCompanyBranches.length === 0) {
+      dispatch(getCompanyBranches(companyId));
+    }
+  }, [dispatch]);
 
   const [currentStep, setCurrentStep] = useState(1);
   const [jobTitle, setJobTitle] = useState("");
@@ -71,6 +78,7 @@ export default function PostJob() {
   const [whoYouAre, setWhoYouAre] = useState("");
   const [niceToHaves, setNiceToHaves] = useState("");
   const [benefits, setBenefits] = useState([]);
+  const [companyBranchId, setCompanyBranchId] = useState(null);
 
   const [employmentTypeIds, setEmploymentTypeIds] = useState([]);
   const [skillIds, setSkillIds] = useState([]);
@@ -79,7 +87,8 @@ export default function PostJob() {
 
   useEffect(() => {
     console.log(benefits);
-  }, [benefits]);
+    console.log(apiCompanyBranches);
+  }, [benefits,apiCompanyBranches]);
 
   const steps = [
     { number: 1, title: "Job Information", icon: FileText },
@@ -284,6 +293,9 @@ export default function PostJob() {
             selectedCategory={selectedCategory}
             handleCategorySelect={handleCategorySelect}
             categories={categories}
+            companyBranches={apiCompanyBranches}
+            companyBranchId={companyBranchId}
+            setCompanyBranchId={setCompanyBranchId}
             levels={levels}
             selectedLevel={selectedLevel}
             handleLevelSelect={handleLevelSelect}

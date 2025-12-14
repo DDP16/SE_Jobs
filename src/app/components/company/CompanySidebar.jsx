@@ -22,6 +22,7 @@ const navigation = [
   { name: "Dashboard", icon: Home, badge: null, path: "/" },
   // { name: "Messages", icon: MessageSquare, badge: 1 },
   { name: "Company Profile", icon: Building2, badge: null, path: "/company" },
+  { name: "Company Branches", icon: Building2, badge: null, path: "/branches" },
   { name: "All Applicants", icon: Users, badge: null, path: "/applicants/1" },
   { name: "Job Listing", icon: FileText, badge: null, path: "/job-listing" },
   { name: "My Schedule", icon: Calendar, badge: null },
@@ -46,13 +47,6 @@ export default function CompanySidebar() {
       {/* Navigation */}
       <nav className="flex-1 px-3 space-y-1">
         {navigation.map((item) => {
-          let to = "/";
-          if (item.name === "Dashboard") to = "/";
-          if (item.name === "Company Profile") to = "/company";
-          if (item.name === "All Applicants") to = "/applicants/1";
-          if (item.name === "Job Listing") to = "/job-listing";
-          if (item.name === "Job Posting") to = "/post-job";
-
           return (
             <NavLink
               key={item.name}

@@ -1,3 +1,4 @@
+import { Select, Space } from "antd";
 import {
   Input,
   Label,
@@ -9,7 +10,7 @@ import {
   DropdownMenuTrigger,
 } from "../../../../components/ui";
 import { ChevronDown, X, Search } from "lucide-react";
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect } from "react";
 import { useTranslation } from "react-i18next";
 
 export default function Step1JobInfo({
@@ -27,6 +28,9 @@ export default function Step1JobInfo({
   selectedLevel,
   handleLevelSelect,
   categories,
+  companyBranches,
+  companyBranchId,
+  setCompanyBranchId,
   skills,
   levels,
   newSkill,
@@ -75,6 +79,13 @@ export default function Step1JobInfo({
     return t(key, option); // fallback to original if key missing
   };
 
+  const options = companyBranches?.map((branch) => ({
+    value: branch.id,
+    label: branch.name
+  })) || [];
+
+  useEffect(() => {console.log(options)}, [options]);
+
   return (
     <div className="space-y-8">
       {/* Basic Information Header */}
@@ -106,25 +117,43 @@ export default function Step1JobInfo({
       </div>
 
       {/* Employment Type */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-4 items-start border-b border-border pb-6 border-gray-300">
-        <div>
-          <Label className="text-foreground font-semibold text-lg">{t("postJob.employmentType")}</Label>
-          <p className="text-normal font-regular text-muted-foreground mt-1">{t("postJob.employmentTypeDesc")}</p>
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 items-start border-b border-border pb-6 border-gray-300">
+        <div className="grid grid-cols-1 md:grid-cols-5 gap-4 items-center">
+          <div className="md:col-span-2">
+            <Label className="text-foreground font-semibold text-lg">{t("postJob.employmentType")}</Label>
+            <p className="text-normal font-regular text-muted-foreground mt-1">{t("postJob.employmentTypeDesc")}</p>
+          </div>
+          <div className="md:col-span-3 space-y- grid grid-cols-2 gap-3">
+            {employmentOptions.map((option) => (
+              <div key={option} className="flex items-center space-x-3">
+                <Checkbox
+                  id={option}
+                  checked={employmentTypes.includes(option)}
+                  onCheckedChange={() => toggleEmploymentType(option)}
+                  className="border-border data-[state=checked]:bg-primary data-[state=checked]:border-primary data-[state=checked]:text-white"
+                />
+                <Label htmlFor={option} className="text-sm font-normal text-foreground cursor-pointer">
+                  {getEmploymentLabel(option)}
+                </Label>
+              </div>
+            ))}
+          </div>
         </div>
-        <div className="md:col-span-2 space-y-3">
-          {employmentOptions.map((option) => (
-            <div key={option} className="flex items-center space-x-3">
-              <Checkbox
-                id={option}
-                checked={employmentTypes.includes(option)}
-                onCheckedChange={() => toggleEmploymentType(option)}
-                className="border-border data-[state=checked]:bg-primary data-[state=checked]:border-primary data-[state=checked]:text-white"
-              />
-              <Label htmlFor={option} className="text-sm font-normal text-foreground cursor-pointer">
-                {getEmploymentLabel(option)}
-              </Label>
-            </div>
-          ))}
+        <div className="grid grid-cols-1 md:grid-cols-5 gap-4 items-center">
+          <div className="md:col-span-2">
+            <Label className="text-foreground font-semibold text-lg">{t("postJob.employmentType")}</Label>
+            <p className="text-normal font-regular text-muted-foreground mt-1">{t("postJob.employmentTypeDesc")}</p>
+          </div>
+          <Space className="md:col-span-3" style={{ width: '100%' }} vertical>
+            <Select
+              allowClear
+              style={{ width: '100%' }}
+              placeholder="Chọn chi nhánh công ty"
+              defaultValue={[]}
+              onChange={() => {}}
+              options={options}
+            />
+          </Space>
         </div>
       </div>
 

@@ -8,6 +8,7 @@ import {
     CompanySetting,
     PostJob,
     JobListing,
+    CompanyBranches,
 } from "../pages";
 import ApplicantsTable from "../pages/Company/ApplicantList/ApplicantList";
 
@@ -26,6 +27,7 @@ export default function CompanyRoutes() {
                 <Route path="settings" element={<CompanySetting />} />
                 <Route path="post-job" element={<PostJob />} />
                 <Route path="job-listing" element={<JobListing />} />
+                <Route path="branches" element={<CompanyBranches />} />
                 <Route path="*" element={<PageNotFound />} />
             </Route>
         </Routes>

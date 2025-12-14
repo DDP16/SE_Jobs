@@ -32,8 +32,8 @@ export default function TopBar() {
         </button>
         <Button
           className="
-            bg-primary text-white rounded-lg 
-            hover:bg-primary/90 hover:scale-105 hover:shadow-lg
+            bg-primary/90 text-white rounded-lg 
+            hover:bg-primary hover:scale-105 hover:shadow-lg
             transition-all cursor-pointer
           "
           onClick={() => {nav('/post-job')}}
