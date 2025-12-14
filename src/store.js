@@ -4,6 +4,7 @@ import userReducer from "./app/modules/services/userService";
 import jobsReducer from "./app/modules/services/jobsService";
 import addressReducer from "./app/modules/services/addressService";
 import companyReducer from "./app/modules/services/companyService";
+import companyBranchesReducer from "./app/modules/services/companyBranchesService";
 import topCVJobsReducer from "./app/modules/services/topCVService";
 import categoriesReducer from "./app/modules/services/categoriesService";
 import companyTypesReducer from "./app/modules/services/companyTypeService";
@@ -25,6 +26,7 @@ export default configureStore({
     topCVJobs: topCVJobsReducer,
     categories: categoriesReducer,
     companyTypes: companyTypesReducer,
+    companyBranches: companyBranchesReducer,
     skills: skillsReducer,
     employmentTypes: employmentTypesReducer,
     levels: levelsReducer,

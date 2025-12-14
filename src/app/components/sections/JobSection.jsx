@@ -61,7 +61,7 @@ export default function JobSection() {
     }, [paginationState]);
 
     useEffect(() => {
-        dispatch(getJobs({ page: currentPage, limit: jobsPerPage, sort_by: "job_posted_at", order: "desc" }));
+        dispatch(getJobs({ page: currentPage, limit: jobsPerPage, sort_by: "created_at", order: "desc" }));
     }, [dispatch, currentPage]);
 
     // Get pagination info from API - memoized
