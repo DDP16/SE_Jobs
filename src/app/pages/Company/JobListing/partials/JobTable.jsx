@@ -24,19 +24,24 @@ const getColumns = (t) => [
         title: t('jobListing.table.category'),
         dataIndex: 'categories',
         key: 'category',
-        render: (categories) => categories[0]?.name ?? 'N/A',
+        render: (categories) => categories && Array.isArray(categories) && categories.length > 0 ? categories[0]?.name ?? 'N/A' : 'N/A',
     },
     {
         title: t('jobListing.table.level'),
         dataIndex: 'levels',
         key: 'level',
-        render: (levels) => levels[0]?.name ?? 'N/A',
+        render: (levels) => levels && Array.isArray(levels) && levels.length > 0 ? levels[0]?.name ?? 'N/A' : 'N/A',
     },
     {
         title: t('jobListing.table.salary'),
         dataIndex: 'salary',
         key: 'salary',
-        render: (salary) => `${salary.from.toLocaleString()} - ${salary.to.toLocaleString()} ${salary.currency}`,
+        render: (salary) => {
+            if (!salary || !salary.from || !salary.to || !salary.currency) {
+                return 'N/A';
+            }
+            return `${salary.from.toLocaleString()} - ${salary.to.toLocaleString()} ${salary.currency}`;
+        },
     },
     {
         title: t('jobListing.table.tags'),
