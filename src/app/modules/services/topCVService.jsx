@@ -7,9 +7,9 @@ export const getTopCVJobs = createAsyncThunk(
     "topcv/getTopCVJobs",
     async (params = {}, { rejectWithValue }) => {
         try {
-            const { page = 1, limit = 10 } = params;
+            const { page = 1, limit = 10, ...restParams } = params;
             const response = await api.get(`${apiBaseUrl}/jobs`, {
-                params: { page, per_page: limit }  // Backend expects 'per_page' not 'limit'
+                params: { page, per_page: limit, ...restParams }  // Backend expects 'per_page' not 'limit'
             });
 
             // Transform backend response to match frontend expectations

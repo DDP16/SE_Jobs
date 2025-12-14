@@ -333,39 +333,75 @@ export default function JobCard({
             >
                 <CardContent sx={{
                     flexGrow: 1,
-                    p: variant === 'list' ? 2.5 : 2,
+                    p: 2,
                     display: 'flex',
                     flexDirection: 'column',
                     '&:last-child': {
-                        paddingBottom: variant === 'list' ? 2.5 : 2
+                        paddingBottom: 1
                     }
                 }}>
                     {variant === 'list' && (
-                        <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 1.5 }}>
+                        <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                             <Typography variant="caption" sx={{ color: 'text.disabled', fontSize: '0.75rem' }}>
                                 {getTimeAgo(created_at || createdAt) || 'Đăng gần đây'}
                             </Typography>
-                            {isJobFeatured && (
-                                <Chip
-                                    label="HOT"
+                            <div className='space-x-2'>
+                                {isTopCV && (
+                                    <Chip
+                                        label="TopCV"
+                                        size="small"
+                                        sx={{
+                                            bgcolor: '#00B14F',
+                                            color: 'white',
+                                            fontWeight: 700,
+                                            fontSize: '0.75rem',
+                                            height: '24px',
+                                            borderRadius: '6px',
+                                            '& .MuiChip-label': {
+                                                px: 1.5
+                                            }
+                                        }}
+                                    />
+                                )}
+                                {isJobFeatured && (
+                                    <Chip
+                                        label="HOT"
+                                        size="small"
+                                        sx={{
+                                            bgcolor: '#FF6B2C',
+                                            color: 'white',
+                                            fontWeight: 700,
+                                            fontSize: '0.75rem',
+                                            height: '24px',
+                                            borderRadius: '6px',
+                                            '& .MuiChip-label': {
+                                                px: 1.5
+                                            }
+                                        }}
+                                    />
+                                )}
+                                <IconButton
                                     size="small"
+                                    onClick={(e) => {
+                                        e.stopPropagation();
+                                        onBookmark?.(job);
+                                    }}
                                     sx={{
-                                        bgcolor: '#FF6B2C',
-                                        color: 'white',
-                                        fontWeight: 700,
-                                        fontSize: '0.75rem',
-                                        height: '24px',
-                                        borderRadius: '6px',
-                                        '& .MuiChip-label': {
-                                            px: 1.5
+                                        color: isBookmarked ? 'error.main' : 'text.disabled',
+                                        transition: 'all 0.2s ease-in-out',
+                                        '&:hover': {
+                                            color: isBookmarked ? 'error.dark' : 'text.secondary',
+                                            transform: 'scale(1.1)',
                                         }
                                     }}
-                                />
-                            )}
+                                >
+                                    {isBookmarked ? <Bookmark /> : <BookmarkBorder />}
+                                </IconButton>
+                            </div>
                         </Box>
                     )}
 
-                    <Box sx={{ display: 'flex', alignItems: 'center', gap: 2, mb: variant === 'list' ? 1.5 : 1.25 }}>
+                    <Box sx={{ display: 'flex', alignItems: 'center', gap: 2, mb: 1.25 }}>
                         <Avatar
                             src={companyLogoUrl || undefined}
                             variant="square"
@@ -391,7 +427,7 @@ export default function JobCard({
                             {companyLogoInitial}
                         </Avatar>
 
-                        <Box sx={{ flexGrow: 1, minWidth: 0, flex: 1, pr: variant === 'list' ? 0 : 6 }}>
+                        <Box sx={{ flexGrow: 1, minWidth: 0, flex: 1, pr: variant === 'list' ? 1 : 6 }}>
                             <Box sx={{ display: 'flex', alignItems: 'flex-start', gap: 0.5, mb: 0.5 }} {...hoverProps}>
                                 <Typography
                                     variant="h6"
@@ -432,7 +468,7 @@ export default function JobCard({
                                     WebkitBoxOrient: 'vertical',
                                     overflow: 'hidden',
                                     textOverflow: 'ellipsis',
-                                    mb: variant === 'list' ? 1 : 0
+                                    mb: 0
                                 }}
                             >
                                 {companyName}
@@ -592,30 +628,6 @@ export default function JobCard({
                                 />
                             )}
                         </Stack>
-                    )}
-
-
-
-                    {variant === 'list' && (
-                        <Box sx={{ display: 'flex', justifyContent: 'flex-end', pt: 1 }}>
-                            <IconButton
-                                size="small"
-                                onClick={(e) => {
-                                    e.stopPropagation();
-                                    onBookmark?.(job);
-                                }}
-                                sx={{
-                                    color: isBookmarked ? 'error.main' : 'text.disabled',
-                                    transition: 'all 0.2s ease-in-out',
-                                    '&:hover': {
-                                        color: isBookmarked ? 'error.dark' : 'text.secondary',
-                                        transform: 'scale(1.1)',
-                                    }
-                                }}
-                            >
-                                {isBookmarked ? <Bookmark /> : <BookmarkBorder />}
-                            </IconButton>
-                        </Box>
                     )}
                 </CardContent>
             </Card>

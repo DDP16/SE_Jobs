@@ -12,7 +12,7 @@ import {
   SignIn,
   SignUp,
   UserProfileSettings
-} from "@/pages";
+} from "../pages";
 import { Outlet, Route, Routes } from "react-router-dom";
 import PrivateRoute from "./PrivateRoute";
 import PageNotFound from "@/layouts/PageNotFound";

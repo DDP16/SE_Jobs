@@ -228,7 +228,7 @@ export default function JobDescription({
             </p>
           </div>
         )} */}
-        {finalConfig.showJobHeader && <JobHeader job={job} />}
+        {finalConfig.showJobHeader && <JobHeader job={job} layout={layout} />}
       </div>
 
       <div className={`grid grid-cols-1 ${layout !== layoutType.preview ? "px-10 lg:px-25 lg:grid-cols-3 md:grid-cols-2 gap-8" : "px-10 lg:grid-cols-1 gap-y-8"}`}>

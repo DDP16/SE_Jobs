@@ -1,12 +1,12 @@
 import { motion } from "framer-motion";
 import { Share2 } from "lucide-react";
 import { ApplicationModal } from "@/components";
-import { srcAsset } from "../../../../lib";
+import { layoutType, srcAsset } from "../../../../lib";
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import { Button } from "@/components/ui";
 
-export default function JobHeader({ job = {} }) {
+export default function JobHeader({ job = {}, layout = layoutType.full }) {
   const { t } = useTranslation();
   const [isModalOpen, setIsModalOpen] = useState(false);
 
@@ -34,9 +34,15 @@ export default function JobHeader({ job = {} }) {
               className="w-14 h-14 object-contain"
             />
             <div>
-              <h4 className="text-3xl font-bold text-foreground mb-2">
-                {jobTitle}
-              </h4>
+              {layout === layoutType.preview ? (
+                <h5 className="text-3xl font-bold text-foreground mb-2">
+                  {jobTitle}
+                </h5>
+              ) : (
+                <h4 className="text-3xl font-bold text-foreground mb-2">
+                  {jobTitle}
+                </h4>
+              )}
               <p className="text-muted-foreground">
                 {jobCompany} • {jobLocation} • {jobType}
               </p>
