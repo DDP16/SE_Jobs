@@ -1,15 +1,9 @@
 import { useState, useEffect } from 'react';
-import { useSelector, useDispatch } from 'react-redux';
-import { getMe } from '../../../../../modules/services/authService';
+import { useSelector } from 'react-redux';
 
 export const useProfileData = () => {
-    const dispatch = useDispatch();
     const currentUser = useSelector((state) => state.auth.user);
-    const userEducation = useSelector((state) => state.educations.educations);
-    const userExperience = useSelector((state) => state.experiences);
     const authStatus = useSelector((state) => state.auth.status);
-
-    console.log('Current User in useProfileData:', currentUser);
 
     // User Data - Initialize with safe defaults
     const [user, setUser] = useState({
@@ -22,45 +16,12 @@ export const useProfileData = () => {
         personalLinks: '',
     });
 
-    // Check localStorage for auth data on component mount
-    // useEffect(() => {
-    //     const isAuthenticated = localStorage.getItem('AUTHENTICATED');
-    //     const userId = localStorage.getItem('USER_ID');
-
-    //     // If we have auth data but no user in Redux, fetch user data
-    //     if (isAuthenticated && userId && !currentUser && authStatus !== 'loading') {
-    //         console.log('Fetching user data after reload...');
-    //         dispatch(getMe());
-    //     }
-    // }, [currentUser, authStatus, dispatch]);
-
-    // Sync user data when currentUser changes (after login or reload)
-    useEffect(() => {
-        if (currentUser) {
-            setUser(prev => ({
-                ...prev,
-                name: `${currentUser.first_name || ''} ${currentUser.last_name || ''}`.trim() || 'User',
-                email: currentUser.email || '', 
-                location: currentUser.student_info?.location || '',
-                phone: currentUser?.student_info?.phone || '012345678',
-                dateOfBirth: currentUser?.student_info?.date_of_birth || '',
-            }));
-            
-            // Sync about from student_info
-            setAbout(currentUser.student_info?.about || '');
-            
-            // Sync skills from student_info
-            setSkills(currentUser.student_info?.skills || []);
-        }
-    }, [currentUser]);
-
     // Profile Data
     const [cvFile, setCvFile] = useState(null);
     const [about, setAbout] = useState('');
     const [experiences, setExperiences] = useState([]);
     const [educations, setEducations] = useState([]);
     const [skills, setSkills] = useState([]);
-    // const [languages, setLanguages] = useState([]);
     const [projects, setProjects] = useState([]);
     const [certificates, setCertificates] = useState([]);
     const [awards, setAwards] = useState([]);
@@ -70,12 +31,157 @@ export const useProfileData = () => {
     const [showAllEducations, setShowAllEducations] = useState(false);
     const [completionPercentage, setCompletionPercentage] = useState(5);
 
-    // Sync educations with Redux state
+    // Sync all data from currentUser.student_info when it changes
     useEffect(() => {
-        if (userEducation && Array.isArray(userEducation)) {
-            setEducations(userEducation);
+        if (currentUser?.student_info) {
+            const studentInfo = currentUser.student_info;
+
+            // Sync user basic info
+            setUser(prev => ({
+                ...prev,
+                name: `${currentUser.first_name || ''} ${currentUser.last_name || ''}`.trim() || 'User',
+                email: currentUser.email || '',
+                location: studentInfo.location || '',
+                phone: studentInfo.phone || '012345678',
+                dateOfBirth: studentInfo.date_of_birth || '',
+            }));
+
+            // Sync about
+            setAbout(studentInfo.about || '');
+
+            // Sync skills
+            setSkills(studentInfo.skills || []);
+
+            // Sync experiences (API returns 'experience' array)
+            // Transform API format to component format
+            const transformedExperiences = (studentInfo.experience || []).map(exp => {
+                // Parse start_date to startMonth and startYear
+                let startMonth = '';
+                let startYear = '';
+                if (exp.start_date) {
+                    const startDate = new Date(exp.start_date);
+                    startMonth = String(startDate.getMonth() + 1).padStart(2, '0');
+                    startYear = String(startDate.getFullYear());
+                }
+
+                // Parse end_date to endMonth and endYear
+                let endMonth = '';
+                let endYear = '';
+                if (exp.end_date) {
+                    const endDate = new Date(exp.end_date);
+                    endMonth = String(endDate.getMonth() + 1).padStart(2, '0');
+                    endYear = String(endDate.getFullYear());
+                }
+
+                return {
+                    ...exp,
+                    id: exp.id,
+                    role: exp.position || exp.role, // API returns 'position', component expects 'role'
+                    company: exp.company,
+                    location: exp.location,
+                    description: exp.description || '', // Ensure description is preserved
+                    isCurrentlyWorking: exp.is_current || exp.isCurrentlyWorking || false,
+                    startMonth,
+                    startYear,
+                    endMonth,
+                    endYear,
+                };
+            });
+            setExperiences(transformedExperiences);
+
+            // Sync educations (API returns 'education' array)
+            // Transform API format to component format
+            const transformedEducations = (studentInfo.education || []).map(edu => {
+                // Parse start_date to startMonth and startYear
+                let startMonth = '';
+                let startYear = '';
+                if (edu.start_date) {
+                    const startDate = new Date(edu.start_date);
+                    startMonth = String(startDate.getMonth() + 1).padStart(2, '0');
+                    startYear = String(startDate.getFullYear());
+                }
+
+                // Parse end_date to endMonth and endYear
+                let endMonth = '';
+                let endYear = '';
+                let isCurrentlyStudying = false;
+                if (edu.end_date) {
+                    const endDate = new Date(edu.end_date);
+                    endMonth = String(endDate.getMonth() + 1).padStart(2, '0');
+                    endYear = String(endDate.getFullYear());
+                } else {
+                    isCurrentlyStudying = true;
+                }
+
+                return {
+                    ...edu,
+                    startMonth,
+                    startYear,
+                    endMonth,
+                    endYear,
+                    isCurrentlyStudying,
+                };
+            });
+            setEducations(transformedEducations);
+
+            // Sync projects (API returns 'project' array)
+            // Transform API format to component format
+            const transformedProjects = (studentInfo.project || []).map(proj => {
+                // Parse start_date to startMonth and startYear
+                let startMonth = '';
+                let startYear = '';
+                if (proj.start_date) {
+                    const startDate = new Date(proj.start_date);
+                    startMonth = String(startDate.getMonth() + 1).padStart(2, '0');
+                    startYear = String(startDate.getFullYear());
+                }
+
+                // Parse end_date to endMonth and endYear
+                let endMonth = '';
+                let endYear = '';
+                let isCurrentlyWorking = false;
+                if (proj.end_date) {
+                    const endDate = new Date(proj.end_date);
+                    endMonth = String(endDate.getMonth() + 1).padStart(2, '0');
+                    endYear = String(endDate.getFullYear());
+                } else {
+                    isCurrentlyWorking = proj.is_working_on || false;
+                }
+
+                return {
+                    ...proj,
+                    startMonth,
+                    startYear,
+                    endMonth,
+                    endYear,
+                    isCurrentlyWorking: proj.is_working_on || isCurrentlyWorking,
+                    websiteLink: proj.website_link || proj.websiteLink,
+                };
+            });
+            setProjects(transformedProjects);
+
+            // Sync certificates (API returns 'certification' array)
+            // Transform API format to component format
+            const transformedCertificates = (studentInfo.certification || []).map(cert => {
+                // Parse issue_date to issueMonth and issueYear
+                let issueMonth = '';
+                let issueYear = '';
+                if (cert.issue_date) {
+                    const issueDate = new Date(cert.issue_date);
+                    issueMonth = String(issueDate.getMonth() + 1).padStart(2, '0');
+                    issueYear = String(issueDate.getFullYear());
+                }
+
+                return {
+                    ...cert,
+                    issueMonth,
+                    issueYear,
+                    certificateUrl: cert.certification_url || cert.certificateUrl || cert.url,
+                };
+            });
+            setCertificates(transformedCertificates);
         }
-    }, [userEducation]);
+    }, [currentUser]);
 
     // Calculate completion percentage
     useEffect(() => {
@@ -83,16 +189,14 @@ export const useProfileData = () => {
             user.name, user.email, about, user.location,
             experiences.length > 0, educations.length > 0,
             projects.length > 0, certificates.length > 0,
-            currentUser?.student_info?.skills?.length > 0
+            skills.length > 0
         ];
         const completed = sections.filter(Boolean).length;
         setCompletionPercentage(Math.round((completed / sections.length) * 100));
-    }, [user, about, experiences, educations, projects, certificates]);
+    }, [user, about, experiences, educations, projects, certificates, skills]);
 
     return {
         currentUser,
-        userEducation,
-        userExperience,
         user,
         setUser,
         cvFile,
