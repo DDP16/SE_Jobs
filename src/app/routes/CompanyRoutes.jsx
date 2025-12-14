@@ -1,6 +1,6 @@
 import { Routes, Route, Outlet } from "react-router-dom";
 import CompanyLayout from "../layouts/CompanyLayout";
-import PageNotFound from "@/layouts/PageNotFound";
+import PageNotFound from "../layouts/PageNotFound";
 import {
     ApplicantDetails,
     CompanyProfile,
@@ -8,7 +8,8 @@ import {
     CompanySetting,
     PostJob,
     JobListing,
-} from "@/pages";
+    CompanyBranches,
+} from "../pages";
 import ApplicantsTable from "../pages/Company/ApplicantList/ApplicantList";
 
 export default function CompanyRoutes() {
@@ -26,6 +27,7 @@ export default function CompanyRoutes() {
                 <Route path="settings" element={<CompanySetting />} />
                 <Route path="post-job" element={<PostJob />} />
                 <Route path="job-listing" element={<JobListing />} />
+                <Route path="branches" element={<CompanyBranches />} />
                 <Route path="*" element={<PageNotFound />} />
             </Route>
         </Routes>

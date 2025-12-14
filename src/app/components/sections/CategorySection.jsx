@@ -1,13 +1,10 @@
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 import {
     Box,
-    Container,
-    Typography,
-    Grid,
     Card,
     CardContent,
-    Stack,
-    Button
+    Typography
 } from '@mui/material';
 import {
     ArrowForward,
@@ -20,84 +17,85 @@ import {
     Engineering,
     Computer
 } from '@mui/icons-material';
-import { mockCategories } from '../../../mocks/mockData';
+import { useSelector } from 'react-redux';
+import { useNavigate } from 'react-router-dom';
 
-// Icon mapping function
-const getIcon = (iconName) => {
-    const iconMap = {
-        Palette: Palette,
-        BusinessCenter: BusinessCenter,
-        TrendingUp: TrendingUp,
-        Lightbulb: Lightbulb,
-        Groups: Groups,
-        AttachMoney: AttachMoney,
-        Engineering: Engineering,
-        Computer: Computer
-    };
-
-    const IconComponent = iconMap[iconName];
-    return IconComponent ? <IconComponent /> : <Computer />;
+const iconByName = {
+    'Software Engineering': Engineering,
+    'Data Science': TrendingUp,
+    'Product Management': Lightbulb,
+    'Design': Palette,
+    'Marketing': TrendingUp,
+    'Sales': AttachMoney,
+    'Human Resources': Groups,
+    'Customer Support': Groups,
+    'Finance': AttachMoney,
+    'Operations': BusinessCenter
 };
 
-export default function CategorySection() {
-    return (
-        <Box
-            sx={{
-                py: 4,
-                bgcolor: 'background.default'
-            }}
-        >
-            <Container maxWidth="lg">
-                <Box
-                    sx={{
-                        display: 'flex',
-                        justifyContent: 'space-between',
-                        alignItems: 'center',
-                        mb: 3
-                    }}
-                >
-                    <Typography
-                        variant="h2"
-                        sx={{
-                            fontSize: { xs: '2rem', md: '2.5rem' },
-                            fontWeight: 700,
-                            color: 'text.primary'
-                        }}
-                    >
-                        Explore by <span style={{ color: '#0041D9' }}>Category</span>
-                    </Typography>
-                    <Button
-                        variant="text"
-                        endIcon={<ArrowForward />}
-                        sx={{
-                            textTransform: 'none',
-                            fontSize: '1rem',
-                            fontWeight: 500,
-                            color: 'primary.main',
-                            '&:hover': {
-                                backgroundColor: 'rgba(0, 65, 217, 0.04)'
-                            }
-                        }}
-                    >
-                        Show all jobs
-                    </Button>
-                </Box>
+const fallbackCategories = [
+    { id: 1, name: 'Software Engineering' },
+    { id: 2, name: 'Data Science' },
+    { id: 3, name: 'Product Management' },
+    { id: 4, name: 'Design' },
+    { id: 5, name: 'Marketing' },
+    { id: 6, name: 'Sales' },
+    { id: 7, name: 'Human Resources' },
+    { id: 8, name: 'Customer Support' },
+    { id: 9, name: 'Finance' },
+    { id: 10, name: 'Operations' }
+];
 
-                {/* Desktop: 2 rows x 4 cards | Mobile/Tablet: Grid 2 columns x 3 rows */}
-                {/* Mobile/Tablet Layout - Grid 2 columns 3 rows */}
+const getIconForCategory = (name) => {
+    const IconComponent = iconByName[name] || Computer;
+    return <IconComponent />;
+};
+
+export default function CategorySection({ onCategoryClick }) {
+    const { t } = useTranslation();
+    const categoriesFromStore = useSelector(state => state.categories?.categories || []);
+    const categoriesSource = categoriesFromStore.length ? categoriesFromStore : fallbackCategories;
+    const categories = categoriesSource.slice(0, 8);
+    const navigate = useNavigate();
+
+    const handleClick = (category) => {
+        if (onCategoryClick) {
+            onCategoryClick(category);
+            return;
+        }
+
+        const queryValue = category.id;
+        navigate(`/jobs?category_ids=${encodeURIComponent(queryValue)}&page=1`);
+    };
+
+    return (
+        <div className="py-6 md:py-10 bg-gray-50">
+            <div className="container mx-auto px-4 sm:px-6 md:px-8 max-w-7xl">
+                {/* Header */}
+                <div className="flex justify-between items-center mb-6">
+                    <h3 className="text-3xl md:text-4xl font-bold text-gray-900">
+                        {t("homeSections.categorySection.title")} <span className="text-blue-600">{t("homeSections.categorySection.category")}</span>
+                    </h3>
+                    <button className="hidden md:flex items-center gap-2 text-blue-600 hover:text-blue-700 font-medium transition-colors">
+                        {t("homeSections.categorySection.showAllJobs")}
+                        <ArrowForward className="w-5 h-5" />
+                    </button>
+                </div>
+
                 <Box
                     sx={{
-                        display: { xs: 'grid', sm: 'grid', md: 'none' },
+                        display: 'grid',
                         gridTemplateColumns: {
                             xs: '1fr',
-                            sm: 'repeat(2, 1fr)'
+                            sm: 'repeat(2, 1fr)',
+                            md: 'repeat(4, 1fr)'
                         },
                         gap: 2
                     }}
                 >
-                    {mockCategories.slice(0, 6).map((category) => (
+                    {categories.map((category) => (
                         <Card
-                            key={category.id}
+                            key={category.id || category.name}
                             sx={{
                                 height: '100%',
                                 cursor: 'pointer',
@@ -110,6 +108,7 @@ export default function CategorySection() {
                                     boxShadow: '0 4px 12px rgba(0, 0, 0, 0.15)'
                                 }
                             }}
+                            onClick={() => handleClick(category)}
                         >
                             <CardContent
                                 sx={{
@@ -130,7 +129,7 @@ export default function CategorySection() {
                                         color: 'primary.main'
                                     }}
                                 >
-                                    {React.cloneElement(getIcon(category.icon), {
+                                    {React.cloneElement(getIconForCategory(category.name), {
                                         sx: { fontSize: '2.5rem' }
                                     })}
                                 </Box>
@@ -154,7 +153,7 @@ export default function CategorySection() {
                                             fontWeight: 500
                                         }}
                                     >
-                                        {category.count} jobs available →
+                                        {category.count ? t("homeSections.categorySection.jobsAvailable", { count: category.count }) : t("homeSections.categorySection.viewJobs")}
                                     </Typography>
                                 </Box>
                             </CardContent>
@@ -162,178 +161,7 @@ export default function CategorySection() {
                     ))}
                 </Box>
 
-                {/* Desktop Layout - 2 rows x 4 cards */}
-                {/* First Row - 4 cards */}
-                <Box
-                    sx={{
-                        display: { xs: 'none', md: 'flex' },
-                        gap: 2,
-                        mb: 2,
-                        flexWrap: 'wrap',
-                        justifyContent: 'center'
-                    }}
-                >
-                    {mockCategories.slice(0, 4).map((category) => (
-                        <Box
-                            key={category.id}
-                            sx={{
-                                flex: '0 0 calc(25% - 12px)',
-                                minWidth: '200px',
-                                maxWidth: '250px'
-                            }}
-                        >
-                            <Card
-                                sx={{
-                                    height: '100%',
-                                    cursor: 'pointer',
-                                    borderRadius: '12px',
-                                    boxShadow: '0 1px 3px rgba(0, 0, 0, 0.1)',
-                                    transition: 'all 0.2s ease-in-out',
-                                    backgroundColor: 'white',
-                                    '&:hover': {
-                                        transform: 'translateY(-2px)',
-                                        boxShadow: '0 4px 12px rgba(0, 0, 0, 0.15)'
-                                    }
-                                }}
-                            >
-                                <CardContent
-                                    sx={{
-                                        textAlign: 'center',
-                                        p: 3,
-                                        height: '100%',
-                                        display: 'flex',
-                                        flexDirection: 'column',
-                                        justifyContent: 'space-between'
-                                    }}
-                                >
-                                    <Box
-                                        sx={{
-                                            display: 'flex',
-                                            justifyContent: 'center',
-                                            alignItems: 'center',
-                                            mb: 2,
-                                            color: 'primary.main'
-                                        }}
-                                    >
-                                        {React.cloneElement(getIcon(category.icon), {
-                                            sx: { fontSize: '2.5rem' }
-                                        })}
-                                    </Box>
-                                    <Box>
-                                        <Typography
-                                            variant="h6"
-                                            sx={{
-                                                fontWeight: 600,
-                                                mb: 1,
-                                                fontSize: '1.1rem',
-                                                color: 'text.primary'
-                                            }}
-                                        >
-                                            {category.name}
-                                        </Typography>
-                                        <Typography
-                                            variant="body2"
-                                            sx={{
-                                                color: 'text.secondary',
-                                                fontSize: '0.9rem',
-                                                fontWeight: 500
-                                            }}
-                                        >
-                                            {category.count} jobs available →
-                                        </Typography>
-                                    </Box>
-                                </CardContent>
-                            </Card>
-                        </Box>
-                    ))}
-                </Box>
-
-                {/* Second Row - 4 cards */}
-                <Box
-                    sx={{
-                        display: { xs: 'none', md: 'flex' },
-                        gap: 2,
-                        mb: 0,
-                        flexWrap: 'wrap',
-                        justifyContent: 'center'
-                    }}
-                >
-                    {mockCategories.slice(4, 8).map((category) => (
-                        <Box
-                            key={category.id}
-                            sx={{
-                                flex: '0 0 calc(25% - 12px)',
-                                minWidth: '200px',
-                                maxWidth: '250px'
-                            }}
-                        >
-                            <Card
-                                sx={{
-                                    height: '100%',
-                                    cursor: 'pointer',
-                                    borderRadius: '12px',
-                                    boxShadow: '0 1px 3px rgba(0, 0, 0, 0.1)',
-                                    transition: 'all 0.2s ease-in-out',
-                                    backgroundColor: 'white',
-                                    '&:hover': {
-                                        transform: 'translateY(-2px)',
-                                        boxShadow: '0 4px 12px rgba(0, 0, 0, 0.15)'
-                                    }
-                                }}
-                            >
-                                <CardContent
-                                    sx={{
-                                        textAlign: 'center',
-                                        p: 3,
-                                        height: '100%',
-                                        display: 'flex',
-                                        flexDirection: 'column',
-                                        justifyContent: 'space-between'
-                                    }}
-                                >
-                                    <Box
-                                        sx={{
-                                            display: 'flex',
-                                            justifyContent: 'center',
-                                            alignItems: 'center',
-                                            mb: 2,
-                                            color: 'primary.main'
-                                        }}
-                                    >
-                                        {React.cloneElement(getIcon(category.icon), {
-                                            sx: { fontSize: '2.5rem' }
-                                        })}
-                                    </Box>
-                                    <Box>
-                                        <Typography
-                                            variant="h6"
-                                            sx={{
-                                                fontWeight: 600,
-                                                mb: 1,
-                                                fontSize: '1.1rem',
-                                                color: 'text.primary'
-                                            }}
-                                        >
-                                            {category.name}
-                                        </Typography>
-                                        <Typography
-                                            variant="body2"
-                                            sx={{
-                                                color: 'text.secondary',
-                                                fontSize: '0.9rem',
-                                                fontWeight: 500
-                                            }}
-                                        >
-                                            {category.count} jobs available →
-                                        </Typography>
-                                    </Box>
-                                </CardContent>
-                            </Card>
-                        </Box>
-                    ))}
-                </Box>
-
-            </Container>
-        </Box>
+            </div>
+        </div>
     );
 }

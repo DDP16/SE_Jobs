@@ -20,7 +20,7 @@ export { default as LangButtonGroup } from './common/LangButtonGroup';
 export { default as ApplicationModal } from './common/ApplicationModal';
 export { default as InformationModal } from './common/InformationModal';
 export { default as EducationModal } from './common/EducationModal';
-export { default as IntroductionModal } from './common/IntroductionModal';
+export { default as AboutModal } from './common/AboutModal';
 export { default as ExperienceModal } from './common/ExperienceModal';
 export { default as LanguagesModal } from './common/LanguagesModal';
 export { default as ProjectsModal } from './common/ProjectsModal';
@@ -45,3 +45,5 @@ export { default as JobSection } from './sections/JobSection';
 export { default as CTASection } from './sections/CTASection';
 export { default as JobListSection } from './sections/JobListSection';
 export { default as HotJobTopCVSection } from './sections/HotJobTopCVSection';
+
+export { default as FuzzyText } from './ui/FuzzyText';

@@ -1,21 +1,13 @@
-import { useEffect, useState } from 'react';
-import { Filter, MoreVertical, Calendar, ChevronLeft, ChevronRight } from 'lucide-react';
+import { useState } from 'react';
+import { useTranslation } from 'react-i18next';
+import { Calendar } from 'lucide-react';
 import {
     Button,
-    Badge,
-    Checkbox,
-    Select,
-    SelectContent,
-    SelectItem,
-    SelectTrigger,
-    SelectValue,
     Popover,
     PopoverContent,
     PopoverTrigger,
 } from '@/components/ui';
 import JobTable from './partials/JobTable';
-import { useDispatch, useSelector } from 'react-redux';
-import { getJobs, getJobsByCompanyId } from '../../../modules';
 
 const mockJobListings = [
     {
@@ -175,47 +167,21 @@ const mockJobListings = [
 ];
 
 export default function JobListing() {
-    const [currentPage, setCurrentPage] = useState(1);
-    const [pageSize, setPageSize] = useState(10);
+    const { t } = useTranslation();
+    const [dateRange] = useState(t('jobListing.dateRange'));
 
-    const dispatch = useDispatch();
-    const id = useSelector((state) => state.auth.userId);
-    const companyId = useSelector((state) => state.auth.user.company.company_id);
-    const jobs = useSelector((state) => state.jobs.jobs);
+    // const startIndex = (currentPage - 1) * pageSize;
+    // const endIndex = startIndex + pageSize;
 
-    useEffect(() => {
-        // dispatch(getJobsByCompanyId({companyId: id, page: currentPage, limit: pageSize}));
-        dispatch(getJobsByCompanyId({companyId: companyId, page: currentPage, limit: pageSize}));
-    }, [currentPage, pageSize]);
-
-    // const [selectedIds, setSelectedIds] = useState([]);
-    const [dateRange] = useState('July 19 - July 25');
-
-    const startIndex = (currentPage - 1) * pageSize;
-    const endIndex = startIndex + pageSize;
-    const currentData = mockJobListings.slice(startIndex, endIndex);
-
-    // const toggleSelectAll = () => {
-    //     if (selectedIds.length === currentData.length) {
-    //         setSelectedIds([]);
-    //     } else {
-    //         setSelectedIds(currentData.map((job) => job.id));
-    //     }
-    // };
-
-    // const toggleSelect = (id) => {
-    //     setSelectedIds((prev) =>
-    //         prev.includes(id) ? prev.filter((selectedId) => selectedId !== id) : [...prev, id]
-    //     );
-    // };
+    // const currentData = mockJobListings.slice(startIndex, endIndex);
 
     return (
         <div className="space-y-6 p-4 lg:p-6 2xl:p-8 flex flex-col">
             <div className="flex items-center justify-between">
                 <div>
-                    <h4 className="font-semibold mb-1">Job Listing</h4>
+                    <h4 className="font-semibold mb-1">{t('jobListing.title')}</h4>
                     <p className="text-gray-600">
-                        Here is your jobs listing status from {dateRange}.
+                        {t('jobListing.description', { dateRange })}
                     </p>
                 </div>
                 <Popover>
@@ -226,23 +192,14 @@ export default function JobListing() {
                         </Button>
                     </PopoverTrigger>
                     <PopoverContent className="w-auto p-4">
-                        <p className="text-sm text-gray-600">Date range selector</p>
-                        <p className="text-xs text-gray-500 mt-2">Custom date range functionality can be added here</p>
+                        <p className="text-sm text-gray-600">{t('jobListing.dateRangeSelector')}</p>
+                        <p className="text-xs text-gray-500 mt-2">{t('jobListing.dateRangeHint')}</p>
                     </PopoverContent>
                 </Popover>
             </div>
 
             <div className="bg-white rounded-lg border border-gray-200">
-                <JobTable 
-                    currentData={currentData}
-                    currentPage={currentPage}
-                    pageSize={pageSize}
-                    total={mockJobListings.length}
-                    onChangePage={(newPage, newPageSize) => {
-                        setCurrentPage(newPage);
-                        setPageSize(newPageSize);
-                    }}
-                />
+                <JobTable />
             </div>
         </div>
     );

@@ -5,17 +5,19 @@ import {
 import { Dialog, DialogContent } from "@mui/material";
 import { X, Bold, Italic, Underline, List } from "lucide-react";
 import { Lightbulb } from "lucide-react";
+import { useSelector } from "react-redux";
 
-export default function IntroductionModal({ open, onOpenChange, initialData, onSave }) {
-    const [content, setContent] = useState(initialData?.introduction || initialData?.content || "");
+export default function IntroductionModal({ open, onOpenChange, onSave }) {
+    const currentUser = useSelector((state) => state.auth.user);
+    const [content, setContent] = useState(currentUser?.about || "");
     const [charCount, setCharCount] = useState(0);
     const editorRef = useRef(null);
     const maxChars = 2500;
 
-    // Update content when initialData changes
+    // Update content when currentUser changes
     useEffect(() => {
-        if (initialData) {
-            const introContent = initialData?.introduction || initialData?.content || "";
+        if (currentUser) {
+            const introContent = currentUser?.about || "";
             setContent(introContent);
             setCharCount(introContent.length);
             if (editorRef.current) {
@@ -28,7 +30,7 @@ export default function IntroductionModal({ open, onOpenChange, initialData, onS
                 editorRef.current.innerHTML = "";
             }
         }
-    }, [initialData, open]);
+    }, [currentUser, open]);
 
     const handleContentChange = () => {
         if (editorRef.current) {

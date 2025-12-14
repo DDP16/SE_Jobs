@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Plus, Search, Filter, MoreVertical, Eye, Edit, Trash2, Briefcase, DollarSign, MapPin, Building2, Zap, Flame, Diamond } from 'lucide-react';
 import {
   Button,
@@ -30,6 +30,9 @@ import {
   Checkbox,
   Separator,
 } from "@/components/ui";
+import { useDispatch, useSelector } from 'react-redux';
+import { getJobs } from '../../../modules';
+import { Pagination } from 'antd';
 
 const mockJobs = [
   { 
@@ -154,18 +157,28 @@ const employmentTypes = ['Full-time', 'Part-time', 'Contract', 'Internship', 'Fr
 const skills = ['JavaScript', 'ReactJS', 'NodeJS', 'Communication', 'Project Management', 'Teamwork', 'UI/UX Design', 'Python', 'SQL', 'AWS'];
 
 export default function JobsPage() {
+  const dispatch = useDispatch();
   const [searchQuery, setSearchQuery] = useState('');
   const [categoryFilter, setCategoryFilter] = useState('all');
   const [levelFilter, setLevelFilter] = useState('all');
   const [isAddDialogOpen, setIsAddDialogOpen] = useState(false);
   const [isViewDialogOpen, setIsViewDialogOpen] = useState(false);
   const [selectedJob, setSelectedJob] = useState(null);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [pageSize, setPageSize] = useState(10);
+  
+  const jobs = useSelector((state) => state.jobs.jobs);
+  const pagination = useSelector((state) => state.jobs.pagination);
 
-  const filteredJobs = mockJobs.filter((job) => {
+  useEffect(() => {
+    dispatch(getJobs({ page: currentPage, limit: pageSize }));
+  }, [currentPage, pageSize]);
+
+  const filteredJobs = jobs.filter((job) => {
     const matchesSearch = job.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      job.company.toLowerCase().includes(searchQuery.toLowerCase());
-    const matchesCategory = categoryFilter === 'all' || job.category === categoryFilter;
-    const matchesLevel = levelFilter === 'all' || job.level === levelFilter;
+      job.company.name.toLowerCase().includes(searchQuery.toLowerCase());
+    const matchesCategory = categoryFilter === 'all' || job.categories?.some(cat => cat.name === categoryFilter);
+    const matchesLevel = levelFilter === 'all' || job.levels?.some(lvl => lvl.name === levelFilter);
     return matchesSearch && matchesCategory && matchesLevel;
   });
 
@@ -233,7 +246,7 @@ export default function JobsPage() {
               <TableHead className="text-center">Applications</TableHead>
               <TableHead className="text-center">Tags</TableHead>
               <TableHead className="text-center">Status</TableHead>
-              <TableHead className="text-right">Actions</TableHead>
+              <TableHead className="text-right sticky right-0 bg-white z-10 shadow-2xl">Actions</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
@@ -245,32 +258,36 @@ export default function JobsPage() {
                     <span>{job.title}</span>
                   </div>
                 </TableCell>
-                <TableCell className="text-gray-600">{job.company}</TableCell>
+                <TableCell className="text-gray-600">{job.company?.name}</TableCell>
                 <TableCell className="text-center">
-                  <Badge variant="secondary" className="bg-blue-50 text-blue-700">
-                    {job.category}
-                  </Badge>
+                  <div className="flex flex-wrap gap-1 justify-center">
+                    {job.categories?.slice(0, 3).map((cat, index) => (
+                      <Badge key={index} variant="secondary" className="bg-blue-50 text-blue-700 text-xs">
+                        {cat.name}
+                      </Badge>
+                    ))}
+                  </div>
                 </TableCell>
                 <TableCell className="text-center">
                   <Badge variant="secondary" className="bg-purple-50 text-purple-700">
-                    {job.level}
+                    {job.levels[0]?.name}
                   </Badge>
                 </TableCell>
                 <TableCell className="text-gray-600">
                   <div className="flex items-center gap-1">
                     <MapPin className="w-3 h-3" />
-                    {job.location}
+                    {job.workLocation[0]?.name}
                   </div>
                 </TableCell>
                 <TableCell className="text-gray-600">
                   <div className="flex items-center gap-1">
                     <DollarSign className="w-3 h-3" />
-                    {job.salaryFrom.toLocaleString()} - {job.salaryTo.toLocaleString()} {job.salaryCurrency}
+                    {job.salary?.from} - {job.salary?.to} {job.salary?.currency}
                   </div>
                 </TableCell>
                 <TableCell className="text-center">
                   <Badge variant="secondary" className="bg-green-50 text-green-700">
-                    {job.applications}
+                    {job.applications || 0}
                   </Badge>
                 </TableCell>
                 <TableCell className="text-center">
@@ -287,11 +304,11 @@ export default function JobsPage() {
                   </div>
                 </TableCell>
                 <TableCell className="text-center">
-                  <Badge className={`${job.status === 'Active' ? 'bg-green-400 text-white border-2 border-accent-green/50' : 'bg-gray-100'} px-4 py-1`}>
+                  <Badge className={`${job.status === 'Approved' ? 'bg-green-400 text-white border-2 border-accent-green/50' : 'bg-gray-100'} px-4 py-1`}>
                     {job.status}
                   </Badge>
                 </TableCell>
-                <TableCell className="text-right">
+                <TableCell className="text-center sticky right-0 bg-gray-100 z-10 shadow-2xl">
                   <DropdownMenu>
                     <DropdownMenuTrigger asChild>
                       <Button variant="ghost" size="icon">
@@ -323,6 +340,18 @@ export default function JobsPage() {
         </Table>
         </div>
       </div>
+
+      <Pagination align="end" 
+        current={currentPage}
+        total={pagination?.total ?? 0}
+        pageSize={pageSize}
+        onChange={
+          (newPage, newPageSize) => {
+            setCurrentPage(newPage)
+            setPageSize(newPageSize)
+          }
+        }
+      />
 
       {/* Add Job Dialog */}
       <Dialog open={isAddDialogOpen} onOpenChange={setIsAddDialogOpen}>
@@ -497,7 +526,7 @@ export default function JobsPage() {
             <DialogDescription>
               <div className="flex items-center gap-2 mt-2">
                 <Building2 className="w-4 h-4" />
-                {selectedJob?.company}
+                {selectedJob?.company?.name}
               </div>
             </DialogDescription>
           </DialogHeader>
@@ -506,30 +535,34 @@ export default function JobsPage() {
               <div className="grid grid-cols-2 gap-4">
                 <div>
                   <p className="text-sm text-gray-600">Category</p>
-                  <Badge variant="secondary" className="bg-blue-50 text-blue-700 mt-1">
-                    {selectedJob.category}
-                  </Badge>
+                  <div className="flex flex-wrap gap-1 justify-center">
+                    {selectedJob.categories?.map((cat, index) => (
+                      <Badge key={index} variant="secondary" className="bg-blue-50 text-blue-700 text-xs">
+                        {cat.name}
+                      </Badge>
+                    ))}
+                  </div>
                 </div>
                 <div>
                   <p className="text-sm text-gray-600">Level</p>
                   <Badge variant="secondary" className="bg-purple-50 text-purple-700 mt-1">
-                    {selectedJob.level}
+                    {selectedJob.levels[0]?.name}
                   </Badge>
                 </div>
                 <div>
                   <p className="text-sm text-gray-600">Employment Type</p>
                   <Badge variant="secondary" className="mt-1">
-                    {selectedJob.employmentType}
+                    {selectedJob.employment_types[0]?.name}
                   </Badge>
                 </div>
                 <div>
                   <p className="text-sm text-gray-600">Location</p>
-                  <p className="text-gray-900 mt-1">{selectedJob.location}</p>
+                  <p className="text-gray-900 mt-1">{selectedJob.workLocation}</p>
                 </div>
                 <div>
                   <p className="text-sm text-gray-600">Salary Range</p>
                   <p className="text-gray-900 mt-1">
-                    ${selectedJob.salaryFrom.toLocaleString()} - ${selectedJob.salaryTo.toLocaleString()} {selectedJob.salaryCurrency}
+                    {selectedJob.salary?.from} - {selectedJob.salary?.to} {selectedJob.salary?.currency}
                   </p>
                 </div>
                 <div>
@@ -568,14 +601,14 @@ export default function JobsPage() {
 
               <div>
                 <p className="text-sm text-gray-600 mb-2">Status</p>
-                <Badge variant={selectedJob.status === 'Active' ? 'default' : 'secondary'}>
+                <Badge variant={selectedJob.status === 'Approved' ? 'default' : 'secondary'}>
                   {selectedJob.status}
                 </Badge>
               </div>
 
               <div>
                 <p className="text-sm text-gray-600">Posted Date</p>
-                <p className="text-gray-900 mt-1">{selectedJob.postedDate}</p>
+                <p className="text-gray-900 mt-1">{new Date(selectedJob.createdAt).toLocaleDateString("en-GB")}</p>
               </div>
             </div>
           )}

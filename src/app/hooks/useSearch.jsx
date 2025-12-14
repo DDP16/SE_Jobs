@@ -1,17 +1,12 @@
-import { useState, useMemo, useEffect, useCallback, useRef } from "react";
+import { useState, useMemo, useCallback } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
-import { useDispatch } from "react-redux";
-import { getJobs } from "@/modules";
-import { debounce } from "lodash";
 
 export default function useSearch() {
-    const dispatch = useDispatch();
     const navigate = useNavigate();
     const location = useLocation();
 
     const [isFilterOpen, setIsFilterOpen] = useState(false);
     const [focusSection, setFocusSection] = useState(null);
-    const [appliedFilters, setAppliedFilters] = useState({});
 
     // ---------------------------
     // 1. PARSE QUERY PARAMS
@@ -20,10 +15,31 @@ export default function useSearch() {
         const params = new URLSearchParams(location.search);
         return {
             page: Number(params.get("page")) || 1,
-            keyword: params.get("keyword") || "",
-            province_ids: params.get("province_ids") || "",
+            limit: Number(params.get("limit")) || 9,  
+            keyword: params.get("keyword") || undefined,
+            province_ids: params.get("province_ids") || undefined,
+            level_ids: params.get("level_ids") || undefined,
+            skill_ids: params.get("skill_ids") || undefined,
+            employment_type_ids: params.get("employment_type_ids") || undefined,
+            category_ids: params.get("category_ids") || undefined,
+            salary_from: params.get("salary_from") || undefined,
+            salary_to: params.get("salary_to") || undefined,
+            sort_by: params.get("sort_by") || undefined,
+            order: params.get("order") || undefined,
         };
     }, [location.search]);
+
+    // Derive appliedFilters from URL params (no separate state needed)
+    const appliedFilters = useMemo(() => ({
+        levels: queryParams.level_ids ? queryParams.level_ids.split(',').map(Number) : [],
+        workingModels: queryParams.employment_type_ids ? queryParams.employment_type_ids.split(',').map(Number) : [],
+        jobDomains: queryParams.category_ids ? queryParams.category_ids.split(',').map(Number) : [],
+        companyIndustries: queryParams.skill_ids ? queryParams.skill_ids.split(',').map(Number) : [],
+        salary: (queryParams.salary_from || queryParams.salary_to) ? {
+            min: Number(queryParams.salary_from) || 0,
+            max: Number(queryParams.salary_to) || 100000000
+        } : undefined,
+    }), [queryParams.level_ids, queryParams.employment_type_ids, queryParams.category_ids, queryParams.skill_ids, queryParams.salary_from, queryParams.salary_to]);
 
     // ---------------------------
     // 2. UPDATE QUERY PARAMS
@@ -42,60 +58,95 @@ export default function useSearch() {
     );
 
     // ---------------------------
-    // 3. FETCH JOBS (debounced)
+    // 3. SEARCH HANDLER
     // ---------------------------
-    const debouncedFetch = useRef(
-        debounce((params) => {
-            dispatch(getJobs(params));
-        }, 300)
-    ).current;
-
-    useEffect(() => {
-        const params = {
-            page: queryParams.page,
-            keyword: queryParams.keyword || undefined,
-            province_ids: queryParams.province_ids || undefined,
-            ...appliedFilters,
-        };
-
-        debouncedFetch(params);
-
-        return () => debouncedFetch.cancel();
-    }, [queryParams, appliedFilters, debouncedFetch, dispatch]);
-
-    // ---------------------------
-    // 4. SEARCH HANDLER
-    // ---------------------------
-    const handleSearch = useCallback(({ keyword, location }) => {
-        updateQueryParams({
-            ...queryParams,
+    const handleSearch = useCallback(({ keyword, location: selectedLocation }) => {
+        const updates = {
             page: 1,
-            keyword: keyword?.trim(),
-            province_ids: location?.value,
-        });
-    }, [queryParams, updateQueryParams]);
+            keyword: keyword?.trim() || undefined,
+            province_ids: selectedLocation?.value || undefined,
+        };
+        
+        // If not on jobs page, navigate to it
+        if (!location.pathname.includes('/jobs')) {
+            const params = new URLSearchParams();
+            if (updates.keyword) params.set('keyword', updates.keyword);
+            if (updates.province_ids) params.set('province_ids', updates.province_ids);
+            navigate(`/jobs${params.toString() ? '?' + params.toString() : ''}`);
+        } else {
+            updateQueryParams(updates);
+        }
+    }, [location.pathname, navigate, updateQueryParams]);
 
     // ---------------------------
     // 5. FILTER HANDLING
     // ---------------------------
     const handleApplyFilters = useCallback((filters) => {
-        setAppliedFilters(filters);
         setIsFilterOpen(false);
-    }, []);
+        
+        // Sync filters to URL params
+        const updates = {
+            page: 1, // Reset to page 1 when filters change
+            level_ids: filters.levels?.length ? filters.levels.join(',') : undefined,
+            employment_type_ids: filters.workingModels?.length ? filters.workingModels.join(',') : undefined,
+            category_ids: filters.jobDomains?.length ? filters.jobDomains.join(',') : undefined,
+            skill_ids: filters.companyIndustries?.length ? filters.companyIndustries.join(',') : undefined,
+            salary_from: filters.salary?.min || undefined,
+            salary_to: filters.salary?.max || undefined,
+        };
+        
+        updateQueryParams(updates);
+    }, [updateQueryParams]);
 
     const handleQuickFilterChange = useCallback((key, value) => {
-        setAppliedFilters((prev) => {
-            const arr = prev[key] || [];
-            const newVal = arr.includes(value)
-                ? arr.filter((x) => x !== value)
-                : [...arr, value];
+        const currentValues = appliedFilters[key] || [];
+        const newValues = currentValues.includes(value)
+            ? currentValues.filter((x) => x !== value)
+            : [...currentValues, value];
 
-            return { ...prev, [key]: newVal };
-        });
-    }, []);
+        const updates = {
+            page: 1,
+        };
+        
+        // Map key to URL param name
+        const paramMap = {
+            levels: 'level_ids',
+            workingModels: 'employment_type_ids',
+            jobDomains: 'category_ids',
+            companyIndustries: 'skill_ids',
+        };
+        
+        const paramKey = paramMap[key];
+        if (paramKey) {
+            updates[paramKey] = newValues.length ? newValues.join(',') : undefined;
+        }
+        
+        updateQueryParams(updates);
+    }, [appliedFilters, updateQueryParams]);
+
+    const handleClearFilter = useCallback((key) => {
+        const updates = {
+            page: 1,
+        };
+        
+        // Map key to URL param name
+        const paramMap = {
+            levels: 'level_ids',
+            workingModels: 'employment_type_ids',
+            jobDomains: 'category_ids',
+            companyIndustries: 'skill_ids',
+        };
+        
+        const paramKey = paramMap[key];
+        if (paramKey) {
+            updates[paramKey] = undefined;
+        }
+        
+        updateQueryParams(updates);
+    }, [updateQueryParams]);
 
     // ---------------------------
-    // 6. COUNT ACTIVE FILTERS
+    // 5. COUNT ACTIVE FILTERS
     // ---------------------------
     const activeFilterCount = useMemo(() => {
         const {
@@ -146,6 +197,7 @@ export default function useSearch() {
         handleSearch,
         handleApplyFilters,
         handleQuickFilterChange,
+        handleClearFilter,
         handlePageChange,
         openFilter,
         closeFilter,

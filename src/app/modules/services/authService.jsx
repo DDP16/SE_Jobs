@@ -63,15 +63,78 @@ export const loginWithEmail = createAsyncThunk(
   }
 );
 
+// export const register = createAsyncThunk(
+//   "auth/register",
+//   async ({ email, password, first_name, last_name }, { rejectWithValue }) => {
+//     const reqData = {
+//       email,
+//       password,
+//       first_name,
+//       last_name,
+//       confirm_password: password,
+//     };
+
+//     try {
+//       const result = await new Promise((resolve, reject) => {
+//         post(
+//           "/api/auth/register",
+//           reqData,
+//           async (res) => {
+//             try {
+//               const data = await res.json();
+//               console.log("Register response:", res);
+//               if (res.ok) {
+//                 resolve(data);
+//               } else {
+//                 reject(data.message || "Registration failed");
+//               }
+//             } catch (error) {
+//               console.error("Registration processing error:", error);
+//               reject(error.message || "Registration processing error");
+//             }
+//           },
+//           async (res) => {
+//             try {
+//               const data = await res.json();
+//               reject(data.message || "Registration failed");
+//             } catch (error) {
+//               console.error("Error parsing error response:", error);
+//               reject("Registration failed");
+//             }
+//           }
+//         );
+//       });
+//       return result;
+//     } catch (error) {
+//       return rejectWithValue(error);
+//     }
+//   }
+// );
+
 export const register = createAsyncThunk(
   "auth/register",
-  async ({ email, password, first_name, last_name }, { rejectWithValue }) => {
+  async (
+    {
+      email,
+      password,
+      first_name,
+      last_name,
+      confirm_password,
+      role = 'student',
+      company,
+      company_branches,
+    },
+    { rejectWithValue }
+  ) => {
     const reqData = {
       email,
       password,
       first_name,
       last_name,
-      confirm_password: password,
+      confirm_password,
+      role,
+      company,
+      company_branches,
     };
 
     try {
@@ -116,17 +179,11 @@ export const getMe = createAsyncThunk("auth/getMe", async (_, { rejectWithValue 
     const result = await new Promise((resolve, reject) => {
       get(
         "/api/auth/me",
-        async (res) => {
-          try {
-            const data = await res.json();
-            console.log("GetMe raw response:", data);
-            if (res.ok && data.success) {
-              resolve(data.data);
-            } else {
-              reject(data.message || "Failed to fetch user data: " + res.status);
-            }
-          } catch (error) {
-            reject("Failed to parse response: " + error.message);
+        (data) => {
+          if (data.success) {
+            resolve(data.data);
+          } else {
+            reject(data.message || "Failed to fetch user data");
           }
         },
         async (res) => {
@@ -146,51 +203,93 @@ export const getMe = createAsyncThunk("auth/getMe", async (_, { rejectWithValue 
 });
 
 export const logout = createAsyncThunk(
-    "auth/logout",
-    async (_, { rejectWithValue }) => {
-        try {
-            const result = await new Promise((resolve, reject) => {
-                post(
-                    "/api/auth/logout",
-                    {},
-                    async (res) => {
-                        try {
-                            const data = await res.json();
-                            if (res.ok) {
-                                resolve(data);
-                                clearAuthStorage();
-                            } else {
-                                reject(data.message || "Logout failed");
-                            }
-                        } catch (error) {
-                            reject(error.message || "Logout processing error");
-                        }
-                    },
-                    async (res) => {
-                        try {
-                            const data = await res.json();
-                            reject(data.message || "Logout failed");
-                        } catch (error) {
-                            reject("Logout failed");
-                        }
-                    }
-                );
-            });
-            return result;
-        } catch (error) {
-            return rejectWithValue(error);
-        }
+  "auth/logout",
+  async (_, { rejectWithValue }) => {
+    try {
+      const result = await new Promise((resolve, reject) => {
+        post(
+          "/api/auth/logout",
+          {},
+          async (res) => {
+            try {
+              const data = await res.json();
+              if (res.ok) {
+                resolve(data);
+                clearAuthStorage();
+              } else {
+                reject(data.message || "Logout failed");
+              }
+            } catch (error) {
+              reject(error.message || "Logout processing error");
+            }
+          },
+          async (res) => {
+            try {
+              const data = await res.json();
+              reject(data.message || "Logout failed");
+            } catch (error) {
+              reject("Logout failed");
+            }
+          }
+        );
+      });
+      return result;
+    } catch (error) {
+      return rejectWithValue(error);
     }
+  }
 );
+
+export const resetPassword = createAsyncThunk(
+  "auth/resetPassword",
+  async ({ token, new_password }, { rejectWithValue }) => {
+    const reqData = { token, new_password };
+
+    try {
+      const result = await new Promise((resolve, reject) => {
+        post(
+          "/api/auth/reset-password",
+          reqData,
+          async (res) => {
+            try {
+              const data = await res.json();
+              if (res.ok) {
+                resolve(data);
+              } else {
+                reject(data.message || "Reset password failed");
+              }
+            } catch (error) {
+              reject(error.message || "Reset password processing error");
+            }
+          },
+          async (res) => {
+            try {
+              const data = await res.json();
+              reject(data.message || "Reset password failed");
+            } catch (error) {
+              reject("Reset password failed");
+            }
+          }
+        );
+      });
+      return result;
+    } catch (error) {
+      return rejectWithValue(error);
+    }
+  }
+);
+
+const authStorage = getAuthStorage();
 
 const authSlice = createSlice({
   name: "auth",
   initialState: {
-    userId: null,
+    userId: authStorage.userId || null,
     userRole: null,
-    isAuthenticated: false,
+    isAuthenticated: authStorage.isAuthenticated || false,
     user: null,
     status: "idle", // 'idle' | 'loading' | 'succeeded' | 'failed'
+    isLoadingGetMe: false,
     error: null,
   },
   reducers: {
@@ -231,10 +330,12 @@ const authSlice = createSlice({
       })
       .addCase(getMe.pending, (state) => {
         state.status = "loading";
+        state.isLoadingGetMe = true;
         state.error = null;
       })
       .addCase(getMe.fulfilled, (state, action) => {
         state.status = "succeeded";
+        state.isLoadingGetMe = false;
         state.user = action.payload;
         state.userId = action.payload.user_id;
         state.userRole = action.payload.role;
@@ -246,6 +347,7 @@ const authSlice = createSlice({
       })
       .addCase(getMe.rejected, (state, action) => {
         state.status = "failed";
+        state.isLoadingGetMe = false;
         state.error = action.payload;
       })
       .addCase(logout.pending, (state) => {
@@ -262,6 +364,19 @@ const authSlice = createSlice({
         clearAuthStorage();
       })
       .addCase(logout.rejected, (state, action) => {
+        state.status = "failed";
+        state.error = action.payload;
+      })
+      // Reset Password
+      .addCase(resetPassword.pending, (state) => {
+        state.status = "loading";
+        state.error = null;
+      })
+      .addCase(resetPassword.fulfilled, (state, action) => {
+        state.status = "succeeded";
+        state.error = null;
+      })
+      .addCase(resetPassword.rejected, (state, action) => {
         state.status = "failed";
         state.error = action.payload;
       });

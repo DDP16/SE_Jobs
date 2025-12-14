@@ -1,7 +1,9 @@
 import React, { useState, useMemo } from "react";
+import { useTranslation } from "react-i18next";
 import { Search, Filter, MoreHorizontal, Star } from "lucide-react";
 
 const ApplicantsTable = () => {
+  const { t } = useTranslation();
   const [view, setView] = useState("table");
   const [search, setSearch] = useState("");
 
@@ -95,6 +97,17 @@ const ApplicantsTable = () => {
     return styles[stage] || "bg-gray-100 text-gray-600";
   };
 
+  const getStageLabel = (stage) => {
+    const stageMap = {
+      Interview: t("applicantList.table.stages.interview"),
+      Shortlisted: t("applicantList.table.stages.shortlisted"),
+      Declined: t("applicantList.table.stages.declined"),
+      Hired: t("applicantList.table.stages.hired"),
+      Interviewed: t("applicantList.table.stages.interviewed"),
+    };
+    return stageMap[stage] || stage;
+  };
+
   const filteredApplicants = useMemo(() => {
     return applicants.filter((a) => a.name.toLowerCase().includes(search.toLowerCase()));
   }, [search]);
@@ -112,7 +125,7 @@ const ApplicantsTable = () => {
       <div className="mb-6">
         <div className="flex items-center justify-between mb-4">
           <h1 className="text-2xl font-semibold text-gray-900">
-            Total Applicants : <span className="font-bold">{filteredApplicants.length}</span>
+            {t("applicantList.title")}: <span className="font-bold">{filteredApplicants.length}</span>
           </h1>
         </div>
 
@@ -122,7 +135,7 @@ const ApplicantsTable = () => {
             <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
             <input
               type="text"
-              placeholder="Search Applicants"
+              placeholder={t("applicantList.searchPlaceholder")}
               value={search}
               onChange={(e) => setSearch(e.target.value)}
               className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
@@ -131,7 +144,7 @@ const ApplicantsTable = () => {
 
           <button className="flex items-center gap-2 px-4 py-2 border border-gray-300 rounded-lg bg-white hover:bg-gray-50">
             <Filter className="w-4 h-4" />
-            Filter
+            {t("applicantList.filter")}
           </button>
 
           <button
@@ -140,14 +153,14 @@ const ApplicantsTable = () => {
               view === "pipeline" ? "bg-blue-50 text-blue-600" : "bg-white text-gray-700"
             }`}
           >
-            Pipeline View
+            {t("applicantList.pipelineView")}
           </button>
 
           <button
             onClick={() => setView("table")}
             className={`px-4 py-2 rounded-lg ${view === "table" ? "bg-blue-600 text-white" : "bg-white text-gray-700"}`}
           >
-            Table View
+            {t("applicantList.tableView")}
           </button>
         </div>
       </div>
@@ -161,12 +174,12 @@ const ApplicantsTable = () => {
                 <th className="w-12 px-4 py-3">
                   <input type="checkbox" />
                 </th>
-                <th className="px-4 py-3 text-sm font-medium text-gray-700 text-left">Full Name ⇅</th>
-                <th className="px-4 py-3 text-sm font-medium text-gray-700 text-left">Score ⇅</th>
-                <th className="px-4 py-3 text-sm font-medium text-gray-700 text-left">Hiring Stage ⇅</th>
-                <th className="px-4 py-3 text-sm font-medium text-gray-700 text-left">Applied Date ⇅</th>
-                <th className="px-4 py-3 text-sm font-medium text-gray-700 text-left">Job Role ⇅</th>
-                <th className="px-4 py-3 text-sm font-medium text-gray-700 text-left">Action ⇅</th>
+                <th className="px-4 py-3 text-sm font-medium text-gray-700 text-left">{t("applicantList.table.fullName")} ⇅</th>
+                <th className="px-4 py-3 text-sm font-medium text-gray-700 text-left">{t("applicantList.table.score")} ⇅</th>
+                <th className="px-4 py-3 text-sm font-medium text-gray-700 text-left">{t("applicantList.table.hiringStage")} ⇅</th>
+                <th className="px-4 py-3 text-sm font-medium text-gray-700 text-left">{t("applicantList.table.appliedDate")} ⇅</th>
+                <th className="px-4 py-3 text-sm font-medium text-gray-700 text-left">{t("applicantList.table.jobRole")} ⇅</th>
+                <th className="px-4 py-3 text-sm font-medium text-gray-700 text-left">{t("applicantList.table.action")} ⇅</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-gray-200">
@@ -192,7 +205,7 @@ const ApplicantsTable = () => {
 
                   <td className="px-4 py-4">
                     <span className={`px-3 py-1 rounded-full text-xs font-medium border ${getStageStyle(a.stage)}`}>
-                      {a.stage}
+                      {getStageLabel(a.stage)}
                     </span>
                   </td>
 
@@ -201,7 +214,7 @@ const ApplicantsTable = () => {
 
                   <td className="px-4 py-4 flex items-center gap-2">
                     <button className="px-4 py-1.5 bg-blue-600 text-white rounded-lg text-sm hover:bg-blue-700">
-                      See Application
+                      {t("applicantList.table.seeApplication")}
                     </button>
                     <button className="p-1.5 hover:bg-gray-100 rounded">
                       <MoreHorizontal className="w-5 h-5 text-gray-600" />
@@ -219,7 +232,7 @@ const ApplicantsTable = () => {
         <div className="grid grid-cols-5 gap-4">
           {grouped.map((g) => (
             <div key={g.stage} className="bg-white rounded-lg shadow p-4">
-              <h2 className="font-semibold text-gray-800 mb-3">{g.stage}</h2>
+              <h2 className="font-semibold text-gray-800 mb-3">{getStageLabel(g.stage)}</h2>
 
               <div className="space-y-3">
                 {g.list.map((a) => (
@@ -234,7 +247,7 @@ const ApplicantsTable = () => {
                   </div>
                 ))}
 
-                {g.list.length === 0 && <p className="text-sm text-gray-500">No applicants</p>}
+                {g.list.length === 0 && <p className="text-sm text-gray-500">{t("applicantList.table.noApplicants")}</p>}
               </div>
             </div>
           ))}

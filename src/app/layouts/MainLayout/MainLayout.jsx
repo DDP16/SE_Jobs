@@ -24,7 +24,8 @@ export default function MainLayout({
                 sx={{
                     flexGrow: 1,
                     display: 'flex',
-                    flexDirection: 'column'
+                    flexDirection: 'column',
+                    marginTop: { xs: '40px', md: '50px' }
                 }}
             >
                 {children}

@@ -1,315 +1,708 @@
 {
-    "languageDate": "en-US",
-    "welcome": "Welcome to SE Jobs",
-    "home": "Home",
+  "languageDate": "en-US",
+  "welcome": "Welcome to SE Jobs",
+  "home": "Home",
+  "jobs": "Jobs",
+  "companies": "Companies",
+  "contactUs": "Contact Us",
+  "forEmployers": "For Employers",
+  "login": "Login",
+  "register": "Register",
+  "about": "About",
+  "contact": "Contact",
+  "language": "Language",
+  "english": "English",
+  "vietnamese": "Vietnamese",
+  "pageNotFound": "Page Not Found",
+  "goBack": "Go Back",
+  "pageNotFoundDescription": "The page you are looking for does not exist or has been moved.",
+  "goToHomepage": "Go to Homepage",
+  "searchJobs": "Search Jobs",
+  "findYourDreamJob": "Find Your Dream Job",
+  "getStarted": "Get Started",
+  "email": "Email Address",
+  "password": "Password",
+  "confirm_password": "Confirm Password",
+  "first_name": "First Name",
+  "last_name": "Last Name",
+  "save": "Save",
+  "apply": "Apply",
+  "applied": "{{count}} applied",
+  "of": "of",
+  "capacity": "capacity",
+  "auth": {
+    "sign_in": "Sign in",
+    "sign_up": "Sign up",
+    "no_account": "No Account?",
+    "already_have_account": "Already have an account?",
+    "enter_email": "Enter your Email",
+    "enter_password": "Enter your Password",
+    "enter_first_name": "Enter your First Name",
+    "enter_last_name": "Enter your Last Name",
+    "confirm_password": "Confirm your Password",
+    "forgot_password": "Forgot Password"
+  },
+  "userActivities": {
+    "title": "Your Activities"
+  },
+  "activities": {
+    "applied": "Jobs Applied",
+    "saved": "Saved Jobs",
+    "invitations": "Job Invitations"
+  },
+  "profile": {
+    "updateProfile": "Update Profile",
+    "loading_user_info": "Loading user information...",
+    "update_title": "Update title",
+    "personal_link": "Personal link",
+    "about_me": "About Me",
+    "about_me_placeholder": "Introduce your strengths and years of experience",
+    "work_experience": "Work Experience",
+    "work_experience_empty": "Show detailed information about your work experience",
+    "show_more_experiences": "Show {{count}} more experiences",
+    "education": "Education",
+    "education_empty": "Share your educational background",
+    "show_more_educations": "Show {{count}} more educations",
+    "currently": "NOW",
+    "currently_studying": "CURRENTLY",
+    "skills": "Skills",
+    "skills_empty": "List your professional skills",
+    "featured_projects": "Featured Projects",
+    "featured_projects_empty": "Introduce your featured projects",
+    "certificates": "Certificates",
+    "certificates_empty": "Add certificates related to your skills",
+    "issued": "Issued",
+    "awards": "Awards",
+    "awards_empty": "Show awards or achievements you have received",
+    "cv_attachment": "CV Attachment",
+    "cv_description": "Upload your CV for employers to view",
+    "uploaded": "Uploaded",
+    "drag_drop_cv": "Drag and drop CV file",
+    "or": "or",
+    "select_file": "Select file",
+    "pdf_max_5mb": "PDF, max 5MB",
+    "uploaded_on": "Uploaded on",
+    "please_upload_pdf_only": "Please upload PDF files only",
+    "profile_completion": "Profile Completion",
+    "completed": "completed",
+    "tips_title": "Some tips to make your profile stand out",
+    "tip_1": "Upgrade your profile to 100% to attract more employers!",
+    "tip_2": "Upgrade your profile to 100% to attract more employers!",
+    "view_download_cv": "View and Download CV",
+    "languages": "Languages",
+    "languages_empty": "List the languages you know"
+  },
+  "setting": {
+    "my_account": "My Account",
+    "notifications": "Notifications",
+    "basic_information": "Basic Information",
+    "description_account_tab": "This is login information that you can update anytime.",
+    "email": "Email",
+    "description_email": "Your email address cannot be changed.",
+    "update_email": "Update Email",
+    "description_update_email": "Update your email address to make sure it is safe and secure.",
+    "email_verified": "Your email address is verified.",
+    "enter_new_email": "Enter your new email",
+    "new_password": "New Password",
+    "old_password": "Old Password",
+    "description_new_password": "Manage your password to make sure it is safe and secure.",
+    "enter_old_password": "Enter your old password",
+    "enter_new_password": "Enter your new password",
+    "password_requirements": "Minimum 8 characters",
+    "change_password": "Change Password",
+    "account_type": "Account Type",
+    "description_account_type": "You can update your account type",
+    "job_seeker": "Job Seeker",
+    "job_seeker_description": "Looking for a job",
+    "employer": "Employer",
+    "employer_description": "Hiring, sourcing candidates, or posting a jobs",
+    "close_account": "Close Account",
+    "description_notifications_tab": "These are notification preferences that you can update anytime.",
+    "description_notifications": "Customize your preferred notification settings",
+    "applications": "Applications",
+    "applications_description": "These are notifications for jobs that you have applied to",
     "jobs": "Jobs",
-    "companies": "Companies",
-    "contactUs": "Contact Us",
-    "forEmployers": "For Employers",
-    "login": "Login",
-    "register": "Register",
-    "about": "About",
-    "contact": "Contact",
-    "language": "Language",
-    "english": "English",
-    "vietnamese": "Vietnamese",
-    "pageNotFound": "Page Not Found",
-    "goBack": "Go Back",
-    "searchJobs": "Search Jobs",
-    "findYourDreamJob": "Find Your Dream Job",
-    "getStarted": "Get Started",
-    "email": "Email Address",
-    "password": "Password",
-    "confirm_password": "Confirm Password",
-    "first_name": "First Name",
-    "last_name": "Last Name",
-    "save": "Save",
-    "apply": "Apply",
-    "applied": "{{count}} applied",
-    "of": "of",
-    "capacity": "capacity",
-
-    "auth": {
-        "sign_in": "Sign in",
-        "sign_up": "Sign up",
-        "no_account": "No Account?",
-        "already_have_account": "Already have an account?",
-        "enter_email": "Enter your Email",
-        "enter_password": "Enter your Password",
-        "enter_first_name": "Enter your First Name",
-        "enter_last_name": "Enter your Last Name",
-        "confirm_password": "Confirm your Password",
-        "forgot_password": "Forgot Password"
+    "jobs_description": "These are notifications for job openings that suit your profile",
+    "recommendations": "Recommendations",
+    "recommendations_description": "These are notifications for personalized recommendations from our recruiters"
+  },
+  "dashboard": {
+    "recentApplicationsHistory": "Recent Applications History",
+    "viewAllApplicationsHistory": "View all applications history",
+    "dateApplied": "Date Applied",
+    "noEmailProvided": "No email provided"
+  },
+  "myJobs": {
+    "title": "My Jobs",
+    "tabs": {
+      "applied": "Applied Jobs",
+      "saved": "Saved Jobs",
+      "recentViewed": "Recent Jobs Viewed",
+      "invited": "Invited Jobs"
     },
-
-    "userActivities": {
-        "title": "Your Activities"
+    "emptyStates": {
+      "applied": "You haven't applied to any jobs in the last 12 months.",
+      "saved": "You haven't saved any jobs yet.",
+      "recentViewed": "You haven't viewed any jobs recently.",
+      "invited": "You haven't received any job invitations yet.",
+      "noData": "No data available."
     },
-    "activities": {
-        "applied": "Jobs Applied",
-        "saved": "Saved Jobs",
-        "invitations": "Job Invitations"
+    "exploreJobs": "Explore jobs",
+    "infoMessage": "Your applied jobs are stored for the last 12 months."
+  },
+  "job": {
+    "loading": "Loading job details...",
+    "error": "Failed to load job details.",
+    "not_found": "Job not found.",
+    "description": "Description",
+    "no_description": "No job description",
+    "responsibilities": "Responsibilities",
+    "no_responsibilities": "No responsibilities listed.",
+    "who_you_are": "Who You Are",
+    "no_requirements": "No requirements listed.",
+    "nice_to_haves": "Nice-To-Haves",
+    "no_nice_to_haves": "No nice-to-haves listed.",
+    "about_this_role": "About this role",
+    "apply_before": "Apply Before",
+    "posted_on": "Job Posted On",
+    "job_type": "Job Type",
+    "salary": "Salary",
+    "quantity": "Quantity",
+    "experience": "Experience",
+    "position": "Position",
+    "gender": "Gender",
+    "categories": "Categories",
+    "no_categories_listed": "No categories listed.",
+    "required_skills": "Required Skills",
+    "no_skills_listed": "No skills listed.",
+    "similar_jobs": "Similar Jobs",
+    "show_all_jobs": "Show all jobs"
+  },
+  "company": {
+    "perks_benefits": {
+      "title": "Perks & Benefits",
+      "description": "This job comes with several perks and benefits"
     },
-    "profile": {
-        "updateProfile": "Update Profile"
+    "read_more_about": "Read more about {{companyName}}",
+    "header": {
+      "founded": "Founded",
+      "employees": "Employees",
+      "location": "Location",
+      "locations": "{{count}} countries",
+      "industry": "Company Type",
+      "jobs_count": "{{count}} jobs",
+      "following": "Following",
+      "follow_company": "Follow Company",
+      "notSpecified": "Not specified",
+      "globalRemote": "Global (Remote)",
+      "publicView": "Public View"
     },
-    "setting": {
-        "my_account": "My Account",
-        "notifications": "Notifications",
-        "basic_information": "Basic Information",
-        "description_account_tab": "This is login information that you can update anytime.",
-        "update_email": "Update Email",
-        "description_update_email": "Update your email address to make sure it is safe and secure.",
-        "email_verified": "Your email address is verified.",
-        "enter_new_email": "Enter your new email",
-        "new_password": "New Password",
-        "old_password": "Old Password",
-        "description_new_password": "Manage your password to make sure it is safe and secure.",
-        "enter_old_password": "Enter your old password",
-        "enter_new_password": "Enter your new password",
-        "password_requirements": "Minimum 8 characters",
-        "change_password": "Change Password",
-        "account_type": "Account Type",
-        "description_account_type": "You can update your account type",
-        "job_seeker": "Job Seeker",
-        "job_seeker_description": "Looking for a job",
-        "employer": "Employer",
-        "employer_description": "Hiring, sourcing candidates, or posting a jobs",
-        "close_account": "Close Account",
-        "description_notifications_tab": "These are notification preferences that you can update anytime.",
-        "description_notifications": "Customize your preferred notification settings",
-        "applications": "Applications",
-        "applications_description": "These are notifications for jobs that you have applied to",
-        "jobs": "Jobs",
-        "jobs_description": "These are notifications for job openings that suit your profile",
-        "recommendations": "Recommendations",
-        "recommendations_description": "These are notifications for personalized recommendations from our recruiters"
+    "info": {
+      "title": "Company Information",
+      "field": "Industry",
+      "company_size": "Company Size",
+      "location": "Location"
+    },
+    "overview": {
+      "title": "Company Overview",
+      "contact": "Contact"
+    },
+    "open_jobs": {
+      "title": "Open Jobs",
+      "show_all": "Show all jobs"
+    },
+    "tech_stack": {
+      "title": "Tech Stack",
+      "description": "Learn about the technology and tools that {{companyName}} uses.",
+      "view_all": "View tech stack"
+    },
+    "office_location": {
+      "title": "Office Location",
+      "description": "{{companyName}} offices spread across the globe.",
+      "view_all": "View countries"
     },
     "dashboard": {
-        "recentApplicationsHistory": "Recent Applications History",
-        "viewAllApplicationsHistory": "View all applications history",
-        "dateApplied": "Date Applied"
-    },
-    "job": {
-        "loading": "Loading job details...",
-        "error": "Failed to load job details.",
-        "not_found": "Job not found.",
-        "description": "Description",
-        "no_description": "No job description",
-        "responsibilities": "Responsibilities",
-        "no_responsibilities": "No responsibilities listed.",
-        "who_you_are": "Who You Are",
-        "no_requirements": "No requirements listed.",
-        "nice_to_haves": "Nice-To-Haves",
-        "no_nice_to_haves": "No nice-to-haves listed.",
-        "about_this_role": "About this role",
-        "apply_before": "Apply Before",
-        "posted_on": "Job Posted On",
-        "job_type": "Job Type",
-        "salary": "Salary",
-        "categories": "Categories",
-        "no_categories_listed": "No categories listed.",
-        "required_skills": "Required Skills",
-        "no_skills_listed": "No skills listed.",
-        "similar_jobs": "Similar Jobs",
-        "show_all_jobs": "Show all jobs"
-    },
-    "company": {
-        "perks_benefits": {
-            "title": "Perks & Benefits",
-            "description": "This job comes with several perks and benefits"
-        },
-        "read_more_about": "Read more about {{companyName}}",
-        "header": {
-            "founded": "Founded",
-            "employees": "Employees",
-            "location": "Location",
-            "locations": "{{count}} countries",
-            "industry": "Industry",
-            "jobs_count": "{{count}} jobs",
-            "following": "Following",
-            "follow_company": "Follow Company"
-        },
-        "info": {
-            "title": "Company Information",
-            "field": "Industry",
-            "company_size": "Company Size",
-            "location": "Location"
-        },
-        "overview": {
-            "title": "Company Overview",
-            "contact": "Contact"
-        },
-        "open_jobs": {
-            "title": "Open Jobs",
-            "show_all": "Show all jobs"
-        },
-        "tech_stack": {
-            "title": "Tech Stack",
-            "description": "Learn about the technology and tools that {{companyName}} uses.",
-            "view_all": "View tech stack"
-        },
-        "office_location": {
-            "title": "Office Location",
-            "description": "{{companyName}} offices spread across the globe.",
-            "view_all": "View countries"
-        }
-    },
-    "sidebar": {
-        "welcome": "Welcome",
-        "dashboard": "Dashboard",
-        "profile": "Profile",
-        "myJobs": "My Jobs",
-        "notifications": "Notifications",
-        "settings": "Settings"
+      "greeting": "Good morning, {{name}} 👋",
+      "statisticReport": "Here is your statistics report from {{from}} to {{to}}",
+      "dateRange": "{{from}} - {{to}}",
+      "newCandidates": "New Candidates",
+      "scheduleToday": "Schedule Today",
+      "messagesReceived": "Messages Received",
+      "jobStatistics": "Job Statistics",
+      "showingJobStatistic": "Showing job statistics from {{from}} to {{to}}",
+      "week": "Week",
+      "month": "Month",
+      "year": "Year",
+      "overview": "Overview",
+      "jobsview": "Jobs View",
+      "jobsapplied": "Jobs Applied",
+      "jobView": "Job View",
+      "jobApplied": "Job Applied",
+      "jobOpen": "Job Open",
+      "jobsOpened": "Jobs opened this week",
+      "applicantsSummary": "Applicants Summary",
+      "applicants": "Applicants",
+      "fullTime": "Full Time",
+      "partTime": "Part Time",
+      "internship": "Internship",
+      "contract": "Contract",
+      "remote": "Remote",
+      "jobUpdates": "Job Updates",
+      "viewAll": "View All",
+      "applied": "{{count}} Applied",
+      "of": "of",
+      "capacity": "Capacity"
     }
-    ,
-    "modals": {
-        "education": {
-            "title": "Education",
-            "schoolPlaceholder": "School *",
-            "degreePlaceholder": "Degree *",
-            "majorPlaceholder": "Major *",
-            "currentlyStudying": "I'm currently studying here",
-            "from": "From",
-            "to": "To",
-            "month": "Month",
-            "year": "Year",
-            "otherInfoPlaceholder": "Other details",
-            "cancel": "Cancel",
-            "save": "Save",
-            "errors": {
-                "schoolRequired": "Please enter school name",
-                "degreeRequired": "Please choose a degree",
-                "majorRequired": "Please enter major",
-                "startMonthRequired": "Start month is required.",
-                "startYearRequired": "Please choose a start year (not greater than current year)",
-                "startYearFuture": "Start year cannot be in the future.",
-                "endMonthRequired": "End month is required.",
-                "endYearRequired": "Please choose an end year or mark 'I'm currently studying'",
-                "endAfterStart": "End year/month must be after or equal to start"
-            }
-        },
-        "common": {
-            "month": "Month",
-            "year": "Year",
-            "cancel": "Cancel",
-            "save": "Save",
-            "close": "Close",
-            "characters": "characters",
-            "tips": "Tips:"
-        },
-        "skills": {
-            "title": "Core Skills",
-            "listCount": "List skills ({{count}}/{{max}})",
-            "searchPlaceholder": "Search skills",
-            "selectExperience": "Select experience",
-            "tipsTitle": "Tips:",
-            "tipsText": "Organize your core skills into groups to help recruiters quickly understand your professional capabilities.",
-            "cancel": "Cancel",
-            "save": "Save"
-            ,
-            "errors": {
-                "groupNameRequired": "Group name is required.",
-                "skillsRequired": "Please add at least one skill.",
-                "skillExperienceRequired": "Each skill must include an experience level."
-            }
-        },
-        "experience": {
-            "title": "Work Experience",
-            "jobTitlePlaceholder": "Job title *",
-            "companyPlaceholder": "Company *",
-            "currentlyWorking": "I'm currently working here",
-            "from": "From",
-            "to": "To",
-            "tipsTitle": "Tips:",
-            "tipsText": "Brief the company's industry, then detail your responsibilities and achievements. For projects, write on the 'Project' field below.",
-            "charactersCounter": "{{count}}/{{max}} characters",
-            "errors": {
-                "jobTitleRequired": "Job title is required.",
-                "companyRequired": "Company name is required.",
-                "startMonthRequired": "Start month is required.",
-                "startYearRequired": "Start year is required.",
-                "startYearFuture": "Start year cannot be in the future.",
-                "endMonthRequired": "End month is required.",
-                "endYearRequired": "End year is required.",
-                "dateRange": "End date must be after the start date."
-            }
-        },
-        "projects": {
-            "title": "Projects",
-            "projectNameLabel": "Project name",
-            "projectNamePlaceholder": "Enter project name",
-            "currentlyWorking": "I'm still working on this project",
-            "startDate": "Start date",
-            "endDate": "End date",
-            "insertTemplate": "Insert template",
-            "descriptionLabel": "Project Description",
-            "websiteLabel": "Website link",
-            "websitePlaceholder": "Enter website link",
-            "tipsText": "Brief the company's industry, then detail your responsibilities and achievements. For projects, write on the 'Project' field below.",
-            "insertTemplateText": "• Project summary: [Short project summary]\n• Your role: [Role and responsibilities]\n• Technologies: [Technologies used]\n• Team size: [Number of team members]",
-            "errors": {
-                "projectNameRequired": "Project name is required.",
-                "startMonthRequired": "Start month is required.",
-                "startYearRequired": "Start year is required.",
-                "startYearFuture": "Start year cannot be in the future.",
-                "endMonthRequired": "End month is required.",
-                "endYearRequired": "End year is required.",
-                "dateRange": "End date must be after the start date.",
-                "websiteInvalid": "Enter a valid URL (e.g. https://example.com)."
-            }
-        },
-        "languages": {
-            "title": "Languages",
-            "listCount": "Language list ({{count}}/{{max}})",
-            "searchPlaceholder": "Search language",
-            "selectLevel": "Select level"
-            ,
-            "errors": {
-                "languagesRequired": "Please add at least one language.",
-                "languageLevelRequired": "Each language needs an associated level."
-            }
-        },
-        "certificates": {
-            "title": "Certificates",
-            "certificateName": "Certificate Name",
-            "certificateNamePlaceholder": "Certificate Name *",
-            "organization": "Organization",
-            "organizationPlaceholder": "Organization *",
-            "issueDate": "Issue date",
-            "certificateUrl": "Certificate URL",
-            "description": "Description"
-            ,
-            "errors": {
-                "certificateNameRequired": "Certificate name is required.",
-                "organizationRequired": "Organization is required.",
-                "issueMonthRequired": "Issue month is required.",
-                "issueYearRequired": "Issue year is required.",
-                "issueYearFuture": "Issue year cannot be in the future.",
-                "certificateUrlInvalid": "Enter a valid URL (e.g. https://example.com)."
-            }
-        },
-        "awards": {
-            "title": "Awards",
-            "awardName": "Award name",
-            "awardNamePlaceholder": "Award name",
-            "awardOrganization": "Award organization",
-            "issueDate": "Issue date",
-            "description": "Description",
-            "name": "Award name",
-            "namePlaceholder": "Award name",
-            "organization": "Award organization",
-            "organizationPlaceholder": "Award organization",
-            "tipsTitle": "Tips:",
-            "tipsText": "Briefly describe the reason for the award or the relevant achievement",
-            "errors": {
-                "awardNameRequired": "Award name is required.",
-                "awardOrganizationRequired": "Award organization is required.",
-                "issueMonthRequired": "Issue month is required.",
-                "issueYearRequired": "Issue year is required.",
-                "issueYearFuture": "Issue year cannot be in the future."
-            }
-        }
+  },
+  "sidebar": {
+    "welcome": "Welcome",
+    "dashboard": "Dashboard",
+    "profile": "Profile",
+    "myJobs": "My Jobs",
+    "notifications": "Notifications",
+    "settings": "Settings"
+  },
+  "modals": {
+    "education": {
+      "title": "Education",
+      "schoolPlaceholder": "School *",
+      "degreePlaceholder": "Degree *",
+      "majorPlaceholder": "Major *",
+      "currentlyStudying": "I'm currently studying here",
+      "from": "From",
+      "to": "To",
+      "month": "Month",
+      "year": "Year",
+      "otherInfoPlaceholder": "Other details",
+      "cancel": "Cancel",
+      "save": "Save",
+      "errors": {
+        "schoolRequired": "Please enter school name",
+        "degreeRequired": "Please choose a degree",
+        "majorRequired": "Please enter major",
+        "startMonthRequired": "Start month is required.",
+        "startYearRequired": "Please choose a start year (not greater than current year)",
+        "startYearFuture": "Start year cannot be in the future.",
+        "endMonthRequired": "End month is required.",
+        "endYearRequired": "Please choose an end year or mark 'I'm currently studying'",
+        "endAfterStart": "End year/month must be after or equal to start"
+      }
+    },
+    "common": {
+      "month": "Month",
+      "year": "Year",
+      "cancel": "Cancel",
+      "save": "Save",
+      "close": "Close",
+      "characters": "characters",
+      "tips": "Tips:"
+    },
+    "skills": {
+      "title": "Core Skills",
+      "listCount": "List skills ({{count}}/{{max}})",
+      "searchPlaceholder": "Search skills",
+      "selectExperience": "Select experience",
+      "tipsTitle": "Tips:",
+      "tipsText": "Organize your core skills into groups to help recruiters quickly understand your professional capabilities.",
+      "cancel": "Cancel",
+      "save": "Save",
+      "errors": {
+        "groupNameRequired": "Group name is required.",
+        "skillsRequired": "Please add at least one skill.",
+        "skillExperienceRequired": "Each skill must include an experience level."
+      }
+    },
+    "experience": {
+      "title": "Work Experience",
+      "jobTitlePlaceholder": "Job title *",
+      "companyPlaceholder": "Company *",
+      "currentlyWorking": "I'm currently working here",
+      "from": "From",
+      "to": "To",
+      "tipsTitle": "Tips:",
+      "tipsText": "Brief the company's industry, then detail your responsibilities and achievements. For projects, write on the 'Project' field below.",
+      "charactersCounter": "{{count}}/{{max}} characters",
+      "errors": {
+        "jobTitleRequired": "Job title is required.",
+        "companyRequired": "Company name is required.",
+        "startMonthRequired": "Start month is required.",
+        "startYearRequired": "Start year is required.",
+        "startYearFuture": "Start year cannot be in the future.",
+        "endMonthRequired": "End month is required.",
+        "endYearRequired": "End year is required.",
+        "dateRange": "End date must be after the start date."
+      }
+    },
+    "projects": {
+      "title": "Projects",
+      "projectNameLabel": "Project name",
+      "projectNamePlaceholder": "Enter project name",
+      "currentlyWorking": "I'm still working on this project",
+      "startDate": "Start date",
+      "endDate": "End date",
+      "insertTemplate": "Insert template",
+      "descriptionLabel": "Project Description",
+      "websiteLabel": "Website link",
+      "websitePlaceholder": "Enter website link",
+      "tipsText": "Brief the company's industry, then detail your responsibilities and achievements. For projects, write on the 'Project' field below.",
+      "insertTemplateText": "• Project summary: [Short project summary]\n• Your role: [Role and responsibilities]\n• Technologies: [Technologies used]\n• Team size: [Number of team members]",
+      "errors": {
+        "projectNameRequired": "Project name is required.",
+        "startMonthRequired": "Start month is required.",
+        "startYearRequired": "Start year is required.",
+        "startYearFuture": "Start year cannot be in the future.",
+        "endMonthRequired": "End month is required.",
+        "endYearRequired": "End year is required.",
+        "dateRange": "End date must be after the start date.",
+        "websiteInvalid": "Enter a valid URL (e.g. https://example.com)."
+      }
+    },
+    "languages": {
+      "title": "Languages",
+      "listCount": "Language list ({{count}}/{{max}})",
+      "searchPlaceholder": "Search language",
+      "selectLevel": "Select level",
+      "errors": {
+        "languagesRequired": "Please add at least one language.",
+        "languageLevelRequired": "Each language needs an associated level."
+      }
+    },
+    "certificates": {
+      "title": "Certificates",
+      "certificateName": "Certificate Name",
+      "certificateNamePlaceholder": "Certificate Name *",
+      "organization": "Organization",
+      "organizationPlaceholder": "Organization *",
+      "issueDate": "Issue date",
+      "certificateUrl": "Certificate URL",
+      "description": "Description",
+      "errors": {
+        "certificateNameRequired": "Certificate name is required.",
+        "organizationRequired": "Organization is required.",
+        "issueMonthRequired": "Issue month is required.",
+        "issueYearRequired": "Issue year is required.",
+        "issueYearFuture": "Issue year cannot be in the future.",
+        "certificateUrlInvalid": "Enter a valid URL (e.g. https://example.com)."
+      }
+    },
+    "awards": {
+      "title": "Awards",
+      "awardName": "Award name",
+      "awardNamePlaceholder": "Award name",
+      "awardOrganization": "Award organization",
+      "issueDate": "Issue date",
+      "description": "Description",
+      "name": "Award name",
+      "namePlaceholder": "Award name",
+      "organization": "Award organization",
+      "organizationPlaceholder": "Award organization",
+      "tipsTitle": "Tips:",
+      "tipsText": "Briefly describe the reason for the award or the relevant achievement",
+      "errors": {
+        "awardNameRequired": "Award name is required.",
+        "awardOrganizationRequired": "Award organization is required.",
+        "issueMonthRequired": "Issue month is required.",
+        "issueYearRequired": "Issue year is required.",
+        "issueYearFuture": "Issue year cannot be in the future."
+      }
     }
+  },
+  "postJob": {
+    "postAJob": "Post a Job",
+    "step": "Step {{number}}",
+    "jobInformation": "Job Information",
+    "jobInformationDesc": "Provide basic information about the position",
+    "jobDescription": "Job Description",
+    "jobDescriptionDesc": "Describe the role and candidate requirements",
+    "perksBenefit": "Perks & Benefits",
+    "perksBenefitDesc": "Benefits and perks offered for this role",
+    "perksBenefitHint": "Add benefits to attract suitable candidates",
+    "previous": "Previous",
+    "nextStep": "Next Step",
+    "postJob": "Post Job",
+    "save": "Save",
+    "cancel": "Cancel",
+    "edit": "Edit",
+    "loadingCompanyProfile": "Loading company profile...",
+    "companyProfileNotFound": "Company profile not found.",
+    "basicInformation": "Basic Information",
+    "basicInformationDesc": "Key details about the job opening",
+    "jobTitle": "Job Title",
+    "jobTitleDesc": "Title displayed to candidates",
+    "jobTitlePlaceholder": "e.g. Frontend Developer",
+    "jobTitleHint": "Use a clear and common job title",
+    "employmentType": "Employment Type",
+    "employmentTypeDesc": "Working arrangement for this role",
+    "fulltime": "Full-time",
+    "parttime": "Part-time",
+    "remote": "Remote",
+    "internship": "Internship",
+    "contract": "Contract",
+    "salaryRange": "Salary Range",
+    "salaryRangeDesc": "Expected salary for this role",
+    "to": "to",
+    "category": "Category",
+    "categoryDesc": "Job category",
+    "selectCategory": "Select category",
+    "skills": "Skills",
+    "skillsDesc": "Skills required for this position",
+    "searchSkills": "Search skills",
+    "noSkillsFound": "No skills found",
+    "details": "Job Details",
+    "detailsDesc": "Detailed information about the job",
+    "jobDescriptionText": "Job Description",
+    "jobDescriptionPlaceholder": "Describe responsibilities and objectives",
+    "responsibilities": "Responsibilities",
+    "responsibilitiesDesc": "Main duties of this role",
+    "responsibilitiesPlaceholder": "List key responsibilities",
+    "whoYouAre": "Who You Are",
+    "whoYouAreDesc": "Candidate requirements",
+    "whoYouArePlaceholder": "Experience, skills, qualifications",
+    "niceToHaves": "Nice to Have",
+    "niceToHavesDesc": "Optional but beneficial qualifications",
+    "niceToHavesPlaceholder": "e.g. experience with X",
+    "maxCharacters": "Maximum {{max}} characters",
+    "benefits": "Benefits",
+    "addBenefit": "Add benefit",
+    "removeBenefit": "Remove benefit",
+    "benefitTitlePlaceholder": "Benefit title",
+    "benefitDescriptionPlaceholder": "Benefit description",
+    "level": "Level",
+    "levelDesc": "Job level",
+    "selectLevel": "Select level",
+    "jobDescriptionDesc": "Describe the role and candidate requirements"
+  },
+  "jobListing": {
+    "title": "Job Listing",
+    "description": "Here is your jobs listing status from {{dateRange}}.",
+    "dateRange": "July 19 - July 25",
+    "dateRangeSelector": "Date range selector",
+    "dateRangeHint": "Custom date range functionality can be added here",
+    "table": {
+      "jobTitle": "Job Title",
+      "company": "Company",
+      "category": "Category",
+      "level": "Level",
+      "salary": "Salary",
+      "tags": "Tags",
+      "status": "Status",
+      "datePosted": "Date Posted",
+      "dueDate": "Due Date",
+      "needs": "Needs",
+      "actions": "Actions",
+      "viewDetails": "View Details",
+      "edit": "Edit",
+      "delete": "Delete",
+      "approved": "Approved",
+      "pending": "Pending",
+      "rejected": "Rejected"
+    }
+  },
+  "applicantList": {
+    "title": "Total Applicants",
+    "searchPlaceholder": "Search Applicants",
+    "filter": "Filter",
+    "pipelineView": "Pipeline View",
+    "tableView": "Table View",
+    "table": {
+      "fullName": "Full Name",
+      "score": "Score",
+      "hiringStage": "Hiring Stage",
+      "appliedDate": "Applied Date",
+      "jobRole": "Job Role",
+      "action": "Action",
+      "seeApplication": "See Application",
+      "noApplicants": "No applicants",
+      "stages": {
+        "interview": "Interview",
+        "shortlisted": "Shortlisted",
+        "declined": "Declined",
+        "hired": "Hired",
+        "interviewed": "Interviewed"
+      }
+    }
+  },
+  "applicantDetails": {
+    "title": "Applicant Details",
+    "moreAction": "More Action",
+    "appliedJobs": "Applied Jobs",
+    "stage": "Stage",
+    "scheduleInterview": "Schedule Interview",
+    "contact": "Contact",
+    "email": "Email",
+    "phone": "Phone",
+    "instagram": "Instagram",
+    "twitter": "Twitter",
+    "website": "Website",
+    "tabs": {
+      "profile": "Applicant Profile",
+      "resume": "Resume",
+      "hiring": "Hiring Progress",
+      "interview": "Interview Schedule"
+    },
+    "personalInfo": {
+      "title": "Personal Info",
+      "fullName": "Full Name",
+      "gender": "Gender",
+      "dateOfBirth": "Date of Birth",
+      "language": "Language",
+      "address": "Address"
+    },
+    "professionalInfo": {
+      "title": "Professional Info",
+      "aboutMe": "About Me",
+      "currentJob": "Current Job",
+      "experienceInYears": "Experience in Years",
+      "highestQualification": "Highest Qualification Held",
+      "skillSet": "Skill set"
+    },
+    "resume": {
+      "title": "Resume",
+      "description": "View and download applicant's resume",
+      "downloadResume": "Download Resume"
+    },
+    "hiringProgress": {
+      "title": "Hiring Progress",
+      "description": "Track the candidate's progress through the hiring pipeline",
+      "applicationSubmitted": "Application Submitted",
+      "resumeReviewed": "Resume Reviewed",
+      "interviewStage": "Interview Stage",
+      "finalDecision": "Final Decision"
+    },
+    "interviewSchedule": {
+      "title": "Interview Schedule",
+      "noInterviews": "No interviews scheduled yet",
+      "scheduleNewInterview": "Schedule New Interview"
+    }
+  },
+  "companySetting": {
+    "title": "Settings",
+    "tabs": {
+      "overview": "Overview",
+      "socialLinks": "Social Links"
+    },
+    "overview": {
+      "basicInformation": "Basic Information",
+      "basicInformationDesc": "This is company information that you can update anytime.",
+      "companyLogo": "Company Logo",
+      "companyLogoDesc": "This image will be shown publicly as company logo.",
+      "companyDetails": "Company Details",
+      "companyDetailsDesc": "Introduce your company core info quickly to users by fill up company details",
+      "companyName": "Company Name",
+      "website": "Website",
+      "employee": "Employee",
+      "employeePlaceholder": "Enter employee count",
+      "industry": "Industry",
+      "techStack": "Tech Stack",
+      "techStackPlaceholder": "Select technologies",
+      "aboutCompany": "About Company",
+      "aboutCompanyDesc": "Brief description for your company. URLs are hyperlinked.",
+      "description": "Description",
+      "descriptionPlaceholder": "Enter company description...",
+      "saveChanges": "Save Changes",
+      "saving": "Saving...",
+      "errorUpdating": "Error updating company:"
+    }
+  },
+  "companyProfile": {
+    "loading": "Loading...",
+    "failedToLoad": "Failed to load company.",
+    "profileSettings": "Profile Settings"
+  },
+  "companyList": {
+    "hero": {
+      "title": "Discover Top Companies",
+      "subtitle": "Explore thousands of companies hiring now",
+      "searchPlaceholder": "Search by company name, industry, or location...",
+      "searchButton": "Search"
+    },
+    "filters": {
+      "title": "Filters",
+      "clear": "Clear",
+      "companyType": "Company Type",
+      "noCompanyTypesFound": "No company types found",
+      "companySize": "Company Size",
+      "sizes": {
+        "small": "1-10 employees",
+        "medium": "50-200 employees",
+        "large": "200-500 employees",
+        "xlarge": "500-1000 employees",
+        "xxlarge": "1000+ employees"
+      },
+      "location": "Location"
+    },
+    "grid": {
+      "companiesFound": "{{count}} {{count, plural, one {company} other {companies}}} found",
+      "noCompaniesFound": "No companies found",
+      "tryAdjustingFilters": "Try adjusting your filters or search criteria",
+      "sort": {
+        "newest": "Newest",
+        "oldest": "Oldest",
+        "nameAsc": "Name (A-Z)",
+        "nameDesc": "Name (Z-A)"
+      }
+    }
+  },
+  "homeSections": {
+    "hero": {
+      "title": "Find your",
+      "dreamJob": "dream job",
+      "subtitle": "Find internship and job opportunities that match your passion.",
+      "searchPlaceholder": "Job title, keywords, or company",
+      "locationPlaceholder": "City, state, or remote",
+      "popular": "Popular:"
+    },
+    "jobSection": {
+      "title": "Latest",
+      "jobsOpen": "jobs open",
+      "showAllJobs": "Show all jobs",
+      "previous": "Previous",
+      "next": "Next",
+      "noJobsAvailable": "No jobs available at the moment.",
+      "showingJobs": "Showing {{showing}} of {{total}} jobs",
+      "pageInfo": "Page {{current}} of {{total}}"
+    },
+    "categorySection": {
+      "title": "Explore by",
+      "category": "Category",
+      "showAllJobs": "Show all jobs",
+      "viewJobs": "View jobs →",
+      "jobsAvailable": "{{count}} jobs available →"
+    },
+    "hotJobSection": {
+      "title": "Hot jobs from",
+      "topCV": "TopCV",
+      "showAllJobs": "Show all jobs",
+      "previous": "Previous",
+      "next": "Next",
+      "noJobsAvailable": "No jobs available at the moment.",
+      "showingJobs": "Showing {{showing}} of {{total}} jobs",
+      "pageInfo": "Page {{current}} of {{total}}"
+    },
+    "companySection": {
+      "title": "Top",
+      "companies": "Companies",
+      "viewAllCompanies": "View All Companies"
+    },
+    "ctaSection": {
+      "postJob": {
+        "title": "Post a Job",
+        "description": "Reach thousands of qualified candidates and find the perfect fit for your team.",
+        "button": "Post a Job",
+        "learnMore": "Learn More"
+      },
+      "dashboard": {
+        "title": "Dashboard",
+        "description": "Manage your job postings, track applications, and analyze your hiring performance.",
+        "goToDashboard": "Go to Dashboard",
+        "viewDemo": "View Demo"
+      },
+      "stats": {
+        "title": "Join Thousands of Job Seekers",
+        "activeJobs": "Active Jobs",
+        "companies": "Companies",
+        "jobSeekers": "Job Seekers"
+      }
+    }
+  }
 }

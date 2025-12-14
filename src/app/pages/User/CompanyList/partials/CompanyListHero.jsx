@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import {
     Box,
     Container,
@@ -11,6 +12,7 @@ import {
 import { Search, BusinessCenter } from '@mui/icons-material';
 
 export default function CompanyListHero({ onSearch, searchKeyword = '' }) {
+    const { t } = useTranslation();
     const [keyword, setKeyword] = useState(searchKeyword);
 
     const handleSearch = () => {
@@ -57,7 +59,7 @@ export default function CompanyListHero({ onSearch, searchKeyword = '' }) {
                             fontSize: { xs: '1.75rem', md: '2.5rem' }
                         }}
                     >
-                        Discover Top Companies
+                        {t("companyList.hero.title")}
                     </Typography>
                     <Typography
                         variant="h6"
@@ -68,7 +70,7 @@ export default function CompanyListHero({ onSearch, searchKeyword = '' }) {
                             fontSize: { xs: '1rem', md: '1.25rem' }
                         }}
                     >
-                        Explore thousands of companies hiring now
+                        {t("companyList.hero.subtitle")}
                     </Typography>
                 </Box>
 
@@ -86,7 +88,7 @@ export default function CompanyListHero({ onSearch, searchKeyword = '' }) {
                     }}
                 >
                     <InputBase
-                        placeholder="Search by company name, industry, or location..."
+                        placeholder={t("companyList.hero.searchPlaceholder")}
                         value={keyword}
                         onChange={(e) => setKeyword(e.target.value)}
                         onKeyPress={handleKeyPress}
@@ -114,7 +116,7 @@ export default function CompanyListHero({ onSearch, searchKeyword = '' }) {
                         }}
                     >
                         <Typography sx={{ fontWeight: 600, display: { xs: 'none', sm: 'block' } }}>
-                            Search
+                            {t("companyList.hero.searchButton")}
                         </Typography>
                         <Search sx={{ display: { xs: 'block', sm: 'none' } }} />
                     </IconButton>

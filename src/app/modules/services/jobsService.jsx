@@ -40,13 +40,17 @@ export const getJobById = createAsyncThunk(
 
 export const getJobsByCompanyId = createAsyncThunk(
     "jobs/getJobsByCompanyId",
-    async ({companyId, page, limit}, { rejectWithValue }) => {
+    async ({ companyId, page, limit }, { rejectWithValue }) => {
         try {
-            const response = await api.get(`${apiBaseUrl}`, {
-                params: { page: page, limit: limit, company_id: companyId },
-                withCredentials: true,
+            const response = await api.get(`${apiBaseUrl}/company/${companyId}`, {
+                params: { page: page, limit: limit },
+                // withCredentials: true,
             });
-            return response.data;
+            // Return both data and pagination
+            return {
+                data: response.data.data || [],
+                pagination: response.data.pagination || null
+            };
         } catch (error) {
             return rejectWithValue(error.response?.data?.message || "Something went wrong");
         }
@@ -129,7 +133,8 @@ const jobsSlice = createSlice({
             })
             .addCase(getJobById.fulfilled, (state, action) => {
                 state.status = "succeeded";
-                state.job = action.payload.data;
+                const jobData = action.payload.formattedJob || action.payload.data || action.payload;
+                state.job = jobData;
             })
             .addCase(getJobById.rejected, (state, action) => {
                 state.status = "failed";
@@ -142,8 +147,8 @@ const jobsSlice = createSlice({
             })
             .addCase(getJobsByCompanyId.fulfilled, (state, action) => {
                 state.status = "succeeded";
-                state.jobs = action.payload.data || [];
-                state.pagination = action.payload.pagination || null;
+                state.jobs = Array.isArray(action.payload) ? action.payload : (action.payload?.data || []);
+                state.pagination = action.payload?.pagination || null;
             })
             .addCase(getJobsByCompanyId.rejected, (state, action) => {
                 state.status = "failed";

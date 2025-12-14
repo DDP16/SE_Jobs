@@ -1,314 +1,708 @@
 {
-    "languageDate": "vi-VN",
-    "welcome": "Chào mừng đến với SE Jobs",
-    "home": "Trang chủ",
+  "languageDate": "vi-VN",
+  "welcome": "Chào mừng đến với SE Jobs",
+  "home": "Trang chủ",
+  "jobs": "Việc làm",
+  "companies": "Công ty",
+  "contactUs": "Liên hệ",
+  "forEmployers": "Dành cho nhà tuyển dụng",
+  "login": "Đăng nhập",
+  "register": "Đăng ký",
+  "about": "Giới thiệu",
+  "contact": "Liên hệ",
+  "language": "Ngôn ngữ",
+  "english": "Tiếng Anh",
+  "vietnamese": "Tiếng Việt",
+  "pageNotFound": "Không tìm thấy trang",
+  "goBack": "Quay lại",
+  "pageNotFoundDescription": "Trang bạn đang tìm kiếm không tồn tại hoặc đã bị thay đổi.",
+  "goToHomepage": "Quay về trang chủ",
+  "searchJobs": "Tìm việc làm",
+  "findYourDreamJob": "Tìm công việc mơ ước của bạn",
+  "getStarted": "Bắt đầu",
+  "email": "Địa chỉ Email",
+  "password": "Mật khẩu",
+  "confirm_password": "Xác nhận mật khẩu",
+  "first_name": "Tên",
+  "last_name": "Họ",
+  "save": "Lưu",
+  "apply": "Ứng tuyển",
+  "applied": "Đã có {{count}} ứng tuyển",
+  "of": "trong tổng số",
+  "capacity": "vị trí",
+  "auth": {
+    "sign_in": "Đăng nhập",
+    "sign_up": "Đăng ký",
+    "no_account": "Chưa có tài khoản?",
+    "already_have_account": "Đã có tài khoản?",
+    "enter_email": "Nhập email của bạn",
+    "enter_password": "Nhập mật khẩu của bạn",
+    "enter_first_name": "Nhập tên của bạn",
+    "enter_last_name": "Nhập họ của bạn",
+    "confirm_password": "Xác nhận mật khẩu của bạn",
+    "forgot_password": "Quên mật khẩu"
+  },
+  "userActivities": {
+    "title": "Hoạt động của bạn"
+  },
+  "activities": {
+    "applied": "Việc làm đã ứng tuyển",
+    "saved": "Việc làm đã lưu",
+    "invitations": "Lời mời công việc"
+  },
+  "profile": {
+    "updateProfile": "Cập nhật hồ sơ",
+    "loading_user_info": "Đang tải thông tin người dùng...",
+    "update_title": "Cập nhật chức danh",
+    "personal_link": "Link cá nhân",
+    "about_me": "Giới thiệu bản thân",
+    "about_me_placeholder": "Giới thiệu điểm mạnh và số năm kinh nghiệm của bạn",
+    "work_experience": "Kinh nghiệm làm việc",
+    "work_experience_empty": "Thể hiện những thông tin chi tiết về quá trình làm việc",
+    "show_more_experiences": "Hiển thị thêm {{count}} kinh nghiệm",
+    "education": "Học vấn",
+    "education_empty": "Chia sẻ trình độ học vấn của bạn",
+    "show_more_educations": "Hiển thị thêm {{count}} học vấn",
+    "currently": "HIỆN TẠI",
+    "currently_studying": "HIỆN TẠI",
+    "skills": "Kỹ năng",
+    "skills_empty": "Liệt kê các kỹ năng chuyên môn của bạn",
+    "featured_projects": "Dự án nổi bật",
+    "featured_projects_empty": "Giới thiệu dự án nổi bật của bạn",
+    "certificates": "Chứng chỉ",
+    "certificates_empty": "Bổ sung chứng chỉ liên quan đến kỹ năng của bạn",
+    "issued": "Cấp vào",
+    "awards": "Giải thưởng",
+    "awards_empty": "Thể hiện giải thưởng hoặc thành tích mà bạn đạt được",
+    "cv_attachment": "CV đính kèm",
+    "cv_description": "Tải lên CV của bạn để nhà tuyển dụng xem",
+    "uploaded": "Đã tải lên",
+    "drag_drop_cv": "Kéo thả file CV",
+    "or": "hoặc",
+    "select_file": "Chọn file",
+    "pdf_max_5mb": "PDF, tối đa 5MB",
+    "uploaded_on": "Tải lên",
+    "please_upload_pdf_only": "Vui lòng chỉ tải lên file PDF",
+    "profile_completion": "Độ hoàn thiện hồ sơ",
+    "completed": "hoàn thành",
+    "tips_title": "Một số mẹo để hồ sơ của bạn nổi bật hơn",
+    "tip_1": "Nâng cấp hồ sơ của bạn lên 100% để thu hút nhà tuyển dụng hơn!",
+    "tip_2": "Nâng cấp hồ sơ của bạn lên 100% để thu hút nhà tuyển dụng hơn!",
+    "view_download_cv": "Xem và Tải CV",
+    "languages": "Ngoại ngữ",
+    "languages_empty": "Liệt kê các ngôn ngữ mà bạn biết"
+  },
+  "setting": {
+    "my_account": "Tài khoản của tôi",
+    "notifications": "Thông báo",
+    "basic_information": "Thông tin cơ bản",
+    "description_account_tab": "Đây là thông tin đăng nhập mà bạn có thể cập nhật bất cứ lúc nào.",
+    "email": "Email",
+    "description_email": "Địa chỉ email của bạn không thể thay đổi.",
+    "update_email": "Cập nhật email",
+    "description_update_email": "Cập nhật địa chỉ email của bạn để đảm bảo nó an toàn và bảo mật.",
+    "email_verified": "Địa chỉ email của bạn đã được xác minh.",
+    "enter_new_email": "Nhập email mới của bạn",
+    "new_password": "Mật khẩu mới",
+    "old_password": "Mật khẩu cũ",
+    "description_new_password": "Quản lý mật khẩu của bạn để đảm bảo nó an toàn và bảo mật.",
+    "enter_old_password": "Nhập mật khẩu cũ của bạn",
+    "enter_new_password": "Nhập mật khẩu mới của bạn",
+    "password_requirements": "Tối thiểu 8 ký tự",
+    "change_password": "Đổi mật khẩu",
+    "account_type": "Loại tài khoản",
+    "description_account_type": "Bạn có thể cập nhật loại tài khoản của mình",
+    "job_seeker": "Người tìm việc",
+    "job_seeker_description": "Tìm kiếm việc làm",
+    "employer": "Nhà tuyển dụng",
+    "employer_description": "Tuyển dụng, tìm kiếm ứng viên hoặc đăng tin tuyển dụng",
+    "close_account": "Đóng tài khoản",
+    "description_notifications_tab": "Đây là các tùy chọn thông báo mà bạn có thể cập nhật bất cứ lúc nào.",
+    "description_notifications": "Tùy chỉnh các cài đặt thông báo ưa thích của bạn",
+    "applications": "Ứng tuyển",
+    "applications_description": "Đây là các thông báo cho các công việc mà bạn đã ứng tuyển",
     "jobs": "Việc làm",
-    "companies": "Công ty",
-    "contactUs": "Liên hệ",
-    "forEmployers": "Dành cho nhà tuyển dụng",
-    "login": "Đăng nhập",
-    "register": "Đăng ký",
-    "about": "Giới thiệu",
-    "contact": "Liên hệ",
-    "language": "Ngôn ngữ",
-    "english": "Tiếng Anh",
-    "vietnamese": "Tiếng Việt",
-    "pageNotFound": "Không tìm thấy trang",
-    "goBack": "Quay lại",
-    "searchJobs": "Tìm việc làm",
-    "findYourDreamJob": "Tìm công việc mơ ước của bạn",
-    "getStarted": "Bắt đầu",
-    "email": "Địa chỉ Email",
-    "password": "Mật khẩu",
-    "confirm_password": "Xác nhận mật khẩu",
-    "first_name": "Tên",
-    "last_name": "Họ",
-    "save": "Lưu",
-    "apply": "Ứng tuyển",
-    "applied": "Đã có {{count}} ứng tuyển",
-    "of": "trong tổng số",
-    "capacity": "vị trí",
-
-    "auth": {
-        "sign_in": "Đăng nhập",
-        "sign_up": "Đăng ký",
-        "no_account": "Chưa có tài khoản?",
-        "already_have_account": "Đã có tài khoản?",
-        "enter_email": "Nhập email của bạn",
-        "enter_password": "Nhập mật khẩu của bạn",
-        "enter_first_name": "Nhập tên của bạn",
-        "enter_last_name": "Nhập họ của bạn",
-        "confirm_password": "Xác nhận mật khẩu của bạn",
-        "forgot_password": "Quên mật khẩu"
+    "jobs_description": "Đây là các thông báo cho các vị trí việc làm phù hợp với hồ sơ của bạn",
+    "recommendations": "Đề xuất",
+    "recommendations_description": "Đây là các thông báo cho các đề xuất cá nhân hóa từ các nhà tuyển dụng của chúng tôi"
+  },
+  "dashboard": {
+    "recentApplicationsHistory": "Lịch sử ứng tuyển gần đây",
+    "viewAllApplicationsHistory": "Xem toàn bộ lịch sử ứng tuyển",
+    "dateApplied": "Ngày ứng tuyển",
+    "noEmailProvided": "Chưa cung cấp email"
+  },
+  "myJobs": {
+    "title": "Việc làm của tôi",
+    "tabs": {
+      "applied": "Việc làm đã ứng tuyển",
+      "saved": "Việc làm đã lưu",
+      "recentViewed": "Việc làm đã xem gần đây",
+      "invited": "Việc làm được mời"
     },
-
-    "userActivities": {
-        "title": "Hoạt động của bạn"
+    "emptyStates": {
+      "applied": "Bạn chưa ứng tuyển công việc nào trong 12 tháng qua.",
+      "saved": "Bạn chưa lưu công việc nào.",
+      "recentViewed": "Bạn chưa xem công việc nào gần đây.",
+      "invited": "Bạn chưa nhận được lời mời công việc nào.",
+      "noData": "Không có dữ liệu."
     },
-    "activities": {
-        "applied": "Việc làm đã ứng tuyển",
-        "saved": "Việc làm đã lưu",
-        "invitations": "Lời mời công việc"
+    "exploreJobs": "Khám phá việc làm",
+    "infoMessage": "Các công việc bạn đã ứng tuyển được lưu trong 12 tháng qua."
+  },
+  "job": {
+    "loading": "Đang tải chi tiết công việc...",
+    "error": "Tải chi tiết công việc thất bại.",
+    "not_found": "Không tìm thấy công việc.",
+    "description": "Mô tả",
+    "no_description": "Không có mô tả công việc",
+    "responsibilities": "Trách nhiệm",
+    "no_responsibilities": "Không có trách nhiệm nào được liệt kê.",
+    "who_you_are": "Yêu cầu",
+    "no_requirements": "Không có yêu cầu nào được liệt kê.",
+    "nice_to_haves": "Những điều nên có",
+    "no_nice_to_haves": "Không có điều nên có nào được liệt kê.",
+    "about_this_role": "Về vị trí này",
+    "apply_before": "Hạn nộp hồ sơ",
+    "posted_on": "Ngày đăng",
+    "job_type": "Loại công việc",
+    "salary": "Mức lương",
+    "quantity": "Số lượng",
+    "experience": "Kinh nghiệm",
+    "position": "Vị trí",
+    "gender": "Giới tính",
+    "categories": "Danh mục",
+    "no_categories_listed": "Không có danh mục nào được liệt kê.",
+    "required_skills": "Kỹ năng yêu cầu",
+    "no_skills_listed": "Không có kỹ năng nào được liệt kê.",
+    "similar_jobs": "Việc làm tương tự",
+    "show_all_jobs": "Xem tất cả việc làm"
+  },
+  "company": {
+    "perks_benefits": {
+      "title": "Phúc lợi & Quyền lợi",
+      "description": "Công việc này đi kèm với nhiều phúc lợi và quyền lợi"
     },
-    "profile": {
-        "updateProfile": "Cập nhật hồ sơ"
+    "read_more_about": "Tìm hiểu thêm về {{companyName}}",
+    "header": {
+      "founded": "Thành lập",
+      "employees": "Nhân viên",
+      "location": "Địa điểm",
+      "locations": "{{count}} quốc gia",
+      "industry": "Loại công ty",
+      "jobs_count": "{{count}} việc làm",
+      "following": "Đang theo dõi",
+      "follow_company": "Theo dõi công ty",
+      "notSpecified": "Chưa xác định",
+      "globalRemote": "Toàn cầu (Từ xa)",
+      "publicView": "Xem công khai"
     },
-    "setting": {
-        "my_account": "Tài khoản của tôi",
-        "notifications": "Thông báo",
-        "basic_information": "Thông tin cơ bản",
-        "description_account_tab": "Đây là thông tin đăng nhập mà bạn có thể cập nhật bất cứ lúc nào.",
-        "update_email": "Cập nhật email",
-        "description_update_email": "Cập nhật địa chỉ email của bạn để đảm bảo nó an toàn và bảo mật.",
-        "email_verified": "Địa chỉ email của bạn đã được xác minh.",
-        "enter_new_email": "Nhập email mới của bạn",
-        "new_password": "Mật khẩu mới",
-        "old_password": "Mật khẩu cũ",
-        "description_new_password": "Quản lý mật khẩu của bạn để đảm bảo nó an toàn và bảo mật.",
-        "enter_old_password": "Nhập mật khẩu cũ của bạn",
-        "enter_new_password": "Nhập mật khẩu mới của bạn",
-        "password_requirements": "Tối thiểu 8 ký tự",
-        "change_password": "Đổi mật khẩu",
-        "account_type": "Loại tài khoản",
-        "description_account_type": "Bạn có thể cập nhật loại tài khoản của mình",
-        "job_seeker": "Người tìm việc",
-        "job_seeker_description": "Tìm kiếm việc làm",
-        "employer": "Nhà tuyển dụng",
-        "employer_description": "Tuyển dụng, tìm kiếm ứng viên hoặc đăng tin tuyển dụng",
-        "close_account": "Đóng tài khoản",
-        "description_notifications_tab": "Đây là các tùy chọn thông báo mà bạn có thể cập nhật bất cứ lúc nào.",
-        "description_notifications": "Tùy chỉnh các cài đặt thông báo ưa thích của bạn",
-        "applications": "Ứng tuyển",
-        "applications_description": "Đây là các thông báo cho các công việc mà bạn đã ứng tuyển",
-        "jobs": "Việc làm",
-        "jobs_description": "Đây là các thông báo cho các vị trí việc làm phù hợp với hồ sơ của bạn",
-        "recommendations": "Đề xuất",
-        "recommendations_description": "Đây là các thông báo cho các đề xuất cá nhân hóa từ các nhà tuyển dụng của chúng tôi"
+    "info": {
+      "title": "Thông tin công ty",
+      "field": "Lĩnh vực",
+      "company_size": "Quy mô công ty",
+      "location": "Địa điểm"
+    },
+    "overview": {
+      "title": "Giới thiệu công ty",
+      "contact": "Liên hệ"
+    },
+    "open_jobs": {
+      "title": "Việc làm đang tuyển",
+      "show_all": "Xem tất cả việc làm"
+    },
+    "tech_stack": {
+      "title": "Công nghệ sử dụng",
+      "description": "Các công nghệ mà {{companyName}} sử dụng trong các dự án của họ",
+      "view_all": "Xem tất cả công nghệ"
+    },
+    "office_location": {
+      "title": "Vị trí văn phòng",
+      "description": "Các vị trí văn phòng của {{companyName}} trên toàn cầu",
+      "view_all": "Xem tất cả quốc gia"
     },
     "dashboard": {
-        "recentApplicationsHistory": "Recent Applications History",
-        "viewAllApplicationsHistory": "Xem toàn bộ lịch sử ứng tuyển",
-        "dateApplied": "Ngày ứng tuyển"
-    },
-    "job": {
-        "loading": "Đang tải chi tiết công việc...",
-        "error": "Tải chi tiết công việc thất bại.",
-        "not_found": "Không tìm thấy công việc.",
-        "description": "Mô tả",
-        "no_description": "Không có mô tả công việc",
-        "responsibilities": "Trách nhiệm",
-        "no_responsibilities": "Không có trách nhiệm nào được liệt kê.",
-        "who_you_are": "Yêu cầu",
-        "no_requirements": "Không có yêu cầu nào được liệt kê.",
-        "nice_to_haves": "Những điều nên có",
-        "no_nice_to_haves": "Không có điều nên có nào được liệt kê.",
-        "about_this_role": "Về vị trí này",
-        "apply_before": "Hạn nộp hồ sơ",
-        "posted_on": "Ngày đăng",
-        "job_type": "Loại công việc",
-        "salary": "Mức lương",
-        "categories": "Danh mục",
-        "no_categories_listed": "Không có danh mục nào được liệt kê.",
-        "required_skills": "Kỹ năng yêu cầu",
-        "no_skills_listed": "Không có kỹ năng nào được liệt kê.",
-        "similar_jobs": "Việc làm tương tự",
-        "show_all_jobs": "Xem tất cả việc làm"
-    },
-    "company": {
-        "perks_benefits": {
-            "title": "Phúc lợi & Quyền lợi",
-            "description": "Công việc này đi kèm với nhiều phúc lợi và quyền lợi"
-        },
-        "read_more_about": "Tìm hiểu thêm về {{companyName}}",
-        "header": {
-            "founded": "Thành lập",
-            "employees": "Nhân viên",
-            "location": "Địa điểm",
-            "locations": "{{count}} quốc gia",
-            "industry": "Ngành nghề",
-            "jobs_count": "{{count}} việc làm",
-            "following": "Đang theo dõi",
-            "follow_company": "Theo dõi công ty"
-        },
-        "info": {
-            "title": "Thông tin công ty",
-            "field": "Lĩnh vực",
-            "company_size": "Quy mô công ty",
-            "location": "Địa điểm"
-        },
-        "overview": {
-            "title": "Giới thiệu công ty",
-            "contact": "Liên hệ"
-        },
-        "open_jobs": {
-            "title": "Việc làm đang tuyển",
-            "show_all": "Xem tất cả việc làm"
-        },
-        "tech_stack": {
-            "title": "Công nghệ sử dụng",
-            "description": "Các công nghệ mà {{companyName}} sử dụng trong các dự án của họ",
-            "view_all": "Xem tất cả công nghệ"
-        },
-        "office_location": {
-            "title": "Vị trí văn phòng",
-            "description": "Các vị trí văn phòng của {{companyName}} trên toàn cầu",
-            "view_all": "Xem tất cả quốc gia"
-        }
-    },
-    "sidebar": {
-        "welcome": "Xin chào",
-        "dashboard": "Dashboard",
-        "profile": "Hồ sơ",
-        "myJobs": "Việc làm của tôi",
-        "notifications": "Thông báo",
-        "settings": "Cài đặt"
+      "greeting": "Chào buổi sáng, {{name}} 👋",
+      "statisticReport": "Báo cáo thống kê từ {{from}} đến {{to}}",
+      "dateRange": "{{from}} - {{to}}",
+      "newCandidates": "Ứng viên mới",
+      "scheduleToday": "Lịch hôm nay",
+      "messagesReceived": "Tin nhắn nhận được",
+      "jobStatistics": "Thống kê công việc",
+      "showingJobStatistic": "Hiển thị thống kê công việc từ {{from}} đến {{to}}",
+      "week": "Tuần",
+      "month": "Tháng",
+      "year": "Năm",
+      "overview": "Tổng quan",
+      "jobsview": "Lượt xem công việc",
+      "jobsapplied": "Đơn ứng tuyển",
+      "jobView": "Lượt xem",
+      "jobApplied": "Đã ứng tuyển",
+      "jobOpen": "Công việc đang mở",
+      "jobsOpened": "Công việc được mở trong tuần",
+      "applicantsSummary": "Tổng quan ứng viên",
+      "applicants": "Ứng viên",
+      "fullTime": "Toàn thời gian",
+      "partTime": "Bán thời gian",
+      "internship": "Thực tập",
+      "contract": "Hợp đồng",
+      "remote": "Từ xa",
+      "jobUpdates": "Cập nhật công việc",
+      "viewAll": "Xem tất cả",
+      "applied": "Đã ứng tuyển {{count}}",
+      "of": "trên",
+      "capacity": "chỉ tiêu"
     }
-    ,
-    "modals": {
-        "education": {
-            "title": "Học vấn",
-            "schoolPlaceholder": "Trường *",
-            "degreePlaceholder": "Trình độ *",
-            "majorPlaceholder": "Ngành học *",
-            "currentlyStudying": "Tôi đang theo học tại đây",
-            "from": "Từ",
-            "to": "Đến",
-            "month": "Tháng",
-            "year": "Năm",
-            "otherInfoPlaceholder": "Thông tin chi tiết khác",
-            "cancel": "Huỷ",
-            "save": "Lưu",
-            "errors": {
-                "schoolRequired": "Vui lòng nhập tên trường",
-                "degreeRequired": "Vui lòng chọn trình độ",
-                "majorRequired": "Vui lòng nhập ngành học",
-                "startMonthRequired": "Vui lòng chọn tháng bắt đầu.",
-                "startYearRequired": "Vui lòng chọn năm bắt đầu (không lớn hơn năm hiện tại)",
-                "startYearFuture": "Năm bắt đầu không được lớn hơn năm hiện tại.",
-                "endMonthRequired": "Vui lòng chọn tháng kết thúc.",
-                "endYearRequired": "Vui lòng chọn năm kết thúc hoặc đánh dấu 'Tôi đang theo học'",
-                "endAfterStart": "Năm/Tháng kết thúc phải sau hoặc bằng thời điểm bắt đầu"
-            }
-        },
-        "common": {
-            "month": "Tháng",
-            "year": "Năm",
-            "cancel": "Huỷ",
-            "save": "Lưu",
-            "close": "Đóng",
-            "characters": "ký tự",
-            "tips": "Mẹo"
-        },
-        "skills": {
-            "title": "Kỹ năng chính",
-            "listCount": "Danh sách kỹ năng ({{count}}/{{max}})",
-            "searchPlaceholder": "Tìm kỹ năng",
-            "selectExperience": "Chọn kinh nghiệm",
-            "tipsTitle": "Mẹo:",
-            "tipsText": "Sắp xếp các kỹ năng chính theo nhóm để nhà tuyển dụng nhanh chóng nắm bắt năng lực chuyên môn của bạn.",
-            "cancel": "Huỷ",
-            "save": "Lưu"
-            ,
-            "errors": {
-                "groupNameRequired": "Vui lòng nhập tên nhóm.",
-                "skillsRequired": "Vui lòng thêm ít nhất một kỹ năng.",
-                "skillExperienceRequired": "Mỗi kỹ năng phải có mức kinh nghiệm."
-            }
-        },
-        "experience": {
-            "title": "Kinh nghiệm làm việc",
-            "jobTitlePlaceholder": "Chức danh công việc *",
-            "companyPlaceholder": "Công ty *",
-            "currentlyWorking": "Tôi đang làm việc tại đây",
-            "from": "Từ",
-            "to": "Đến",
-            "tipsTitle": "Mẹo:",
-            "tipsText": "Tóm tắt ngành nghề của công ty, sau đó chi tiết trách nhiệm và thành tựu của bạn. Với dự án, viết ở trường 'Dự án' bên dưới.",
-            "insertTemplateText": "• Tóm tắt dự án: [Tóm tắt ngắn về dự án]\n• Vai trò của bạn: [Vai trò và trách nhiệm]\n• Công nghệ: [Các công nghệ đã sử dụng]\n• Số thành viên: [Số lượng thành viên trong nhóm]",
-            "charactersCounter": "{{count}}/{{max}} ký tự",
-            "errors": {
-                "jobTitleRequired": "Vui lòng nhập chức danh công việc.",
-                "companyRequired": "Vui lòng nhập tên công ty.",
-                "startMonthRequired": "Vui lòng chọn tháng bắt đầu.",
-                "startYearRequired": "Vui lòng chọn năm bắt đầu.",
-                "startYearFuture": "Năm bắt đầu không được lớn hơn năm hiện tại.",
-                "endMonthRequired": "Vui lòng chọn tháng kết thúc.",
-                "endYearRequired": "Vui lòng chọn năm kết thúc.",
-                "dateRange": "Ngày kết thúc phải sau ngày bắt đầu."
-            }
-        },
-        "projects": {
-            "title": "Dự án",
-            "projectNameLabel": "Tên dự án",
-            "projectNamePlaceholder": "Nhập tên dự án",
-            "currentlyWorking": "Tôi vẫn đang làm dự án này",
-            "startDate": "Ngày bắt đầu",
-            "endDate": "Ngày kết thúc",
-            "insertTemplate": "Chèn mẫu sẵn",
-            "descriptionLabel": "Mô tả dự án",
-            "websiteLabel": "Đường dẫn website",
-            "websitePlaceholder": "Nhập đường dẫn website",
-            "tipsText": "Tóm tắt ngành nghề của công ty, sau đó chi tiết trách nhiệm và thành tựu của bạn. Với dự án, viết ở trường 'Dự án' bên dưới.",
-            "errors": {
-                "projectNameRequired": "Vui lòng nhập tên dự án.",
-                "startMonthRequired": "Vui lòng chọn tháng bắt đầu.",
-                "startYearRequired": "Vui lòng chọn năm bắt đầu.",
-                "startYearFuture": "Năm bắt đầu không được lớn hơn năm hiện tại.",
-                "endMonthRequired": "Vui lòng chọn tháng kết thúc.",
-                "endYearRequired": "Vui lòng chọn năm kết thúc.",
-                "dateRange": "Ngày kết thúc phải sau ngày bắt đầu.",
-                "websiteInvalid": "Vui lòng nhập URL hợp lệ (ví dụ: https://example.com)."
-            }
-        },
-        "languages": {
-            "title": "Ngoại ngữ",
-            "listCount": "Danh sách ngôn ngữ ({{count}}/{{max}})",
-            "searchPlaceholder": "Tìm ngôn ngữ",
-            "selectLevel": "Chọn trình độ"
-            ,
-            "errors": {
-                "languagesRequired": "Vui lòng thêm ít nhất một ngoại ngữ.",
-                "languageLevelRequired": "Mỗi ngoại ngữ cần có trình độ tương ứng."
-            }
-        },
-        "certificates": {
-            "title": "Chứng chỉ",
-            "certificateName": "Tên chứng chỉ",
-            "certificateNamePlaceholder": "Tên chứng chỉ *",
-            "organization": "Tổ chức",
-            "organizationPlaceholder": "Tổ chức *",
-            "issueDate": "Ngày cấp",
-            "certificateUrl": "Đường dẫn chứng chỉ",
-            "description": "Mô tả",
-            "errors": {
-                "certificateNameRequired": "Vui lòng nhập tên chứng chỉ.",
-                "organizationRequired": "Vui lòng nhập tổ chức.",
-                "issueMonthRequired": "Vui lòng chọn tháng cấp.",
-                "issueYearRequired": "Vui lòng chọn năm cấp.",
-                "issueYearFuture": "Năm cấp không được lớn hơn năm hiện tại.",
-                "certificateUrlInvalid": "Vui lòng nhập URL hợp lệ (ví dụ: https://example.com)."
-            }
-        },
-        "awards": {
-            "title": "Giải thưởng",
-            "awardName": "Tên giải thưởng",
-            "awardNamePlaceholder": "Tên giải thưởng",
-            "awardOrganization": "Tổ chức trao giải",
-            "issueDate": "Ngày cấp",
-            "description": "Mô tả",
-            "name": "Tên giải thưởng",
-            "namePlaceholder": "Tên giải thưởng",
-            "organization": "Tổ chức trao giải",
-            "organizationPlaceholder": "Tổ chức trao giải",
-            "tipsTitle": "Mẹo",
-            "tipsText": "Mô tả ngắn về lý do trao giải hoặc thành tựu liên quan",
-            "errors": {
-                "awardNameRequired": "Vui lòng nhập tên giải thưởng.",
-                "awardOrganizationRequired": "Vui lòng nhập tổ chức trao giải.",
-                "issueMonthRequired": "Vui lòng chọn tháng cấp.",
-                "issueYearRequired": "Vui lòng chọn năm cấp.",
-                "issueYearFuture": "Năm cấp không được lớn hơn năm hiện tại."
-            }
-        }
+  },
+  "sidebar": {
+    "welcome": "Xin chào",
+    "dashboard": "Dashboard",
+    "profile": "Hồ sơ",
+    "myJobs": "Việc làm của tôi",
+    "notifications": "Thông báo",
+    "settings": "Cài đặt"
+  },
+  "modals": {
+    "education": {
+      "title": "Học vấn",
+      "schoolPlaceholder": "Trường *",
+      "degreePlaceholder": "Trình độ *",
+      "majorPlaceholder": "Ngành học *",
+      "currentlyStudying": "Tôi đang theo học tại đây",
+      "from": "Từ",
+      "to": "Đến",
+      "month": "Tháng",
+      "year": "Năm",
+      "otherInfoPlaceholder": "Thông tin chi tiết khác",
+      "cancel": "Huỷ",
+      "save": "Lưu",
+      "errors": {
+        "schoolRequired": "Vui lòng nhập tên trường",
+        "degreeRequired": "Vui lòng chọn trình độ",
+        "majorRequired": "Vui lòng nhập ngành học",
+        "startMonthRequired": "Vui lòng chọn tháng bắt đầu.",
+        "startYearRequired": "Vui lòng chọn năm bắt đầu (không lớn hơn năm hiện tại)",
+        "startYearFuture": "Năm bắt đầu không được lớn hơn năm hiện tại.",
+        "endMonthRequired": "Vui lòng chọn tháng kết thúc.",
+        "endYearRequired": "Vui lòng chọn năm kết thúc hoặc đánh dấu 'Tôi đang theo học'",
+        "endAfterStart": "Năm/Tháng kết thúc phải sau hoặc bằng thời điểm bắt đầu"
+      }
+    },
+    "common": {
+      "month": "Tháng",
+      "year": "Năm",
+      "cancel": "Huỷ",
+      "save": "Lưu",
+      "close": "Đóng",
+      "characters": "ký tự",
+      "tips": "Mẹo"
+    },
+    "skills": {
+      "title": "Kỹ năng chính",
+      "listCount": "Danh sách kỹ năng ({{count}}/{{max}})",
+      "searchPlaceholder": "Tìm kỹ năng",
+      "selectExperience": "Chọn kinh nghiệm",
+      "tipsTitle": "Mẹo:",
+      "tipsText": "Sắp xếp các kỹ năng chính theo nhóm để nhà tuyển dụng nhanh chóng nắm bắt năng lực chuyên môn của bạn.",
+      "cancel": "Huỷ",
+      "save": "Lưu",
+      "errors": {
+        "groupNameRequired": "Vui lòng nhập tên nhóm.",
+        "skillsRequired": "Vui lòng thêm ít nhất một kỹ năng.",
+        "skillExperienceRequired": "Mỗi kỹ năng phải có mức kinh nghiệm."
+      }
+    },
+    "experience": {
+      "title": "Kinh nghiệm làm việc",
+      "jobTitlePlaceholder": "Chức danh công việc *",
+      "companyPlaceholder": "Công ty *",
+      "currentlyWorking": "Tôi đang làm việc tại đây",
+      "from": "Từ",
+      "to": "Đến",
+      "tipsTitle": "Mẹo:",
+      "tipsText": "Tóm tắt ngành nghề của công ty, sau đó chi tiết trách nhiệm và thành tựu của bạn. Với dự án, viết ở trường 'Dự án' bên dưới.",
+      "insertTemplateText": "• Tóm tắt dự án: [Tóm tắt ngắn về dự án]\n• Vai trò của bạn: [Vai trò và trách nhiệm]\n• Công nghệ: [Các công nghệ đã sử dụng]\n• Số thành viên: [Số lượng thành viên trong nhóm]",
+      "charactersCounter": "{{count}}/{{max}} ký tự",
+      "errors": {
+        "jobTitleRequired": "Vui lòng nhập chức danh công việc.",
+        "companyRequired": "Vui lòng nhập tên công ty.",
+        "startMonthRequired": "Vui lòng chọn tháng bắt đầu.",
+        "startYearRequired": "Vui lòng chọn năm bắt đầu.",
+        "startYearFuture": "Năm bắt đầu không được lớn hơn năm hiện tại.",
+        "endMonthRequired": "Vui lòng chọn tháng kết thúc.",
+        "endYearRequired": "Vui lòng chọn năm kết thúc.",
+        "dateRange": "Ngày kết thúc phải sau ngày bắt đầu."
+      }
+    },
+    "projects": {
+      "title": "Dự án",
+      "projectNameLabel": "Tên dự án",
+      "projectNamePlaceholder": "Nhập tên dự án",
+      "currentlyWorking": "Tôi vẫn đang làm dự án này",
+      "startDate": "Ngày bắt đầu",
+      "endDate": "Ngày kết thúc",
+      "insertTemplate": "Chèn mẫu sẵn",
+      "descriptionLabel": "Mô tả dự án",
+      "websiteLabel": "Đường dẫn website",
+      "websitePlaceholder": "Nhập đường dẫn website",
+      "tipsText": "Tóm tắt ngành nghề của công ty, sau đó chi tiết trách nhiệm và thành tựu của bạn. Với dự án, viết ở trường 'Dự án' bên dưới.",
+      "errors": {
+        "projectNameRequired": "Vui lòng nhập tên dự án.",
+        "startMonthRequired": "Vui lòng chọn tháng bắt đầu.",
+        "startYearRequired": "Vui lòng chọn năm bắt đầu.",
+        "startYearFuture": "Năm bắt đầu không được lớn hơn năm hiện tại.",
+        "endMonthRequired": "Vui lòng chọn tháng kết thúc.",
+        "endYearRequired": "Vui lòng chọn năm kết thúc.",
+        "dateRange": "Ngày kết thúc phải sau ngày bắt đầu.",
+        "websiteInvalid": "Vui lòng nhập URL hợp lệ (ví dụ: https://example.com)."
+      }
+    },
+    "languages": {
+      "title": "Ngoại ngữ",
+      "listCount": "Danh sách ngôn ngữ ({{count}}/{{max}})",
+      "searchPlaceholder": "Tìm ngôn ngữ",
+      "selectLevel": "Chọn trình độ",
+      "errors": {
+        "languagesRequired": "Vui lòng thêm ít nhất một ngoại ngữ.",
+        "languageLevelRequired": "Mỗi ngoại ngữ cần có trình độ tương ứng."
+      }
+    },
+    "certificates": {
+      "title": "Chứng chỉ",
+      "certificateName": "Tên chứng chỉ",
+      "certificateNamePlaceholder": "Tên chứng chỉ *",
+      "organization": "Tổ chức",
+      "organizationPlaceholder": "Tổ chức *",
+      "issueDate": "Ngày cấp",
+      "certificateUrl": "Đường dẫn chứng chỉ",
+      "description": "Mô tả",
+      "errors": {
+        "certificateNameRequired": "Vui lòng nhập tên chứng chỉ.",
+        "organizationRequired": "Vui lòng nhập tổ chức.",
+        "issueMonthRequired": "Vui lòng chọn tháng cấp.",
+        "issueYearRequired": "Vui lòng chọn năm cấp.",
+        "issueYearFuture": "Năm cấp không được lớn hơn năm hiện tại.",
+        "certificateUrlInvalid": "Vui lòng nhập URL hợp lệ (ví dụ: https://example.com)."
+      }
+    },
+    "awards": {
+      "title": "Giải thưởng",
+      "awardName": "Tên giải thưởng",
+      "awardNamePlaceholder": "Tên giải thưởng",
+      "awardOrganization": "Tổ chức trao giải",
+      "issueDate": "Ngày cấp",
+      "description": "Mô tả",
+      "name": "Tên giải thưởng",
+      "namePlaceholder": "Tên giải thưởng",
+      "organization": "Tổ chức trao giải",
+      "organizationPlaceholder": "Tổ chức trao giải",
+      "tipsTitle": "Mẹo",
+      "tipsText": "Mô tả ngắn về lý do trao giải hoặc thành tựu liên quan",
+      "errors": {
+        "awardNameRequired": "Vui lòng nhập tên giải thưởng.",
+        "awardOrganizationRequired": "Vui lòng nhập tổ chức trao giải.",
+        "issueMonthRequired": "Vui lòng chọn tháng cấp.",
+        "issueYearRequired": "Vui lòng chọn năm cấp.",
+        "issueYearFuture": "Năm cấp không được lớn hơn năm hiện tại."
+      }
     }
+  },
+  "postJob": {
+    "postAJob": "Đăng tin tuyển dụng",
+    "step": "Bước {{number}}",
+    "jobInformation": "Thông tin việc làm",
+    "jobInformationDesc": "Cung cấp thông tin cơ bản về vị trí bạn đang tuyển dụng",
+    "jobDescription": "Mô tả công việc",
+    "jobDescriptionDesc": "Mô tả chi tiết công việc và yêu cầu đối với ứng viên",
+    "perksBenefit": "Phúc lợi & Quyền lợi",
+    "perksBenefitDesc": "Những quyền lợi và phúc lợi mà công ty cung cấp cho vị trí này",
+    "perksBenefitHint": "Thêm các quyền lợi để thu hút ứng viên phù hợp",
+    "previous": "Trước",
+    "nextStep": "Bước tiếp theo",
+    "postJob": "Đăng việc",
+    "save": "Lưu",
+    "cancel": "Huỷ",
+    "edit": "Chỉnh sửa",
+    "loadingCompanyProfile": "Đang tải thông tin công ty...",
+    "companyProfileNotFound": "Không tìm thấy thông tin công ty.",
+    "basicInformation": "Thông tin cơ bản",
+    "basicInformationDesc": "Những thông tin quan trọng nhất về vị trí tuyển dụng",
+    "jobTitle": "Chức danh công việc",
+    "jobTitleDesc": "Tên vị trí sẽ hiển thị cho ứng viên",
+    "jobTitlePlaceholder": "Ví dụ: Frontend Developer",
+    "jobTitleHint": "Sử dụng chức danh rõ ràng, phổ biến",
+    "employmentType": "Loại hình làm việc",
+    "employmentTypeDesc": "Hình thức làm việc của vị trí này",
+    "fulltime": "Toàn thời gian",
+    "parttime": "Bán thời gian",
+    "remote": "Làm việc từ xa",
+    "internship": "Thực tập",
+    "contract": "Hợp đồng",
+    "salaryRange": "Khoảng lương",
+    "salaryRangeDesc": "Mức lương dự kiến cho vị trí",
+    "to": "đến",
+    "category": "Danh mục",
+    "categoryDesc": "Lĩnh vực công việc",
+    "selectCategory": "Chọn danh mục",
+    "skills": "Kỹ năng",
+    "skillsDesc": "Các kỹ năng cần thiết cho công việc",
+    "searchSkills": "Tìm kỹ năng",
+    "noSkillsFound": "Không tìm thấy kỹ năng",
+    "details": "Chi tiết công việc",
+    "detailsDesc": "Thông tin chi tiết về công việc",
+    "jobDescriptionText": "Mô tả công việc",
+    "jobDescriptionPlaceholder": "Mô tả chi tiết công việc, nhiệm vụ và mục tiêu",
+    "responsibilities": "Trách nhiệm",
+    "responsibilitiesDesc": "Những nhiệm vụ chính của vị trí",
+    "responsibilitiesPlaceholder": "Liệt kê các trách nhiệm chính",
+    "whoYouAre": "Yêu cầu ứng viên",
+    "whoYouAreDesc": "Những yêu cầu đối với ứng viên",
+    "whoYouArePlaceholder": "Kinh nghiệm, kỹ năng, trình độ",
+    "niceToHaves": "Điểm cộng",
+    "niceToHavesDesc": "Những yếu tố không bắt buộc nhưng là lợi thế",
+    "niceToHavesPlaceholder": "Ví dụ: kinh nghiệm với công nghệ X",
+    "maxCharacters": "Tối đa {{max}} ký tự",
+    "benefits": "Phúc lợi",
+    "addBenefit": "Thêm phúc lợi",
+    "removeBenefit": "Xoá phúc lợi",
+    "benefitTitlePlaceholder": "Tên phúc lợi",
+    "benefitDescriptionPlaceholder": "Mô tả phúc lợi",
+    "level": "Cấp độ",
+    "levelDesc": "Cấp độ công việc",
+    "selectLevel": "Chọn cấp độ",
+    "jobDescriptionDesc": "Mô tả chi tiết công việc và yêu cầu đối với ứng viên"
+  },
+  "jobListing": {
+    "title": "Danh sách việc làm",
+    "description": "Tình trạng danh sách việc làm của bạn từ {{dateRange}}.",
+    "dateRange": "19 tháng 7 - 25 tháng 7",
+    "dateRangeSelector": "Chọn khoảng thời gian",
+    "dateRangeHint": "Chức năng chọn khoảng thời gian tùy chỉnh có thể được thêm vào đây",
+    "table": {
+      "jobTitle": "Chức danh",
+      "company": "Công ty",
+      "category": "Danh mục",
+      "level": "Cấp độ",
+      "salary": "Lương",
+      "tags": "Thẻ",
+      "status": "Trạng thái",
+      "datePosted": "Ngày đăng",
+      "dueDate": "Hạn nộp",
+      "needs": "Nhu cầu",
+      "actions": "Hành động",
+      "viewDetails": "Xem chi tiết",
+      "edit": "Chỉnh sửa",
+      "delete": "Xóa",
+      "approved": "Đã duyệt",
+      "pending": "Đang chờ",
+      "rejected": "Đã từ chối"
+    }
+  },
+  "applicantList": {
+    "title": "Tổng số ứng viên",
+    "searchPlaceholder": "Tìm kiếm ứng viên",
+    "filter": "Lọc",
+    "pipelineView": "Xem pipeline",
+    "tableView": "Xem bảng",
+    "table": {
+      "fullName": "Họ và tên",
+      "score": "Điểm",
+      "hiringStage": "Giai đoạn tuyển dụng",
+      "appliedDate": "Ngày ứng tuyển",
+      "jobRole": "Vị trí công việc",
+      "action": "Hành động",
+      "seeApplication": "Xem đơn ứng tuyển",
+      "noApplicants": "Không có ứng viên",
+      "stages": {
+        "interview": "Phỏng vấn",
+        "shortlisted": "Đã lọc",
+        "declined": "Đã từ chối",
+        "hired": "Đã tuyển",
+        "interviewed": "Đã phỏng vấn"
+      }
+    }
+  },
+  "applicantDetails": {
+    "title": "Chi tiết ứng viên",
+    "moreAction": "Thêm hành động",
+    "appliedJobs": "Việc làm đã ứng tuyển",
+    "stage": "Giai đoạn",
+    "scheduleInterview": "Lên lịch phỏng vấn",
+    "contact": "Liên hệ",
+    "email": "Email",
+    "phone": "Điện thoại",
+    "instagram": "Instagram",
+    "twitter": "Twitter",
+    "website": "Website",
+    "tabs": {
+      "profile": "Hồ sơ ứng viên",
+      "resume": "CV",
+      "hiring": "Tiến trình tuyển dụng",
+      "interview": "Lịch phỏng vấn"
+    },
+    "personalInfo": {
+      "title": "Thông tin cá nhân",
+      "fullName": "Họ và tên",
+      "gender": "Giới tính",
+      "dateOfBirth": "Ngày sinh",
+      "language": "Ngôn ngữ",
+      "address": "Địa chỉ"
+    },
+    "professionalInfo": {
+      "title": "Thông tin chuyên môn",
+      "aboutMe": "Giới thiệu bản thân",
+      "currentJob": "Công việc hiện tại",
+      "experienceInYears": "Kinh nghiệm (năm)",
+      "highestQualification": "Trình độ học vấn cao nhất",
+      "skillSet": "Kỹ năng"
+    },
+    "resume": {
+      "title": "CV",
+      "description": "Xem và tải xuống CV của ứng viên",
+      "downloadResume": "Tải xuống CV"
+    },
+    "hiringProgress": {
+      "title": "Tiến trình tuyển dụng",
+      "description": "Theo dõi tiến trình của ứng viên qua quy trình tuyển dụng",
+      "applicationSubmitted": "Đã nộp đơn",
+      "resumeReviewed": "Đã xem xét CV",
+      "interviewStage": "Giai đoạn phỏng vấn",
+      "finalDecision": "Quyết định cuối cùng"
+    },
+    "interviewSchedule": {
+      "title": "Lịch phỏng vấn",
+      "noInterviews": "Chưa có lịch phỏng vấn nào",
+      "scheduleNewInterview": "Lên lịch phỏng vấn mới"
+    }
+  },
+  "companySetting": {
+    "title": "Cài đặt",
+    "tabs": {
+      "overview": "Tổng quan",
+      "socialLinks": "Liên kết mạng xã hội"
+    },
+    "overview": {
+      "basicInformation": "Thông tin cơ bản",
+      "basicInformationDesc": "Đây là thông tin công ty mà bạn có thể cập nhật bất cứ lúc nào.",
+      "companyLogo": "Logo công ty",
+      "companyLogoDesc": "Hình ảnh này sẽ được hiển thị công khai như logo công ty.",
+      "companyDetails": "Chi tiết công ty",
+      "companyDetailsDesc": "Giới thiệu thông tin cốt lõi của công ty bạn nhanh chóng cho người dùng bằng cách điền thông tin chi tiết công ty",
+      "companyName": "Tên công ty",
+      "website": "Website",
+      "employee": "Nhân viên",
+      "employeePlaceholder": "Nhập số lượng nhân viên",
+      "industry": "Ngành nghề",
+      "techStack": "Công nghệ sử dụng",
+      "techStackPlaceholder": "Chọn công nghệ",
+      "aboutCompany": "Giới thiệu công ty",
+      "aboutCompanyDesc": "Mô tả ngắn gọn về công ty của bạn. URL sẽ được liên kết.",
+      "description": "Mô tả",
+      "descriptionPlaceholder": "Nhập mô tả công ty...",
+      "saveChanges": "Lưu thay đổi",
+      "saving": "Đang lưu...",
+      "errorUpdating": "Lỗi khi cập nhật công ty:"
+    }
+  },
+  "companyProfile": {
+    "loading": "Đang tải...",
+    "failedToLoad": "Không thể tải thông tin công ty.",
+    "profileSettings": "Cài đặt hồ sơ"
+  },
+  "companyList": {
+    "hero": {
+      "title": "Khám phá các công ty hàng đầu",
+      "subtitle": "Tìm hiểu hàng nghìn công ty đang tuyển dụng",
+      "searchPlaceholder": "Tìm kiếm theo tên công ty, ngành nghề hoặc địa điểm...",
+      "searchButton": "Tìm kiếm"
+    },
+    "filters": {
+      "title": "Bộ lọc",
+      "clear": "Xóa",
+      "companyType": "Loại công ty",
+      "noCompanyTypesFound": "Không tìm thấy loại công ty",
+      "companySize": "Quy mô công ty",
+      "sizes": {
+        "small": "1-10 nhân viên",
+        "medium": "50-200 nhân viên",
+        "large": "200-500 nhân viên",
+        "xlarge": "500-1000 nhân viên",
+        "xxlarge": "1000+ nhân viên"
+      },
+      "location": "Địa điểm"
+    },
+    "grid": {
+      "companiesFound": "Tìm thấy {{count}} công ty",
+      "noCompaniesFound": "Không tìm thấy công ty nào",
+      "tryAdjustingFilters": "Thử điều chỉnh bộ lọc hoặc tiêu chí tìm kiếm của bạn",
+      "sort": {
+        "newest": "Mới nhất",
+        "oldest": "Cũ nhất",
+        "nameAsc": "Tên (A-Z)",
+        "nameDesc": "Tên (Z-A)"
+      }
+    }
+  },
+  "homeSections": {
+    "hero": {
+      "title": "Tìm",
+      "dreamJob": "công việc mơ ước",
+      "subtitle": "Tìm cơ hội thực tập và việc làm đúng với đam mê của bạn.",
+      "searchPlaceholder": "Chức danh, từ khóa hoặc công ty",
+      "locationPlaceholder": "Thành phố, tỉnh hoặc làm việc từ xa",
+      "popular": "Phổ biến:"
+    },
+    "jobSection": {
+      "title": "Việc làm",
+      "jobsOpen": "mới nhất",
+      "showAllJobs": "Xem tất cả việc làm",
+      "previous": "Trước",
+      "next": "Sau",
+      "noJobsAvailable": "Hiện tại không có việc làm nào.",
+      "showingJobs": "Hiển thị {{showing}} trong tổng số {{total}} việc làm",
+      "pageInfo": "Trang {{current}} / {{total}}"
+    },
+    "categorySection": {
+      "title": "Khám phá theo",
+      "category": "Danh mục",
+      "showAllJobs": "Xem tất cả việc làm",
+      "viewJobs": "Xem việc làm →",
+      "jobsAvailable": "{{count}} việc làm có sẵn →"
+    },
+    "hotJobSection": {
+      "title": "Việc làm hot từ",
+      "topCV": "TopCV",
+      "showAllJobs": "Xem tất cả việc làm",
+      "previous": "Trước",
+      "next": "Sau",
+      "noJobsAvailable": "Hiện tại không có việc làm nào.",
+      "showingJobs": "Hiển thị {{showing}} trong tổng số {{total}} việc làm",
+      "pageInfo": "Trang {{current}} / {{total}}"
+    },
+    "companySection": {
+      "title": "Top",
+      "companies": "Công ty",
+      "viewAllCompanies": "Xem tất cả công ty"
+    },
+    "ctaSection": {
+      "postJob": {
+        "title": "Đăng tin tuyển dụng",
+        "description": "Tiếp cận hàng nghìn ứng viên chất lượng và tìm người phù hợp cho đội ngũ của bạn.",
+        "button": "Đăng tin tuyển dụng",
+        "learnMore": "Tìm hiểu thêm"
+      },
+      "dashboard": {
+        "title": "Dashboard",
+        "description": "Quản lý tin tuyển dụng, theo dõi đơn ứng tuyển và phân tích hiệu suất tuyển dụng của bạn.",
+        "goToDashboard": "Đi đến Dashboard",
+        "viewDemo": "Xem demo"
+      },
+      "stats": {
+        "title": "Tham gia cùng hàng nghìn người tìm việc",
+        "activeJobs": "Việc làm đang tuyển",
+        "companies": "Công ty",
+        "jobSeekers": "Người tìm việc"
+      }
+    }
+  }
 }

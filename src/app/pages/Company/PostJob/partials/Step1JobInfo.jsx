@@ -1,15 +1,17 @@
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { Button } from "@/components/ui/button";
-import { ChevronDown, X, Search } from "lucide-react";
-import { Checkbox } from "@/components/ui/checkbox";
+import { Select, Space } from "antd";
 import {
+  Input,
+  Label,
+  Button,
+  Checkbox,
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
-import { useState, useMemo } from "react";
+} from "../../../../components/ui";
+import { ChevronDown, X, Search } from "lucide-react";
+import { useState, useMemo, useEffect } from "react";
+import { useTranslation } from "react-i18next";
 
 export default function Step1JobInfo({
   jobTitle,
@@ -19,10 +21,18 @@ export default function Step1JobInfo({
   toggleEmploymentType,
   salaryRange,
   setSalaryRange,
+  salaryCurrency,
+  setSalaryCurrency,
   selectedCategory,
   handleCategorySelect,
+  selectedLevel,
+  handleLevelSelect,
   categories,
+  companyBranches,
+  companyBranchId,
+  setCompanyBranchId,
   skills,
+  levels,
   newSkill,
   setNewSkill,
   addSkill,
@@ -30,10 +40,9 @@ export default function Step1JobInfo({
   apiSkills,
   onSkillSelect,
 }) {
+  const { t } = useTranslation();
   const [searchQuery, setSearchQuery] = useState("");
-  console.log("API Skills:", apiSkills);
-  console.log("Search Query:", searchQuery);
-  console.log("categories", categories);
+  const [tempSalaryRange, setTempSalaryRange] = useState(salaryRange);
 
   const filteredSkills = useMemo(() => {
     if (!searchQuery.trim()) return [];
@@ -45,64 +54,114 @@ export default function Step1JobInfo({
     setSearchQuery("");
   };
 
+  const handleSalaryBlur = (index) => {
+    if (index === 0) {
+      const newMin = Math.min(tempSalaryRange[0], tempSalaryRange[1]);
+      setSalaryRange([newMin, tempSalaryRange[1]]);
+      setTempSalaryRange([newMin, tempSalaryRange[1]]);
+    } else {
+      const newMax = Math.max(tempSalaryRange[1], tempSalaryRange[0]);
+      setSalaryRange([tempSalaryRange[0], newMax]);
+      setTempSalaryRange([tempSalaryRange[0], newMax]);
+    }
+  };
+
+  const handleSalaryKeyDown = (e, index) => {
+    if (e.key === "Enter") {
+      e.target.blur();
+    }
+  };
+
+  // Map employment options to translation keys if needed
+  // For now, assuming labels like "Full-time" exist as-is in your i18n under postJob
+  const getEmploymentLabel = (option) => {
+    const key = `postJob.${option.toLowerCase().replace(/-/g, "")}`;
+    return t(key, option); // fallback to original if key missing
+  };
+
+  const options = companyBranches?.map((branch) => ({
+    value: branch.id,
+    label: branch.name
+  })) || [];
+
+  useEffect(() => {console.log(options)}, [options]);
+
   return (
     <div className="space-y-8">
+      {/* Basic Information Header */}
       <div className="border-b border-gray-300">
-        <p className="text-lg font-semibold mb-2 text-foreground">Basic Information</p>
-        <p className="text-normal font-regular text-muted-foreground mb-6">
-          This information will be displayed publicly
-        </p>
+        <p className="text-lg font-semibold mb-2 text-foreground">{t("postJob.basicInformation")}</p>
+        <p className="text-normal font-regular text-muted-foreground mb-6">{t("postJob.basicInformationDesc")}</p>
       </div>
 
+      {/* Job Title */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4 items-start border-b border-border pb-6 border-gray-300">
         <div>
           <Label htmlFor="jobTitle" className="text-foreground font-semibold text-lg">
-            Job Title
+            {t("postJob.jobTitle")}
           </Label>
-          <p className="text-normal font-regular text-muted-foreground mt-1">Job titles must describe one position</p>
+          <p className="text-normal font-regular text-muted-foreground mt-1">{t("postJob.jobTitleDesc")}</p>
         </div>
         <div className="md:col-span-2">
           <Input
             id="jobTitle"
-            placeholder="e.g. Software Engineer"
+            placeholder={t("postJob.jobTitlePlaceholder")}
             value={jobTitle}
             onChange={(e) => setJobTitle(e.target.value)}
-            className="bg-background border-border"
+            className="bg-white border-border"
           />
-          <p className="text-normal font-regular text-muted-foreground mt-1">At least 80 characters</p>
-        </div>
-      </div>
-
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-4 items-start border-b border-border pb-6 border-gray-300">
-        <div>
-          <Label className="text-foreground font-semibold text-lg">Type of Employment</Label>
           <p className="text-normal font-regular text-muted-foreground mt-1">
-            You can select multiple types of employment
+            {t("postJob.maxCharacters", { max: 80 })}
           </p>
-        </div>
-        <div className="md:col-span-2 space-y-3">
-          {employmentOptions.map((option) => (
-            <div key={option} className="flex items-center space-x-3">
-              <Checkbox
-                id={option}
-                checked={employmentTypes.includes(option)}
-                onCheckedChange={() => toggleEmploymentType(option)}
-                className="border-border data-[state=checked]:bg-primary data-[state=checked]:border-primary data-[state=checked]:text-white"
-              />
-              <Label htmlFor={option} className="text-sm font-normal text-foreground cursor-pointer">
-                {option}
-              </Label>
-            </div>
-          ))}
         </div>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-4 items-start border-b border-border pb-6">
+      {/* Employment Type */}
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 items-start border-b border-border pb-6 border-gray-300">
+        <div className="grid grid-cols-1 md:grid-cols-5 gap-4 items-center">
+          <div className="md:col-span-2">
+            <Label className="text-foreground font-semibold text-lg">{t("postJob.employmentType")}</Label>
+            <p className="text-normal font-regular text-muted-foreground mt-1">{t("postJob.employmentTypeDesc")}</p>
+          </div>
+          <div className="md:col-span-3 space-y- grid grid-cols-2 gap-3">
+            {employmentOptions.map((option) => (
+              <div key={option} className="flex items-center space-x-3">
+                <Checkbox
+                  id={option}
+                  checked={employmentTypes.includes(option)}
+                  onCheckedChange={() => toggleEmploymentType(option)}
+                  className="border-border data-[state=checked]:bg-primary data-[state=checked]:border-primary data-[state=checked]:text-white"
+                />
+                <Label htmlFor={option} className="text-sm font-normal text-foreground cursor-pointer">
+                  {getEmploymentLabel(option)}
+                </Label>
+              </div>
+            ))}
+          </div>
+        </div>
+        <div className="grid grid-cols-1 md:grid-cols-5 gap-4 items-center">
+          <div className="md:col-span-2">
+            <Label className="text-foreground font-semibold text-lg">{t("postJob.employmentType")}</Label>
+            <p className="text-normal font-regular text-muted-foreground mt-1">{t("postJob.employmentTypeDesc")}</p>
+          </div>
+          <Space className="md:col-span-3" style={{ width: '100%' }} vertical>
+            <Select
+              allowClear
+              style={{ width: '100%' }}
+              placeholder="Chọn chi nhánh công ty"
+              defaultValue={[]}
+              onChange={() => {}}
+              options={options}
+            />
+          </Space>
+        </div>
+      </div>
+
+      {/* Salary */}
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-4 items-start border-b border-border border-gray-300 pb-6">
         <div>
-          <Label className="text-foreground font-medium">Salary</Label>
-          <p className="text-xs text-muted-foreground mt-1">
-            Please specify the estimated salary range for the role. You can leave this blank.
-          </p>
+          <Label className="text-foreground font-semibold text-lg">{t("postJob.salaryRange")}</Label>
+          <p className="text-normal font-regular text-muted-foreground mt-1">{t("postJob.salaryRangeDesc")}</p>
         </div>
         <div className="md:col-span-2 space-y-6">
           <div className="flex items-center gap-4">
@@ -111,42 +170,55 @@ export default function Step1JobInfo({
                 <span className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground">$</span>
                 <Input
                   type="number"
-                  value={salaryRange[0]}
+                  value={tempSalaryRange[0]}
                   onChange={(e) => {
                     const val = parseInt(e.target.value) || 0;
-                    const newMin = Math.min(val, salaryRange[1]);
-                    setSalaryRange([newMin, salaryRange[1]]);
+                    setTempSalaryRange([val, tempSalaryRange[1]]);
                   }}
-                  className="pl-7 bg-background border-border"
+                  onBlur={() => handleSalaryBlur(0)}
+                  onKeyDown={(e) => handleSalaryKeyDown(e, 0)}
+                  className="pl-7 bg-white border-border"
                 />
               </div>
             </div>
-            <span className="text-muted-foreground">to</span>
+            <span className="text-muted-foreground">{t("postJob.to")}</span>
             <div className="flex-1">
               <div className="relative">
                 <span className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground">$</span>
                 <Input
                   type="number"
-                  value={salaryRange[1]}
+                  value={tempSalaryRange[1]}
                   onChange={(e) => {
                     const val = parseInt(e.target.value) || 0;
-                    const newMax = Math.max(val, salaryRange[0]);
-                    setSalaryRange([salaryRange[0], newMax]);
+                    setTempSalaryRange([tempSalaryRange[0], val]);
                   }}
-                  className="pl-7 bg-background border-border"
+                  onBlur={() => handleSalaryBlur(1)}
+                  onKeyDown={(e) => handleSalaryKeyDown(e, 1)}
+                  className="pl-7 bg-white border-border"
                 />
               </div>
             </div>
+            <select
+              value={salaryCurrency}
+              onChange={(e) => setSalaryCurrency(e.target.value)}
+              className="px-6 border border-border rounded-md bg-white h-10"
+            >
+              <option value="USD">USD</option>
+              <option value="EUR">EUR</option>
+              <option value="GBP">GBP</option>
+              <option value="VND">VND</option>
+            </select>
           </div>
+          {/* Slider visualization (non-translatable UI element) */}
           <div className="relative h-6 pt-1 select-none">
             <div className="absolute top-1/2 -translate-y-1/2 w-full h-2 rounded-full bg-primary/20"></div>
             <div
               className="absolute top-1/2 -translate-y-1/2 h-2 rounded-full bg-primary transition-all pointer-events-none"
               style={{
                 left: `${(salaryRange[0] / 50000) * 100}%`,
-                width: `${((salaryRange[1] - salaryRange[0]) / 50000) * 100}%`,
+                width: `${((Math.min(salaryRange[1], 50000) - Math.min(salaryRange[0], 50000)) / 50000) * 100}%`,
               }}
-            ></div>
+            />
             <div
               className="absolute w-5 h-5 rounded-full bg-primary shadow-lg cursor-grab active:cursor-grabbing hover:scale-110 transition-transform z-10"
               style={{
@@ -154,91 +226,95 @@ export default function Step1JobInfo({
                 top: "50%",
                 transform: `translate(-50%, -50%)`,
               }}
-              onMouseDown={(e) => {
-                e.preventDefault();
-                const slider = e.currentTarget.parentElement;
-                const rect = slider.getBoundingClientRect();
-                const handleMove = (moveEvent) => {
-                  const x = Math.max(0, Math.min(rect.width, moveEvent.clientX - rect.left));
-                  const percentage = x / rect.width;
-                  const newValue = Math.round(percentage * 50000);
-                  const clampedValue = Math.min(newValue, salaryRange[1] - 100);
-                  setSalaryRange([Math.max(0, clampedValue), salaryRange[1]]);
-                };
-                const handleUp = () => {
-                  document.removeEventListener("mousemove", handleMove);
-                  document.removeEventListener("mouseup", handleUp);
-                  document.body.style.userSelect = "";
-                };
-                document.body.style.userSelect = "none";
-                document.addEventListener("mousemove", handleMove);
-                document.addEventListener("mouseup", handleUp);
-              }}
-            ></div>
+            />
             <div
               className="absolute w-5 h-5 rounded-full bg-primary shadow-lg cursor-grab active:cursor-grabbing hover:scale-110 transition-transform z-10"
               style={{
-                left: `${(salaryRange[1] / 50000) * 100}%`,
+                left: `${(Math.min(salaryRange[1], 50000) / 50000) * 100}%`,
                 top: "50%",
                 transform: `translate(-50%, -50%)`,
-              }}
-              onMouseDown={(e) => {
-                e.preventDefault();
-                const slider = e.currentTarget.parentElement;
-                const rect = slider.getBoundingClientRect();
-                const handleMove = (moveEvent) => {
-                  const x = Math.max(0, Math.min(rect.width, moveEvent.clientX - rect.left));
-                  const percentage = x / rect.width;
-                  const newValue = Math.round(percentage * 50000);
-                  const clampedValue = Math.max(newValue, salaryRange[0] + 100);
-                  setSalaryRange([salaryRange[0], Math.min(50000, clampedValue)]);
-                };
-                const handleUp = () => {
-                  document.removeEventListener("mousemove", handleMove);
-                  document.removeEventListener("mouseup", handleUp);
-                  document.body.style.userSelect = "";
-                };
-                document.body.style.userSelect = "none";
-                document.addEventListener("mousemove", handleMove);
-                document.addEventListener("mouseup", handleUp);
               }}
             ></div>
           </div>
         </div>
       </div>
 
-      {/* ✅ FIXED: Category dropdown */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-4 items-start border-b border-border pb-6">
-        <div>
-          <Label className="text-foreground font-medium">Categories</Label>
-          <p className="text-xs text-muted-foreground mt-1">Select a job category</p>
-        </div>
-        <div className="md:col-span-2">
-          <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-              <Button
-                variant="outline"
-                className="w-full justify-between bg-background border-border hover:bg-background"
+      {/* Categories & Levels */}
+      <div className="grid grid-cols-1 md:grid-cols-2 border-b border-border border-gray-300 pb-6 gap-10">
+        {/* Categories */}
+        <div className="grid grid-cols-1 md:grid-cols-5 gap-4 items-center">
+          <div className="md:col-span-2">
+            <Label className="text-foreground font-semibold text-lg">{t("postJob.category")}</Label>
+            <p className="text-normal font-regular text-muted-foreground mt-1">{t("postJob.categoryDesc")}</p>
+          </div>
+          <div className="md:col-span-3">
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button
+                  variant="outline"
+                  className="justify-between bg-white border-border hover:bg-white rounded-lg w-full"
+                >
+                  {selectedCategory || t("postJob.selectCategory")}
+                  <ChevronDown className="ml-2 h-4 w-4 opacity-50" />
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent
+                side="bottom"
+                align="end"
+                className="bg-white rounded-lg overflow-y-auto max-h-[25vh] scrollbar-hide"
               >
-                {selectedCategory || "Select Category"}
-                <ChevronDown className="ml-2 h-4 w-4 opacity-50" />
-              </Button>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent>
-              {categories.map((cat) => (
-                <DropdownMenuItem key={cat.id} onClick={() => handleCategorySelect(cat.name)}>
-                  {cat.name}
-                </DropdownMenuItem>
-              ))}
-            </DropdownMenuContent>
-          </DropdownMenu>
+                {categories.map((cat) => (
+                  <DropdownMenuItem key={cat.id} onClick={() => handleCategorySelect(cat.name)}>
+                    {cat.name}
+                  </DropdownMenuItem>
+                ))}
+              </DropdownMenuContent>
+            </DropdownMenu>
+          </div>
+        </div>
+
+        {/* Levels */}
+        <div className="grid grid-cols-1 md:grid-cols-5 gap-4 items-center">
+          <div className="md:col-span-2">
+            <Label className="text-foreground font-semibold text-lg">
+              {t("postJob.level")}
+            </Label>
+            <p className="text-normal font-regular text-muted-foreground mt-1">
+              {t("postJob.levelDesc")}
+            </p>
+          </div>
+          <div className="md:col-span-3">
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button
+                  variant="outline"
+                  className="justify-between bg-white border-border hover:bg-white rounded-lg w-full"
+                >
+                  {selectedLevel || t("postJob.selectLevel")}
+                  <ChevronDown className="ml-2 h-4 w-4 opacity-50" />
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent
+                side="bottom"
+                align="center"
+                className="bg-white rounded-lg overflow-y-auto max-h-[25vh] scrollbar-hide"
+              >
+                {levels.map((level) => (
+                  <DropdownMenuItem key={level.id} onClick={() => handleLevelSelect(level.name)}>
+                    {level.name}
+                  </DropdownMenuItem>
+                ))}
+              </DropdownMenuContent>
+            </DropdownMenu>
+          </div>
         </div>
       </div>
 
+      {/* Required Skills */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4 items-start">
         <div>
-          <Label className="text-foreground font-semibold text-lg">Required Skills</Label>
-          <p className="text-normal font-regular text-muted-foreground mt-1">Select from existing skills</p>
+          <Label className="text-foreground font-semibold text-lg">{t("postJob.skills")}</Label>
+          <p className="text-normal font-regular text-muted-foreground mt-1">{t("postJob.skillsDesc")}</p>
         </div>
         <div className="md:col-span-2">
           <div className="relative mb-4">
@@ -246,13 +322,13 @@ export default function Step1JobInfo({
               <Search className="h-4 w-4" />
             </div>
             <Input
-              placeholder="Search skills..."
+              placeholder={t("postJob.searchSkills")}
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="pl-10 bg-background border-border"
+              className="pl-10 bg-white border-border"
             />
             {searchQuery && filteredSkills.length > 0 && (
-              <div className="absolute z-10 mt-1 w-full bg-background border border-border rounded-md shadow-lg max-h-60 overflow-auto">
+              <div className="absolute z-10 mt-1 w-full bg-white border border-border rounded-md shadow-lg max-h-60 overflow-auto">
                 {filteredSkills.map((skill) => (
                   <div
                     key={skill.id}
@@ -265,8 +341,8 @@ export default function Step1JobInfo({
               </div>
             )}
             {searchQuery && filteredSkills.length === 0 && (
-              <div className="absolute z-10 mt-1 w-full bg-background border border-border rounded-md px-4 py-2 text-muted-foreground text-sm">
-                No skills found
+              <div className="absolute z-10 mt-1 w-full bg-white border border-border rounded-md px-4 py-2 text-muted-foreground text-sm">
+                {t("postJob.noSkillsFound")}
               </div>
             )}
           </div>

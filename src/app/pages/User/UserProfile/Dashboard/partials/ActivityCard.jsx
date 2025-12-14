@@ -25,7 +25,7 @@ export default function ActivityCard({
     const navigate = useNavigate();
 
     return (
-        <Grid item xs={12} sm={4} sx={{ display: 'flex', flexBasis: 0, flexGrow: 1, minWidth: 0 }}>
+        <Grid sx={{ display: 'flex', flexBasis: 0, flexGrow: 1, minWidth: 0 }}>
             <Box
                 onClick={() => navigateTo && navigate(navigateTo)}
                 sx={{

@@ -20,17 +20,37 @@ export default function CompanyCard({
     onClick,
     showStats = true
 }) {
-    const {
-        id,
-        name = "Company Name",
-        logo = "C",
-        location = "Location",
-        industry = "Industry",
-        size = "10-50 employees",
-        description = "Company description...",
-        jobsCount = 0,
-        isHiring = false
-    } = company;
+    // Extract data from company object
+    const id = company.id;
+    const name = company.name || "Company Name";
+    const logo = company.logo || (name ? name.charAt(0).toUpperCase() : "C");
+
+    // Get location from first branch if available
+    const firstBranch = company.company_branches?.[0];
+    const location = firstBranch
+        ? `${firstBranch.address || ""}, ${firstBranch.provinces?.name || ""}, ${firstBranch.countries?.name || ""}`.trim() || "Location"
+        : "Location";
+
+    // Get industry from company_types array
+    const industry = company.company_types?.length > 0
+        ? company.company_types.map(type => type.name).join(", ")
+        : "Industry";
+
+    // Get employee count and format as size
+    const employeeCount = company.employee_count || 0;
+    const getSizeLabel = (count) => {
+        if (count === 0) return "10-50 employees";
+        if (count < 50) return "1-50 employees";
+        if (count < 200) return "50-200 employees";
+        if (count < 500) return "200-500 employees";
+        if (count < 1000) return "500-1000 employees";
+        return "1000+ employees";
+    };
+    const size = getSizeLabel(employeeCount);
+
+    const description = company.description || "Company description...";
+    const jobsCount = company.jobsCount || company.jobs?.length || 0;
+    const isHiring = jobsCount > 0;
 
     return (
         <Card
@@ -46,18 +66,45 @@ export default function CompanyCard({
         >
             <CardContent>
                 <Box sx={{ display: 'flex', alignItems: 'center', mb: 2 }}>
-                    <Avatar
+                    <Box
                         sx={{
-                            bgcolor: 'primary.main',
                             width: 56,
                             height: 56,
                             mr: 2,
-                            fontSize: '1.5rem',
-                            fontWeight: 'bold'
+                            bgcolor: 'white',
+                            // border: '1px solid',
+                            // borderColor: 'divider',
+                            borderRadius: 1,
+                            display: 'flex',
+                            alignItems: 'center',
+                            justifyContent: 'center',
+                            overflow: 'hidden',
+                            flexShrink: 0
                         }}
                     >
-                        {logo}
-                    </Avatar>
+                        {company.logo ? (
+                            <img
+                                src={company.logo}
+                                alt={name}
+                                style={{
+                                    width: '100%',
+                                    height: '100%',
+                                    objectFit: 'contain',
+                                    padding: '4px'
+                                }}
+                            />
+                        ) : (
+                            <Typography
+                                sx={{
+                                    fontSize: '1.5rem',
+                                    fontWeight: 'bold',
+                                    color: 'primary.main'
+                                }}
+                            >
+                                {logo}
+                            </Typography>
+                        )}
+                    </Box>
 
                     <Box sx={{ flexGrow: 1, minWidth: 0 }}>
                         <Typography variant="h6" sx={{ fontWeight: 600, mb: 0.5 }}>
@@ -76,14 +123,14 @@ export default function CompanyCard({
                 </Box>
 
                 <Box sx={{ mb: 2 }}>
-                        <Stack direction="row" spacing={1} alignItems="center">
-                            <Box sx={{ display: 'flex', alignItems: 'center' }}>
-                                <LocationOn sx={{ fontSize: 16, mr: 0.5, color: 'text.secondary' }} />
-                                <Typography variant="body2" color="text.secondary">
-                                    {location}
-                                </Typography>
-                            </Box>
-                        </Stack>
+                    <Stack direction="row" spacing={1} alignItems="center">
+                        <Box sx={{ display: 'flex', alignItems: 'center' }}>
+                            <LocationOn sx={{ fontSize: 16, mr: 0.5, color: 'text.secondary' }} />
+                            <Typography variant="body2" color="text.secondary">
+                                {location}
+                            </Typography>
+                        </Box>
+                    </Stack>
                 </Box>
 
                 {/* <Typography

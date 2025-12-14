@@ -53,8 +53,7 @@ export default function SignIn() {
         if (loginWithEmail.fulfilled.match(result)) {
           console.log("Login successful: ", result.payload);
           showSuccess("Login successful!");
-          await dispatch(getMe());
-          nav(from);
+          nav("/", { replace: true });
         } else {
           console.error("Login failed: ", result);
           showError("Login failed: " + (result.payload || "Unknown error"));
@@ -144,7 +143,7 @@ export default function SignIn() {
             </div>
             <div className="flex items-center justify-end">
               {passwordError && <span className="text-xs text-red-500 mr-auto">{passwordError}</span>}
-              <Link to="/forgot-password" className="text-sm text-blue-600 hover:underline">
+              <Link to="/forgot-password" replace={true} className="text-sm text-blue-600 hover:underline">
                 {t("auth.forgot_password")}
               </Link>
             </div>

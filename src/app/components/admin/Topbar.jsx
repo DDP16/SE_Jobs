@@ -12,8 +12,14 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '../ui';
+import { useDispatch } from 'react-redux';
+import { useNavigate } from 'react-router-dom';
 
 export default function Topbar() {
+  const dispatch = useDispatch();
+  const nav = useNavigate();
+
+
   return (
     <header className="bg-white border-b border-gray-200 px-6 py-4">
       <div className="flex items-center justify-between">
@@ -51,7 +57,13 @@ export default function Topbar() {
               <DropdownMenuItem>Profile</DropdownMenuItem>
               <DropdownMenuItem>Settings</DropdownMenuItem>
               <DropdownMenuSeparator />
-              <DropdownMenuItem className="text-red-600">
+              <DropdownMenuItem 
+                className="text-red-600"
+                onClick={() => {
+                  dispatch(logout());
+                  nav("/", { replace: true });
+                }}
+              >
                 Log out
               </DropdownMenuItem>
             </DropdownMenuContent>

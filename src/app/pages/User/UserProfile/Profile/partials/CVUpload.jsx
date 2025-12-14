@@ -1,8 +1,10 @@
 import React, { useRef, useState } from 'react';
 import { Box, Typography, IconButton, Chip, Button } from '@mui/material';
 import { CloudUpload as CloudUploadIcon, Description as DescriptionIcon, Visibility as VisibilityIcon, Edit as EditIcon, Delete as DeleteIcon, CheckCircle as CheckCircleIcon } from '@mui/icons-material';
+import { useTranslation } from 'react-i18next';
 
 export default function CVUpload({ cvFile, onFileChange, onDelete, onView }) {
+  const { t } = useTranslation();
   const fileInputRef = useRef(null);
   const [isDragging, setIsDragging] = useState(false);
 
@@ -21,7 +23,7 @@ export default function CVUpload({ cvFile, onFileChange, onDelete, onView }) {
     if (file?.type === 'application/pdf') {
       onFileChange(file);
     } else {
-      alert('Vui lòng chỉ tải lên file PDF');
+      alert(t("profile.please_upload_pdf_only"));
     }
   };
 
@@ -30,7 +32,7 @@ export default function CVUpload({ cvFile, onFileChange, onDelete, onView }) {
     if (file?.type === 'application/pdf') {
       onFileChange(file);
     } else {
-      alert('Vui lòng chỉ tải lên file PDF');
+      alert(t("profile.please_upload_pdf_only"));
     }
   };
 
@@ -38,13 +40,13 @@ export default function CVUpload({ cvFile, onFileChange, onDelete, onView }) {
 
   return (
     <Box sx={{ bgcolor: 'background.paper', p: { xs: 2, sm: 3 }, borderRadius: 2, border: 1, borderColor: 'divider', mb: 2 }}>
-  <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', mb: { xs: 1.5, sm: 2 } }}>
+      <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', mb: { xs: 1.5, sm: 2 } }}>
         <Box>
-          <Typography variant="h6" sx={{ fontWeight: 600, mb: 0.5 }}>CV đính kèm</Typography>
-          <Typography variant="body2" sx={{ color: 'text.secondary' }}>Tải lên CV của bạn để nhà tuyển dụng xem</Typography>
+          <Typography variant="h6" sx={{ fontWeight: 600, mb: 0.5 }}>{t("profile.cv_attachment")}</Typography>
+          <Typography variant="body2" sx={{ color: 'text.secondary' }}>{t("profile.cv_description")}</Typography>
         </Box>
         {cvFile && (
-          <Chip icon={<CheckCircleIcon />} label="Đã tải lên" color="success" size="small" />
+          <Chip icon={<CheckCircleIcon />} label={t("profile.uploaded")} color="success" size="small" />
         )}
       </Box>
 
@@ -79,8 +81,8 @@ export default function CVUpload({ cvFile, onFileChange, onDelete, onView }) {
           }}
         >
           <CloudUploadIcon sx={{ fontSize: { xs: 36, sm: 40 }, mb: { xs: 1, sm: 1.5 }, color: isDragging ? 'primary.main' : 'text.disabled' }} />
-          <Typography variant="subtitle1" sx={{ fontWeight: 600, mb: { xs: 0.5, sm: 0.5 }, fontSize: { xs: '0.95rem', sm: '1rem' } }}>Kéo thả file CV</Typography>
-          <Typography variant="body2" sx={{ color: 'text.secondary', mb: { xs: 0.75, sm: 1 } }}>hoặc</Typography>
+          <Typography variant="subtitle1" sx={{ fontWeight: 600, mb: { xs: 0.5, sm: 0.5 }, fontSize: { xs: '0.95rem', sm: '1rem' } }}>{t("profile.drag_drop_cv")}</Typography>
+          <Typography variant="body2" sx={{ color: 'text.secondary', mb: { xs: 0.75, sm: 1 } }}>{t("profile.or")}</Typography>
           <Button
             onClick={(e) => { e.stopPropagation(); handleUploadClick(); }}
             variant="contained"
@@ -88,10 +90,10 @@ export default function CVUpload({ cvFile, onFileChange, onDelete, onView }) {
             startIcon={<CloudUploadIcon />}
             sx={{ fontWeight: 600, py: { xs: 0.4, sm: 0.5 }, px: { xs: 1.5, sm: 2 }, fontSize: { xs: '0.8rem', sm: '0.85rem' } }}
           >
-            Chọn file
+            {t("profile.select_file")}
           </Button>
           <Typography variant="caption" sx={{ display: 'block', color: 'text.disabled', mt: 1 }}>
-            PDF, tối đa 5MB
+            {t("profile.pdf_max_5mb")}
           </Typography>
         </Box>
         ) : (
@@ -105,7 +107,7 @@ export default function CVUpload({ cvFile, onFileChange, onDelete, onView }) {
             <Box sx={{ display: 'flex', gap: 1 }}>
               <Typography variant="body2" sx={{ color: 'text.secondary' }}>{cvFile.size} MB</Typography>
               <Typography variant="body2" sx={{ color: 'text.secondary' }}>•</Typography>
-              <Typography variant="body2" sx={{ color: 'text.secondary' }}>Tải lên: {cvFile.uploadDate}</Typography>
+              <Typography variant="body2" sx={{ color: 'text.secondary' }}>{t("profile.uploaded_on")}: {cvFile.uploadDate}</Typography>
             </Box>
           </Box>
 

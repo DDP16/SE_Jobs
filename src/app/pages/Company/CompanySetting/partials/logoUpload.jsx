@@ -1,9 +1,18 @@
 import { Upload } from 'lucide-react';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 
 export function LogoUpload({ currentLogo, onLogoChange }) {
     const [preview, setPreview] = useState(currentLogo);
     const [isDragging, setIsDragging] = useState(false);
+    const [imageError, setImageError] = useState(false);
+
+    // Update preview when currentLogo prop changes
+    useEffect(() => {
+        if (currentLogo) {
+            setPreview(currentLogo);
+            setImageError(false);
+        }
+    }, [currentLogo]);
 
     const handleFileChange = (e) => {
         const file = e.target.files?.[0];
@@ -43,7 +52,7 @@ export function LogoUpload({ currentLogo, onLogoChange }) {
     return (
         <div className="flex gap-6 items-start">
             {preview && (
-                <div className="w-20 h-20 rounded-lg overflow-hidden bg-gray-100 flex items-center justify-center flex-shrink-0">
+                <div className="w-40 h-40 rounded-lg overflow-hidden bg-gray-100 flex items-center justify-center flex-shrink-0">
                     <img src={preview} alt="Company logo" className="w-full h-full object-contain" />
                 </div>
             )}

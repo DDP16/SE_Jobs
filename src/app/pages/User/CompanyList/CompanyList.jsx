@@ -5,7 +5,7 @@ import CompanyFilters from './partials/CompanyFilters';
 import CompanyGrid from './partials/CompanyGrid';
 import { useDispatch, useSelector } from 'react-redux';
 import { getCompanies } from '../../../modules';
-import { getCompanyTypes } from '../../../modules/services/companyTypesService';
+import { getCompanyTypes } from '../../../modules/services/companyTypeService';
 
 const DEFAULT_FILTER = {
     page: 1,
@@ -51,7 +51,7 @@ export default function CompanyList() {
             employee_count_from: filter.employee_count_from,
             employee_count_to: filter.employee_count_to,
         }
-        
+
         if (sortBy) {
             query.order = sortBy;
         }

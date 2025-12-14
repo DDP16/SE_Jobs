@@ -5,24 +5,17 @@ import { useTranslation } from 'react-i18next';
 
 export default function CompanyOverview({ company = {} }) {
     const { t } = useTranslation();
-    const {
-        description = `Chúng tôi là một công ty công nghệ hàng đầu, tập trung vào đổi mới và xuất sắc. 
-                      Sứ mệnh của chúng tôi là tạo ra các giải pháp tạo sự khác biệt trong cuộc sống mọi người.
-                      
-                      Đội ngũ của chúng tôi bao gồm những cá nhân tài năng từ nhiều nền tảng khác nhau, 
-                      có chung niềm đam mê về công nghệ và đổi mới. Chúng tôi làm việc cùng nhau để 
-                      giải quyết các vấn đề phức tạp và mang lại kết quả xuất sắc cho khách hàng.`,
-        contact = ['twitter.com/stripe', 'facebook.com/StripeHQ', 'linkedin.com/company/stripe'],
-    } = company;
 
-    const benefits = [
-        'Lương thưởng cạnh tranh và hấp dẫn',
-        'Bảo hiểm sức khỏe toàn diện',
-        'Cơ hội phát triển nghề nghiệp',
-        'Môi trường làm việc năng động',
-        'Đào tạo và phát triển kỹ năng',
-        'Chế độ phúc lợi hấp dẫn'
-    ];
+    const description = company.description || "";
+
+    // Handle socials - can be object or array
+    const socials = company.socials || {};
+    const socialLinks = Array.isArray(socials)
+        ? socials
+        : Object.entries(socials).map(([platform, url]) => ({
+            platform,
+            url: url.startsWith('http') ? url : `https://${url}`
+        }));
 
     return (
         <Box>
@@ -55,27 +48,38 @@ export default function CompanyOverview({ company = {} }) {
                 >
                     {description}
                 </Typography>
-                <Typography
-                    variant="h6"
-                    sx={{ fontWeight: 700 }}
-                >
-                    {t('company.overview.contact')}
-                </Typography>
-                <Grid container spacing={2}>
-                    {contact.map((link, index) => (
-                        <Button 
-                            key={index}
-                            variant="outlined"
-                            href={`https://${link}`}
-                            target="_blank"
+                {socialLinks.length > 0 && (
+                    <>
+                        <Typography
+                            variant="h6"
+                            sx={{ fontWeight: 700 }}
                         >
-                            <div className='flex items-center gap-2'>
-                                <Link size={15}/>
-                                <span className='text-[15px]'>{link}</span>
-                            </div>
-                        </Button>
-                    ))}
-                </Grid>
+                            {t('company.overview.contact')}
+                        </Typography>
+                        <Grid container spacing={2}>
+                            {socialLinks.map((social, index) => {
+                                const url = typeof social === 'string' ? social : social.url;
+                                const platform = typeof social === 'string' ? social : social.platform;
+
+                                return (
+                                    <Grid item key={index}>
+                                        <Button
+                                            variant="outlined"
+                                            href={url.startsWith('http') ? url : `https://${url}`}
+                                            target="_blank"
+                                            rel="noopener noreferrer"
+                                        >
+                                            <div className='flex items-center gap-2'>
+                                                <Link size={15} />
+                                                <span className='text-[15px]'>{platform}</span>
+                                            </div>
+                                        </Button>
+                                    </Grid>
+                                );
+                            })}
+                        </Grid>
+                    </>
+                )}
             </Paper>
         </Box>
     );

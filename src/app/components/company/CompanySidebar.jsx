@@ -19,14 +19,14 @@ import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
 
 const navigation = [
-  { name: "Dashboard", icon: Home, badge: null },
-  { name: "Messages", icon: MessageSquare, badge: 1 },
-  { name: "Company Profile", icon: Building2, badge: null },
-  { name: "All Applicants", icon: Users, badge: null },
-  { name: "Job Listing", icon: FileText, badge: null },
-  { name: "Job Posting", icon: FileText, badge: null },
-  { name: "My Schedule", icon: Calendar, badge: null },
-  { name: "Employee", icon: User, badge: null },
+  { name: "Dashboard", icon: Home, badge: null, path: "/" },
+  // { name: "Messages", icon: MessageSquare, badge: 1 },
+  { name: "Company Profile", icon: Building2, badge: null, path: "/company" },
+  { name: "Company Branches", icon: Building2, badge: null, path: "/branches" },
+  { name: "All Applicants", icon: Users, badge: null, path: "/applicants/1" },
+  { name: "Job Listing", icon: FileText, badge: null, path: "/job-listing" },
+  // { name: "My Schedule", icon: Calendar, badge: null },
+  // { name: "Employee", icon: User, badge: null },
 ];
 
 export default function CompanySidebar() {
@@ -47,17 +47,10 @@ export default function CompanySidebar() {
       {/* Navigation */}
       <nav className="flex-1 px-3 space-y-1">
         {navigation.map((item) => {
-          let to = "/";
-          if (item.name === "Dashboard") to = "/";
-          if (item.name === "Company Profile") to = "/company";
-          if (item.name === "All Applicants") to = "/applicants/1";
-          if (item.name === "Job Listing") to = "/job-listing";
-          if (item.name === "Job Posting") to = "/post-job";
-
           return (
             <NavLink
               key={item.name}
-              to={to}
+              to={item.path ? item.path : "#"}
               className="group w-full flex items-center gap-3 px-3 py-2.5 text-sm text-muted-foreground rounded-md transition-colors relative hover:bg-primary-50 "
             >
               <span className="absolute left-0 top-0 h-full w-1 rounded-r bg-transparent group-hover:bg-primary group-active:bg-primary transition-colors"></span>
@@ -107,7 +100,7 @@ export default function CompanySidebar() {
           onClick={() => {
             // Dispatch logout action
             dispatch(logout());
-            nav("/");
+            nav("/", { replace: true });
           }}
         >
           <LogOut className="w-4 h-4 mr-2" />
