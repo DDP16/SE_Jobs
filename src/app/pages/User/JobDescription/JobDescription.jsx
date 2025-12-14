@@ -217,7 +217,13 @@ export default function JobDescription({
   return (
     <div className={`min-h-screen bg-white mx-auto ${layout !== layoutType.preview ? "space-y-12 pb-12" : "space-y-6 pb-6"}`}>
       <div className={`${layout !== layoutType.preview ? "px-10 lg:px-50 py-8" : "sticky top-0 z-10"} bg-background-lightBlue`}>
-
+        {/* {finalConfig.showBreadcrumb && (
+          <div className="mb-5">
+            <p className="text-sm text-muted-foreground">
+              Home / Companies / {typeof job?.company === 'string' ? job.company : job?.company?.name || "Company"} / {job?.title || "Job Title"}
+            </p>
+          </div>
+        )} */}
         {finalConfig.showJobHeader && <JobHeader job={job} layout={layout} />}
       </div>
 

@@ -3,6 +3,7 @@ import { Button, DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMe
 import { Link, useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { logout } from "../../modules";
+import LangButtonGroup from "../common/LangButtonGroup";
 
 export default function TopBar() {
   const dispatch = useDispatch();
@@ -58,6 +59,7 @@ export default function TopBar() {
           <Plus className="w-4 h-4" />
           <div>Post a job</div>
         </Button>
+        <LangButtonGroup />
       </div>
     </header>
   );
