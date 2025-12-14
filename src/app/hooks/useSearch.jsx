@@ -1,11 +1,7 @@
-import { useState, useMemo, useEffect, useCallback, useRef } from "react";
+import { useState, useMemo, useCallback } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
-import { useDispatch } from "react-redux";
-import { getJobs } from "@/modules";
-import { debounce } from "lodash";
 
 export default function useSearch() {
-    const dispatch = useDispatch();
     const navigate = useNavigate();
     const location = useLocation();
 
@@ -19,17 +15,17 @@ export default function useSearch() {
         const params = new URLSearchParams(location.search);
         return {
             page: Number(params.get("page")) || 1,
-            limit: Number(params.get("limit")) || 10,
-            keyword: params.get("keyword") || "",
-            province_ids: params.get("province_ids") || "",
-            level_ids: params.get("level_ids") || "",
-            skill_ids: params.get("skill_ids") || "",
-            employment_type_ids: params.get("employment_type_ids") || "",
-            category_ids: params.get("category_ids") || "",
-            salary_from: params.get("salary_from") || "",
-            salary_to: params.get("salary_to") || "",
-            sort_by: params.get("sort_by") || "",
-            order: params.get("order") || "desc",
+            limit: Number(params.get("limit")) || 9,  
+            keyword: params.get("keyword") || undefined,
+            province_ids: params.get("province_ids") || undefined,
+            level_ids: params.get("level_ids") || undefined,
+            skill_ids: params.get("skill_ids") || undefined,
+            employment_type_ids: params.get("employment_type_ids") || undefined,
+            category_ids: params.get("category_ids") || undefined,
+            salary_from: params.get("salary_from") || undefined,
+            salary_to: params.get("salary_to") || undefined,
+            sort_by: params.get("sort_by") || undefined,
+            order: params.get("order") || undefined,
         };
     }, [location.search]);
 
@@ -62,52 +58,7 @@ export default function useSearch() {
     );
 
     // ---------------------------
-    // 3. FETCH JOBS (debounced)
-    // ---------------------------
-    const debouncedFetch = useRef(
-        debounce((params) => {
-            dispatch(getJobs(params));
-        }, 300)
-    ).current;
-
-    useEffect(() => {
-        const params = {
-            page: queryParams.page,
-            limit: queryParams.limit,
-            keyword: queryParams.keyword || undefined,
-            province_ids: queryParams.province_ids || undefined,
-            level_ids: queryParams.level_ids || undefined,
-            skill_ids: queryParams.skill_ids || undefined,
-            employment_type_ids: queryParams.employment_type_ids || undefined,
-            category_ids: queryParams.category_ids || undefined,
-            salary_from: queryParams.salary_from || undefined,
-            salary_to: queryParams.salary_to || undefined,
-            sort_by: queryParams.sort_by || undefined,
-            order: queryParams.order || undefined,
-        };
-
-        debouncedFetch(params);
-
-        return () => debouncedFetch.cancel();
-    }, [
-        queryParams.page,
-        queryParams.limit,
-        queryParams.keyword,
-        queryParams.province_ids,
-        queryParams.level_ids,
-        queryParams.skill_ids,
-        queryParams.employment_type_ids,
-        queryParams.category_ids,
-        queryParams.salary_from,
-        queryParams.salary_to,
-        queryParams.sort_by,
-        queryParams.order,
-        debouncedFetch,
-        dispatch
-    ]);
-
-    // ---------------------------
-    // 4. SEARCH HANDLER
+    // 3. SEARCH HANDLER
     // ---------------------------
     const handleSearch = useCallback(({ keyword, location: selectedLocation }) => {
         const updates = {
@@ -193,11 +144,9 @@ export default function useSearch() {
         
         updateQueryParams(updates);
     }, [updateQueryParams]);
-    
-    // Remove the extra useEffect that was causing infinite loop
 
     // ---------------------------
-    // 6. COUNT ACTIVE FILTERS
+    // 5. COUNT ACTIVE FILTERS
     // ---------------------------
     const activeFilterCount = useMemo(() => {
         const {
