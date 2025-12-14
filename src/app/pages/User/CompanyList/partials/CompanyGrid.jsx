@@ -1,4 +1,5 @@
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 import {
     Box,
     Typography,
@@ -22,6 +23,7 @@ export default function CompanyGrid({
     onSortChange,
     totalCount = 0
 }) {
+    const { t } = useTranslation();
     const navigate = useNavigate();
     const [page, setPage] = React.useState(1);
     const companiesPerPage = 12;
@@ -60,7 +62,7 @@ export default function CompanyGrid({
                 }}
             >
                 <Typography variant="body1" color="text.secondary">
-                    <strong>{totalCount}</strong> {totalCount === 1 ? 'company' : 'companies'} found
+                    {t("companyList.grid.companiesFound", { count: totalCount })}
                 </Typography>
 
                 {/* Sort Dropdown */}
@@ -76,10 +78,10 @@ export default function CompanyGrid({
                                 }
                             }}
                         >
-                            <MenuItem value={'created_at:desc'}>Newest</MenuItem>
-                            <MenuItem value={'created_at:asc'}>Oldest</MenuItem>
-                            <MenuItem value={'name:asc'}>Name (A-Z)</MenuItem>
-                            <MenuItem value={'name:desc'}>Name (Z-A)</MenuItem>
+                            <MenuItem value={'created_at:desc'}>{t("companyList.grid.sort.newest")}</MenuItem>
+                            <MenuItem value={'created_at:asc'}>{t("companyList.grid.sort.oldest")}</MenuItem>
+                            <MenuItem value={'name:asc'}>{t("companyList.grid.sort.nameAsc")}</MenuItem>
+                            <MenuItem value={'name:desc'}>{t("companyList.grid.sort.nameDesc")}</MenuItem>
                         </Select>
                     </FormControl>
                 </Box>
@@ -98,10 +100,10 @@ export default function CompanyGrid({
                     }}
                 >
                     <Typography variant="h6" color="text.secondary" gutterBottom>
-                        No companies found
+                        {t("companyList.grid.noCompaniesFound")}
                     </Typography>
                     <Typography variant="body2" color="text.secondary">
-                        Try adjusting your filters or search criteria
+                        {t("companyList.grid.tryAdjustingFilters")}
                     </Typography>
                 </Paper>
             ) : (

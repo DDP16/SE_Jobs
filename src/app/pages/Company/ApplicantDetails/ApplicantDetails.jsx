@@ -1,7 +1,9 @@
 import React, { useState } from "react";
+import { useTranslation } from "react-i18next";
 import { ArrowLeft, ChevronDown, Mail, Phone, Instagram, Twitter, Globe, MessageSquare, FileText, BarChart3, Calendar, X } from "lucide-react";
 
 export default function ApplicantDetails() {
+  const { t } = useTranslation();
   const [activeTab, setActiveTab] = useState("profile");
   return (
     <div className="bg-gray-50 p-6">
@@ -12,11 +14,11 @@ export default function ApplicantDetails() {
             <button className="p-2 hover:bg-gray-100 rounded-lg">
               <ArrowLeft className="w-6 h-6 cursor-pointer" />
             </button>
-            <div className="text-2xl font-bold text-gray-900">Applicant Details</div>
+            <div className="text-2xl font-bold text-gray-900">{t("applicantDetails.title")}</div>
           </div>
           <button className="flex items-center gap-2 px-4 py-2 text-blue-600 border border-gray-200 rounded-lg hover:bg-gray-50">
             <ChevronDown className="w-4 h-4" />
-            <span>More Action</span>
+            <span>{t("applicantDetails.moreAction")}</span>
           </button>
         </div>
 
@@ -40,7 +42,7 @@ export default function ApplicantDetails() {
               {/* Applied Jobs */}
               <div className="mb-6">
                 <div className="flex justify-between items-center mb-3">
-                  <span className="text-sm text-gray-600">Applied Jobs</span>
+                  <span className="text-sm text-gray-600">{t("applicantDetails.appliedJobs")}</span>
                   <span className="text-sm text-gray-600">2 days ago</span>
                 </div>
                 <div className="mb-2">
@@ -52,8 +54,8 @@ export default function ApplicantDetails() {
               {/* Stage Progress */}
               <div className="mb-6">
                 <div className="flex justify-between items-center mb-2">
-                  <span className="text-sm text-gray-600">Stage</span>
-                  <span className="text-sm text-blue-600 font-medium">Interview</span>
+                  <span className="text-sm text-gray-600">{t("applicantDetails.stage")}</span>
+                  <span className="text-sm text-blue-600 font-medium">{t("applicantList.table.stages.interview")}</span>
                 </div>
                 <div className="flex gap-1">
                   <div className="flex-1 h-2 bg-blue-600 rounded"></div>
@@ -65,7 +67,7 @@ export default function ApplicantDetails() {
 
               {/* Schedule Interview Button */}
               <div className="flex gap-2 mb-6">
-                <button className="cursor-pointer flex-1 px-4 py-3 bg-blue-600 text-white rounded-lg font-medium hover:bg-blue-700">Schedule Interview</button>
+                <button className="cursor-pointer flex-1 px-4 py-3 bg-blue-600 text-white rounded-lg font-medium hover:bg-blue-700">{t("applicantDetails.scheduleInterview")}</button>
                 <button className="p-3 border cursor-pointer border-gray-200 rounded-lg hover:bg-gray-50">
                   <MessageSquare className="w-5 h-5 text-gray-600" />
                 </button>
@@ -73,26 +75,26 @@ export default function ApplicantDetails() {
 
               {/* Contact Section */}
               <div className="border-t pt-6">
-                <h3 className="font-bold text-gray-900 mb-4">Contact</h3>
+                <h3 className="font-bold text-gray-900 mb-4">{t("applicantDetails.contact")}</h3>
                 <div className="space-y-4">
                   <div className="flex items-start gap-3">
                     <Mail className="w-5 h-5 text-gray-400 mt-0.5" />
                     <div>
-                      <p className="text-sm text-gray-600 mb-1">Email</p>
+                      <p className="text-sm text-gray-600 mb-1">{t("applicantDetails.email")}</p>
                       <p className="text-sm text-gray-900">jeromeBell45@email.com</p>
                     </div>
                   </div>
                   <div className="flex items-start gap-3">
                     <Phone className="w-5 h-5 text-gray-400 mt-0.5" />
                     <div>
-                      <p className="text-sm text-gray-600 mb-1">Phone</p>
+                      <p className="text-sm text-gray-600 mb-1">{t("applicantDetails.phone")}</p>
                       <p className="text-sm text-gray-900">+44 1245 572 135</p>
                     </div>
                   </div>
                   <div className="flex items-start gap-3">
                     <Instagram className="w-5 h-5 text-gray-400 mt-0.5" />
                     <div>
-                      <p className="text-sm text-gray-600 mb-1">Instagram</p>
+                      <p className="text-sm text-gray-600 mb-1">{t("applicantDetails.instagram")}</p>
                       <a href="#" className="text-sm text-blue-600 hover:underline">
                         instagram.com/jeromebell
                       </a>
@@ -101,7 +103,7 @@ export default function ApplicantDetails() {
                   <div className="flex items-start gap-3">
                     <X className="w-5 h-5 text-gray-400 mt-0.5" />
                     <div>
-                      <p className="text-sm text-gray-600 mb-1">Twitter</p>
+                      <p className="text-sm text-gray-600 mb-1">{t("applicantDetails.twitter")}</p>
                       <a href="#" className="text-sm text-blue-600 hover:underline">
                         twitter.com/jeromebell
                       </a>
@@ -110,7 +112,7 @@ export default function ApplicantDetails() {
                   <div className="flex items-start gap-3">
                     <Globe className="w-5 h-5 text-gray-400 mt-0.5" />
                     <div>
-                      <p className="text-sm text-gray-600 mb-1">Website</p>
+                      <p className="text-sm text-gray-600 mb-1">{t("applicantDetails.website")}</p>
                       <a href="#" className="text-sm text-blue-600 hover:underline">
                         www.jeromebell.com
                       </a>
@@ -131,25 +133,25 @@ export default function ApplicantDetails() {
                     onClick={() => setActiveTab("profile")}
                     className={`py-4 cursor-pointer font-medium ${activeTab === "profile" ? "text-blue-600 border-b-2 border-blue-600" : "text-gray-600 hover:text-gray-900"}`}
                   >
-                    Applicant Profile
+                    {t("applicantDetails.tabs.profile")}
                   </button>
                   <button
                     onClick={() => setActiveTab("resume")}
                     className={`py-4 cursor-pointer font-medium ${activeTab === "resume" ? "text-blue-600 border-b-2 border-blue-600" : "text-gray-600 hover:text-gray-900"}`}
                   >
-                    Resume
+                    {t("applicantDetails.tabs.resume")}
                   </button>
                   <button
                     onClick={() => setActiveTab("hiring")}
                     className={`py-4 cursor-pointer font-medium ${activeTab === "hiring" ? "text-blue-600 border-b-2 border-blue-600" : "text-gray-600 hover:text-gray-900"}`}
                   >
-                    Hiring Progress
+                    {t("applicantDetails.tabs.hiring")}
                   </button>
                   <button
                     onClick={() => setActiveTab("interview")}
                     className={`py-4 cursor-pointer font-medium ${activeTab === "interview" ? "text-blue-600 border-b-2 border-blue-600" : "text-gray-600 hover:text-gray-900"}`}
                   >
-                    Interview Schedule
+                    {t("applicantDetails.tabs.interview")}
                   </button>
                 </div>
               </div>
@@ -160,26 +162,26 @@ export default function ApplicantDetails() {
                   <>
                     {/* Personal Info */}
                     <div className="mb-8">
-                      <div className="text-lg font-bold text-gray-900 mb-4">Personal Info</div>
+                      <div className="text-lg font-bold text-gray-900 mb-4">{t("applicantDetails.personalInfo.title")}</div>
                       <div className="grid grid-cols-2 gap-6">
                         <div>
-                          <p className="text-sm text-gray-600 mb-1">Full Name</p>
+                          <p className="text-sm text-gray-600 mb-1">{t("applicantDetails.personalInfo.fullName")}</p>
                           <p className="text-gray-900">Jerome Bell</p>
                         </div>
                         <div>
-                          <p className="text-sm text-gray-600 mb-1">Gender</p>
+                          <p className="text-sm text-gray-600 mb-1">{t("applicantDetails.personalInfo.gender")}</p>
                           <p className="text-gray-900">Male</p>
                         </div>
                         <div>
-                          <p className="text-sm text-gray-600 mb-1">Date of Birth</p>
+                          <p className="text-sm text-gray-600 mb-1">{t("applicantDetails.personalInfo.dateOfBirth")}</p>
                           <p className="text-gray-900">March 23, 1995 (26 y.o)</p>
                         </div>
                         <div>
-                          <p className="text-sm text-gray-600 mb-1">Language</p>
+                          <p className="text-sm text-gray-600 mb-1">{t("applicantDetails.personalInfo.language")}</p>
                           <p className="text-gray-900">English, French, Bahasa</p>
                         </div>
                         <div className="col-span-2">
-                          <p className="text-sm text-gray-600 mb-1">Address</p>
+                          <p className="text-sm text-gray-600 mb-1">{t("applicantDetails.personalInfo.address")}</p>
                           <p className="text-gray-900">
                             4517 Washington Ave.
                             <br />
@@ -191,10 +193,10 @@ export default function ApplicantDetails() {
 
                     {/* Professional Info */}
                     <div>
-                      <div className="text-lg font-bold text-gray-900 mb-4">Professional Info</div>
+                      <div className="text-lg font-bold text-gray-900 mb-4">{t("applicantDetails.professionalInfo.title")}</div>
 
                       <div className="mb-6">
-                        <p className="text-sm text-gray-600 mb-2">About Me</p>
+                        <p className="text-sm text-gray-600 mb-2">{t("applicantDetails.professionalInfo.aboutMe")}</p>
                         <p className="text-gray-900 mb-3">
                           I'm a product designer + filmmaker currently working remotely at Twitter from beautiful Manchester, United Kingdom. I'm passionate about designing digital
                           products that have a positive impact on the world.
@@ -207,19 +209,19 @@ export default function ApplicantDetails() {
 
                       <div className="grid grid-cols-2 gap-6 mb-6">
                         <div>
-                          <p className="text-sm text-gray-600 mb-1">Current Job</p>
+                          <p className="text-sm text-gray-600 mb-1">{t("applicantDetails.professionalInfo.currentJob")}</p>
                           <p className="text-gray-900">Product Designer</p>
                         </div>
                         <div>
-                          <p className="text-sm text-gray-600 mb-1">Experience in Years</p>
+                          <p className="text-sm text-gray-600 mb-1">{t("applicantDetails.professionalInfo.experienceInYears")}</p>
                           <p className="text-gray-900">4 Years</p>
                         </div>
                         <div>
-                          <p className="text-sm text-gray-600 mb-1">Highest Qualification Held</p>
+                          <p className="text-sm text-gray-600 mb-1">{t("applicantDetails.professionalInfo.highestQualification")}</p>
                           <p className="text-gray-900">Bachelors in Engineering</p>
                         </div>
                         <div>
-                          <p className="text-sm text-gray-600 mb-1">Skill set</p>
+                          <p className="text-sm text-gray-600 mb-1">{t("applicantDetails.professionalInfo.skillSet")}</p>
                           <div className="flex gap-2 flex-wrap">
                             <span className="px-3 py-1 bg-blue-50 text-blue-600 rounded-full text-sm">Project Management</span>
                             <span className="px-3 py-1 bg-blue-50 text-blue-600 rounded-full text-sm">Copywriting</span>
@@ -234,33 +236,33 @@ export default function ApplicantDetails() {
                 {activeTab === "resume" && (
                   <div className="py-12 text-center">
                     <FileText className="w-16 h-16 text-gray-300 mx-auto mb-4" />
-                    <h3 className="text-xl font-semibold text-gray-900 mb-2">Resume</h3>
-                    <p className="text-gray-600 mb-6">View and download applicant's resume</p>
-                    <button className="px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700">Download Resume</button>
+                    <h3 className="text-xl font-semibold text-gray-900 mb-2">{t("applicantDetails.resume.title")}</h3>
+                    <p className="text-gray-600 mb-6">{t("applicantDetails.resume.description")}</p>
+                    <button className="px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700">{t("applicantDetails.resume.downloadResume")}</button>
                   </div>
                 )}
                 {activeTab === "hiring" && (
                   <div className="py-12 text-center">
                     <BarChart3 className="w-16 h-16 text-gray-300 mx-auto mb-4" />
-                    <h3 className="text-xl font-semibold text-gray-900 mb-2">Hiring Progress</h3>
-                    <p className="text-gray-600">Track the candidate's progress through the hiring pipeline</p>
+                    <h3 className="text-xl font-semibold text-gray-900 mb-2">{t("applicantDetails.hiringProgress.title")}</h3>
+                    <p className="text-gray-600">{t("applicantDetails.hiringProgress.description")}</p>
                     <div className="mt-8 max-w-md mx-auto">
                       <div className="space-y-4">
                         <div className="flex items-center gap-3 p-4 bg-green-50 border border-green-200 rounded-lg">
                           <div className="w-6 h-6 bg-green-500 rounded-full flex items-center justify-center text-white text-sm">✓</div>
-                          <span className="text-gray-900 font-medium">Application Submitted</span>
+                          <span className="text-gray-900 font-medium">{t("applicantDetails.hiringProgress.applicationSubmitted")}</span>
                         </div>
                         <div className="flex items-center gap-3 p-4 bg-green-50 border border-green-200 rounded-lg">
                           <div className="w-6 h-6 bg-green-500 rounded-full flex items-center justify-center text-white text-sm">✓</div>
-                          <span className="text-gray-900 font-medium">Resume Reviewed</span>
+                          <span className="text-gray-900 font-medium">{t("applicantDetails.hiringProgress.resumeReviewed")}</span>
                         </div>
                         <div className="flex items-center gap-3 p-4 bg-blue-50 border border-blue-200 rounded-lg">
                           <div className="w-6 h-6 bg-blue-500 rounded-full flex items-center justify-center text-white text-sm">3</div>
-                          <span className="text-gray-900 font-medium">Interview Stage</span>
+                          <span className="text-gray-900 font-medium">{t("applicantDetails.hiringProgress.interviewStage")}</span>
                         </div>
                         <div className="flex items-center gap-3 p-4 bg-gray-50 border border-gray-200 rounded-lg opacity-50">
                           <div className="w-6 h-6 bg-gray-300 rounded-full flex items-center justify-center text-white text-sm">4</div>
-                          <span className="text-gray-900 font-medium">Final Decision</span>
+                          <span className="text-gray-900 font-medium">{t("applicantDetails.hiringProgress.finalDecision")}</span>
                         </div>
                       </div>
                     </div>
@@ -271,9 +273,9 @@ export default function ApplicantDetails() {
                 {activeTab === "interview" && (
                   <div className="py-12 text-center">
                     <Calendar className="w-16 h-16 text-gray-300 mx-auto mb-4" />
-                    <h3 className="text-xl font-semibold text-gray-900 mb-2">Interview Schedule</h3>
-                    <p className="text-gray-600 mb-6">No interviews scheduled yet</p>
-                    <button className="px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700">Schedule New  Interview</button>
+                    <h3 className="text-xl font-semibold text-gray-900 mb-2">{t("applicantDetails.interviewSchedule.title")}</h3>
+                    <p className="text-gray-600 mb-6">{t("applicantDetails.interviewSchedule.noInterviews")}</p>
+                    <button className="px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700">{t("applicantDetails.interviewSchedule.scheduleNewInterview")}</button>
                   </div>
                 )}
               </div>

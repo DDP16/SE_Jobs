@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { useTranslation } from 'react-i18next';
 import { Save, Loader2, ChevronDown } from 'lucide-react';
 import { LogoUpload } from './logoUpload';
 import { TagInput } from './TagInput';
@@ -15,6 +16,7 @@ import { getCompanyTypes } from '../../../../modules/services/companyTypeService
 import { getProvinces } from '../../../../modules/services/addressService';
 
 export function OverviewTab({ company, companyId }) {
+    const { t } = useTranslation();
     const dispatch = useDispatch();
 
     useEffect(() => {
@@ -199,13 +201,13 @@ export function OverviewTab({ company, companyId }) {
         <form onSubmit={handleSubmit} className="space-y-8">
             {/* Basic Information */}
             <section>
-                <h4 className="mb-1">Basic Information</h4>
-                <p className="text-gray-500 mb-6">This is company information that you can update anytime.</p>
+                <h4 className="mb-1">{t("companySetting.overview.basicInformation")}</h4>
+                <p className="text-gray-500 mb-6">{t("companySetting.overview.basicInformationDesc")}</p>
 
                 {/* Company Logo */}
                 <div className="mb-8">
-                    <h4 className="mb-1">Company Logo</h4>
-                    <p className="text-gray-500 mb-4">This image will be shown publicly as company logo.</p>
+                    <h4 className="mb-1">{t("companySetting.overview.companyLogo")}</h4>
+                    <p className="text-gray-500 mb-4">{t("companySetting.overview.companyLogoDesc")}</p>
                     <LogoUpload
                         currentLogo={company?.logo || "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Cpath fill='%2334d399' d='M30,20 L50,30 L50,60 L30,70 L10,60 L10,30 Z'/%3E%3Cpath fill='%2310b981' d='M50,30 L70,20 L90,30 L90,60 L70,70 L50,60 Z'/%3E%3C/svg%3E"}
                         onLogoChange={(file) => handleInputChange('logo', file)}
@@ -222,14 +224,14 @@ export function OverviewTab({ company, companyId }) {
 
                 {/* Company Details */}
                 <div>
-                    <h4 className="mb-1">Company Details</h4>
-                    <p className="text-gray-500 mb-6">Introduce your company core info quickly to users by fill up company details</p>
+                    <h4 className="mb-1">{t("companySetting.overview.companyDetails")}</h4>
+                    <p className="text-gray-500 mb-6">{t("companySetting.overview.companyDetailsDesc")}</p>
 
                     <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
                         {/* Company Name */}
                         <div className="lg:col-span-2">
                             <label htmlFor="companyName" className="block mb-2 text-gray-700">
-                                Company Name
+                                {t("companySetting.overview.companyName")}
                             </label>
                             <input
                                 id="companyName"
@@ -243,7 +245,7 @@ export function OverviewTab({ company, companyId }) {
                         {/* Website */}
                         <div className="lg:col-span-2">
                             <label htmlFor="website" className="block mb-2 text-gray-700">
-                                Website
+                                {t("companySetting.overview.website")}
                             </label>
                             <input
                                 id="website"
@@ -258,7 +260,7 @@ export function OverviewTab({ company, companyId }) {
                         {/* Employee */}
                         <div>
                             <label htmlFor="employees" className="block mb-2 text-gray-700">
-                                Employee
+                                {t("companySetting.overview.employee")}
                             </label>
                             <input
                                 id="employees"
@@ -267,7 +269,7 @@ export function OverviewTab({ company, companyId }) {
                                 step={1}
                                 value={formData.employees || ''}
                                 onChange={(e) => handleInputChange('employees', e.target.value ? Number(e.target.value) : '')}
-                                placeholder="Enter employee count"
+                                placeholder={t("companySetting.overview.employeePlaceholder")}
                                 className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-600 focus:border-transparent"
                             />
                         </div>
@@ -275,7 +277,7 @@ export function OverviewTab({ company, companyId }) {
                         {/* Industry */}
                         <div className="lg:col-span-2">
                             <label htmlFor="industry" className="block mb-2 text-gray-700">
-                                Industry
+                                {t("companySetting.overview.industry")}
                             </label>
                             <div className="relative">
                                 <select
@@ -305,11 +307,11 @@ export function OverviewTab({ company, companyId }) {
                         {/* Tech Stack */}
                         <div className="lg:col-span-2">
                             <TagInput
-                                label="Tech Stack"
+                                label={t("companySetting.overview.techStack")}
                                 tags={formData.techStack}
                                 onTagsChange={(tags) => setFormData({ ...formData, techStack: tags })}
                                 suggestions={techStackSuggestions}
-                                placeholder="Select technologies"
+                                placeholder={t("companySetting.overview.techStackPlaceholder")}
                             />
                         </div>
                     </div>
@@ -327,18 +329,18 @@ export function OverviewTab({ company, companyId }) {
             <section>
                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
                     <div>
-                        <h4 className="mb-1">About Company</h4>
-                        <p className="text-gray-500">Brief description for your company. URLs are hyperlinked.</p>
+                        <h4 className="mb-1">{t("companySetting.overview.aboutCompany")}</h4>
+                        <p className="text-gray-500">{t("companySetting.overview.aboutCompanyDesc")}</p>
                     </div>
                     <div>
                         <label htmlFor="description" className="block mb-2 text-gray-700">
-                            Description
+                            {t("companySetting.overview.description")}
                         </label>
                         <RichTextEditor
                             value={formData.description}
                             onChange={(value) => setFormData({ ...formData, description: value })}
                             maxLength={500}
-                            placeholder="Enter company description..."
+                            placeholder={t("companySetting.overview.descriptionPlaceholder")}
                         />
                     </div>
                 </div>
@@ -354,12 +356,12 @@ export function OverviewTab({ company, companyId }) {
                     {isUpdating || updateStatus === 'loading' ? (
                         <>
                             <Loader2 className="w-5 h-5 animate-spin" />
-                            <span>Saving...</span>
+                            <span>{t("companySetting.overview.saving")}</span>
                         </>
                     ) : (
                         <>
                             <Save className="w-5 h-5" />
-                            <span>Save Changes</span>
+                            <span>{t("companySetting.overview.saveChanges")}</span>
                         </>
                     )}
                 </button>
@@ -368,7 +370,7 @@ export function OverviewTab({ company, companyId }) {
             {/* Error Message */}
             {updateError && updateStatus === 'failed' && (
                 <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg">
-                    <p className="font-medium">Error updating company:</p>
+                    <p className="font-medium">{t("companySetting.overview.errorUpdating")}</p>
                     <p className="text-sm">{updateError}</p>
                 </div>
             )}

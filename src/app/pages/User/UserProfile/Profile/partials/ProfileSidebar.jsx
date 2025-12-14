@@ -1,16 +1,18 @@
 import React from 'react';
 import { Box, Typography, Button } from '@mui/material';
 import { useTheme } from '@mui/material/styles';
+import { useTranslation } from 'react-i18next';
 
 export default function ProfileCompletionCard({
   completionPercentage
 }) {
+  const { t } = useTranslation();
   const theme = useTheme();
   return (
     <Box sx={{ width: { xs: '100%', sm: 300 }, position: { xs: 'static', sm: 'sticky' }, top: { sm: 20 }, mb: { xs: 3, sm: 0 } }}>
       <Box sx={{ bgcolor: 'background.paper', p: { xs: 2.5, sm: 4 }, borderRadius: 2, border: 1, borderColor: 'divider' }}>
         <Typography variant="h6" sx={{ fontWeight: 600, textAlign: 'center', mb: 4 }}>
-          Độ hoàn thiện hồ sơ
+          {t("profile.profile_completion")}
         </Typography>
 
         {/* Circular Progress (visual ring using conic-gradient) */}
@@ -40,7 +42,7 @@ export default function ProfileCompletionCard({
                     {completionPercentage}%
                   </Typography>
                   <Typography sx={{ fontSize: 10, color: 'text.secondary', mt: 0.5 }}>
-                    hoàn thành
+                    {t("profile.completed")}
                   </Typography>
                 </Box>
               </Box>
@@ -59,17 +61,17 @@ export default function ProfileCompletionCard({
           }}
         >
           <Typography variant="body1" sx={{ lineHeight: 1.6, fontSize: '0.95rem' }}>
-            Một số mẹo để hồ sơ của bạn nổi bật hơn
+            {t("profile.tips_title")}
           </Typography>
         </Box>
 
         {/* Tips list (simple subitems without borders) */}
         <Box component="ul" sx={{ listStyle: 'disc', pl: 2, mb: 3, m: 0 }}>
           <Box component="li" sx={{ mb: 1, fontSize: '0.95rem', color: 'text.primary' }}>
-            Nâng cấp hồ sơ của bạn lên 100% để thu hút nhà tuyển dụng hơn!
+            {t("profile.tip_1")}
           </Box>
           <Box component="li" sx={{ fontSize: '0.95rem', color: 'text.primary' }}>
-            Nâng cấp hồ sơ của bạn lên 100% để thu hút nhà tuyển dụng hơn!
+            {t("profile.tip_2")}
           </Box>
         </Box>
 
@@ -80,7 +82,7 @@ export default function ProfileCompletionCard({
           fullWidth
           sx={{ fontWeight: 700, py: 1.75, mt: 1, fontSize: '0.95rem', borderRadius: 2 }}
         >
-          Xem và Tải CV
+          {t("profile.view_download_cv")}
         </Button>
       </Box>
     </Box>

@@ -1,6 +1,7 @@
 // src/app/pages/Company/PostJob/PostJob.jsx
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
+import { useTranslation } from "react-i18next";
 import { Button } from "@/components/ui/button";
 import { motion } from "framer-motion";
 
@@ -38,6 +39,7 @@ import { FuzzyText } from "../../../components";
 import { getCompanyBranches } from "../../../modules/services/companyBranchesService";
 
 export default function PostJob() {
+  const { t } = useTranslation();
   const dispatch = useDispatch();
 
   const categories = useSelector((state) => state.categories?.categories ?? []);
@@ -91,9 +93,9 @@ export default function PostJob() {
   }, [benefits,apiCompanyBranches]);
 
   const steps = [
-    { number: 1, title: "Job Information", icon: FileText },
-    { number: 2, title: "Job Description", icon: Briefcase },
-    { number: 3, title: "Perks & Benefit", icon: Gift },
+    { number: 1, title: t("postJob.jobInformation"), icon: FileText },
+    { number: 2, title: t("postJob.jobDescription"), icon: Briefcase },
+    { number: 3, title: t("postJob.perksBenefit"), icon: Gift },
   ];
 
   const employmentOptions = ["Full-Time", "Part-Time", "Remote", "Internship", "Contract"];
@@ -206,7 +208,7 @@ export default function PostJob() {
   };
 
   if (authStatus === "loading") {
-    return <div>Loading company profile...</div>;
+    return <div>{t("postJob.loadingCompanyProfile")}</div>;
   }
 
   if (!currentUser || !currentUser.company) {
@@ -218,7 +220,7 @@ export default function PostJob() {
         transition={{ duration: 0.5, ease: "easeOut" }}
       >
         <FuzzyText color="black" fontSize={32} baseIntensity={0.1} hoverIntensity={0.3}>
-          Company profile not found.
+          t("postJob.companyProfileNotFound")
         </FuzzyText>
       </motion.div>
     );
@@ -232,7 +234,7 @@ export default function PostJob() {
         <Button variant="ghost" size="icon" className="h-10 w-10 cursor-pointer" onClick={() => nav(-1)}>
           <ArrowLeft className="h-5 w-5" />
         </Button>
-        <h4 className="font-bold text-foreground">Post a Job</h4>
+        <h4 className="font-bold text-foreground">{t("postJob.postAJob")}</h4>
       </div>
 
       <div className="flex gap-4">
@@ -267,7 +269,7 @@ export default function PostJob() {
               </div>
               <div className="flex-1">
                 <p className={`text-sm font-medium ${isActive ? "text-primary" : "text-muted-foreground"}`}>
-                  Step {step.number}/3
+                  {t("postJob.step", { number: step.number })}/3
                 </p>
                 <p className={`font-semibold ${isActive ? "text-foreground" : "text-muted-foreground"}`}>
                   {step.title}
@@ -335,7 +337,7 @@ export default function PostJob() {
         <div className="flex justify-between mt-8">
           {currentStep > 1 && (
             <Button variant="outline" size="lg" onClick={() => setCurrentStep(currentStep - 1)} className="px-8">
-              Previous
+              {t("postJob.previous")}
             </Button>
           )}
           {currentStep < 3 ? (
@@ -344,11 +346,11 @@ export default function PostJob() {
               onClick={() => setCurrentStep(currentStep + 1)}
               className="bg-primary hover:bg-primary/90 text-white px-8 ml-auto"
             >
-              Next Step
+              {t("postJob.nextStep")}
             </Button>
           ) : (
             <Button size="lg" onClick={handleSubmit} className="bg-primary hover:bg-primary/90 text-white px-8 ml-auto">
-              Post Job
+              {t("postJob.postJob")}
             </Button>
           )}
         </div>

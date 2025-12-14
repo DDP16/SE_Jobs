@@ -1,7 +1,9 @@
 import { Eye, Settings2, Users, MapPin, Building } from "lucide-react";
+import { useTranslation } from "react-i18next";
 import { Button } from "@/components/ui";
 
 export default function CompanyHeader({ company }) {
+  const { t } = useTranslation();
   const getInitials = (name) => {
     return name
       ? name
@@ -42,7 +44,7 @@ export default function CompanyHeader({ company }) {
                   <Building className="w-5 h-5 text-primary" />
                 </div>
                 <div>
-                  <p className="text-xs text-muted-foreground">Founded</p>
+                  <p className="text-xs text-muted-foreground">{t("company.header.founded")}</p>
                   <p className="text-sm font-semibold text-foreground">{foundedYear}</p>
                 </div>
               </div>
@@ -52,9 +54,9 @@ export default function CompanyHeader({ company }) {
                   <Users className="w-5 h-5 text-primary" />
                 </div>
                 <div>
-                  <p className="text-xs text-muted-foreground">Employees</p>
+                  <p className="text-xs text-muted-foreground">{t("company.header.employees")}</p>
                   <p className="text-sm font-semibold text-foreground">
-                    {company.employee_count ? `${company.employee_count}+` : "Not specified"}
+                    {company.employee_count ? `${company.employee_count}+` : t("company.header.notSpecified")}
                   </p>
                 </div>
               </div>
@@ -64,8 +66,8 @@ export default function CompanyHeader({ company }) {
                   <MapPin className="w-5 h-5 text-primary" />
                 </div>
                 <div>
-                  <p className="text-xs text-muted-foreground">Location</p>
-                  <p className="text-sm font-semibold text-foreground">Global (Remote)</p>
+                  <p className="text-xs text-muted-foreground">{t("company.header.location")}</p>
+                  <p className="text-sm font-semibold text-foreground">{t("company.header.globalRemote")}</p>
                 </div>
               </div>
 
@@ -74,8 +76,8 @@ export default function CompanyHeader({ company }) {
                   <Building className="w-5 h-5 text-primary" />
                 </div>
                 <div>
-                  <p className="text-xs text-muted-foreground">Industry</p>
-                  <p className="text-sm font-semibold text-foreground">Tech & Agriculture</p>
+                  <p className="text-xs text-muted-foreground">{t("company.header.industry")}</p>
+                  <p className="text-sm font-semibold text-foreground">{company.industry || t("company.header.notSpecified")}</p>
                 </div>
               </div>
             </div>
@@ -85,10 +87,10 @@ export default function CompanyHeader({ company }) {
         {/* Action Buttons */}
         <div className="flex gap-2">
           <Button variant="ghost" className="text-primary hover:text-primary">
-            <Eye className="w-4 h-4 mr-2" /> Public View
+            <Eye className="w-4 h-4 mr-2" /> {t("company.header.publicView")}
           </Button>
           <Button variant="ghost" className="text-primary hover:text-primary">
-            <Settings2 className="w-4 h-4 mr-2" /> Profile Settings
+            <Settings2 className="w-4 h-4 mr-2" /> {t("companyProfile.profileSettings")}
           </Button>
         </div>
       </div>

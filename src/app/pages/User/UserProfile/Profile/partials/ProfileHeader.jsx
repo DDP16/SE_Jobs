@@ -1,8 +1,11 @@
 import React from 'react';
 import { Avatar, IconButton, Typography, Box } from '@mui/material';
 import { Edit as EditIcon, Email as EmailIcon, Phone as PhoneIcon, Person as PersonIcon, LocationOn as LocationOnIcon, Link as LinkIcon } from '@mui/icons-material';
+import { useTranslation } from 'react-i18next';
 
 export default function ProfileHeader({ user, onEdit }) {
+  const { t } = useTranslation();
+  
   const getInitials = (name) => {
     return name?.split(' ').map(word => word[0]).join('').toUpperCase().slice(0, 2) || 'U';
   };
@@ -22,7 +25,7 @@ export default function ProfileHeader({ user, onEdit }) {
           <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', mb: 2 }}>
             <Box>
               <Typography variant="h5" sx={{ fontWeight: 600, mb: 0.5 }}>{user.name}</Typography>
-              <Typography variant="body2" color="text.secondary">Cập nhật chức danh</Typography>
+              <Typography variant="body2" color="text.secondary">{t("profile.update_title")}</Typography>
             </Box>
             <IconButton 
               onClick={onEdit} 
@@ -60,7 +63,7 @@ export default function ProfileHeader({ user, onEdit }) {
             </Box>
             <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
               <LinkIcon sx={{ fontSize: 18, color: 'text.disabled' }} />
-              <Typography variant="body2" color="text.secondary">Link cá nhân</Typography>
+              <Typography variant="body2" color="text.secondary">{t("profile.personal_link")}</Typography>
             </Box>
           </Box>
         </Box>

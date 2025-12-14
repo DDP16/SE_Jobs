@@ -28,12 +28,12 @@ export default function HeroSection({ onSearch, initialKeyword = '', initialLoca
                     <h2
                         className="font-bold text-gray-900"
                     >
-                        Find your <span className="text-blue-500 underline decoration-blue-500 decoration-2 underline-offset-4">dream job</span>
+                        {t("homeSections.hero.title")} <span className="text-blue-500 underline decoration-blue-500 decoration-2 underline-offset-4">{t("homeSections.hero.dreamJob")}</span>
                     </h2>
                     <h5
                         className="text-gray-600"
                     >
-                        Tìm cơ hội thực tập và việc làm đúng với đam mê của bạn.
+                        {t("homeSections.hero.subtitle")}
                     </h5>
                 </Box>
 
@@ -43,8 +43,8 @@ export default function HeroSection({ onSearch, initialKeyword = '', initialLoca
                 >
                     <SearchBar
                         onSearch={onSearch}
-                        placeholder="Job title, keywords, or company"
-                        locationPlaceholder="City, state, or remote"
+                        placeholder={t("homeSections.hero.searchPlaceholder")}
+                        locationPlaceholder={t("homeSections.hero.locationPlaceholder")}
                         fullWidth
                         initialKeyword={initialKeyword}
                         initialLocation={initialLocation}
@@ -56,7 +56,7 @@ export default function HeroSection({ onSearch, initialKeyword = '', initialLoca
                     className="text-center flex flex-col lg:flex-row items-center gap-2 md:gap-4"
                 >
                     <span className="body-small text-black font-semibold">
-                        Popular:
+                        {t("homeSections.hero.popular")}
                     </span>
                     <Stack
                         direction="row"

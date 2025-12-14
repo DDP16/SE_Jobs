@@ -1,4 +1,5 @@
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 import {
     Box,
     Card,
@@ -51,6 +52,7 @@ const getIconForCategory = (name) => {
 };
 
 export default function CategorySection({ onCategoryClick }) {
+    const { t } = useTranslation();
     const categoriesFromStore = useSelector(state => state.categories?.categories || []);
     const categoriesSource = categoriesFromStore.length ? categoriesFromStore : fallbackCategories;
     const categories = categoriesSource.slice(0, 8);
@@ -72,10 +74,10 @@ export default function CategorySection({ onCategoryClick }) {
                 {/* Header */}
                 <div className="flex justify-between items-center mb-6">
                     <h3 className="text-3xl md:text-4xl font-bold text-gray-900">
-                        Explore by <span className="text-blue-600">Category</span>
+                        {t("homeSections.categorySection.title")} <span className="text-blue-600">{t("homeSections.categorySection.category")}</span>
                     </h3>
                     <button className="hidden md:flex items-center gap-2 text-blue-600 hover:text-blue-700 font-medium transition-colors">
-                        Show all jobs
+                        {t("homeSections.categorySection.showAllJobs")}
                         <ArrowForward className="w-5 h-5" />
                     </button>
                 </div>
@@ -151,7 +153,7 @@ export default function CategorySection({ onCategoryClick }) {
                                             fontWeight: 500
                                         }}
                                     >
-                                        {category.count ? `${category.count} jobs available →` : 'View jobs →'}
+                                        {category.count ? t("homeSections.categorySection.jobsAvailable", { count: category.count }) : t("homeSections.categorySection.viewJobs")}
                                     </Typography>
                                 </Box>
                             </CardContent>

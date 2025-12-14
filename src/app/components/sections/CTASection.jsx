@@ -1,4 +1,5 @@
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 import {
     Box,
     Container,
@@ -18,6 +19,7 @@ import {
 } from '@mui/icons-material';
 
 export default function CTASection() {
+    const { t } = useTranslation();
     return (
         <Box sx={{ py: 8 }}>
             <Container maxWidth="lg">
@@ -39,12 +41,12 @@ export default function CTASection() {
                                         <Work />
                                     </Avatar>
                                     <Typography variant="h4" sx={{ fontWeight: 700 }}>
-                                        Post a Job
+                                        {t("homeSections.ctaSection.postJob.title")}
                                     </Typography>
                                 </Stack>
 
                                 <Typography variant="h6" sx={{ mb: 3, opacity: 0.9 }}>
-                                    Reach thousands of qualified candidates and find the perfect fit for your team.
+                                    {t("homeSections.ctaSection.postJob.description")}
                                 </Typography>
 
                                 <Stack direction="row" spacing={2}>
@@ -57,7 +59,7 @@ export default function CTASection() {
                                         }}
                                         endIcon={<ArrowForward />}
                                     >
-                                        Post a Job
+                                        {t("homeSections.ctaSection.postJob.button")}
                                     </Button>
                                     <Button
                                         variant="outlined"
@@ -70,7 +72,7 @@ export default function CTASection() {
                                             }
                                         }}
                                     >
-                                        Learn More
+                                        {t("homeSections.ctaSection.postJob.learnMore")}
                                     </Button>
                                 </Stack>
                             </CardContent>
@@ -94,12 +96,12 @@ export default function CTASection() {
                                         <Dashboard />
                                     </Avatar>
                                     <Typography variant="h4" sx={{ fontWeight: 700 }}>
-                                        Dashboard
+                                        {t("homeSections.ctaSection.dashboard.title")}
                                     </Typography>
                                 </Stack>
 
                                 <Typography variant="h6" sx={{ mb: 3, opacity: 0.9 }}>
-                                    Manage your job postings, track applications, and analyze your hiring performance.
+                                    {t("homeSections.ctaSection.dashboard.description")}
                                 </Typography>
 
                                 <Stack direction="row" spacing={2}>
@@ -112,7 +114,7 @@ export default function CTASection() {
                                         }}
                                         endIcon={<ArrowForward />}
                                     >
-                                        Go to Dashboard
+                                        {t("homeSections.ctaSection.dashboard.goToDashboard")}
                                     </Button>
                                     <Button
                                         variant="outlined"
@@ -125,7 +127,7 @@ export default function CTASection() {
                                             }
                                         }}
                                     >
-                                        View Demo
+                                        {t("homeSections.ctaSection.dashboard.viewDemo")}
                                     </Button>
                                 </Stack>
                             </CardContent>
@@ -136,7 +138,7 @@ export default function CTASection() {
                 {/* Stats Section */}
                 <Box sx={{ mt: 8, textAlign: 'center' }}>
                     <Typography variant="h3" sx={{ mb: 4, fontWeight: 700 }}>
-                        Join Thousands of Job Seekers
+                        {t("homeSections.ctaSection.stats.title")}
                     </Typography>
 
                     <Grid container spacing={4} sx={{ mt: 4 }}>
@@ -146,7 +148,7 @@ export default function CTASection() {
                                     10K+
                                 </Typography>
                                 <Typography variant="h6" color="text.secondary">
-                                    Active Jobs
+                                    {t("homeSections.ctaSection.stats.activeJobs")}
                                 </Typography>
                             </Box>
                         </Grid>
@@ -156,7 +158,7 @@ export default function CTASection() {
                                     5K+
                                 </Typography>
                                 <Typography variant="h6" color="text.secondary">
-                                    Companies
+                                    {t("homeSections.ctaSection.stats.companies")}
                                 </Typography>
                             </Box>
                         </Grid>
@@ -166,7 +168,7 @@ export default function CTASection() {
                                     50K+
                                 </Typography>
                                 <Typography variant="h6" color="text.secondary">
-                                    Job Seekers
+                                    {t("homeSections.ctaSection.stats.jobSeekers")}
                                 </Typography>
                             </Box>
                         </Grid>

@@ -1,10 +1,12 @@
 import React, { useEffect, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { ArrowForward } from '@mui/icons-material';
 import JobCard from '../features/JobCard';
 import { useSelector, useDispatch } from 'react-redux';
 import { getTopCVJobs } from '../../modules/services/topCVService';
 
 export default function HotJobTopCVSection() {
+    const { t } = useTranslation();
     const dispatch = useDispatch();
     const jobs = useSelector(state => state.topCVJobs?.jobs || []);
     const pagination = useSelector(state => state.topCVJobs?.pagination || {});
@@ -81,10 +83,10 @@ export default function HotJobTopCVSection() {
                 {/* Header */}
                 <div className="flex justify-between items-center mb-6">
                     <h3 className="text-3xl md:text-4xl font-bold text-gray-900">
-                        Hot jobs from <span className="text-green-600">TopCV</span>
+                        {t("homeSections.hotJobSection.title")} <span className="text-green-600">{t("homeSections.hotJobSection.topCV")}</span>
                     </h3>
                     <button className="hidden md:flex items-center gap-2 text-blue-600 hover:text-blue-700 font-medium transition-colors">
-                        Show all jobs
+                        {t("homeSections.hotJobSection.showAllJobs")}
                         <ArrowForward className="w-5 h-5" />
                     </button>
                 </div>
@@ -127,7 +129,7 @@ export default function HotJobTopCVSection() {
                                 }
                             `}
                         >
-                            Previous
+                            {t("homeSections.hotJobSection.previous")}
                         </button>
 
                         {/* Page Numbers */}
@@ -170,7 +172,7 @@ export default function HotJobTopCVSection() {
                                 }
                             `}
                         >
-                            Next
+                            {t("homeSections.hotJobSection.next")}
                         </button>
                     </div>
                 )}
@@ -178,7 +180,7 @@ export default function HotJobTopCVSection() {
                 {/* Show message if no jobs and not loading */}
                 {status !== 'loading' && jobs.length === 0 && (
                     <div className="text-center py-10">
-                        <p className="text-gray-500 text-lg">No jobs available at the moment.</p>
+                        <p className="text-gray-500 text-lg">{t("homeSections.hotJobSection.noJobsAvailable")}</p>
                     </div>
                 )}
 
@@ -186,9 +188,9 @@ export default function HotJobTopCVSection() {
                 {totalPages > 1 && totalItems > 0 && (
                     <div className="text-center mt-4">
                         <p className="text-sm text-gray-600">
-                            Showing {jobs.length} of {totalItems} jobs
+                            {t("homeSections.hotJobSection.showingJobs", { showing: jobs.length, total: totalItems })}
                             <span className="mx-2">•</span>
-                            Page {currentPage} of {totalPages}
+                            {t("homeSections.hotJobSection.pageInfo", { current: currentPage, total: totalPages })}
                         </p>
                     </div>
                 )}

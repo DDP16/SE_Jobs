@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { useTranslation } from 'react-i18next';
 import {
   Box,
   Paper,
@@ -29,6 +30,7 @@ export default function CompanyFilters({
   setFilter,
   activeFiltersCount = 0
 }) {
+  const { t } = useTranslation();
   const dispatch = useDispatch();
   const [expandedPanels, setExpandedPanels] = useState(['industry', 'size', 'location']);
   const company_types = useSelector(state => state.companyTypes.companyTypes || []);
@@ -40,11 +42,11 @@ export default function CompanyFilters({
   }, [dispatch, company_types.length]);
 
   const companySizes = [
-    { name: '1-10 employees', value: "1:50" },
-    { name: '50-200 employees', value: "50:200" },
-    { name: '200-500 employees', value: "200:5000" },
-    { name: '500-1000 employees', value: "500:1000" },
-    { name: '1000+ employees', value: "1000:10000000" },
+    { name: t("companyList.filters.sizes.small"), value: "1:50" },
+    { name: t("companyList.filters.sizes.medium"), value: "50:200" },
+    { name: t("companyList.filters.sizes.large"), value: "200:5000" },
+    { name: t("companyList.filters.sizes.xlarge"), value: "500:1000" },
+    { name: t("companyList.filters.sizes.xxlarge"), value: "1000:10000000" },
   ];
 
   // const locations = [
@@ -91,13 +93,13 @@ export default function CompanyFilters({
         <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
           <FilterList color="primary" />
           <Typography variant="h6" sx={{ fontWeight: 600 }}>
-            Filters
+            {t("companyList.filters.title")}
           </Typography>
           {activeFiltersCount > 0 && <Chip label={activeFiltersCount} size="small" color="primary" sx={{ height: 20, minWidth: 20 }} />}
         </Box>
         {activeFiltersCount > 0 && (
           <Button size="small" startIcon={<Clear />} onClick={clearFilter} sx={{ textTransform: "none" }}>
-            Clear
+            {t("companyList.filters.clear")}
           </Button>
         )}
       </Box>
@@ -107,13 +109,13 @@ export default function CompanyFilters({
       {/* Industry Filter */}
       <Accordion expanded={expandedPanels.includes("industry")} onChange={handlePanelChange("industry")} elevation={0} disableGutters>
         <AccordionSummary expandIcon={<ExpandMore />}>
-          <Typography sx={{ fontWeight: 600 }}>Company Type</Typography>
+          <Typography sx={{ fontWeight: 600 }}>{t("companyList.filters.companyType")}</Typography>
           {[].length > 0 && <Chip label={[].length} size="small" color="primary" sx={{ ml: 1, height: 20 }} />}
         </AccordionSummary>
         <AccordionDetails sx={{ pt: 0 }}>
           {company_types.length === 0 ? (
             <Typography variant="body2" color="text.secondary" sx={{ p: 2 }}>
-              No company types found
+              {t("companyList.filters.noCompanyTypesFound")}
             </Typography>
           ) : (
             <FormGroup>
@@ -150,7 +152,7 @@ export default function CompanyFilters({
       {/* Company Size Filter */}
       <Accordion expanded={expandedPanels.includes("size")} onChange={handlePanelChange("size")} elevation={0} disableGutters>
         <AccordionSummary expandIcon={<ExpandMore />}>
-          <Typography sx={{ fontWeight: 600 }}>Company Size</Typography>
+          <Typography sx={{ fontWeight: 600 }}>{t("companyList.filters.companySize")}</Typography>
           {[].length > 0 && <Chip label={[].length} size="small" color="primary" sx={{ ml: 1, height: 20 }} />}
         </AccordionSummary>
         <AccordionDetails sx={{ pt: 0 }}>
