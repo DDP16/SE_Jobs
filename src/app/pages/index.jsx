@@ -18,6 +18,7 @@ export { default as CompanySignUp } from "./Auth/CompanySignUp";
 export { default as CompanySetting } from "./Company/CompanySetting";
 export { default as PostJob } from "./Company/PostJob";
 export { default as JobListing } from "./Company/JobListing";
+export { default as CompanyBranches } from "./Company/CompanyBranches";
 
 // Admin Pages
 export { default as AdminDashboard } from "./Admin/Dashboard";

@@ -156,7 +156,7 @@ export default function JobCard({
         job_deadline: job.job_deadline || job.deadline,
         url: normalizeUrl(job.url, job.website_url),
         updatedAt: job.updatedAt || job.updated_at,
-        publish: job.publish || job.job_posted_at,
+        publish: job.publish || job.created_at,
         experience: job.experience || (Array.isArray(job.levels) && job.levels.length > 0
             ? job.levels.map(l => l.name || l).join(', ')
             : null),
