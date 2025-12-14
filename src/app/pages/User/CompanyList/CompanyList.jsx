@@ -8,67 +8,76 @@ import { getCompanies } from '../../../modules';
 import { getCompanyTypes } from '../../../modules/services/companyTypesService';
 
 const DEFAULT_FILTER = {
-    keyword : '',
+    page: 1,
+    limit: 10,
+    keyword: '',
     company_type_ids: [],
-    employee_count: '',
+    employee_count_from: 0,
+    employee_count_to: 1000000,
 }
+
 export default function CompanyList() {
     const [sortBy, setSortBy] = useState('created_at:desc');
     const [filter, setFilter] = useState(DEFAULT_FILTER);
-    const companies = useSelector(state => state.company.companies);
-
+    const { companies, pagination } = useSelector(state => state.company);
     const dispatch = useDispatch();
 
+    // Đếm số filter đang active (không bao gồm page và limit)
     const getActiveFilter = () => {
-      let active = 0;
+        let active = 0;
 
-      Object.keys(filter).forEach((key) => {
-        const value = filter[key];
+        if (filter.keyword && filter.keyword.trim() !== "") {
+            active++;
+        }
 
-        if (typeof value === "string" && value.trim() !== "") {
-          active++;
+        if (filter.company_type_ids && filter.company_type_ids.length > 0) {
+            active++;
         }
-        else if (Array.isArray(value) && value.length > 0) {
-          active++;
-        }
-        else if (typeof value === "number" && value !== 0) {
-          active++;
-        }
-      });
 
-      return active;
+        if (filter.employee_count_from !== DEFAULT_FILTER.employee_count_from || 
+            filter.employee_count_to !== DEFAULT_FILTER.employee_count_to) {
+            active++;
+        }
+
+        return active;
     };
 
     const searchCompanies = async (filter, sortBy) => {
         const query = {
-            page: 1,
-            limit: 10,
+            page: filter.page,
+            limit: filter.limit,
             company_type_ids: filter.company_type_ids.join(',') || '',
-            keyword: filter.keyword,
-            employee_count_from: filter.employee_count ? filter.employee_count.split(":")[0] : 0,
-            employee_count_to: filter.employee_count ? filter.employee_count.split(":")[1] : 1000000,
+            keyword: filter.keyword || '',
+            employee_count_from: filter.employee_count_from,
+            employee_count_to: filter.employee_count_to,
         }
         
         if (sortBy) {
             query.order = sortBy;
         }
+
         dispatch(getCompanies(query));
     }
 
     useEffect(() => {
         dispatch(getCompanyTypes({ page: 1, limit: 10 }));
-    }, [dispatch])
+    }, [dispatch]);
 
+    
     useEffect(() => {
         searchCompanies(filter, sortBy);
-    }, [filter, sortBy])
+    }, [filter, sortBy]);
 
     return (
         <Box sx={{ bgcolor: 'background.default', minHeight: '100vh' }}>
             {/* Hero Section with Search */}
             <CompanyListHero
                 onSearch={(keyword) => {
-                    setFilter((filter) => ({ ...filter, keyword }));
+                    setFilter((prevFilter) => ({ 
+                        ...prevFilter, 
+                        keyword,
+                        page: 1
+                    }));
                 }}
                 searchKeyword={filter.keyword}
             />
@@ -90,7 +99,10 @@ export default function CompanyList() {
                         }}
                     >
                         <CompanyFilters
-                            clearFilter={() => setFilter(DEFAULT_FILTER)}
+                            clearFilter={() => setFilter({ 
+                                ...DEFAULT_FILTER,
+                                page: 1
+                            })}
                             setFilter={setFilter}
                             filter={filter}
                             activeFiltersCount={getActiveFilter()}
@@ -103,7 +115,9 @@ export default function CompanyList() {
                             companies={companies}
                             sortBy={sortBy}
                             onSortChange={setSortBy}
-                            totalCount={companies.length}
+                            page={filter.page}
+                            totalPages={pagination.total_pages}
+                            setFilter={setFilter}
                         />
                     </Box>
                 </Box>
@@ -111,4 +125,3 @@ export default function CompanyList() {
         </Box>
     );
 }
-
