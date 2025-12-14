@@ -121,7 +121,10 @@ const getColumns = (t) => [
                     </Button>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent className="bg-white" align="center" side="left">
-                    <DropdownMenuItem>
+                    <DropdownMenuItem onClick={() => {
+                        setSelectedJob(job);
+                        setIsViewDialogOpen(true);
+                    }}>
                         <Eye className="w-4 h-4 mr-2" />
                         {t('jobListing.table.viewDetails')}
                     </DropdownMenuItem>
