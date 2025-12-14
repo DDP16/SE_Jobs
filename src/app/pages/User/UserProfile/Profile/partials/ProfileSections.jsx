@@ -1,9 +1,12 @@
 import React from 'react';
 import { Box, Typography, IconButton, Chip, Link } from '@mui/material';
 import { Edit as EditIcon, Delete as DeleteIcon, Add as AddIcon, Link as LinkIcon } from '@mui/icons-material';
+import { useTranslation } from 'react-i18next';
 
 // Skills Section
 export function SkillsSection({ skills, onEdit, onDelete, onAdd }) {
+  const { t } = useTranslation();
+  
   // Ensure skills is always an array to prevent undefined errors
   const skillsArray = Array.isArray(skills) ? skills : [];
 
@@ -13,7 +16,7 @@ export function SkillsSection({ skills, onEdit, onDelete, onAdd }) {
   return (
     <Box sx={{ bgcolor: 'background.paper', p: 4, borderRadius: 2, border: 1, borderColor: 'divider', mb: 2 }}>
       <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', mb: 3 }}>
-        <Typography variant="h6" sx={{ fontWeight: 600 }}>Kỹ năng</Typography>
+        <Typography variant="h6" sx={{ fontWeight: 600 }}>{t("profile.skills")}</Typography>
         <IconButton onClick={onAdd} size="small" sx={{ color: 'primary.main', '&:hover': { bgcolor: 'primary.lighter' } }}>
           <AddIcon sx={{ fontSize: 18 }} />
         </IconButton>
@@ -21,7 +24,7 @@ export function SkillsSection({ skills, onEdit, onDelete, onAdd }) {
 
       {skillsArray.length === 0 ? (
         <Typography variant="body2" sx={{ color: 'text.secondary' }}>
-          Liệt kê các kỹ năng chuyên môn của bạn
+          {t("profile.skills_empty")}
         </Typography>
       ) : isSimpleArray ? (
         // Render simple string array from API
@@ -90,10 +93,12 @@ export function SkillsSection({ skills, onEdit, onDelete, onAdd }) {
 
 // Languages Section
 export function LanguagesSection({ languages, onEdit }) {
+  const { t } = useTranslation();
+  
   return (
     <Box sx={{ bgcolor: 'background.paper', p: 4, borderRadius: 2, border: 1, borderColor: 'divider', mb: 2 }}>
       <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', mb: 3 }}>
-        <Typography variant="h6" sx={{ fontWeight: 600 }}>Ngoại ngữ</Typography>
+        <Typography variant="h6" sx={{ fontWeight: 600 }}>{t("profile.languages")}</Typography>
         <IconButton onClick={onEdit} size="small" sx={{ color: 'primary.main', '&:hover': { bgcolor: 'primary.lighter' } }}>
           <AddIcon sx={{ fontSize: 18 }} />
         </IconButton>
@@ -101,7 +106,7 @@ export function LanguagesSection({ languages, onEdit }) {
 
       {languages.length === 0 ? (
         <Typography variant="body2" sx={{ color: 'text.secondary' }}>
-          Liệt kê các ngôn ngữ mà bạn biết
+          {t("profile.languages_empty")}
         </Typography>
       ) : (
         <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 1 }}>
@@ -120,6 +125,8 @@ export function LanguagesSection({ languages, onEdit }) {
 
 // Projects Section
 export function ProjectsSection({ projects, onEdit, onDelete, onAdd }) {
+  const { t } = useTranslation();
+  
   const formatDate = (project) => {
     // Handle backend date format (start_date: "2021-09-01", end_date: null for present)
     if (project.start_date) {
@@ -127,7 +134,7 @@ export function ProjectsSection({ projects, onEdit, onDelete, onAdd }) {
       const startMonth = startDate.getMonth() + 1; // getMonth() returns 0-11
       const startYear = startDate.getFullYear();
 
-      let endDateStr = 'HIỆN TẠI';
+      let endDateStr = t("profile.currently_studying");
       // If end_date exists and is not null, format it
       if (project.end_date && project.end_date !== null) {
         const endDate = new Date(project.end_date);
@@ -149,14 +156,14 @@ export function ProjectsSection({ projects, onEdit, onDelete, onAdd }) {
     const isCurrentlyWorking = project.isCurrentlyWorking;
 
     const startDate = startMonth ? `${String(startMonth).padStart(2, '0')}/${startYear}` : startYear;
-    const endDate = isCurrentlyWorking ? 'HIỆN TẠI' : (endMonth ? `${String(endMonth).padStart(2, '0')}/${endYear}` : endYear);
+    const endDate = isCurrentlyWorking ? t("profile.currently_studying") : (endMonth ? `${String(endMonth).padStart(2, '0')}/${endYear}` : endYear);
     return `${startDate} - ${endDate}`;
   };
 
   return (
     <Box sx={{ bgcolor: 'background.paper', p: 4, borderRadius: 2, border: 1, borderColor: 'divider', mb: 2 }}>
       <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', mb: 3 }}>
-        <Typography variant="h6" sx={{ fontWeight: 600 }}>Dự án nổi bật</Typography>
+        <Typography variant="h6" sx={{ fontWeight: 600 }}>{t("profile.featured_projects")}</Typography>
         <IconButton onClick={onAdd} size="small" sx={{ color: 'primary.main', '&:hover': { bgcolor: 'primary.lighter' } }}>
           <AddIcon sx={{ fontSize: 18 }} />
         </IconButton>
@@ -164,7 +171,7 @@ export function ProjectsSection({ projects, onEdit, onDelete, onAdd }) {
 
       {projects.length === 0 ? (
         <Typography variant="body2" sx={{ color: 'text.secondary' }}>
-          Giới thiệu dự án nổi bật của bạn
+          {t("profile.featured_projects_empty")}
         </Typography>
       ) : (
         projects.map((project, index) => (
@@ -230,6 +237,8 @@ export function ProjectsSection({ projects, onEdit, onDelete, onAdd }) {
 
 // Certificates Section
 export function CertificatesSection({ certificates, onEdit, onDelete, onAdd }) {
+  const { t } = useTranslation();
+  
   const formatDate = (cert) => {
     // Handle backend date format (issue_date: "2021-09-01")
     if (cert.issue_date) {
@@ -248,7 +257,7 @@ export function CertificatesSection({ certificates, onEdit, onDelete, onAdd }) {
   return (
     <Box sx={{ bgcolor: 'background.paper', p: 4, borderRadius: 2, border: 1, borderColor: 'divider', mb: 2 }}>
       <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', mb: 3 }}>
-        <Typography variant="h6" sx={{ fontWeight: 600 }}>Chứng chỉ</Typography>
+        <Typography variant="h6" sx={{ fontWeight: 600 }}>{t("profile.certificates")}</Typography>
         <IconButton onClick={onAdd} size="small" sx={{ color: 'primary.main', '&:hover': { bgcolor: 'primary.lighter' } }}>
           <AddIcon sx={{ fontSize: 18 }} />
         </IconButton>
@@ -256,7 +265,7 @@ export function CertificatesSection({ certificates, onEdit, onDelete, onAdd }) {
 
       {certificates.length === 0 ? (
         <Typography variant="body2" sx={{ color: 'text.secondary' }}>
-          Bổ sung chứng chỉ liên quan đến kỹ năng của bạn
+          {t("profile.certificates_empty")}
         </Typography>
       ) : (
         certificates.map((cert, index) => (
@@ -290,7 +299,7 @@ export function CertificatesSection({ certificates, onEdit, onDelete, onAdd }) {
               </Box>
             </Box>
             <Typography variant="body2" sx={{ color: 'text.secondary', mb: 0.5 }}>{cert.organization}</Typography>
-            <Typography variant="body2" sx={{ color: 'text.secondary', mb: 1 }}>Issued: {formatDate(cert)}</Typography>
+            <Typography variant="body2" sx={{ color: 'text.secondary', mb: 1 }}>{t("profile.issued")}: {formatDate(cert)}</Typography>
             {cert.description && (
               <Typography
                 variant="body2"
@@ -321,6 +330,8 @@ export function CertificatesSection({ certificates, onEdit, onDelete, onAdd }) {
 
 // Awards Section
 export function AwardsSection({ awards, onEdit, onDelete, onAdd }) {
+  const { t } = useTranslation();
+  
   const formatDate = (issueMonth, issueYear) => {
     return issueMonth ? `${String(issueMonth).padStart(2, '0')}/${issueYear}` : issueYear;
   };
@@ -328,7 +339,7 @@ export function AwardsSection({ awards, onEdit, onDelete, onAdd }) {
   return (
     <Box sx={{ bgcolor: 'background.paper', p: 4, borderRadius: 2, border: 1, borderColor: 'divider', mb: 2 }}>
       <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', mb: 3 }}>
-        <Typography variant="h6" sx={{ fontWeight: 600 }}>Giải thưởng</Typography>
+        <Typography variant="h6" sx={{ fontWeight: 600 }}>{t("profile.awards")}</Typography>
         <IconButton onClick={onAdd} size="small" sx={{ color: 'primary.main', '&:hover': { bgcolor: 'primary.lighter' } }}>
           <AddIcon sx={{ fontSize: 18 }} />
         </IconButton>
@@ -336,7 +347,7 @@ export function AwardsSection({ awards, onEdit, onDelete, onAdd }) {
 
       {awards.length === 0 ? (
         <Typography variant="body2" sx={{ color: 'text.secondary' }}>
-          Thể hiện giải thưởng hoặc thành tích mà bạn đạt được
+          {t("profile.awards_empty")}
         </Typography>
       ) : (
         awards.map((award, index) => (
@@ -373,7 +384,7 @@ export function AwardsSection({ awards, onEdit, onDelete, onAdd }) {
               {award.awardOrganization || award.organization}
             </Typography>
             <Typography variant="body2" sx={{ color: 'text.secondary', mb: 1 }}>
-              Issued: {formatDate(award.issueMonth, award.issueYear)}
+              {t("profile.issued")}: {formatDate(award.issueMonth, award.issueYear)}
             </Typography>
             {award.description && (
               <Typography

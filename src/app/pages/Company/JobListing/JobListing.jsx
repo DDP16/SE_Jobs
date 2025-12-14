@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { Calendar } from 'lucide-react';
 import {
     Button,
@@ -166,7 +167,8 @@ const mockJobListings = [
 ];
 
 export default function JobListing() {
-    const [dateRange] = useState('July 19 - July 25');
+    const { t } = useTranslation();
+    const [dateRange] = useState(t('jobListing.dateRange'));
 
     // const startIndex = (currentPage - 1) * pageSize;
     // const endIndex = startIndex + pageSize;
@@ -177,9 +179,9 @@ export default function JobListing() {
         <div className="space-y-6 p-4 lg:p-6 2xl:p-8 flex flex-col">
             <div className="flex items-center justify-between">
                 <div>
-                    <h4 className="font-semibold mb-1">Job Listing</h4>
+                    <h4 className="font-semibold mb-1">{t('jobListing.title')}</h4>
                     <p className="text-gray-600">
-                        Here is your jobs listing status from {dateRange}.
+                        {t('jobListing.description', { dateRange })}
                     </p>
                 </div>
                 <Popover>
@@ -190,8 +192,8 @@ export default function JobListing() {
                         </Button>
                     </PopoverTrigger>
                     <PopoverContent className="w-auto p-4">
-                        <p className="text-sm text-gray-600">Date range selector</p>
-                        <p className="text-xs text-gray-500 mt-2">Custom date range functionality can be added here</p>
+                        <p className="text-sm text-gray-600">{t('jobListing.dateRangeSelector')}</p>
+                        <p className="text-xs text-gray-500 mt-2">{t('jobListing.dateRangeHint')}</p>
                     </PopoverContent>
                 </Popover>
             </div>

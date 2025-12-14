@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { useTranslation } from 'react-i18next';
 import { useDispatch, useSelector } from 'react-redux';
 import { TabNavigation } from './partials/TabNavigate';
 import { OverviewTab } from './partials/OverviewTab';
@@ -6,6 +7,7 @@ import { SocialLinksTab } from './partials/SocialLinksTab';
 import { getCompany } from '../../../modules/services/companyService';
 
 export default function CompanySetting() {
+  const { t } = useTranslation();
   const dispatch = useDispatch();
   const currentUser = useSelector((state) => state.auth.user);
   const companyId = currentUser?.company?.id;
@@ -21,7 +23,7 @@ export default function CompanySetting() {
   return (
     <div className="min-h-screen pt-10">
       <div className="w-full max-w-full lg:max-w-7xl mx-auto px-1 sm:px-2 md:px-4 lg:px-6 py-4 md:py-6">
-        <h3 className="mb-3 md:mb-4 text-lg font-medium font-bold">Settings</h3>
+        <h3 className="mb-3 md:mb-4 text-lg font-medium font-bold">{t("companySetting.title")}</h3>
 
         <div className="bg-white rounded-lg p-4 sm:p-5 md:p-6 mb-3 md:mb-4">
           <div className="mb-3 md:mb-4">

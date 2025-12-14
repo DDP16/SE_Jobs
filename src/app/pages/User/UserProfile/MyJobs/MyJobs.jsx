@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import {
     Box,
     Container,
@@ -36,6 +37,7 @@ function TabPanel({ children, value, index, ...other }) {
 
 // Empty state component
 function EmptyState({ message, onExplore }) {
+    const { t } = useTranslation();
     return (
         <Box
             sx={{
@@ -89,7 +91,7 @@ function EmptyState({ message, onExplore }) {
                         },
                     }}
                 >
-                    Explore jobs
+                    {t("myJobs.exploreJobs")}
                 </Button>
             )}
         </Box>
@@ -97,6 +99,7 @@ function EmptyState({ message, onExplore }) {
 }
 
 export default function MyJobs() {
+    const { t } = useTranslation();
     const theme = useTheme();
     const navigate = useNavigate();
     const [activeTab, setActiveTab] = useState(0);
@@ -158,12 +161,12 @@ export default function MyJobs() {
     // Get empty state messages for each tab
     const getEmptyMessage = (tabIndex) => {
         const messages = {
-            0: "You haven't applied to any jobs in the last 12 months.",
-            1: "You haven't saved any jobs yet.",
-            2: "You haven't viewed any jobs recently.",
-            3: "You haven't received any job invitations yet.",
+            0: t("myJobs.emptyStates.applied"),
+            1: t("myJobs.emptyStates.saved"),
+            2: t("myJobs.emptyStates.recentViewed"),
+            3: t("myJobs.emptyStates.invited"),
         };
-        return messages[tabIndex] || "No data available.";
+        return messages[tabIndex] || t("myJobs.emptyStates.noData");
     };
 
     // Render job list or empty state
@@ -229,7 +232,7 @@ export default function MyJobs() {
                                     paddingLeft: 3,
                                 }}
                             >
-                                My Jobs
+                                {t("myJobs.title")}
                             </Typography>
                             <Tabs
                                 value={activeTab}
@@ -270,7 +273,7 @@ export default function MyJobs() {
                                             }}
                                         >
                                             <Box component="span" sx={{ px: 1 }}>
-                                                Applied Jobs
+                                                {t("myJobs.tabs.applied")}
                                             </Box>
                                         </Badge>
                                     }
@@ -291,7 +294,7 @@ export default function MyJobs() {
                                             }}
                                         >
                                             <Box component="span" sx={{ px: 1 }}>
-                                                Saved Jobs
+                                                {t("myJobs.tabs.saved")}
                                             </Box>
                                         </Badge>
                                     }
@@ -312,7 +315,7 @@ export default function MyJobs() {
                                             }}
                                         >
                                             <Box component="span" sx={{ px: 1 }}>
-                                                Recent Jobs Viewed
+                                                {t("myJobs.tabs.recentViewed")}
                                             </Box>
                                         </Badge>
                                     }
@@ -333,7 +336,7 @@ export default function MyJobs() {
                                             }}
                                         >
                                             <Box component="span" sx={{ px: 1 }}>
-                                                Invited Jobs
+                                                {t("myJobs.tabs.invited")}
                                             </Box>
                                         </Badge>
                                     }
@@ -356,7 +359,7 @@ export default function MyJobs() {
                             >
                                 <InfoIcon sx={{ fontSize: 18, color: 'text.secondary' }} />
                                 <Typography variant="body2" sx={{ color: 'text.secondary' }}>
-                                    Your applied jobs are stored for the last 12 months.
+                                    {t("myJobs.infoMessage")}
                                 </Typography>
                             </Box>
                         )}

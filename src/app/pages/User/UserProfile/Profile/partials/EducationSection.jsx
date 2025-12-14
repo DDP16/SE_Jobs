@@ -1,8 +1,11 @@
 import React from 'react';
 import { Box, Typography, IconButton, Button } from '@mui/material';
 import { Edit as EditIcon, Delete as DeleteIcon, Add as AddIcon } from '@mui/icons-material';
+import { useTranslation } from 'react-i18next';
 
 export default function EducationSection({ educations, showAll, onToggleShowAll, onEdit, onDelete, onAdd }) {
+  const { t } = useTranslation();
+  
   const formatDate = (edu) => {
     // Handle backend date format (start_date: "2021-09-01", end_date: null for present)
     if (edu.start_date) {
@@ -10,7 +13,7 @@ export default function EducationSection({ educations, showAll, onToggleShowAll,
       const startMonth = startDate.getMonth() + 1; // getMonth() returns 0-11
       const startYear = startDate.getFullYear();
 
-      let endDateStr = 'HIỆN TẠI';
+      let endDateStr = t("profile.currently_studying");
       // If end_date exists and is not null, format it
       if (edu.end_date && edu.end_date !== null) {
         const endDate = new Date(edu.end_date);
@@ -33,7 +36,7 @@ export default function EducationSection({ educations, showAll, onToggleShowAll,
 
     const startDate = startMonth ? `${String(startMonth).padStart(2, '0')}/${startYear}` : startYear;
     const endDate = (endYear === 'Present' || isCurrentlyStudying)
-      ? 'HIỆN TẠI'
+      ? t("profile.currently_studying")
       : (endMonth ? `${String(endMonth).padStart(2, '0')}/${endYear}` : endYear);
     return `${startDate} - ${endDate}`;
   };
@@ -45,7 +48,7 @@ export default function EducationSection({ educations, showAll, onToggleShowAll,
     <Box sx={{ bgcolor: 'background.paper', p: 4, borderRadius: 2, border: 1, borderColor: 'divider', mb: 2 }}>
       <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', mb: 3 }}>
         <Typography variant="h6" sx={{ fontWeight: 600 }}>
-          Học vấn
+          {t("profile.education")}
           {educations.length > 0 && (
             <Typography component="span" variant="body2" sx={{ ml: 1, color: 'text.secondary', fontWeight: 400 }}>
               ({educations.length})
@@ -59,7 +62,7 @@ export default function EducationSection({ educations, showAll, onToggleShowAll,
 
       {educations.length === 0 ? (
         <Typography variant="body2" sx={{ color: 'text.secondary' }}>
-          Chia sẻ trình độ học vấn của bạn
+          {t("profile.education_empty")}
         </Typography>
       ) : (
         <>
@@ -114,7 +117,7 @@ export default function EducationSection({ educations, showAll, onToggleShowAll,
                 variant="text"
                 sx={{ color: 'primary.main', fontWeight: 500, '&:hover': { bgcolor: 'primary.lighter' } }}
               >
-                Show {remainingCount} more educations
+                {t("profile.show_more_educations", { count: remainingCount })}
               </Button>
             </Box>
           )}

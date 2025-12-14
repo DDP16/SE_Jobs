@@ -1,4 +1,5 @@
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 import {
     Box,
     Container,
@@ -11,6 +12,7 @@ import CompanyCard from '../features/CompanyCard';
 import { mockCompanies } from '../../../mocks/mockData';
 
 export default function CompanySection() {
+    const { t } = useTranslation();
     const featuredCompanies = mockCompanies;
     const scrollContainerRef = React.useRef(null);
 
@@ -69,7 +71,7 @@ export default function CompanySection() {
                                 color: 'text.primary'
                             }}
                         >
-                            Top <span style={{ color: '#0041D9' }}>Companies</span>
+                            {t("homeSections.companySection.title")} <span style={{ color: '#0041D9' }}>{t("homeSections.companySection.companies")}</span>
                         </Typography>
                     </Box>
                     <Button
@@ -82,7 +84,7 @@ export default function CompanySection() {
                             fontWeight: 500
                         }}
                     >
-                        View All Companies
+                        {t("homeSections.companySection.viewAllCompanies")}
                     </Button>
                 </Box>
 

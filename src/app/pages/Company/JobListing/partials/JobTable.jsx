@@ -4,41 +4,42 @@ import { Badge } from "@/components/ui";
 import { Button, DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "../../../../components/ui";
 import { Edit, Eye, MoreVertical, Trash2, Diamond, Flame, Zap } from "lucide-react";
 import { useDispatch, useSelector } from "react-redux";
+import { useTranslation } from "react-i18next";
 import { getJobsByCompanyId } from "../../../../modules";
 import { useEffect, useState } from "react";
 
-const columns = [
+const getColumns = (t) => [
     {
-        title: 'Job Title',
+        title: t('jobListing.table.jobTitle'),
         dataIndex: 'title',
         key: 'title',
     },
     {
-        title: 'Company',
+        title: t('jobListing.table.company'),
         dataIndex: 'company',
         key: 'company',
         render: (company) => company.name,
     },
     {
-        title: 'Category',
+        title: t('jobListing.table.category'),
         dataIndex: 'categories',
         key: 'category',
         render: (categories) => categories[0]?.name ?? 'N/A',
     },
     {
-        title: 'Level',
+        title: t('jobListing.table.level'),
         dataIndex: 'levels',
         key: 'level',
         render: (levels) => levels[0]?.name ?? 'N/A',
     },
     {
-        title: 'Salary',
+        title: t('jobListing.table.salary'),
         dataIndex: 'salary',
         key: 'salary',
         render: (salary) => `${salary.from.toLocaleString()} - ${salary.to.toLocaleString()} ${salary.currency}`,
     },
     {
-        title: 'Tags',
+        title: t('jobListing.table.tags'),
         dataIndex: 'tags',
         key: 'tags',
         align: 'center',
@@ -57,7 +58,7 @@ const columns = [
         ),
     },
     {
-        title: 'Status',
+        title: t('jobListing.table.status'),
         dataIndex: 'status',
         key: 'status',
         align: 'center',
@@ -70,12 +71,12 @@ const columns = [
                         : 'bg-red-50 text-red-700 border border-red-200 hover:bg-red-50'
                 }
             >
-                {status}
+                {status === 'Approved' ? t('jobListing.table.approved') : status === 'Pending' ? t('jobListing.table.pending') : t('jobListing.table.rejected')}
             </Badge>
         ),
     },
     {
-        title: 'Date Posted',
+        title: t('jobListing.table.datePosted'),
         dataIndex: 'createdAt',
         key: 'createdAt',
         render: (createdAt) => {
@@ -84,7 +85,7 @@ const columns = [
         },
     },
     {
-        title: 'Due Date',
+        title: t('jobListing.table.dueDate'),
         dataIndex: 'deadline',
         key: 'deadline',
         render: (deadline) => {
@@ -93,21 +94,21 @@ const columns = [
         },
     },
     {
-        title: 'Needs',
+        title: t('jobListing.table.needs'),
         dataIndex: 'quantity',
         key: 'quantity',
         render: (quantity) => (
             <span>
-                {quantity} <span className="text-gray-400"></span>
+                {quantity}
             </span>
         ),
     },
     {
-        title: 'Actions',
+        title: t('jobListing.table.actions'),
         key: 'action',
         align: 'center',
         fixed: 'end',
-        render: () => (
+        render: (_, job) => (
             <DropdownMenu>
                 <DropdownMenuTrigger asChild>
                     <Button variant="ghost" size="icon">
@@ -115,20 +116,17 @@ const columns = [
                     </Button>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent className="bg-white" align="center" side="left">
-                    <DropdownMenuItem onClick={() => {
-                        setSelectedJob(job);
-                        setIsViewDialogOpen(true);
-                    }}>
+                    <DropdownMenuItem>
                         <Eye className="w-4 h-4 mr-2" />
-                        View Details
+                        {t('jobListing.table.viewDetails')}
                     </DropdownMenuItem>
                     <DropdownMenuItem>
                         <Edit className="w-4 h-4 mr-2" />
-                        Edit
+                        {t('jobListing.table.edit')}
                     </DropdownMenuItem>
                     <DropdownMenuItem className="text-red-600">
                         <Trash2 className="w-4 h-4 mr-2" />
-                        Delete
+                        {t('jobListing.table.delete')}
                     </DropdownMenuItem>
                 </DropdownMenuContent>
             </DropdownMenu>
@@ -137,6 +135,7 @@ const columns = [
 ];
 
 export default function JobTable() {
+    const { t } = useTranslation();
     const [currentPage, setCurrentPage] = useState(1);
     const [pageSize, setPageSize] = useState(10);
 
@@ -161,7 +160,7 @@ export default function JobTable() {
             ) : (
                 <div className="relative flex flex-col h-[60vh]">
                     <Table
-                        columns={columns}
+                        columns={getColumns(t)}
                         dataSource={currentData}
                         rowKey="id"
                         pagination={{

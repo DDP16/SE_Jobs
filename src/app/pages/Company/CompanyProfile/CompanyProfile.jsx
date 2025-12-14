@@ -8,11 +8,13 @@ import Benefits from "./partials/Benefits";
 import Techstack from "./partials/Techstack";
 import OfficeLocations from "./partials/OfficeLocation";
 import { useDispatch, useSelector } from "react-redux";
+import { useTranslation } from "react-i18next";
 import { useEffect } from "react";
 import { useParams } from "react-router-dom";
 import { getCompany } from "../../../modules/services/companyService";
 
 export default function CompanyProfile() {
+  const { t } = useTranslation();
   const dispatch = useDispatch();
   const { company, status } = useSelector((state) => state.company);
 
@@ -24,8 +26,8 @@ export default function CompanyProfile() {
     }
   }, [dispatch, companyId]);
 
-  if (status === "loading") return <div>Loading...</div>;
-  if (status === "failed" || !company) return <div>Failed to load company.</div>;
+  if (status === "loading") return <div>{t("companyProfile.loading")}</div>;
+  if (status === "failed" || !company) return <div>{t("companyProfile.failedToLoad")}</div>;
   return (
     <div className="min-h-screen bg-background">
       <TopBar />

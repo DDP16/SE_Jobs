@@ -1,6 +1,7 @@
 import React from 'react';
 import { Container, Box, CircularProgress, Typography } from '@mui/material';
 import { useSelector, useDispatch } from 'react-redux';
+import { useTranslation } from 'react-i18next';
 
 // Partials
 import ProfileHeader from './partials/ProfileHeader';
@@ -26,6 +27,7 @@ import { ProfileModals } from './components/ProfileModals';
 
 export default function Profile() {
     const dispatch = useDispatch();
+    const { t } = useTranslation();
 
     // Check auth state
     const currentUser = useSelector((state) => state.auth.user);
@@ -56,7 +58,7 @@ export default function Profile() {
                 <Box sx={{ textAlign: 'center' }}>
                     <CircularProgress size={48} sx={{ mb: 2 }} />
                     <Typography variant="body1" color="text.secondary">
-                        Đang tải thông tin người dùng...
+                        {t("profile.loading_user_info")}
                     </Typography>
                 </Box>
             </Box>

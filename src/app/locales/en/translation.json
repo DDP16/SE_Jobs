@@ -53,13 +53,54 @@
     "invitations": "Job Invitations"
   },
   "profile": {
-    "updateProfile": "Update Profile"
+    "updateProfile": "Update Profile",
+    "loading_user_info": "Loading user information...",
+    "update_title": "Update title",
+    "personal_link": "Personal link",
+    "about_me": "About Me",
+    "about_me_placeholder": "Introduce your strengths and years of experience",
+    "work_experience": "Work Experience",
+    "work_experience_empty": "Show detailed information about your work experience",
+    "show_more_experiences": "Show {{count}} more experiences",
+    "education": "Education",
+    "education_empty": "Share your educational background",
+    "show_more_educations": "Show {{count}} more educations",
+    "currently": "NOW",
+    "currently_studying": "CURRENTLY",
+    "skills": "Skills",
+    "skills_empty": "List your professional skills",
+    "featured_projects": "Featured Projects",
+    "featured_projects_empty": "Introduce your featured projects",
+    "certificates": "Certificates",
+    "certificates_empty": "Add certificates related to your skills",
+    "issued": "Issued",
+    "awards": "Awards",
+    "awards_empty": "Show awards or achievements you have received",
+    "cv_attachment": "CV Attachment",
+    "cv_description": "Upload your CV for employers to view",
+    "uploaded": "Uploaded",
+    "drag_drop_cv": "Drag and drop CV file",
+    "or": "or",
+    "select_file": "Select file",
+    "pdf_max_5mb": "PDF, max 5MB",
+    "uploaded_on": "Uploaded on",
+    "please_upload_pdf_only": "Please upload PDF files only",
+    "profile_completion": "Profile Completion",
+    "completed": "completed",
+    "tips_title": "Some tips to make your profile stand out",
+    "tip_1": "Upgrade your profile to 100% to attract more employers!",
+    "tip_2": "Upgrade your profile to 100% to attract more employers!",
+    "view_download_cv": "View and Download CV",
+    "languages": "Languages",
+    "languages_empty": "List the languages you know"
   },
   "setting": {
     "my_account": "My Account",
     "notifications": "Notifications",
     "basic_information": "Basic Information",
     "description_account_tab": "This is login information that you can update anytime.",
+    "email": "Email",
+    "description_email": "Your email address cannot be changed.",
     "update_email": "Update Email",
     "description_update_email": "Update your email address to make sure it is safe and secure.",
     "email_verified": "Your email address is verified.",
@@ -90,7 +131,26 @@
   "dashboard": {
     "recentApplicationsHistory": "Recent Applications History",
     "viewAllApplicationsHistory": "View all applications history",
-    "dateApplied": "Date Applied"
+    "dateApplied": "Date Applied",
+    "noEmailProvided": "No email provided"
+  },
+  "myJobs": {
+    "title": "My Jobs",
+    "tabs": {
+      "applied": "Applied Jobs",
+      "saved": "Saved Jobs",
+      "recentViewed": "Recent Jobs Viewed",
+      "invited": "Invited Jobs"
+    },
+    "emptyStates": {
+      "applied": "You haven't applied to any jobs in the last 12 months.",
+      "saved": "You haven't saved any jobs yet.",
+      "recentViewed": "You haven't viewed any jobs recently.",
+      "invited": "You haven't received any job invitations yet.",
+      "noData": "No data available."
+    },
+    "exploreJobs": "Explore jobs",
+    "infoMessage": "Your applied jobs are stored for the last 12 months."
   },
   "job": {
     "loading": "Loading job details...",
@@ -130,7 +190,10 @@
       "industry": "Company Type",
       "jobs_count": "{{count}} jobs",
       "following": "Following",
-      "follow_company": "Follow Company"
+      "follow_company": "Follow Company",
+      "notSpecified": "Not specified",
+      "globalRemote": "Global (Remote)",
+      "publicView": "Public View"
     },
     "info": {
       "title": "Company Information",
@@ -426,6 +489,243 @@
     "addBenefit": "Add benefit",
     "removeBenefit": "Remove benefit",
     "benefitTitlePlaceholder": "Benefit title",
-    "benefitDescriptionPlaceholder": "Benefit description"
+    "benefitDescriptionPlaceholder": "Benefit description",
+    "level": "Level",
+    "levelDesc": "Job level",
+    "selectLevel": "Select level",
+    "jobDescriptionDesc": "Describe the role and candidate requirements"
+  },
+  "jobListing": {
+    "title": "Job Listing",
+    "description": "Here is your jobs listing status from {{dateRange}}.",
+    "dateRange": "July 19 - July 25",
+    "dateRangeSelector": "Date range selector",
+    "dateRangeHint": "Custom date range functionality can be added here",
+    "table": {
+      "jobTitle": "Job Title",
+      "company": "Company",
+      "category": "Category",
+      "level": "Level",
+      "salary": "Salary",
+      "tags": "Tags",
+      "status": "Status",
+      "datePosted": "Date Posted",
+      "dueDate": "Due Date",
+      "needs": "Needs",
+      "actions": "Actions",
+      "viewDetails": "View Details",
+      "edit": "Edit",
+      "delete": "Delete",
+      "approved": "Approved",
+      "pending": "Pending",
+      "rejected": "Rejected"
+    }
+  },
+  "applicantList": {
+    "title": "Total Applicants",
+    "searchPlaceholder": "Search Applicants",
+    "filter": "Filter",
+    "pipelineView": "Pipeline View",
+    "tableView": "Table View",
+    "table": {
+      "fullName": "Full Name",
+      "score": "Score",
+      "hiringStage": "Hiring Stage",
+      "appliedDate": "Applied Date",
+      "jobRole": "Job Role",
+      "action": "Action",
+      "seeApplication": "See Application",
+      "noApplicants": "No applicants",
+      "stages": {
+        "interview": "Interview",
+        "shortlisted": "Shortlisted",
+        "declined": "Declined",
+        "hired": "Hired",
+        "interviewed": "Interviewed"
+      }
+    }
+  },
+  "applicantDetails": {
+    "title": "Applicant Details",
+    "moreAction": "More Action",
+    "appliedJobs": "Applied Jobs",
+    "stage": "Stage",
+    "scheduleInterview": "Schedule Interview",
+    "contact": "Contact",
+    "email": "Email",
+    "phone": "Phone",
+    "instagram": "Instagram",
+    "twitter": "Twitter",
+    "website": "Website",
+    "tabs": {
+      "profile": "Applicant Profile",
+      "resume": "Resume",
+      "hiring": "Hiring Progress",
+      "interview": "Interview Schedule"
+    },
+    "personalInfo": {
+      "title": "Personal Info",
+      "fullName": "Full Name",
+      "gender": "Gender",
+      "dateOfBirth": "Date of Birth",
+      "language": "Language",
+      "address": "Address"
+    },
+    "professionalInfo": {
+      "title": "Professional Info",
+      "aboutMe": "About Me",
+      "currentJob": "Current Job",
+      "experienceInYears": "Experience in Years",
+      "highestQualification": "Highest Qualification Held",
+      "skillSet": "Skill set"
+    },
+    "resume": {
+      "title": "Resume",
+      "description": "View and download applicant's resume",
+      "downloadResume": "Download Resume"
+    },
+    "hiringProgress": {
+      "title": "Hiring Progress",
+      "description": "Track the candidate's progress through the hiring pipeline",
+      "applicationSubmitted": "Application Submitted",
+      "resumeReviewed": "Resume Reviewed",
+      "interviewStage": "Interview Stage",
+      "finalDecision": "Final Decision"
+    },
+    "interviewSchedule": {
+      "title": "Interview Schedule",
+      "noInterviews": "No interviews scheduled yet",
+      "scheduleNewInterview": "Schedule New Interview"
+    }
+  },
+  "companySetting": {
+    "title": "Settings",
+    "tabs": {
+      "overview": "Overview",
+      "socialLinks": "Social Links"
+    },
+    "overview": {
+      "basicInformation": "Basic Information",
+      "basicInformationDesc": "This is company information that you can update anytime.",
+      "companyLogo": "Company Logo",
+      "companyLogoDesc": "This image will be shown publicly as company logo.",
+      "companyDetails": "Company Details",
+      "companyDetailsDesc": "Introduce your company core info quickly to users by fill up company details",
+      "companyName": "Company Name",
+      "website": "Website",
+      "employee": "Employee",
+      "employeePlaceholder": "Enter employee count",
+      "industry": "Industry",
+      "techStack": "Tech Stack",
+      "techStackPlaceholder": "Select technologies",
+      "aboutCompany": "About Company",
+      "aboutCompanyDesc": "Brief description for your company. URLs are hyperlinked.",
+      "description": "Description",
+      "descriptionPlaceholder": "Enter company description...",
+      "saveChanges": "Save Changes",
+      "saving": "Saving...",
+      "errorUpdating": "Error updating company:"
+    }
+  },
+  "companyProfile": {
+    "loading": "Loading...",
+    "failedToLoad": "Failed to load company.",
+    "profileSettings": "Profile Settings"
+  },
+  "companyList": {
+    "hero": {
+      "title": "Discover Top Companies",
+      "subtitle": "Explore thousands of companies hiring now",
+      "searchPlaceholder": "Search by company name, industry, or location...",
+      "searchButton": "Search"
+    },
+    "filters": {
+      "title": "Filters",
+      "clear": "Clear",
+      "companyType": "Company Type",
+      "noCompanyTypesFound": "No company types found",
+      "companySize": "Company Size",
+      "sizes": {
+        "small": "1-10 employees",
+        "medium": "50-200 employees",
+        "large": "200-500 employees",
+        "xlarge": "500-1000 employees",
+        "xxlarge": "1000+ employees"
+      },
+      "location": "Location"
+    },
+    "grid": {
+      "companiesFound": "{{count}} {{count, plural, one {company} other {companies}}} found",
+      "noCompaniesFound": "No companies found",
+      "tryAdjustingFilters": "Try adjusting your filters or search criteria",
+      "sort": {
+        "newest": "Newest",
+        "oldest": "Oldest",
+        "nameAsc": "Name (A-Z)",
+        "nameDesc": "Name (Z-A)"
+      }
+    }
+  },
+  "homeSections": {
+    "hero": {
+      "title": "Find your",
+      "dreamJob": "dream job",
+      "subtitle": "Find internship and job opportunities that match your passion.",
+      "searchPlaceholder": "Job title, keywords, or company",
+      "locationPlaceholder": "City, state, or remote",
+      "popular": "Popular:"
+    },
+    "jobSection": {
+      "title": "Latest",
+      "jobsOpen": "jobs open",
+      "showAllJobs": "Show all jobs",
+      "previous": "Previous",
+      "next": "Next",
+      "noJobsAvailable": "No jobs available at the moment.",
+      "showingJobs": "Showing {{showing}} of {{total}} jobs",
+      "pageInfo": "Page {{current}} of {{total}}"
+    },
+    "categorySection": {
+      "title": "Explore by",
+      "category": "Category",
+      "showAllJobs": "Show all jobs",
+      "viewJobs": "View jobs →",
+      "jobsAvailable": "{{count}} jobs available →"
+    },
+    "hotJobSection": {
+      "title": "Hot jobs from",
+      "topCV": "TopCV",
+      "showAllJobs": "Show all jobs",
+      "previous": "Previous",
+      "next": "Next",
+      "noJobsAvailable": "No jobs available at the moment.",
+      "showingJobs": "Showing {{showing}} of {{total}} jobs",
+      "pageInfo": "Page {{current}} of {{total}}"
+    },
+    "companySection": {
+      "title": "Top",
+      "companies": "Companies",
+      "viewAllCompanies": "View All Companies"
+    },
+    "ctaSection": {
+      "postJob": {
+        "title": "Post a Job",
+        "description": "Reach thousands of qualified candidates and find the perfect fit for your team.",
+        "button": "Post a Job",
+        "learnMore": "Learn More"
+      },
+      "dashboard": {
+        "title": "Dashboard",
+        "description": "Manage your job postings, track applications, and analyze your hiring performance.",
+        "goToDashboard": "Go to Dashboard",
+        "viewDemo": "View Demo"
+      },
+      "stats": {
+        "title": "Join Thousands of Job Seekers",
+        "activeJobs": "Active Jobs",
+        "companies": "Companies",
+        "jobSeekers": "Job Seekers"
+      }
+    }
   }
 }

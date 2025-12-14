@@ -1,4 +1,5 @@
 import React, { useEffect, useState, useMemo } from 'react';
+import { useTranslation } from 'react-i18next';
 import { ArrowForward } from '@mui/icons-material';
 import JobCard from '../features/JobCard';
 import { useSelector, useDispatch } from 'react-redux';
@@ -45,6 +46,7 @@ const transformJobData = (job) => {
 };
 
 export default function JobSection() {
+    const { t } = useTranslation();
     const dispatch = useDispatch();
     const navigate = useNavigate();
     const latestJobs = useSelector(state => state.jobs.jobs);
@@ -142,10 +144,10 @@ export default function JobSection() {
                 {/* Header */}
                 <div className="flex justify-between items-center mb-6">
                     <h3 className="text-3xl md:text-4xl font-bold text-gray-900">
-                        Latest <span className="text-blue-600">jobs open</span>
+                        {t("homeSections.jobSection.title")} <span className="text-blue-600">{t("homeSections.jobSection.jobsOpen")}</span>
                     </h3>
                     <button className="hidden md:flex items-center gap-2 text-blue-600 hover:text-blue-700 font-medium transition-colors">
-                        Show all jobs
+                        {t("homeSections.jobSection.showAllJobs")}
                         <ArrowForward className="w-5 h-5" />
                     </button>
                 </div>
@@ -189,7 +191,7 @@ export default function JobSection() {
                                 }
                             `}
                         >
-                            Previous
+                            {t("homeSections.jobSection.previous")}
                         </button>
 
                         {/* Page Numbers */}
@@ -232,7 +234,7 @@ export default function JobSection() {
                                 }
                             `}
                         >
-                            Next
+                            {t("homeSections.jobSection.next")}
                         </button>
                     </div>
                 )}
@@ -240,7 +242,7 @@ export default function JobSection() {
                 {/* Show message if no jobs and not loading */}
                 {status !== 'loading' && transformedJobs.length === 0 && (
                     <div className="text-center py-10">
-                        <p className="text-gray-500 text-lg">No jobs available at the moment.</p>
+                        <p className="text-gray-500 text-lg">{t("homeSections.jobSection.noJobsAvailable")}</p>
                     </div>
                 )}
 
@@ -248,9 +250,9 @@ export default function JobSection() {
                 {totalPages > 1 && totalItems > 0 && (
                     <div className="text-center mt-4">
                         <p className="text-sm text-gray-600">
-                            Showing {transformedJobs.length} of {totalItems} jobs
+                            {t("homeSections.jobSection.showingJobs", { showing: transformedJobs.length, total: totalItems })}
                             <span className="mx-2">•</span>
-                            Page {currentPage} of {totalPages}
+                            {t("homeSections.jobSection.pageInfo", { current: currentPage, total: totalPages })}
                         </p>
                     </div>
                 )}

@@ -47,15 +47,15 @@ export default function AccountTab() {
 
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 border-t border-gray-200 pt-4">
         <div className="lg:col-span-4">
-          <p className="body-normal font-semibold text-gray-900 mb-2">{t("setting.email") || "Email"}</p>
+          <p className="body-normal font-semibold text-gray-900 mb-2">{t("setting.email")}</p>
           <p className="text-gray-500">
-            {t("setting.description_email") || "Email của bạn không thể thay đổi"}
+            {t("setting.description_email")}
           </p>
         </div>
         <div className="lg:col-span-8">
           <div className="mb-4">
             <label className="block body-normal font-semibold text-gray-700 mb-2">
-              {t("setting.email") || "Email"}
+              {t("setting.email")}
             </label>
             <motion.input
               type="email"
@@ -75,7 +75,7 @@ export default function AccountTab() {
               <Check className="w-3 h-3 text-white" />
             </motion.div>
             <p className="text-gray-500 text-sm">
-              {t("setting.email_verified") || "Email đã được xác thực"}
+              {t("setting.email_verified")}
             </p>
           </div>
         </div>

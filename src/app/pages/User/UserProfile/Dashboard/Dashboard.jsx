@@ -126,7 +126,7 @@ export default function ProfileDashboard() {
                                                 <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
                                                     <EmailIcon sx={{ fontSize: 18, color: 'text.secondary' }} />
                                                     <Typography variant="body2" color="text.secondary">
-                                                        {currentUser?.email || 'No email provided'}
+                                                        {currentUser?.email || t('dashboard.noEmailProvided')}
                                                     </Typography>
                                                 </Box>
                                                 <Button

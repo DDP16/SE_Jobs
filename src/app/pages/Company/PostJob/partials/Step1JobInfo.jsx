@@ -248,10 +248,10 @@ export default function Step1JobInfo({
         <div className="grid grid-cols-1 md:grid-cols-5 gap-4 items-center">
           <div className="md:col-span-2">
             <Label className="text-foreground font-semibold text-lg">
-              {t("postJob.level")} {/* Add this key to your JSON if missing */}
+              {t("postJob.level")}
             </Label>
             <p className="text-normal font-regular text-muted-foreground mt-1">
-              {t("postJob.levelDesc") || "Select a job level"} {/* Optional fallback */}
+              {t("postJob.levelDesc")}
             </p>
           </div>
           <div className="md:col-span-3">
@@ -261,7 +261,7 @@ export default function Step1JobInfo({
                   variant="outline"
                   className="justify-between bg-white border-border hover:bg-white rounded-lg w-full"
                 >
-                  {selectedLevel || t("postJob.selectLevel") /* or use a generic 'Select' */}
+                  {selectedLevel || t("postJob.selectLevel")}
                   <ChevronDown className="ml-2 h-4 w-4 opacity-50" />
                 </Button>
               </DropdownMenuTrigger>

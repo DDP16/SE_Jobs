@@ -60,7 +60,7 @@ export const del = async (uri, onSuccess, onFail) => {
     credentials: "include",
   });
 
-    if (!res.ok) {
+  if (!res.ok) {
     onFail();
     return;
   }

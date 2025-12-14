@@ -46,7 +46,7 @@ export default function Step2JobDescription({
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4 items-start border-b border-border border-gray-300 pb-6">
         <div>
           <Label htmlFor="jobDescriptions" className="text-foreground font-semibold text-lg">
-            {t("postJob.jobDescription")}
+            {t("postJob.jobDescriptionText")}
           </Label>
           <p className="text-normal font-regular text-muted-foreground mt-1">{t("postJob.jobDescriptionDesc")}</p>
         </div>
