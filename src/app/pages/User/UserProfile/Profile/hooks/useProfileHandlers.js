@@ -1,4 +1,6 @@
-import { createEducation, updateEducation, deleteEducation, getEducationByStudentId } from '../../../../../modules/services/educationsService';
+import { createEducation, updateEducation, deleteEducation } from '../../../../../modules/services/educationsService';
+import { createProject, updateProject, deleteProject } from '../../../../../modules/services/projectsService';
+import { createCertificate, updateCertificate, deleteCertificate } from '../../../../../modules/services/certificateService';
 import { updateUser } from '../../../../../modules/services/userService';
 import { getMe } from '../../../../../modules/services/authService';
 
@@ -21,6 +23,8 @@ export const useProfileHandlers = ({
     selectedExperience,
     selectedEducation,
     selectedSkillGroup,
+    selectedProject,
+    selectedCertificate,
     dispatch,
     currentUser,
 }) => {
@@ -130,7 +134,8 @@ export const useProfileHandlers = ({
                 await dispatch(createEducation(educationData)).unwrap();
             }
 
-            await dispatch(getEducationByStudentId()).unwrap();
+            // Refresh user data to get updated education list
+            await dispatch(getMe()).unwrap();
 
             setSelectedEducation(null);
             closeModal('education');
@@ -146,10 +151,8 @@ export const useProfileHandlers = ({
             try {
                 await dispatch(deleteEducation(id)).unwrap();
 
-                // Refresh education list from backend
-                if (currentUser?.student_info?.id) {
-                    await dispatch(getEducationByStudentId()).unwrap();
-                }
+                // Refresh user data to get updated education list
+                await dispatch(getMe()).unwrap();
             } catch (error) {
                 console.error('Error deleting education:', error);
                 alert(error || 'Có lỗi xảy ra khi xóa thông tin học vấn');
@@ -201,16 +204,119 @@ export const useProfileHandlers = ({
     };
 
     // Projects Handlers
-    const handleDeleteProject = (id) => {
+    const handleSaveProject = async (formData) => {
+        try {
+            if (!formData.projectName || !formData.startYear || !formData.startMonth) {
+                alert('Vui lòng điền đầy đủ thông tin bắt buộc');
+                return;
+            }
+
+            if (!currentUser?.student_info?.id) {
+                alert('Không tìm thấy thông tin sinh viên. Vui lòng đăng nhập lại.');
+                return;
+            }
+
+            const startMonth = String(formData.startMonth || '').padStart(2, '0');
+            const startDate = `${formData.startYear}-${startMonth}-01`;
+            let endDate = null;
+            if (!formData.isCurrentlyWorking && formData.endYear && formData.endMonth) {
+                const endMonth = String(formData.endMonth).padStart(2, '0');
+                endDate = `${formData.endYear}-${endMonth}-01`;
+            }
+
+            const projectData = {
+                name: formData.projectName || '',
+                start_date: startDate,
+                end_date: endDate, // null if currently working
+                description: formData.description || '',
+                website: formData.websiteLink || '',
+            };
+
+            if (selectedProject?.id) {
+                await dispatch(updateProject({ id: selectedProject.id, projectData })).unwrap();
+            } else {
+                await dispatch(createProject(projectData)).unwrap();
+            }
+
+            // Refresh user data to get updated projects list
+            await dispatch(getMe()).unwrap();
+
+            setSelectedProject(null);
+            closeModal('projects');
+        } catch (error) {
+            console.error('Error saving project:', error);
+            const errorMessage = typeof error === 'string' ? error : (error?.message || 'Có lỗi xảy ra khi lưu thông tin dự án');
+            alert(errorMessage);
+        }
+    };
+
+    const handleDeleteProject = async (id) => {
         if (window.confirm('Bạn có chắc chắn muốn xóa dự án này?')) {
-            setProjects(prev => prev.filter(proj => proj.id !== id));
+            try {
+                await dispatch(deleteProject(id)).unwrap();
+
+                // Refresh user data to get updated projects list
+                await dispatch(getMe()).unwrap();
+            } catch (error) {
+                console.error('Error deleting project:', error);
+                alert(error || 'Có lỗi xảy ra khi xóa dự án');
+            }
         }
     };
 
     // Certificates Handlers
-    const handleDeleteCertificate = (id) => {
+    const handleSaveCertificate = async (formData) => {
+        try {
+            if (!formData.certificateName || !formData.organization || !formData.issueYear || !formData.issueMonth) {
+                alert('Vui lòng điền đầy đủ thông tin bắt buộc');
+                return;
+            }
+
+            if (!currentUser?.student_info?.id) {
+                alert('Không tìm thấy thông tin sinh viên. Vui lòng đăng nhập lại.');
+                return;
+            }
+
+            const issueMonth = String(formData.issueMonth || '').padStart(2, '0');
+            const issueDate = `${formData.issueYear}-${issueMonth}-01`;
+
+            const certificateData = {
+                name: formData.certificateName || '',
+                organization: formData.organization || '',
+                issue_date: issueDate,
+                url: formData.certificateUrl || '',
+                description: formData.description || '',
+            };
+
+            if (selectedCertificate?.id) {
+                await dispatch(updateCertificate({ id: selectedCertificate.id, certificateData })).unwrap();
+            } else {
+                await dispatch(createCertificate(certificateData)).unwrap();
+            }
+
+            // Refresh user data to get updated certificates list
+            await dispatch(getMe()).unwrap();
+
+            setSelectedCertificate(null);
+            closeModal('certificates');
+        } catch (error) {
+            console.error('Error saving certificate:', error);
+            const errorMessage = typeof error === 'string' ? error : (error?.message || 'Có lỗi xảy ra khi lưu thông tin chứng chỉ');
+            alert(errorMessage);
+        }
+    };
+
+    const handleDeleteCertificate = async (id) => {
         if (window.confirm('Bạn có chắc chắn muốn xóa chứng chỉ này?')) {
-            setCertificates(prev => prev.filter(cert => cert.id !== id));
+            try {
+                await dispatch(deleteCertificate(id)).unwrap();
+
+                // Refresh user data to get updated certificates list
+                await dispatch(getMe()).unwrap();
+            } catch (error) {
+                console.error('Error deleting certificate:', error);
+                alert(error || 'Có lỗi xảy ra khi xóa chứng chỉ');
+            }
         }
     };
 
@@ -233,7 +339,9 @@ export const useProfileHandlers = ({
         handleDeleteEducation,
         handleSaveSkillGroup,
         handleDeleteSkillGroup,
+        handleSaveProject,
         handleDeleteProject,
+        handleSaveCertificate,
         handleDeleteCertificate,
         handleDeleteAward,
     };

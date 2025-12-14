@@ -17,6 +17,7 @@ export const ProfileModals = ({
     closeModal,
     user,
     skills,
+    about,
     selectedExperience,
     selectedEducation,
     selectedSkillGroup,
@@ -43,6 +44,7 @@ export const ProfileModals = ({
             <AboutModal
                 open={modals.about}
                 onOpenChange={(open) => open ? openModal('about') : closeModal('about')}
+                initialData={about ? { about, content: about } : null}
                 onSave={handlers.handleSaveAbout}
             />
 
@@ -53,14 +55,14 @@ export const ProfileModals = ({
                     else { closeModal('experience'); setSelectedExperience(null); }
                 }}
                 initialData={selectedExperience ? {
-                    jobTitle: selectedExperience.role,
+                    jobTitle: selectedExperience.role || selectedExperience.position,
                     company: selectedExperience.company,
                     startMonth: selectedExperience.startMonth || '',
                     startYear: selectedExperience.startYear || '',
                     endMonth: selectedExperience.endMonth || '',
                     endYear: selectedExperience.endYear === 'Present' ? '' : selectedExperience.endYear,
-                    isCurrentlyWorking: selectedExperience.isCurrentlyWorking,
-                    description: selectedExperience.description || '',
+                    isCurrentlyWorking: selectedExperience.isCurrentlyWorking || selectedExperience.is_current || false,
+                    description: selectedExperience.description || selectedExperience.content || '',
                 } : null}
                 onSave={handlers.handleSaveExperience}
             />
@@ -141,11 +143,43 @@ export const ProfileModals = ({
                     if (open) openModal('projects');
                     else { closeModal('projects'); setSelectedProject(null); }
                 }}
-                initialData={selectedProject}
-                onSave={(formData) => {
-                    console.log('Project saved:', formData);
-                    closeModal('projects');
-                }}
+                initialData={selectedProject ? (() => {
+                    let startMonth = selectedProject.startMonth || '';
+                    let startYear = selectedProject.startYear || '';
+                    let endMonth = selectedProject.endMonth || '';
+                    let endYear = selectedProject.endYear || '';
+                    let isCurrentlyWorking = selectedProject.isCurrentlyWorking || false;
+
+                    if (selectedProject.start_date) {
+                        const startDate = new Date(selectedProject.start_date);
+                        startMonth = String(startDate.getMonth() + 1).padStart(2, '0');
+                        startYear = String(startDate.getFullYear());
+
+                        if (selectedProject.end_date && selectedProject.end_date !== null) {
+                            const endDate = new Date(selectedProject.end_date);
+                            endMonth = String(endDate.getMonth() + 1).padStart(2, '0');
+                            endYear = String(endDate.getFullYear());
+                            isCurrentlyWorking = false;
+                        } else {
+                            // end_date is null means currently working
+                            endMonth = '';
+                            endYear = '';
+                            isCurrentlyWorking = true;
+                        }
+                    }
+
+                    return {
+                        projectName: selectedProject.name || '',
+                        startMonth,
+                        startYear,
+                        endMonth,
+                        endYear,
+                        isCurrentlyWorking,
+                        description: selectedProject.description || '',
+                        websiteLink: selectedProject.website || selectedProject.website_link || '',
+                    };
+                })() : null}
+                onSave={handlers.handleSaveProject}
             />
 
             <CertificatesModal
@@ -154,11 +188,26 @@ export const ProfileModals = ({
                     if (open) openModal('certificates');
                     else { closeModal('certificates'); setSelectedCertificate(null); }
                 }}
-                initialData={selectedCertificate}
-                onSave={(formData) => {
-                    console.log('Certificate saved:', formData);
-                    closeModal('certificates');
-                }}
+                initialData={selectedCertificate ? (() => {
+                    let issueMonth = selectedCertificate.issueMonth || '';
+                    let issueYear = selectedCertificate.issueYear || '';
+
+                    if (selectedCertificate.issue_date) {
+                        const issueDate = new Date(selectedCertificate.issue_date);
+                        issueMonth = String(issueDate.getMonth() + 1).padStart(2, '0');
+                        issueYear = String(issueDate.getFullYear());
+                    }
+
+                    return {
+                        certificateName: selectedCertificate.name || '',
+                        organization: selectedCertificate.organization || '',
+                        issueMonth,
+                        issueYear,
+                        certificateUrl: selectedCertificate.url || selectedCertificate.certificate_url || '',
+                        description: selectedCertificate.description || '',
+                    };
+                })() : null}
+                onSave={handlers.handleSaveCertificate}
             />
 
             <AwardsModal

@@ -13,6 +13,8 @@ import employmentTypesReducer from "./app/modules/services/employmentTypeService
 import levelsReducer from "./app/modules/services/levelsService";
 import educationsReducer from "./app/modules/services/educationsService";
 import mediaReducer from "./app/modules/services/mediaService";
+import projectsReducer from "./app/modules/services/projectsService";
+import certificatesReducer from "./app/modules/services/certificateService";
 
 export default configureStore({
   reducer: {
@@ -30,5 +32,7 @@ export default configureStore({
     levels: levelsReducer,
     educations: educationsReducer,
     media: mediaReducer,
+    projects: projectsReducer,
+    certificates: certificatesReducer,
   },
 });

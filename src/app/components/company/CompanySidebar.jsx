@@ -25,8 +25,8 @@ const navigation = [
   { name: "Company Branches", icon: Building2, badge: null, path: "/branches" },
   { name: "All Applicants", icon: Users, badge: null, path: "/applicants/1" },
   { name: "Job Listing", icon: FileText, badge: null, path: "/job-listing" },
-  { name: "My Schedule", icon: Calendar, badge: null },
-  { name: "Employee", icon: User, badge: null },
+  // { name: "My Schedule", icon: Calendar, badge: null },
+  // { name: "Employee", icon: User, badge: null },
 ];
 
 export default function CompanySidebar() {
