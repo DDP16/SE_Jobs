@@ -53,8 +53,7 @@ export default function SignIn() {
         if (loginWithEmail.fulfilled.match(result)) {
           console.log("Login successful: ", result.payload);
           showSuccess("Login successful!");
-          await dispatch(getMe());
-          nav(from, { replace: true });
+          nav("/", { replace: true });
         } else {
           console.error("Login failed: ", result);
           showError("Login failed: " + (result.payload || "Unknown error"));
