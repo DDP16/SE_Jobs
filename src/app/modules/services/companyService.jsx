@@ -77,8 +77,8 @@ const initialState = {
     company: null,
     companies: [],
     status: "idle",
-    pagination: null,
     error: null,
+    pagination: {}
 }
 
 const companiesSlice = createSlice({
@@ -94,8 +94,8 @@ const companiesSlice = createSlice({
             })
             .addCase(getCompanies.fulfilled, (state, action) => {
                 state.status = "succeeded";
+                state.pagination = action.payload?.pagination || {};
                 state.companies = action.payload?.data ?? action.payload ?? [];
-                state.pagination = action.payload?.pagination || null;
             })
             .addCase(getCompanies.rejected, (state, action) => {
                 state.status = "failed";
