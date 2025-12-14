@@ -14,11 +14,11 @@ import {
   DialogTitle,
   Label,
 } from "@/components/ui";
-import { 
-  getCompanyBranches, 
-  createCompanyBranch, 
-  updateCompanyBranch, 
-  deleteCompanyBranch 
+import {
+  getCompanyBranches,
+  createCompanyBranch,
+  updateCompanyBranch,
+  deleteCompanyBranch
 } from '../../../modules/services/companyBranchesService';
 
 export default function CompanyBranches() {
@@ -44,7 +44,7 @@ export default function CompanyBranches() {
 
   useEffect(() => {
     if (companyId) {
-      dispatch(getCompanyBranches({ page: currentPage, limit: pageSize, companyId: companyId }) );
+      dispatch(getCompanyBranches({ page: currentPage, limit: pageSize, companyId: companyId }));
     }
   }, [currentPage, pageSize, companyId, dispatch]);
 
@@ -96,15 +96,15 @@ export default function CompanyBranches() {
       fixed: 'right',
       render: (_, branch) => (
         <div className="flex items-center justify-center gap-2">
-          <Button 
-            variant="ghost" 
+          <Button
+            variant="ghost"
             size="icon"
             onClick={() => openEditDialog(branch)}
           >
             <Edit className="w-4 h-4" />
           </Button>
-          <Button 
-            variant="ghost" 
+          <Button
+            variant="ghost"
             size="icon"
             onClick={() => handleDeleteBranch(branch.id)}
           >
@@ -117,12 +117,12 @@ export default function CompanyBranches() {
 
   const handleCreateBranch = async () => {
     await dispatch(createCompanyBranch(
-      { 
+      {
         ...formData,
         country_id: parseInt(formData.country_id),
         province_id: parseInt(formData.province_id),
         ward_id: parseInt(formData.ward_id),
-        company_id: companyId 
+        company_id: companyId
       }
     ));
     setIsCreateDialogOpen(false);
@@ -131,9 +131,9 @@ export default function CompanyBranches() {
   };
 
   const handleUpdateBranch = async () => {
-    await dispatch(updateCompanyBranch({ 
-      id: selectedBranch.id, 
-      branchData: formData 
+    await dispatch(updateCompanyBranch({
+      id: selectedBranch.id,
+      branchData: formData
     }));
     setIsEditDialogOpen(false);
     setSelectedBranch(null);
@@ -182,8 +182,8 @@ export default function CompanyBranches() {
               className={`pl-10 focus:w-[25vw] transition-all ${searchQuery ? 'w-[25vw]' : ''}`}
             />
           </div>
-          <Button 
-            onClick={() => setIsCreateDialogOpen(true)} 
+          <Button
+            onClick={() => setIsCreateDialogOpen(true)}
             className="bg-primary/90 hover:bg-primary text-white hover:scale-105 rounded-lg transition-all cursor-pointer"
           >
             <Plus className="w-4 h-4" />
@@ -280,7 +280,7 @@ export default function CompanyBranches() {
             <Button className="rounded-lg cursor-pointer" variant="outline" onClick={() => setIsCreateDialogOpen(false)}>
               Cancel
             </Button>
-            <Button 
+            <Button
               className="bg-primary/90 hover:bg-primary text-white rounded-lg cursor-pointer"
               onClick={handleCreateBranch}
               disabled={!formData.name || !formData.address}
@@ -353,7 +353,7 @@ export default function CompanyBranches() {
             <Button variant="outline" onClick={() => setIsEditDialogOpen(false)}>
               Cancel
             </Button>
-            <Button 
+            <Button
               className="bg-primary/90 hover:bg-primary text-white"
               onClick={handleUpdateBranch}
               disabled={!formData.name || !formData.address}

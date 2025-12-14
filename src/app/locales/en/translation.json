@@ -30,7 +30,6 @@
   "applied": "{{count}} applied",
   "of": "of",
   "capacity": "capacity",
-
   "auth": {
     "sign_in": "Sign in",
     "sign_up": "Sign up",
@@ -43,7 +42,6 @@
     "confirm_password": "Confirm your Password",
     "forgot_password": "Forgot Password"
   },
-
   "userActivities": {
     "title": "Your Activities"
   },
@@ -169,6 +167,10 @@
     "posted_on": "Job Posted On",
     "job_type": "Job Type",
     "salary": "Salary",
+    "quantity": "Quantity",
+    "experience": "Experience",
+    "position": "Position",
+    "gender": "Gender",
     "categories": "Categories",
     "no_categories_listed": "No categories listed.",
     "required_skills": "Required Skills",
@@ -223,40 +225,30 @@
       "greeting": "Good morning, {{name}} 👋",
       "statisticReport": "Here is your statistics report from {{from}} to {{to}}",
       "dateRange": "{{from}} - {{to}}",
-
       "newCandidates": "New Candidates",
       "scheduleToday": "Schedule Today",
       "messagesReceived": "Messages Received",
-
       "jobStatistics": "Job Statistics",
       "showingJobStatistic": "Showing job statistics from {{from}} to {{to}}",
-
       "week": "Week",
       "month": "Month",
       "year": "Year",
-
       "overview": "Overview",
       "jobsview": "Jobs View",
       "jobsapplied": "Jobs Applied",
-
       "jobView": "Job View",
       "jobApplied": "Job Applied",
-
       "jobOpen": "Job Open",
       "jobsOpened": "Jobs opened this week",
-
       "applicantsSummary": "Applicants Summary",
       "applicants": "Applicants",
-
       "fullTime": "Full Time",
       "partTime": "Part Time",
       "internship": "Internship",
       "contract": "Contract",
       "remote": "Remote",
-
       "jobUpdates": "Job Updates",
       "viewAll": "View All",
-
       "applied": "{{count}} Applied",
       "of": "of",
       "capacity": "Capacity"
@@ -425,25 +417,20 @@
     "perksBenefit": "Perks & Benefits",
     "perksBenefitDesc": "Benefits and perks offered for this role",
     "perksBenefitHint": "Add benefits to attract suitable candidates",
-
     "previous": "Previous",
     "nextStep": "Next Step",
     "postJob": "Post Job",
     "save": "Save",
     "cancel": "Cancel",
     "edit": "Edit",
-
     "loadingCompanyProfile": "Loading company profile...",
     "companyProfileNotFound": "Company profile not found.",
-
     "basicInformation": "Basic Information",
     "basicInformationDesc": "Key details about the job opening",
-
     "jobTitle": "Job Title",
     "jobTitleDesc": "Title displayed to candidates",
     "jobTitlePlaceholder": "e.g. Frontend Developer",
     "jobTitleHint": "Use a clear and common job title",
-
     "employmentType": "Employment Type",
     "employmentTypeDesc": "Working arrangement for this role",
     "fulltime": "Full-time",
@@ -451,40 +438,30 @@
     "remote": "Remote",
     "internship": "Internship",
     "contract": "Contract",
-
     "salaryRange": "Salary Range",
     "salaryRangeDesc": "Expected salary for this role",
     "to": "to",
-
     "category": "Category",
     "categoryDesc": "Job category",
     "selectCategory": "Select category",
-
     "skills": "Skills",
     "skillsDesc": "Skills required for this position",
     "searchSkills": "Search skills",
     "noSkillsFound": "No skills found",
-
     "details": "Job Details",
     "detailsDesc": "Detailed information about the job",
-
     "jobDescriptionText": "Job Description",
     "jobDescriptionPlaceholder": "Describe responsibilities and objectives",
-
     "responsibilities": "Responsibilities",
     "responsibilitiesDesc": "Main duties of this role",
     "responsibilitiesPlaceholder": "List key responsibilities",
-
     "whoYouAre": "Who You Are",
     "whoYouAreDesc": "Candidate requirements",
     "whoYouArePlaceholder": "Experience, skills, qualifications",
-
     "niceToHaves": "Nice to Have",
     "niceToHavesDesc": "Optional but beneficial qualifications",
     "niceToHavesPlaceholder": "e.g. experience with X",
-
     "maxCharacters": "Maximum {{max}} characters",
-
     "benefits": "Benefits",
     "addBenefit": "Add benefit",
     "removeBenefit": "Remove benefit",

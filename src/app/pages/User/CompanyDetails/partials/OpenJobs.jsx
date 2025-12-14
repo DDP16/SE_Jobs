@@ -48,8 +48,10 @@ export default function OpenJobs({ company = {} }) {
 
     return filteredJobs.slice(0, 8).map((job) => {
       console.log("Transforming job:", job);
-      // Get location from various possible fields
-      const location = job.locations?.[0]?.name ||
+      // Get location from company branches
+      const location = job.company?.companyBranches?.[0]
+        ? `${job.company.companyBranches[0].address || ""}, ${job.company.companyBranches[0].provinces?.name || ""}, ${job.company.companyBranches[0].countries?.name || ""}`.trim() || "Location"
+        : job.locations?.[0]?.name ||
         job.workLocation?.[0] ||
         job.location ||
         job.company_branches?.[0]?.address ||
@@ -61,19 +63,17 @@ export default function OpenJobs({ company = {} }) {
         : job.company?.name || company?.name || "Company";
 
       // Get job type/working time
-      const jobType = job.working_time ||
+      const jobType = (Array.isArray(job.workingTime) && job.workingTime[0]) ||
+        job.working_time ||
         job.type ||
-        (Array.isArray(job.workingTime) ? job.workingTime[0] : null) ||
         "Full-Time";
 
-      // Get category
       const category = job.categories?.[0]?.name ||
         (Array.isArray(job.categories) && job.categories[0]
           ? (typeof job.categories[0] === 'string' ? job.categories[0] : job.categories[0]?.name || job.categories[0])
           : null) ||
         "General";
 
-      // Get level/style
       const style = job.levels?.[0]?.name ||
         (Array.isArray(job.levels) && job.levels[0]
           ? (typeof job.levels[0] === 'string' ? job.levels[0] : job.levels[0]?.name || job.levels[0])

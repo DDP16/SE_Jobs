@@ -1,20 +1,40 @@
+import { useEffect } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 import { ChevronDown } from 'lucide-react';
+import {
+    Button,
+    DropdownMenu,
+    DropdownMenuContent,
+    DropdownMenuItem,
+    DropdownMenuTrigger,
+} from '../../../../components/ui';
+import { getProvinces, getWards } from '../../../../modules/services/addressService';
 
 export function AddressSection({ address, onAddressChange }) {
-    const provinces = [
-        'Hà Nội', 'Hồ Chí Minh', 'Đà Nẵng', 'Hải Phòng', 'Cần Thơ',
-        'Bình Dương', 'Đồng Nai', 'Khánh Hòa', 'Lâm Đồng', 'Thanh Hóa'
-    ];
+    const dispatch = useDispatch();
+    const provincesRaw = useSelector((state) => state.address?.provinces?.data || state.address?.provinces || []);
+    const wardsRaw = useSelector((state) => state.address?.wards?.data || state.address?.wards || []);
+    const provinces = Array.isArray(provincesRaw) ? provincesRaw : [];
+    const wards = Array.isArray(wardsRaw) ? wardsRaw : [];
+    const countries = [{ id: 1, name: 'Việt Nam' }];
 
-    const districts = [
-        'District 1', 'District 2', 'District 3', 'District 4', 'District 5',
-        'Tân Bình', 'Bình Thạnh', 'Phú Nhuận', 'Thủ Đức', 'Gò Vấp'
-    ];
 
-    const wards = [
-        'Ward 1', 'Ward 2', 'Ward 3', 'Ward 4', 'Ward 5',
-        'Bến Nghé', 'Đa Kao', 'Tân Định', 'Cô Giang', 'Nguyễn Cư Trinh'
-    ];
+    // Fetch provinces when component mounts
+    useEffect(() => {
+        if (countries.length > 0) {
+            dispatch(getProvinces(countries[0].id));
+        }
+    }, [dispatch]);
+
+    // Fetch wards when province is selected
+    useEffect(() => {
+        if (address?.province) {
+            const province = provinces.find(p => p.name === address.province);
+            if (province) {
+                dispatch(getWards(province.id));
+            }
+        }
+    }, [address?.province, provinces, dispatch]);
 
     // Initialize address with default values if null/undefined
     const currentAddress = address || {
@@ -25,7 +45,18 @@ export function AddressSection({ address, onAddressChange }) {
     };
 
     const handleChange = (field, value) => {
-        onAddressChange({ ...currentAddress, [field]: value });
+        const newAddress = { ...currentAddress, [field]: value };
+
+        // If province changes, reset ward and fetch new wards
+        if (field === 'province') {
+            newAddress.ward = '';
+            const province = provinces.find(p => p.name === value);
+            if (province) {
+                dispatch(getWards(province.id));
+            }
+        }
+
+        onAddressChange(newAddress);
     };
 
     return (
@@ -52,27 +83,35 @@ export function AddressSection({ address, onAddressChange }) {
                 {/* Province/City, District, Ward */}
                 <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
                     {/* Province */}
-                    <div className="relative">
+                    <div>
                         <label htmlFor="province" className="block mb-2 text-gray-700">
                             Province/City <span className="text-red-500">*</span>
                         </label>
-                        <select
-                            id="province"
-                            value={currentAddress.province || ''}
-                            onChange={(e) => handleChange('province', e.target.value)}
-                            className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-600 focus:border-transparent appearance-none bg-white"
-                        >
-                            <option value="">Select Province</option>
-                            {provinces.map((province) => (
-                                <option key={province} value={province}>
-                                    {province}
-                                </option>
-                            ))}
-                        </select>
-                        <ChevronDown className="absolute right-4 top-[42px] -translate-y-1/2 w-5 h-5 text-gray-400 pointer-events-none" />
+                        <DropdownMenu>
+                            <DropdownMenuTrigger asChild>
+                                <Button
+                                    variant="outline"
+                                    className="justify-between bg-white border-gray-300 hover:bg-white rounded-lg w-full h-11"
+                                >
+                                    {currentAddress.province || 'Select Province'}
+                                    <ChevronDown className="ml-2 h-4 w-4 opacity-50" />
+                                </Button>
+                            </DropdownMenuTrigger>
+                            <DropdownMenuContent
+                                side="bottom"
+                                align="start"
+                                className="bg-white rounded-lg overflow-y-auto max-h-[25vh] scrollbar-hide"
+                            >
+                                {provinces.map((province) => (
+                                    <DropdownMenuItem key={province.id} onClick={() => handleChange('province', province.name)}>
+                                        {province.name}
+                                    </DropdownMenuItem>
+                                ))}
+                            </DropdownMenuContent>
+                        </DropdownMenu>
                     </div>
 
-                    {/* District */}
+                    {/* District - Keep as select for now, can be updated later */}
                     <div className="relative">
                         <label htmlFor="district" className="block mb-2 text-gray-700">
                             District <span className="text-red-500">*</span>
@@ -84,34 +123,47 @@ export function AddressSection({ address, onAddressChange }) {
                             className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-600 focus:border-transparent appearance-none bg-white"
                         >
                             <option value="">Select District</option>
-                            {districts.map((district) => (
-                                <option key={district} value={district}>
-                                    {district}
-                                </option>
-                            ))}
+                            <option value="District 1">District 1</option>
+                            <option value="District 2">District 2</option>
+                            <option value="District 3">District 3</option>
+                            <option value="Tân Bình">Tân Bình</option>
+                            <option value="Bình Thạnh">Bình Thạnh</option>
                         </select>
                         <ChevronDown className="absolute right-4 top-[42px] -translate-y-1/2 w-5 h-5 text-gray-400 pointer-events-none" />
                     </div>
 
                     {/* Ward */}
-                    <div className="relative">
+                    <div>
                         <label htmlFor="ward" className="block mb-2 text-gray-700">
                             Ward
                         </label>
-                        <select
-                            id="ward"
-                            value={currentAddress.ward || ''}
-                            onChange={(e) => handleChange('ward', e.target.value)}
-                            className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-600 focus:border-transparent appearance-none bg-white"
-                        >
-                            <option value="">Select Ward</option>
-                            {wards.map((ward) => (
-                                <option key={ward} value={ward}>
-                                    {ward}
-                                </option>
-                            ))}
-                        </select>
-                        <ChevronDown className="absolute right-4 top-[42px] -translate-y-1/2 w-5 h-5 text-gray-400 pointer-events-none" />
+                        <DropdownMenu>
+                            <DropdownMenuTrigger asChild>
+                                <Button
+                                    variant="outline"
+                                    disabled={!currentAddress.province}
+                                    className="justify-between bg-white border-gray-300 hover:bg-white rounded-lg w-full h-11 disabled:bg-gray-100"
+                                >
+                                    {currentAddress.ward || 'Select Ward'}
+                                    <ChevronDown className="ml-2 h-4 w-4 opacity-50" />
+                                </Button>
+                            </DropdownMenuTrigger>
+                            <DropdownMenuContent
+                                side="bottom"
+                                align="start"
+                                className="bg-white rounded-lg overflow-y-auto max-h-[25vh] scrollbar-hide"
+                            >
+                                {wards.length > 0 ? (
+                                    wards.map((ward) => (
+                                        <DropdownMenuItem key={ward.id} onClick={() => handleChange('ward', ward.name)}>
+                                            {ward.name}
+                                        </DropdownMenuItem>
+                                    ))
+                                ) : (
+                                    <div className="px-4 py-2 text-gray-500 text-sm">No wards available</div>
+                                )}
+                            </DropdownMenuContent>
+                        </DropdownMenu>
                     </div>
                 </div>
             </div>

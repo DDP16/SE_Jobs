@@ -45,19 +45,26 @@ export default function JobDetails({ job }) {
     visible: { opacity: 1, y: 0 },
   };
 
-  // Normalize arrays - ensure they are arrays before mapping
-  const normalizeArray = (value) => {
+  // Parse string with HTML breaks to array
+  const parseStringToArray = (value) => {
     if (Array.isArray(value)) return value;
-    if (!value) return [];
-    // If it's a string, try to parse it or return empty array
-    if (typeof value === 'string') return [];
-    // If it's an object, return empty array
+    if (typeof value === 'string' && value.trim()) {
+      // Split by HTML breaks and clean
+      return value.split(/<br\s*\/?>/)
+        .map(line => line.trim())
+        .filter(line => line.length > 0);
+    }
     return [];
   };
 
-  const responsibilities = normalizeArray(job.responsibilities);
-  const requirements = normalizeArray(job.requirements || job.requirement);
-  const niceToHaves = normalizeArray(job.niceToHaves || job.nice_to_haves);
+  // Handle responsibilities - ready for future data
+  const responsibilities = parseStringToArray(job.responsibilities);
+
+  // Handle requirements
+  const requirements = parseStringToArray(job.requirement);
+
+  // Handle nice to haves - ready for future data
+  const niceToHaves = parseStringToArray(job.nice_to_haves || job.niceToHaves);
 
   return (
     <motion.div
@@ -66,6 +73,7 @@ export default function JobDetails({ job }) {
       animate="visible"
       className="space-y-8"
     >
+      {/* Description */}
       <motion.section variants={itemVariants}>
         <h4 className="text-2xl font-bold text-foreground mb-4">{t("job.description")}</h4>
         <p className="text-muted-foreground leading-relaxed">
@@ -73,53 +81,50 @@ export default function JobDetails({ job }) {
         </p>
       </motion.section>
 
-      <motion.section variants={itemVariants}>
-        <h4 className="text-2xl font-bold text-foreground mb-4">{t("job.responsibilities")}</h4>
-        <ul className="space-y-2">
-          {responsibilities.length > 0 ? (
-            responsibilities.map((item, index) => (
+      {/* Responsibilities - will show when API provides data */}
+      {responsibilities.length > 0 && (
+        <motion.section variants={itemVariants}>
+          <h4 className="text-2xl font-bold text-foreground mb-4">{t("job.responsibilities")}</h4>
+          <ul className="space-y-2">
+            {responsibilities.map((item, index) => (
               <li key={index} className="flex gap-3 text-muted-foreground">
                 <CircleCheck className="w-5 h-5 text-accent-green shrink-0 mt-0.5" />
                 <span>{item}</span>
               </li>
-            ))
-          ) : (
-            <li>{t("job.no_responsibilities")}</li>
-          )}
-        </ul>
-      </motion.section>
+            ))}
+          </ul>
+        </motion.section>
+      )}
 
-      <motion.section variants={itemVariants}>
-        <h4 className="text-2xl font-bold text-foreground mb-4">{t("job.who_you_are")}</h4>
-        <ul className="space-y-2">
-          {requirements.length > 0 ? (
-            requirements.map((item, index) => (
+      {/* Requirements */}
+      {requirements.length > 0 && (
+        <motion.section variants={itemVariants}>
+          <h4 className="text-2xl font-bold text-foreground mb-4">{t("job.who_you_are")}</h4>
+          <ul className="space-y-2">
+            {requirements.map((item, index) => (
               <li key={index} className="flex gap-3 text-muted-foreground">
                 <CircleCheck className="w-5 h-5 text-accent-green shrink-0 mt-0.5" />
                 <span>{item}</span>
               </li>
-            ))
-          ) : (
-            <li>{t("job.no_requirements")}</li>
-          )}
-        </ul>
-      </motion.section>
+            ))}
+          </ul>
+        </motion.section>
+      )}
 
-      <motion.section variants={itemVariants}>
-        <h4 className="text-2xl font-bold text-foreground mb-4">{t("job.nice_to_haves")}</h4>
-        <ul className="space-y-2">
-          {niceToHaves.length > 0 ? (
-            niceToHaves.map((item, index) => (
+      {/* Nice to Haves - will show when API provides data */}
+      {niceToHaves.length > 0 && (
+        <motion.section variants={itemVariants}>
+          <h4 className="text-2xl font-bold text-foreground mb-4">{t("job.nice_to_haves")}</h4>
+          <ul className="space-y-2">
+            {niceToHaves.map((item, index) => (
               <li key={index} className="flex gap-3 text-muted-foreground">
                 <CircleCheck className="w-5 h-5 text-accent-green shrink-0 mt-0.5" />
                 <span>{item}</span>
               </li>
-            ))
-          ) : (
-            <li>{t("job.no_nice_to_haves")}</li>
-          )}
-        </ul>
-      </motion.section>
+            ))}
+          </ul>
+        </motion.section>
+      )}
     </motion.div>
   );
 };

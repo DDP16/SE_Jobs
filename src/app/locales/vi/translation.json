@@ -30,7 +30,6 @@
   "applied": "Đã có {{count}} ứng tuyển",
   "of": "trong tổng số",
   "capacity": "vị trí",
-
   "auth": {
     "sign_in": "Đăng nhập",
     "sign_up": "Đăng ký",
@@ -43,7 +42,6 @@
     "confirm_password": "Xác nhận mật khẩu của bạn",
     "forgot_password": "Quên mật khẩu"
   },
-
   "userActivities": {
     "title": "Hoạt động của bạn"
   },
@@ -169,6 +167,10 @@
     "posted_on": "Ngày đăng",
     "job_type": "Loại công việc",
     "salary": "Mức lương",
+    "quantity": "Số lượng",
+    "experience": "Kinh nghiệm",
+    "position": "Vị trí",
+    "gender": "Giới tính",
     "categories": "Danh mục",
     "no_categories_listed": "Không có danh mục nào được liệt kê.",
     "required_skills": "Kỹ năng yêu cầu",
@@ -223,40 +225,30 @@
       "greeting": "Chào buổi sáng, {{name}} 👋",
       "statisticReport": "Báo cáo thống kê từ {{from}} đến {{to}}",
       "dateRange": "{{from}} - {{to}}",
-
       "newCandidates": "Ứng viên mới",
       "scheduleToday": "Lịch hôm nay",
       "messagesReceived": "Tin nhắn nhận được",
-
       "jobStatistics": "Thống kê công việc",
       "showingJobStatistic": "Hiển thị thống kê công việc từ {{from}} đến {{to}}",
-
       "week": "Tuần",
       "month": "Tháng",
       "year": "Năm",
-
       "overview": "Tổng quan",
       "jobsview": "Lượt xem công việc",
       "jobsapplied": "Đơn ứng tuyển",
-
       "jobView": "Lượt xem",
       "jobApplied": "Đã ứng tuyển",
-
       "jobOpen": "Công việc đang mở",
       "jobsOpened": "Công việc được mở trong tuần",
-
       "applicantsSummary": "Tổng quan ứng viên",
       "applicants": "Ứng viên",
-
       "fullTime": "Toàn thời gian",
       "partTime": "Bán thời gian",
       "internship": "Thực tập",
       "contract": "Hợp đồng",
       "remote": "Từ xa",
-
       "jobUpdates": "Cập nhật công việc",
       "viewAll": "Xem tất cả",
-
       "applied": "Đã ứng tuyển {{count}}",
       "of": "trên",
       "capacity": "chỉ tiêu"
@@ -425,25 +417,20 @@
     "perksBenefit": "Phúc lợi & Quyền lợi",
     "perksBenefitDesc": "Những quyền lợi và phúc lợi mà công ty cung cấp cho vị trí này",
     "perksBenefitHint": "Thêm các quyền lợi để thu hút ứng viên phù hợp",
-
     "previous": "Trước",
     "nextStep": "Bước tiếp theo",
     "postJob": "Đăng việc",
     "save": "Lưu",
     "cancel": "Huỷ",
     "edit": "Chỉnh sửa",
-
     "loadingCompanyProfile": "Đang tải thông tin công ty...",
     "companyProfileNotFound": "Không tìm thấy thông tin công ty.",
-
     "basicInformation": "Thông tin cơ bản",
     "basicInformationDesc": "Những thông tin quan trọng nhất về vị trí tuyển dụng",
-
     "jobTitle": "Chức danh công việc",
     "jobTitleDesc": "Tên vị trí sẽ hiển thị cho ứng viên",
     "jobTitlePlaceholder": "Ví dụ: Frontend Developer",
     "jobTitleHint": "Sử dụng chức danh rõ ràng, phổ biến",
-
     "employmentType": "Loại hình làm việc",
     "employmentTypeDesc": "Hình thức làm việc của vị trí này",
     "fulltime": "Toàn thời gian",
@@ -451,40 +438,30 @@
     "remote": "Làm việc từ xa",
     "internship": "Thực tập",
     "contract": "Hợp đồng",
-
     "salaryRange": "Khoảng lương",
     "salaryRangeDesc": "Mức lương dự kiến cho vị trí",
     "to": "đến",
-
     "category": "Danh mục",
     "categoryDesc": "Lĩnh vực công việc",
     "selectCategory": "Chọn danh mục",
-
     "skills": "Kỹ năng",
     "skillsDesc": "Các kỹ năng cần thiết cho công việc",
     "searchSkills": "Tìm kỹ năng",
     "noSkillsFound": "Không tìm thấy kỹ năng",
-
     "details": "Chi tiết công việc",
     "detailsDesc": "Thông tin chi tiết về công việc",
-
     "jobDescriptionText": "Mô tả công việc",
     "jobDescriptionPlaceholder": "Mô tả chi tiết công việc, nhiệm vụ và mục tiêu",
-
     "responsibilities": "Trách nhiệm",
     "responsibilitiesDesc": "Những nhiệm vụ chính của vị trí",
     "responsibilitiesPlaceholder": "Liệt kê các trách nhiệm chính",
-
     "whoYouAre": "Yêu cầu ứng viên",
     "whoYouAreDesc": "Những yêu cầu đối với ứng viên",
     "whoYouArePlaceholder": "Kinh nghiệm, kỹ năng, trình độ",
-
     "niceToHaves": "Điểm cộng",
     "niceToHavesDesc": "Những yếu tố không bắt buộc nhưng là lợi thế",
     "niceToHavesPlaceholder": "Ví dụ: kinh nghiệm với công nghệ X",
-
     "maxCharacters": "Tối đa {{max}} ký tự",
-
     "benefits": "Phúc lợi",
     "addBenefit": "Thêm phúc lợi",
     "removeBenefit": "Xoá phúc lợi",

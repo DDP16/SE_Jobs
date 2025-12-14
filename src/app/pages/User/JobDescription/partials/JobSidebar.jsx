@@ -73,10 +73,20 @@ export default function JobSidebar({ job }) {
 
   const displaySalary = formatSalary();
 
-  // Format job type - handle employment_types array
-  const displayType = job.type || (Array.isArray(job.employment_types) && job.employment_types.length > 0
-    ? job.employment_types.map(et => et.name || et).join(', ')
-    : "N/A");
+  // Format job type - handle workingTime array, working_time, type, or employment_types
+  const getDisplayType = () => {
+    if (Array.isArray(job.workingTime) && job.workingTime.length > 0) {
+      return job.workingTime.map(wt => typeof wt === 'string' ? wt : (wt.name || wt)).join(', ');
+    }
+    if (job.working_time) return job.working_time;
+    if (job.type) return job.type;
+    if (Array.isArray(job.employment_types) && job.employment_types.length > 0) {
+      return job.employment_types.map(et => et.name || et).join(', ');
+    }
+    return "N/A";
+  };
+
+  const displayType = getDisplayType();
 
   // Normalize categories - handle both array of strings and array of objects
   const normalizedCategories = Array.isArray(job.categories)
@@ -127,11 +137,19 @@ export default function JobSidebar({ job }) {
         <div className="space-y-2">
           <div className="flex justify-between text-sm">
             <span className="text-muted-foreground">{t("job.apply_before")}</span>
-            <span className="font-medium text-foreground">{job.dueDate ? new Date(job.dueDate).toLocaleDateString(t("languageDate"), { year: "numeric", month: "long", day: "numeric" }) : "N/A"}</span>
+            <span className="font-medium text-foreground">
+              {job.deadline || job.dueDate
+                ? new Date(job.deadline || job.dueDate).toLocaleDateString(t("languageDate"), { year: "numeric", month: "long", day: "numeric" })
+                : "N/A"}
+            </span>
           </div>
           <div className="flex justify-between text-sm">
             <span className="text-muted-foreground">{t("job.posted_on")}</span>
-            <span className="font-medium text-foreground">{job.createdAt ? new Date(job.createdAt).toLocaleDateString(t("languageDate"), { year: "numeric", month: "long", day: "numeric" }) : "N/A"}</span>
+            <span className="font-medium text-foreground">
+              {job.createdAt || job.created_at
+                ? new Date(job.createdAt || job.created_at).toLocaleDateString(t("languageDate"), { year: "numeric", month: "long", day: "numeric" })
+                : "N/A"}
+            </span>
           </div>
           <div className="flex justify-between text-sm">
             <span className="text-muted-foreground">{t("job.job_type")}</span>
@@ -141,6 +159,30 @@ export default function JobSidebar({ job }) {
             <span className="text-muted-foreground">{t("job.salary")}</span>
             <span className="font-medium text-foreground">{displaySalary}</span>
           </div>
+          {job.quantity && (
+            <div className="flex justify-between text-sm">
+              <span className="text-muted-foreground">{t("job.quantity")}</span>
+              <span className="font-medium text-foreground">{job.quantity}</span>
+            </div>
+          )}
+          {job.experience && (
+            <div className="flex justify-between text-sm">
+              <span className="text-muted-foreground">{t("job.experience")}</span>
+              <span className="font-medium text-foreground">{job.experience}</span>
+            </div>
+          )}
+          {job.position && (
+            <div className="flex justify-between text-sm">
+              <span className="text-muted-foreground">{t("job.position")}</span>
+              <span className="font-medium text-foreground">{job.position}</span>
+            </div>
+          )}
+          {/* {job.gender && (
+            <div className="flex justify-between text-sm">
+              <span className="text-muted-foreground">{t("job.gender")}</span>
+              <span className="font-medium text-foreground">{job.gender}</span>
+            </div>
+          )} */}
         </div>
       </div>
 
