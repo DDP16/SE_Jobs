@@ -73,10 +73,10 @@ const getTimeAgo = (dateString) => {
         const diffDays = Math.floor(diffMs / (1000 * 60 * 60 * 24));
 
         if (diffHours < 1) return 'Vừa đăng';
-        if (diffHours < 24) return `Đăng ${diffHours} giờ trước`;
-        if (diffDays < 7) return `Đăng ${diffDays} ngày trước`;
-        if (diffDays < 30) return `Đăng ${Math.floor(diffDays / 7)} tuần trước`;
-        return `Đăng ${Math.floor(diffDays / 30)} tháng trước`;
+        if (diffHours < 24) return `${diffHours} giờ trước`;
+        if (diffDays < 7) return `${diffDays} ngày trước`;
+        if (diffDays < 30) return `${Math.floor(diffDays / 7)} tuần trước`;
+        return `${Math.floor(diffDays / 30)} tháng trước`;
     } catch {
         return null;
     }
@@ -180,7 +180,7 @@ export default function JobCard({
         created_at: job.created_at || job.createdAt,
         createdAt: job.createdAt || job.created_at,
         position: job.position,
-        quantity: job.quantity
+        quantity: job.quantity,
     }), [job]);
 
     const {
@@ -207,7 +207,8 @@ export default function JobCard({
         is_job_flash_active,
         is_hot,
         created_at,
-        createdAt
+        createdAt,
+        publish
     } = normalizedJob;
 
     const companyName = typeof companyData === 'string'
@@ -307,7 +308,7 @@ export default function JobCard({
     } : {};
 
     return (
-        <Box sx={{ position: 'relative' }}>
+        <Box sx={{ position: 'relative' }} className="h-full">
             <Card
                 ref={cardRef}
                 onClick={handleCardClick}
@@ -335,15 +336,16 @@ export default function JobCard({
                     flexGrow: 1,
                     p: 2,
                     display: 'flex',
+                    justifyContent: 'space-between',
                     flexDirection: 'column',
                     '&:last-child': {
-                        paddingBottom: 1
+                        paddingBottom: 2
                     }
                 }}>
                     {variant === 'list' && (
                         <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                             <Typography variant="caption" sx={{ color: 'text.disabled', fontSize: '0.75rem' }}>
-                                {getTimeAgo(created_at || createdAt) || 'Đăng gần đây'}
+                                {getTimeAgo(created_at || createdAt) || publish || 'Đăng gần đây'}
                             </Typography>
                             <div className='space-x-2'>
                                 {isTopCV && (
@@ -501,7 +503,7 @@ export default function JobCard({
 
 
                     {variant === 'list' ? (
-                        <Stack direction="row" spacing={1} sx={{ flexWrap: 'wrap', gap: 1, mb: 1.5 }}>
+                        <Stack direction="row" sx={{ flexWrap: 'wrap', rowGap: 1, columnGap: 2 }} >
                             <Chip
                                 label={displaySalary}
                                 size="small"
@@ -538,7 +540,8 @@ export default function JobCard({
                                                 border: 'none',
                                                 '& .MuiChip-label': {
                                                     px: 2
-                                                }
+                                                },
+                                                ml: 0
                                             }}
                                         />
                                     ))
