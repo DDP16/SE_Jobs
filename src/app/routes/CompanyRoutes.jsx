@@ -21,6 +21,7 @@ export default function CompanyRoutes() {
                 </CompanyLayout>
             }>
                 <Route index element={<Dashboard />} />
+                <Route path="company" element={<CompanyProfile />} />
                 <Route path="company/:id" element={<CompanyProfile />} />
                 <Route path="applicants/:id" element={<ApplicantDetails />} />
                 <Route path="applicants" element={<ApplicantsTable />} />

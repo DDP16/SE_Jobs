@@ -41,6 +41,7 @@ export default function FindJobs() {
 
     // Sử dụng custom hook để quản lý search và filter
     const {
+        queryParams,
         appliedFilters,
         isFilterOpen,
         focusSection,
@@ -65,7 +66,7 @@ export default function FindJobs() {
 
     return (
         <>
-            <HeroSection onSearch={handleSearch} />
+            <HeroSection onSearch={handleSearch} initialKeyword={queryParams.keyword} />
             <div className="w-full px-10 py-2 md:py-3 space-y-3 md:space-y-5">
                 {/* Top filter toolbar */}
                 <FilterToolbar

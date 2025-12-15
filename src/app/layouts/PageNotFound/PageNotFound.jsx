@@ -9,7 +9,7 @@ export default function PageNotFound() {
 
   return (
     <motion.div
-      className="flex flex-col items-center justify-center h-screen gap-6 text-center px-4"
+      className="flex flex-col items-center justify-center h-full gap-6 text-center"
       initial={{ opacity: 0, y: -20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.5, ease: "easeOut" }}
