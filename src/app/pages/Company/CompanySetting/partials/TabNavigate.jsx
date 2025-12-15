@@ -1,7 +1,11 @@
+import { useTranslation } from 'react-i18next';
+
 export function TabNavigation({ activeTab, onTabChange }) {
+    const { t } = useTranslation();
+
     const tabs = [
-        { id: 'overview', label: 'Overview' },
-        { id: 'social-links', label: 'Social Links' },
+        { id: 'overview', label: t("companySetting.tabs.overview") },
+        { id: 'social-links', label: t("companySetting.tabs.socialLinks") },
     ];
 
     return (

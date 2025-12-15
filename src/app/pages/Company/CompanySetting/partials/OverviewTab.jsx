@@ -6,7 +6,6 @@ import { TagInput } from './TagInput';
 import { RichTextEditor } from './RichTextEditor';
 import { ContactInfoSection } from './ContactInfoSection';
 import { CompanyTypeSection } from './CompanyTypeSection';
-import { CompanyBranchesSection } from './CompanyBranchesSection';
 import { useDispatch, useSelector } from 'react-redux';
 import { getCompany, updateCompany } from '../../../../modules/services/companyService';
 import { uploadMedia, deleteMedia } from '../../../../modules/services/mediaService';
@@ -14,6 +13,7 @@ import { getCategories } from '../../../../modules/services/categoriesService';
 import { getSkills } from '../../../../modules/services/skillsService';
 import { getCompanyTypes } from '../../../../modules/services/companyTypeService';
 import { getProvinces } from '../../../../modules/services/addressService';
+import { MapPin } from 'lucide-react';
 
 export function OverviewTab({ company, companyId }) {
     const { t } = useTranslation();
@@ -172,21 +172,6 @@ export function OverviewTab({ company, companyId }) {
 
             await dispatch(updateCompany({ companyId, companyData })).unwrap();
 
-            // Prepare company branches data for separate API call
-            const branchesData = companyBranches
-                .filter(b => b.name && b.address && b.country_id && b.province_id)
-                .map(b => ({
-                    ...(b.id && { id: b.id }), // Include id only if exists (for update)
-                    name: b.name,
-                    address: b.address,
-                    country_id: Number(b.country_id),
-                    province_id: Number(b.province_id),
-                    ward_id: b.ward_id ? Number(b.ward_id) : null,
-                }));
-
-            // TODO: Call separate API for company branches
-            // await dispatch(updateCompanyBranches({ companyId, branches: branchesData })).unwrap();
-
             dispatch(getCompany(companyId));
         } catch (error) {
             console.error('Failed to update company:', error);
@@ -284,7 +269,7 @@ export function OverviewTab({ company, companyId }) {
                                     id="industry"
                                     value={formData.industry || ''}
                                     onChange={(e) => handleInputChange('industry', e.target.value)}
-                                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-600 focus:border-transparent appearance-none bg-white"
+                                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-600 focus:border-transparent appearance-none"
                                 >
                                     {categories.map((category) => (
                                         <option key={category.id} value={category.name}>{category.name}</option>
@@ -318,12 +303,46 @@ export function OverviewTab({ company, companyId }) {
                 </div>
             </section>
 
-            {/* Company Branches */}
-            <CompanyBranchesSection
-                companyBranches={companyBranches}
-                onBranchesChange={setCompanyBranches}
-                companyName={formData.companyName}
-            />
+            {/* Company Branches - Read Only */}
+            <section>
+                <h4 className="mb-1">{t("companySetting.overview.companyBranches")}</h4>
+                <p className="text-gray-500 mb-6">{t("companySetting.overview.companyBranchesDesc")}</p>
+
+                {companyBranches && companyBranches.length > 0 ? (
+                    <div className="space-y-4">
+                        {companyBranches.map((branch, index) => (
+                            <div
+                                key={branch.id || index}
+                                className="bg-gray-50 border border-gray-200 rounded-lg p-6"
+                            >
+                                <div className="flex items-start gap-3">
+                                    <MapPin className="w-5 h-5 text-blue-600 mt-1 flex-shrink-0" />
+                                    <div className="flex-1">
+                                        <h5 className="font-semibold text-gray-900 mb-2">
+                                            {branch.name || `${t("companySetting.overview.branch")} ${index + 1}`}
+                                        </h5>
+                                        <p className="text-gray-600 mb-2">
+                                            {branch.address}
+                                        </p>
+                                        <div className="text-sm text-gray-500">
+                                            {branch.provinces && (
+                                                <span>{branch.provinces.name}</span>
+                                            )}
+                                            {branch.wards && (
+                                                <span>, {branch.wards.name}</span>
+                                            )}
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        ))}
+                    </div>
+                ) : (
+                    <div className="bg-gray-50 border border-gray-200 rounded-lg p-6 text-center text-gray-500">
+                        {t("companySetting.overview.noBranches")}
+                    </div>
+                )}
+            </section>
 
             {/* About Company */}
             <section>
