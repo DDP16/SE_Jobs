@@ -138,14 +138,22 @@ export default function JobCard({
         return { top: `${top}px`, left: `${left}px`, transform: 'none' };
     }, []);
 
-    const normalizedJob = useMemo(() => ({
+    const normalizedJob = useMemo(() => {
+        let locationFromBranch = null;
+        if (job.company_branches) {
+            const { ward, province, country } = job.company_branches;
+            const parts = [province, ward].filter(Boolean);
+            locationFromBranch = parts.length > 0 ? parts.join(': ') : null;
+        }
+
+        return {
         title: job.title || "Job Title",
         company: job.company,
-        location: Array.isArray(job.locations) && job.locations.length > 0
-            ? job.locations[0]
-            : (Array.isArray(job.workLocation) && job.workLocation.length > 0
-                ? job.workLocation[0]
-                : (job.location || job.company_branches?.location || job.shortCity)),
+        location: locationFromBranch
+            || (Array.isArray(job.locations) && job.locations.length > 0 ? job.locations[0] : null) // TopCV locations
+            // || (Array.isArray(job.workLocation) && job.workLocation.length > 0 ? job.workLocation[0] : null)
+            // || job.location 
+            || job.shortCity,
         type: job.type || (Array.isArray(job.employment_types) && job.employment_types.length > 0
             ? job.employment_types.map(et => et.name || et).join(', ')
             : null),
@@ -160,11 +168,13 @@ export default function JobCard({
         experience: job.experience || (Array.isArray(job.levels) && job.levels.length > 0
             ? job.levels.map(l => l.name || l).join(', ')
             : null),
-        locations: Array.isArray(job.locations)
-            ? job.locations
-            : (Array.isArray(job.workLocation)
-                ? job.workLocation
-                : (job.location ? [job.location] : (job.shortCity ? [job.shortCity] : []))),
+        locations: locationFromBranch 
+            ? [locationFromBranch]
+            : (Array.isArray(job.locations) && job.locations.length > 0
+                ? job.locations
+                : (Array.isArray(job.workLocation) && job.workLocation.length > 0
+                    ? job.workLocation
+                    : (job.location ? [job.location] : (job.shortCity ? [job.shortCity] : [])))),
         description: job.description,
         responsibilities: job.responsibilities || [],
         requirements: job.requirements || [],
@@ -181,7 +191,8 @@ export default function JobCard({
         createdAt: job.createdAt || job.created_at,
         position: job.position,
         quantity: job.quantity
-    }), [job]);
+    };
+    }, [job]);
 
     const {
         title,
@@ -523,10 +534,13 @@ export default function JobCard({
                                 normalizedJob.locations
                                     .filter(loc => isValidValue(loc))
                                     .slice(0, 2)
-                                    .map((loc, index) => (
+                                    .map((loc, index) => {
+                                        const truncatedLoc = loc.length > 35 ? loc.substring(0, 35) + '...' : loc;
+                                        return (
                                         <Chip
                                             key={index}
-                                            label={loc}
+                                            label={truncatedLoc}
+                                            title={loc}
                                             size="small"
                                             sx={{
                                                 bgcolor: '#f5f5f5',
@@ -541,10 +555,12 @@ export default function JobCard({
                                                 }
                                             }}
                                         />
-                                    ))
+                                    );
+                                    })
                             ) : location && isValidValue(location) ? (
                                 <Chip
-                                    label={location}
+                                    label={location.length > 35 ? location.substring(0, 35) + '...' : location}
+                                    title={location}
                                     size="small"
                                     sx={{
                                         bgcolor: '#f5f5f5',
@@ -609,7 +625,8 @@ export default function JobCard({
                             />
                             {location && isValidValue(location) && (
                                 <Chip
-                                    label={location}
+                                    label={location.length > 25 ? location.substring(0, 25) + '...' : location}
+                                    title={location}
                                     size="small"
                                     variant="outlined"
                                     sx={{
