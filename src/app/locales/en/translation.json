@@ -602,9 +602,30 @@
       "aboutCompanyDesc": "Brief description for your company. URLs are hyperlinked.",
       "description": "Description",
       "descriptionPlaceholder": "Enter company description...",
+      "companyBranches": "Company Branches",
+      "companyBranchesDesc": "View all company branch locations",
+      "branch": "Branch",
+      "noBranches": "No branches added yet",
       "saveChanges": "Save Changes",
       "saving": "Saving...",
       "errorUpdating": "Error updating company:"
+    },
+    "socialLinks": {
+      "basicInformation": "Basic Information",
+      "basicInformationDesc": "Add elsewhere links to your company profile.",
+      "instagram": "Instagram",
+      "twitter": "Twitter",
+      "facebook": "Facebook",
+      "linkedin": "LinkedIn",
+      "youtube": "Youtube",
+      "instagramPlaceholder": "https://www.instagram.com/",
+      "twitterPlaceholder": "https://twitter.com/",
+      "facebookPlaceholder": "https://web.facebook.com/",
+      "linkedinPlaceholder": "Enter your Linkedin address",
+      "youtubePlaceholder": "Enter your youtube address",
+      "errorUpdating": "Error updating social links:",
+      "saving": "Saving...",
+      "saveChanges": "Save Changes"
     }
   },
   "companyProfile": {

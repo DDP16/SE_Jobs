@@ -1,9 +1,11 @@
 import { useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
+import { useTranslation } from 'react-i18next';
 import { Save, Loader2 } from 'lucide-react';
 import { updateCompany } from '../../../../modules/services/companyService';
 
 export function SocialLinksTab({ companyId }) {
+    const { t } = useTranslation();
     const dispatch = useDispatch();
     const company = useSelector((state) => state.company.company);
     const updateStatus = useSelector((state) => state.company.status);
@@ -55,23 +57,25 @@ export function SocialLinksTab({ companyId }) {
             {/* Basic Information */}
             <section>
                 <form onSubmit={handleSubmit}>
-                    <h4 className="mb-1">Basic Information</h4>
+                    <h4 className="mb-1">
+                        {t('companySetting.socialLinks.basicInformation')}
+                    </h4>
                     <p className="text-gray-500 mb-8">
-                        Add elsewhere links to your company profile. You can add only username without full https url links.
+                        {t('companySetting.socialLinks.basicInformationDesc')}
                     </p>
 
                     <div className="space-y-6 max-w-2xl">
                         {/* Instagram */}
                         <div>
                             <label htmlFor="instagram" className="block mb-2 text-gray-700">
-                                Instagram
+                                {t('companySetting.socialLinks.instagram')}
                             </label>
                             <input
                                 id="instagram"
                                 type="text"
                                 value={socialLinks.instagram}
                                 onChange={(e) => handleInputChange('instagram', e.target.value)}
-                                placeholder="https://www.instagram.com/"
+                                placeholder={t('companySetting.socialLinks.instagramPlaceholder')}
                                 className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-600 focus:border-transparent"
                             />
                         </div>
@@ -79,14 +83,14 @@ export function SocialLinksTab({ companyId }) {
                         {/* Twitter */}
                         <div>
                             <label htmlFor="twitter" className="block mb-2 text-gray-700">
-                                Twitter
+                                {t('companySetting.socialLinks.twitter')}
                             </label>
                             <input
                                 id="twitter"
                                 type="text"
                                 value={socialLinks.twitter}
                                 onChange={(e) => handleInputChange('twitter', e.target.value)}
-                                placeholder="https://twitter.com/"
+                                placeholder={t('companySetting.socialLinks.twitterPlaceholder')}
                                 className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-600 focus:border-transparent"
                             />
                         </div>
@@ -94,14 +98,14 @@ export function SocialLinksTab({ companyId }) {
                         {/* Facebook */}
                         <div>
                             <label htmlFor="facebook" className="block mb-2 text-gray-700">
-                                Facebook
+                                {t('companySetting.socialLinks.facebook')}
                             </label>
                             <input
                                 id="facebook"
                                 type="text"
                                 value={socialLinks.facebook}
                                 onChange={(e) => handleInputChange('facebook', e.target.value)}
-                                placeholder="https://web.facebook.com/"
+                                placeholder={t('companySetting.socialLinks.facebookPlaceholder')}
                                 className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-600 focus:border-transparent"
                             />
                         </div>
@@ -109,14 +113,14 @@ export function SocialLinksTab({ companyId }) {
                         {/* LinkedIn */}
                         <div>
                             <label htmlFor="linkedin" className="block mb-2 text-gray-700">
-                                LinkedIn
+                                {t('companySetting.socialLinks.linkedin')}
                             </label>
                             <input
                                 id="linkedin"
                                 type="text"
                                 value={socialLinks.linkedin}
                                 onChange={(e) => handleInputChange('linkedin', e.target.value)}
-                                placeholder="Enter your Linkedin address"
+                                placeholder={t('companySetting.socialLinks.linkedinPlaceholder')}
                                 className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-600 focus:border-transparent"
                             />
                         </div>
@@ -124,14 +128,14 @@ export function SocialLinksTab({ companyId }) {
                         {/* Youtube */}
                         <div>
                             <label htmlFor="youtube" className="block mb-2 text-gray-700">
-                                Youtube
+                                {t('companySetting.socialLinks.youtube')}
                             </label>
                             <input
                                 id="youtube"
                                 type="text"
                                 value={socialLinks.youtube}
                                 onChange={(e) => handleInputChange('youtube', e.target.value)}
-                                placeholder="Enter your youtube address"
+                                placeholder={t('companySetting.socialLinks.youtubePlaceholder')}
                                 className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-600 focus:border-transparent"
                             />
                         </div>
@@ -140,7 +144,9 @@ export function SocialLinksTab({ companyId }) {
                     {/* Error Message */}
                     {updateError && updateStatus === 'failed' && (
                         <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg max-w-2xl mt-6">
-                            <p className="font-medium">Error updating social links:</p>
+                            <p className="font-medium">
+                                {t('companySetting.socialLinks.errorUpdating')}
+                            </p>
                             <p className="text-sm">{updateError}</p>
                         </div>
                     )}
@@ -155,12 +161,12 @@ export function SocialLinksTab({ companyId }) {
                             {isUpdating || updateStatus === 'loading' ? (
                                 <>
                                     <Loader2 className="w-5 h-5 animate-spin" />
-                                    <span>Saving...</span>
+                                    <span>{t('companySetting.socialLinks.saving')}</span>
                                 </>
                             ) : (
                                 <>
                                     <Save className="w-5 h-5" />
-                                    <span>Save Changes</span>
+                                    <span>{t('companySetting.socialLinks.saveChanges')}</span>
                                 </>
                             )}
                         </button>

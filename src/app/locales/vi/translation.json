@@ -602,9 +602,30 @@
       "aboutCompanyDesc": "Mô tả ngắn gọn về công ty của bạn. URL sẽ được liên kết.",
       "description": "Mô tả",
       "descriptionPlaceholder": "Nhập mô tả công ty...",
+      "companyBranches": "Chi nhánh công ty",
+      "companyBranchesDesc": "Xem tất cả các vị trí chi nhánh của công ty",
+      "branch": "Chi nhánh",
+      "noBranches": "Chưa có chi nhánh nào",
       "saveChanges": "Lưu thay đổi",
       "saving": "Đang lưu...",
       "errorUpdating": "Lỗi khi cập nhật công ty:"
+    },
+    "socialLinks": {
+      "basicInformation": "Thông tin cơ bản",
+      "basicInformationDesc": "Thêm các liên kết mạng xã hội cho hồ sơ công ty.",
+      "instagram": "Instagram",
+      "twitter": "Twitter",
+      "facebook": "Facebook",
+      "linkedin": "LinkedIn",
+      "youtube": "Youtube",
+      "instagramPlaceholder": "https://www.instagram.com/",
+      "twitterPlaceholder": "https://twitter.com/",
+      "facebookPlaceholder": "https://web.facebook.com/",
+      "linkedinPlaceholder": "Nhập địa chỉ Linkedin của bạn",
+      "youtubePlaceholder": "Nhập địa chỉ Youtube của bạn",
+      "errorUpdating": "Lỗi khi cập nhật liên kết mạng xã hội:",
+      "saving": "Đang lưu...",
+      "saveChanges": "Lưu thay đổi"
     }
   },
   "companyProfile": {

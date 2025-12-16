@@ -19,30 +19,18 @@ import { sortType } from '../../../../lib';
 
 export default function CompanyGrid({
     companies = [],
+    page,
+    totalPages,
     sortBy = sortType.featured,
     onSortChange,
-    totalCount = 0
+    setFilter
 }) {
     const { t } = useTranslation();
     const navigate = useNavigate();
-    const [page, setPage] = React.useState(1);
-    const companiesPerPage = 12;
 
     const handleCompanyClick = (company) => {
         navigate(`/company?id=${company.id}`);
     };
-
-    const handlePageChange = (event, value) => {
-        setPage(value);
-        window.scrollTo({ top: 0, behavior: 'smooth' });
-    };
-
-    // Paginate companies
-    const startIndex = (page - 1) * companiesPerPage;
-    const endIndex = startIndex + companiesPerPage;
-    const paginatedCompanies = companies.slice(startIndex, endIndex);
-    const totalPages = Math.ceil(companies.length / companiesPerPage);
-
     return (
         <Box>
             {/* Toolbar */}
@@ -62,7 +50,7 @@ export default function CompanyGrid({
                 }}
             >
                 <Typography variant="body1" color="text.secondary">
-                    {t("companyList.grid.companiesFound", { count: totalCount })}
+                    {t("companyList.grid.companiesFound", { count: companies.length })}
                 </Typography>
 
                 {/* Sort Dropdown */}
@@ -88,7 +76,7 @@ export default function CompanyGrid({
             </Paper>
 
             {/* Companies Grid/List */}
-            {paginatedCompanies.length === 0 ? (
+            {companies.length === 0 && (
                 <Paper
                     elevation={0}
                     sx={{
@@ -106,7 +94,8 @@ export default function CompanyGrid({
                         {t("companyList.grid.tryAdjustingFilters")}
                     </Typography>
                 </Paper>
-            ) : (
+            )}
+            {companies.length > 0 && (
                 <>
                     {/* Grid View - 3 columns */}
                     <Box
@@ -120,7 +109,7 @@ export default function CompanyGrid({
                             gap: { xs: 2, md: 3 }
                         }}
                     >
-                        {paginatedCompanies.map((company) => (
+                        {companies.map((company) => (
                             <CompanyCard
                                 key={company.id}
                                 company={company}
@@ -142,7 +131,7 @@ export default function CompanyGrid({
                             <Pagination
                                 count={totalPages}
                                 page={page}
-                                onChange={handlePageChange}
+                                onChange={(e, val) =>    setFilter((filter => ({...filter, page: val })))}
                                 color="primary"
                                 size="large"
                                 showFirstButton
