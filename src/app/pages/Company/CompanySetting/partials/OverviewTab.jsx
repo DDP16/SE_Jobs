@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Save, Loader2, ChevronDown } from 'lucide-react';
+import { Save, Loader2, ChevronDown, MapPin } from 'lucide-react';
+import { Input, Label, Button } from '../../../../components/ui';
 import { LogoUpload } from './logoUpload';
 import { TagInput } from './TagInput';
 import { RichTextEditor } from './RichTextEditor';
@@ -13,7 +14,6 @@ import { getCategories } from '../../../../modules/services/categoriesService';
 import { getSkills } from '../../../../modules/services/skillsService';
 import { getCompanyTypes } from '../../../../modules/services/companyTypeService';
 import { getProvinces } from '../../../../modules/services/addressService';
-import { MapPin } from 'lucide-react';
 
 export function OverviewTab({ company, companyId }) {
     const { t } = useTranslation();
@@ -183,20 +183,26 @@ export function OverviewTab({ company, companyId }) {
     const techStackSuggestions = skills.map(skill => skill.name);
 
     return (
-        <form onSubmit={handleSubmit} className="space-y-8">
+        <form onSubmit={handleSubmit} className="space-y-8 py-8">
             {/* Basic Information */}
-            <section>
-                <h4 className="mb-1">{t("companySetting.overview.basicInformation")}</h4>
-                <p className="text-gray-500 mb-6">{t("companySetting.overview.basicInformationDesc")}</p>
+            <section className="space-y-6">
+                <div className="border-b border-gray-300 pb-6">
+                    <p className="text-lg font-semibold mb-2 text-foreground">{t("companySetting.overview.basicInformation")}</p>
+                    <p className="text-normal text-muted-foreground">{t("companySetting.overview.basicInformationDesc")}</p>
+                </div>
 
                 {/* Company Logo */}
-                <div className="mb-8">
-                    <h4 className="mb-1">{t("companySetting.overview.companyLogo")}</h4>
-                    <p className="text-gray-500 mb-4">{t("companySetting.overview.companyLogoDesc")}</p>
-                    <LogoUpload
-                        currentLogo={company?.logo || "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Cpath fill='%2334d399' d='M30,20 L50,30 L50,60 L30,70 L10,60 L10,30 Z'/%3E%3Cpath fill='%2310b981' d='M50,30 L70,20 L90,30 L90,60 L70,70 L50,60 Z'/%3E%3C/svg%3E"}
-                        onLogoChange={(file) => handleInputChange('logo', file)}
-                    />
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-4 items-start border-b border-border pb-6">
+                    <div>
+                        <Label className="text-foreground font-semibold text-lg">{t("companySetting.overview.companyLogo")}</Label>
+                        <p className="text-normal text-muted-foreground mt-1">{t("companySetting.overview.companyLogoDesc")}</p>
+                    </div>
+                    <div className="md:col-span-2">
+                        <LogoUpload
+                            currentLogo={company?.logo || "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Cpath fill='%2334d399' d='M30,20 L50,30 L50,60 L30,70 L10,60 L10,30 Z'/%3E%3Cpath fill='%2310b981' d='M50,30 L70,20 L90,30 L90,60 L70,70 L50,60 Z'/%3E%3C/svg%3E"}
+                            onLogoChange={(file) => handleInputChange('logo', file)}
+                        />
+                    </div>
                 </div>
 
                 {/* Contact Information */}
@@ -208,79 +214,98 @@ export function OverviewTab({ company, companyId }) {
                 />
 
                 {/* Company Details */}
-                <div>
-                    <h4 className="mb-1">{t("companySetting.overview.companyDetails")}</h4>
-                    <p className="text-gray-500 mb-6">{t("companySetting.overview.companyDetailsDesc")}</p>
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-4 items-start border-b border-border pb-6">
+                    <div>
+                        <Label className="text-foreground font-semibold text-lg">{t("companySetting.overview.companyDetails")}</Label>
+                        <p className="text-normal text-muted-foreground mt-1">{t("companySetting.overview.companyDetailsDesc")}</p>
+                    </div>
 
-                    <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                        {/* Company Name */}
-                        <div className="lg:col-span-2">
-                            <label htmlFor="companyName" className="block mb-2 text-gray-700">
-                                {t("companySetting.overview.companyName")}
-                            </label>
-                            <input
-                                id="companyName"
-                                type="text"
-                                value={formData.companyName || ''}
-                                onChange={(e) => handleInputChange('companyName', e.target.value)}
-                                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-600 focus:border-transparent"
-                            />
-                        </div>
+                    <div className="md:col-span-2 space-y-6">
+                        {/* Company Name & Website - Same Row */}
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            {/* Company Name */}
+                            <div>
+                                <Label htmlFor="companyName" className="text-foreground">
+                                    {t("companySetting.overview.companyName")}
+                                </Label>
+                                <Input
+                                    id="companyName"
+                                    type="text"
+                                    value={formData.companyName || ''}
+                                    onChange={(e) => handleInputChange('companyName', e.target.value)}
+                                    className="bg-white border-border mt-2"
+                                />
+                            </div>
 
-                        {/* Website */}
-                        <div className="lg:col-span-2">
-                            <label htmlFor="website" className="block mb-2 text-gray-700">
-                                {t("companySetting.overview.website")}
-                            </label>
-                            <input
-                                id="website"
-                                type="url"
-                                value={formData.website || ''}
-                                onChange={(e) => handleInputChange('website', e.target.value)}
-                                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-600 focus:border-transparent"
-                            />
-                        </div>
-
-
-                        {/* Employee */}
-                        <div>
-                            <label htmlFor="employees" className="block mb-2 text-gray-700">
-                                {t("companySetting.overview.employee")}
-                            </label>
-                            <input
-                                id="employees"
-                                type="number"
-                                min={1}
-                                step={1}
-                                value={formData.employees || ''}
-                                onChange={(e) => handleInputChange('employees', e.target.value ? Number(e.target.value) : '')}
-                                placeholder={t("companySetting.overview.employeePlaceholder")}
-                                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-600 focus:border-transparent"
-                            />
-                        </div>
-
-                        {/* Industry */}
-                        <div className="lg:col-span-2">
-                            <label htmlFor="industry" className="block mb-2 text-gray-700">
-                                {t("companySetting.overview.industry")}
-                            </label>
-                            <div className="relative">
-                                <select
-                                    id="industry"
-                                    value={formData.industry || ''}
-                                    onChange={(e) => handleInputChange('industry', e.target.value)}
-                                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-600 focus:border-transparent appearance-none"
-                                >
-                                    {categories.map((category) => (
-                                        <option key={category.id} value={category.name}>{category.name}</option>
-                                    ))}
-                                </select>
-                                <ChevronDown className="absolute right-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400 pointer-events-none" />
+                            {/* Website */}
+                            <div>
+                                <Label htmlFor="website" className="text-foreground">
+                                    {t("companySetting.overview.website")}
+                                </Label>
+                                <Input
+                                    id="website"
+                                    type="url"
+                                    value={formData.website || ''}
+                                    onChange={(e) => handleInputChange('website', e.target.value)}
+                                    className="bg-white border-border mt-2"
+                                />
                             </div>
                         </div>
 
+                        {/* Employee & Industry - Same Row */}
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            {/* Employee */}
+                            <div>
+                                <Label htmlFor="employees" className="text-foreground">
+                                    {t("companySetting.overview.employee")}
+                                </Label>
+                                <Input
+                                    id="employees"
+                                    type="number"
+                                    min={1}
+                                    step={1}
+                                    value={formData.employees || ''}
+                                    onChange={(e) => handleInputChange('employees', e.target.value ? Number(e.target.value) : '')}
+                                    placeholder={t("companySetting.overview.employeePlaceholder")}
+                                    className="bg-white border-border mt-2"
+                                />
+                            </div>
+
+                            {/* Industry */}
+                            <div>
+                                <Label htmlFor="industry" className="text-foreground">
+                                    {t("companySetting.overview.industry")}
+                                </Label>
+                                <div className="relative mt-2">
+                                    <select
+                                        id="industry"
+                                        value={formData.industry || ''}
+                                        onChange={(e) => handleInputChange('industry', e.target.value)}
+                                        className="w-full px-4 py-2 border border-border bg-white rounded-md focus:outline-none focus:ring-2 focus:ring-primary appearance-none h-10"
+                                    >
+                                        {categories.map((category) => (
+                                            <option key={category.id} value={category.name}>{category.name}</option>
+                                        ))}
+                                    </select>
+                                    <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground pointer-events-none" />
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            {/* Company Types & Tech Stack */}
+            <section className="space-y-6">
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-4 items-start border-b border-border pb-6">
+                    <div>
+                        <p className="text-lg font-semibold text-foreground">{t("companySetting.overview.companyInformation")}</p>
+                        <p className="text-normal text-muted-foreground mt-1">{t("companySetting.overview.companyInformationDesc")}</p>
+                    </div>
+
+                    <div className="md:col-span-2 space-y-6">
                         {/* Company Types */}
-                        <div className="lg:col-span-2">
+                        <div>
                             <CompanyTypeSection
                                 companyTypes={formData.companyTypes}
                                 onCompanyTypesChange={(types) => setFormData({ ...formData, companyTypes: types })}
@@ -290,7 +315,7 @@ export function OverviewTab({ company, companyId }) {
                         </div>
 
                         {/* Tech Stack */}
-                        <div className="lg:col-span-2">
+                        <div>
                             <TagInput
                                 label={t("companySetting.overview.techStack")}
                                 tags={formData.techStack}
@@ -304,27 +329,29 @@ export function OverviewTab({ company, companyId }) {
             </section>
 
             {/* Company Branches - Read Only */}
-            <section>
-                <h4 className="mb-1">{t("companySetting.overview.companyBranches")}</h4>
-                <p className="text-gray-500 mb-6">{t("companySetting.overview.companyBranchesDesc")}</p>
+            <section className="border-b border-border pb-6">
+                <div>
+                    <p className="text-lg font-semibold mb-2 text-foreground">{t("companySetting.overview.companyBranches")}</p>
+                    <p className="text-normal text-muted-foreground mb-6">{t("companySetting.overview.companyBranchesDesc")}</p>
+                </div>
 
                 {companyBranches && companyBranches.length > 0 ? (
                     <div className="space-y-4">
                         {companyBranches.map((branch, index) => (
                             <div
                                 key={branch.id || index}
-                                className="bg-gray-50 border border-gray-200 rounded-lg p-6"
+                                className="bg-muted/50 border border-border rounded-lg p-6"
                             >
                                 <div className="flex items-start gap-3">
-                                    <MapPin className="w-5 h-5 text-blue-600 mt-1 flex-shrink-0" />
+                                    <MapPin className="w-5 h-5 text-primary mt-1 flex-shrink-0" />
                                     <div className="flex-1">
-                                        <h5 className="font-semibold text-gray-900 mb-2">
+                                        <h5 className="font-semibold text-foreground mb-2">
                                             {branch.name || `${t("companySetting.overview.branch")} ${index + 1}`}
                                         </h5>
-                                        <p className="text-gray-600 mb-2">
+                                        <p className="text-muted-foreground mb-2">
                                             {branch.address}
                                         </p>
-                                        <div className="text-sm text-gray-500">
+                                        <div className="text-sm text-muted-foreground">
                                             {branch.provinces && (
                                                 <span>{branch.provinces.name}</span>
                                             )}
@@ -338,23 +365,23 @@ export function OverviewTab({ company, companyId }) {
                         ))}
                     </div>
                 ) : (
-                    <div className="bg-gray-50 border border-gray-200 rounded-lg p-6 text-center text-gray-500">
+                    <div className="bg-muted/50 border border-border rounded-lg p-6 text-center text-muted-foreground">
                         {t("companySetting.overview.noBranches")}
                     </div>
                 )}
             </section>
 
             {/* About Company */}
-            <section>
-                <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                    <div>
-                        <h4 className="mb-1">{t("companySetting.overview.aboutCompany")}</h4>
-                        <p className="text-gray-500">{t("companySetting.overview.aboutCompanyDesc")}</p>
-                    </div>
-                    <div>
-                        <label htmlFor="description" className="block mb-2 text-gray-700">
-                            {t("companySetting.overview.description")}
-                        </label>
+            <section className="grid grid-cols-1 md:grid-cols-3 gap-4 items-start border-b border-border pb-6">
+                <div>
+                    <p className="text-lg font-semibold text-foreground">{t("companySetting.overview.aboutCompany")}</p>
+                    <p className="text-normal text-muted-foreground mt-1">{t("companySetting.overview.aboutCompanyDesc")}</p>
+                </div>
+                <div className="md:col-span-2">
+                    <Label htmlFor="description" className="text-foreground">
+                        {t("companySetting.overview.description")}
+                    </Label>
+                    <div className="mt-2">
                         <RichTextEditor
                             value={formData.description}
                             onChange={(value) => setFormData({ ...formData, description: value })}
@@ -366,29 +393,30 @@ export function OverviewTab({ company, companyId }) {
             </section>
 
             {/* Save Button */}
-            <div className="flex justify-end pt-6 border-t border-gray-200">
-                <button
+            <div className="flex justify-end mt-8">
+                <Button
                     type="submit"
+                    size="lg"
                     disabled={isUpdating || updateStatus === 'loading'}
-                    className="px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-600 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2 transition-colors"
+                    className="bg-primary hover:bg-primary/90 text-white px-8"
                 >
                     {isUpdating || updateStatus === 'loading' ? (
                         <>
-                            <Loader2 className="w-5 h-5 animate-spin" />
+                            <Loader2 className="w-5 h-5 animate-spin mr-2" />
                             <span>{t("companySetting.overview.saving")}</span>
                         </>
                     ) : (
                         <>
-                            <Save className="w-5 h-5" />
+                            <Save className="w-5 h-5 mr-2" />
                             <span>{t("companySetting.overview.saveChanges")}</span>
                         </>
                     )}
-                </button>
+                </Button>
             </div>
 
             {/* Error Message */}
             {updateError && updateStatus === 'failed' && (
-                <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg">
+                <div className="bg-destructive/10 border border-destructive/20 text-destructive px-4 py-3 rounded-lg mt-4">
                     <p className="font-medium">{t("companySetting.overview.errorUpdating")}</p>
                     <p className="text-sm">{updateError}</p>
                 </div>

@@ -598,6 +598,8 @@
       "companyLogoDesc": "This image will be shown publicly as company logo.",
       "companyDetails": "Company Details",
       "companyDetailsDesc": "Introduce your company core info quickly to users by fill up company details",
+      "companyInformation": "Company Information",
+      "companyInformationDesc": "Select company type and technologies",
       "companyName": "Company Name",
       "website": "Website",
       "employee": "Employee",

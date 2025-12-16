@@ -598,6 +598,8 @@
       "companyLogoDesc": "Hình ảnh này sẽ được hiển thị công khai như logo công ty.",
       "companyDetails": "Chi tiết công ty",
       "companyDetailsDesc": "Giới thiệu thông tin cốt lõi của công ty bạn nhanh chóng cho người dùng bằng cách điền thông tin chi tiết công ty",
+      "companyInformation": "Thông tin công ty",
+      "companyInformationDesc": "Chọn loại công ty và công nghệ sử dụng",
       "companyName": "Tên công ty",
       "website": "Website",
       "employee": "Nhân viên",
