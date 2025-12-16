@@ -19,7 +19,6 @@ export default function FindJobs() {
     const [selectedJob, setSelectedJob] = useState(null);
     const isSmall = useMediaQuery(theme.breakpoints.down('md'));
     const jobDescRef = useRef(null);
-    const { jobs = [], pagination, status } = useSelector((state) => state.jobs || {});
 
     const levels = useSelector(state => state.levels);
     const employmentTypes = useSelector(state => state.employmentTypes);
@@ -83,22 +82,11 @@ export default function FindJobs() {
                 >
                     {/* LEFT - Job List */}
                     <Box className={`${selectedJob ? 'flex-2' : 'flex-1'} w-full min-w-0 transition-all`}>
-                        {status === 'loading' && jobs.length === 0 ? (
-                            <Box className="bg-white rounded-xl p-8 shadow-sm border border-gray-100">
-                                <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 2, py: 8 }}>
-                                    <CircularProgress size={48} />
-                                    <Typography variant="body1" sx={{ color: 'text.secondary', fontWeight: 500 }}>
-                                        Đang tìm kiếm công việc...
-                                    </Typography>
-                                </Box>
-                            </Box>
-                        ) : (
-                            <JobListSection
-                                onPageChange={handlePageChange}
-                                onJobSelect={handleJobSelect}
-                                selectedJob={selectedJob}
-                            />
-                        )}
+                        <JobListSection
+                            onPageChange={handlePageChange}
+                            onJobSelect={handleJobSelect}
+                            selectedJob={selectedJob}
+                        />
                     </Box>
 
                     {/* Right - Job Description (hidden on small screens) */}

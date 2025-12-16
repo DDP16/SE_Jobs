@@ -70,29 +70,17 @@ export default function JobDescription({
   const jobId = searchParams.get("id");
   const dispatch = useDispatch();
 
-  // Get job and loading status from Redux store
   const jobFromStore = useSelector(state => state.jobs.job);
-  console.log("jobFromStore:", jobFromStore);
   const jobStatus = useSelector(state => state.jobs.status);
   const jobError = useSelector(state => state.jobs.error);
 
-  // Helper function to get job ID from various fields
-  const getJobIdValue = (job) => {
-    if (!job) return null;
-    return job.id || job.job_id || job.jobId || job._id || job.external_id;
-  };
-
-  // Fetch job from API if jobId exists and job prop is not provided
   useEffect(() => {
-    if (!jobId) return;
-    if (job) return;
+    if (!jobId && job) return;
 
-    // Check if jobFromStore matches the requested jobId
-    const jobFromStoreId = getJobIdValue(jobFromStore);
-    if (jobFromStoreId && jobFromStoreId.toString() === jobId.toString()) {
+    if (!jobFromStore && jobFromStore?.id.toString() === jobId.toString()) {
       return;
     }
-    // Fetch the job
+
     dispatch(getJobById(jobId));
   }, [jobId, dispatch]);
 
@@ -145,7 +133,7 @@ export default function JobDescription({
   // Show error state
   if (jobStatus === "failed" && jobError) {
     return (
-      <div className="min-h-screen bg-white mx-auto flex items-center justify-center">
+      <div className="h-full w-full bg-white mx-auto flex items-center justify-center">
         <Box
           sx={{
             textAlign: 'center',
