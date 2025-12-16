@@ -470,7 +470,7 @@
     "level": "Cấp độ",
     "levelDesc": "Cấp độ công việc",
     "selectLevel": "Chọn cấp độ",
-    "jobDescriptionDesc": "Mô tả chi tiết công việc và yêu cầu đối với ứng viên"
+    "jobDescriptionTextDesc": "Mô tả chi tiết công việc và yêu cầu đối với ứng viên"
   },
   "jobListing": {
     "title": "Danh sách việc làm",

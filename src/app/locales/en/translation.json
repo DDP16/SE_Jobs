@@ -470,7 +470,7 @@
     "level": "Level",
     "levelDesc": "Job level",
     "selectLevel": "Select level",
-    "jobDescriptionDesc": "Describe the role and candidate requirements"
+    "jobDescriptionTextDesc": "Describe the role and candidate requirements"
   },
   "jobListing": {
     "title": "Job Listing",
