@@ -4,9 +4,11 @@ import { useSelector } from "react-redux";
 import { useTranslation } from "react-i18next";
 import { Badge } from "@/components/ui";
 import { ArrowRight } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 
 export default function JobSidebar({ job }) {
   const { t } = useTranslation();
+  const nav = useNavigate();
   const jobStatus = useSelector(state => state.jobs.status);
   const jobError = useSelector(state => state.jobs.error);
   const companyLogo = job?.company?.logo || job.logo;
@@ -119,13 +121,13 @@ export default function JobSidebar({ job }) {
         />
         <div>
           <h4 className="text-2xl font-bold text-foreground">{companyName}</h4>
-          <a
-            href="#"
-            className="text-primary flex items-center gap-1 hover:underline mt-1"
+          <div
+            className="text-primary flex items-center gap-1 hover:underline mt-1 cursor-pointer"
+            onClick={() => nav(`/company?id=${job.companyId}`)}
           >
             {t("company.read_more_about", { companyName })}
             <ArrowRight className="w-4 h-4" />
-          </a>
+          </div>
         </div>
       </div>
 

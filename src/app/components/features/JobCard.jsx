@@ -73,10 +73,10 @@ const getTimeAgo = (dateString) => {
         const diffDays = Math.floor(diffMs / (1000 * 60 * 60 * 24));
 
         if (diffHours < 1) return 'Vừa đăng';
-        if (diffHours < 24) return `Đăng ${diffHours} giờ trước`;
-        if (diffDays < 7) return `Đăng ${diffDays} ngày trước`;
-        if (diffDays < 30) return `Đăng ${Math.floor(diffDays / 7)} tuần trước`;
-        return `Đăng ${Math.floor(diffDays / 30)} tháng trước`;
+        if (diffHours < 24) return `${diffHours} giờ trước`;
+        if (diffDays < 7) return `${diffDays} ngày trước`;
+        if (diffDays < 30) return `${Math.floor(diffDays / 7)} tuần trước`;
+        return `${Math.floor(diffDays / 30)} tháng trước`;
     } catch {
         return null;
     }
@@ -147,51 +147,51 @@ export default function JobCard({
         }
 
         return {
-        title: job.title || "Job Title",
-        company: job.company,
-        location: locationFromBranch
-            || (Array.isArray(job.locations) && job.locations.length > 0 ? job.locations[0] : null) // TopCV locations
-            // || (Array.isArray(job.workLocation) && job.workLocation.length > 0 ? job.workLocation[0] : null)
-            // || job.location 
-            || job.shortCity,
-        type: job.type || (Array.isArray(job.employment_types) && job.employment_types.length > 0
-            ? job.employment_types.map(et => et.name || et).join(', ')
-            : null),
-        salary_text: job.salary_text || job.salary?.text,
-        salary_from: job.salary_from ?? job.salary?.from,
-        salary_to: job.salary_to ?? job.salary?.to,
-        salary_currency: job.salary_currency || job.salary?.currency,
-        job_deadline: job.job_deadline || job.deadline,
-        url: normalizeUrl(job.url, job.website_url),
-        updatedAt: job.updatedAt || job.updated_at,
-        publish: job.publish || job.created_at,
-        experience: job.experience || (Array.isArray(job.levels) && job.levels.length > 0
-            ? job.levels.map(l => l.name || l).join(', ')
-            : null),
-        locations: locationFromBranch 
-            ? [locationFromBranch]
-            : (Array.isArray(job.locations) && job.locations.length > 0
-                ? job.locations
-                : (Array.isArray(job.workLocation) && job.workLocation.length > 0
-                    ? job.workLocation
-                    : (job.location ? [job.location] : (job.shortCity ? [job.shortCity] : [])))),
-        description: job.description,
-        responsibilities: job.responsibilities || [],
-        requirements: job.requirements || [],
-        requirement: job.requirement || [],
-        nice_to_haves: job.nice_to_haves || [],
-        niceToHaves: job.niceToHaves || [],
-        working_time: job.working_time || (Array.isArray(job.workingTime) && job.workingTime.length > 0 ? job.workingTime.join(', ') : null),
-        logo: job.logo,
-        isFeatured: job.isFeatured,
-        is_diamond: job.is_diamond || job.isDiamond,
-        is_job_flash_active: job.is_job_flash_active || job.isJobFlashActive,
-        is_hot: job.is_hot || job.isHot,
-        created_at: job.created_at || job.createdAt,
-        createdAt: job.createdAt || job.created_at,
-        position: job.position,
-        quantity: job.quantity
-    };
+            title: job.title || "Job Title",
+            company: job.company,
+            location: locationFromBranch
+                || (Array.isArray(job.locations) && job.locations.length > 0 ? job.locations[0] : null) // TopCV locations
+                // || (Array.isArray(job.workLocation) && job.workLocation.length > 0 ? job.workLocation[0] : null)
+                // || job.location 
+                || job.shortCity,
+            type: job.type || (Array.isArray(job.employment_types) && job.employment_types.length > 0
+                ? job.employment_types.map(et => et.name || et).join(', ')
+                : null),
+            salary_text: job.salary_text || job.salary?.text,
+            salary_from: job.salary_from ?? job.salary?.from,
+            salary_to: job.salary_to ?? job.salary?.to,
+            salary_currency: job.salary_currency || job.salary?.currency,
+            job_deadline: job.job_deadline || job.deadline,
+            url: normalizeUrl(job.url, job.website_url),
+            updatedAt: job.updatedAt || job.updated_at,
+            publish: job.publish || job.created_at,
+            experience: job.experience || (Array.isArray(job.levels) && job.levels.length > 0
+                ? job.levels.map(l => l.name || l).join(', ')
+                : null),
+            locations: locationFromBranch 
+                ? [locationFromBranch]
+                : (Array.isArray(job.locations) && job.locations.length > 0
+                    ? job.locations
+                    : (Array.isArray(job.workLocation) && job.workLocation.length > 0
+                        ? job.workLocation
+                        : (job.location ? [job.location] : (job.shortCity ? [job.shortCity] : [])))),
+            description: job.description,
+            responsibilities: job.responsibilities || [],
+            requirements: job.requirement ? job.requirement.split(/(<br\s*\/?>|\n)/) : [],
+            requirement: job.requirement || [],
+            nice_to_haves: job.nice_to_haves ? job.nice_to_haves.split(/(<br\s*\/?>|\n)/) : [],
+            niceToHaves: job.niceToHaves || [],
+            working_time: job.working_time || (Array.isArray(job.workingTime) && job.workingTime.length > 0 ? job.workingTime.join(', ') : null),
+            logo: job.logo,
+            isFeatured: job.isFeatured,
+            is_diamond: job.is_diamond || job.isDiamond,
+            is_job_flash_active: job.is_job_flash_active || job.isJobFlashActive,
+            is_hot: job.is_hot || job.isHot,
+            created_at: job.created_at || job.createdAt,
+            createdAt: job.createdAt || job.created_at,
+            position: job.position,
+            quantity: job.quantity
+        };
     }, [job]);
 
     const {
@@ -218,7 +218,8 @@ export default function JobCard({
         is_job_flash_active,
         is_hot,
         created_at,
-        createdAt
+        createdAt,
+        publish
     } = normalizedJob;
 
     const companyName = typeof companyData === 'string'
@@ -318,7 +319,7 @@ export default function JobCard({
     } : {};
 
     return (
-        <Box sx={{ position: 'relative' }}>
+        <Box sx={{ position: 'relative' }} className="h-full">
             <Card
                 ref={cardRef}
                 onClick={handleCardClick}
@@ -346,15 +347,16 @@ export default function JobCard({
                     flexGrow: 1,
                     p: 2,
                     display: 'flex',
+                    justifyContent: 'space-between',
                     flexDirection: 'column',
                     '&:last-child': {
-                        paddingBottom: 1
+                        paddingBottom: 2
                     }
                 }}>
                     {variant === 'list' && (
                         <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                             <Typography variant="caption" sx={{ color: 'text.disabled', fontSize: '0.75rem' }}>
-                                {getTimeAgo(created_at || createdAt) || 'Đăng gần đây'}
+                                {getTimeAgo(created_at || createdAt) || publish || 'Đăng gần đây'}
                             </Typography>
                             <div className='space-x-2'>
                                 {isTopCV && (
@@ -512,7 +514,7 @@ export default function JobCard({
 
 
                     {variant === 'list' ? (
-                        <Stack direction="row" spacing={1} sx={{ flexWrap: 'wrap', gap: 1, mb: 1.5 }}>
+                        <Stack direction="row" sx={{ flexWrap: 'wrap', rowGap: 1, columnGap: 2 }} >
                             <Chip
                                 label={displaySalary}
                                 size="small"
@@ -552,7 +554,8 @@ export default function JobCard({
                                                 border: 'none',
                                                 '& .MuiChip-label': {
                                                     px: 2
-                                                }
+                                                },
+                                                ml: 0
                                             }}
                                         />
                                     );

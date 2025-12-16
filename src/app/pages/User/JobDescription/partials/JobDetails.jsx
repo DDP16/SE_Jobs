@@ -45,12 +45,13 @@ export default function JobDetails({ job }) {
     visible: { opacity: 1, y: 0 },
   };
 
-  // Parse string with HTML breaks to array
+  // Parse string with HTML breaks and newlines to array
   const parseStringToArray = (value) => {
     if (Array.isArray(value)) return value;
     if (typeof value === 'string' && value.trim()) {
-      // Split by HTML breaks and clean
-      return value.split(/<br\s*\/?>/)
+      // Split by HTML breaks OR newlines and clean
+      // Regex: <br optional-spaces optional-slash > OR newline
+      return value.split(/(<br\s*\/?>|\n)/)
         .map(line => line.trim())
         .filter(line => line.length > 0);
     }
@@ -76,7 +77,7 @@ export default function JobDetails({ job }) {
       {/* Description */}
       <motion.section variants={itemVariants}>
         <h4 className="text-2xl font-bold text-foreground mb-4">{t("job.description")}</h4>
-        <p className="text-muted-foreground leading-relaxed">
+        <p className="text-muted-foreground leading-relaxed whitespace-pre-line">
           {job?.description || t("job.no_description")}
         </p>
       </motion.section>

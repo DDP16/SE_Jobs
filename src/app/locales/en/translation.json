@@ -470,7 +470,11 @@
     "level": "Level",
     "levelDesc": "Job level",
     "selectLevel": "Select level",
-    "jobDescriptionTextDesc": "Describe the role and candidate requirements"
+    "jobDescriptionTextDesc": "Describe the role and candidate requirements",
+    "companyBranch": "Company Branch",
+    "companyBranchDesc": "Company branch where this position is hired",
+    "selectCompanyBranch": "Select company branch",
+    "companyBranchPlaceholder": "Select company branch"
   },
   "jobListing": {
     "title": "Job Listing",

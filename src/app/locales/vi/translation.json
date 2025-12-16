@@ -470,7 +470,11 @@
     "level": "Cấp độ",
     "levelDesc": "Cấp độ công việc",
     "selectLevel": "Chọn cấp độ",
-    "jobDescriptionTextDesc": "Mô tả chi tiết công việc và yêu cầu đối với ứng viên"
+    "jobDescriptionTextDesc": "Mô tả chi tiết công việc và yêu cầu đối với ứng viên",
+    "companyBranch": "Chi nhánh công ty",
+    "companyBranchDesc": "Chi nhánh công ty nơi tuyển vị trí này",
+    "selectCompanyBranch": "Chọn chi nhánh công ty",
+    "companyBranchPlaceholder": "Chọn chi nhánh công ty"
   },
   "jobListing": {
     "title": "Danh sách việc làm",

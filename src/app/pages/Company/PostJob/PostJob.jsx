@@ -37,10 +37,12 @@ import { createJob } from "../../../modules/services/jobsService";
 import { useNavigate } from "react-router-dom";
 import { FuzzyText } from "../../../components";
 import { getCompanyBranches } from "../../../modules/services/companyBranchesService";
+import { useCustomAlert } from "../../../hooks/useCustomAlert";
 
 export default function PostJob() {
   const { t } = useTranslation();
   const dispatch = useDispatch();
+  const { alertConfig, hideAlert, showSuccess, showError } = useCustomAlert();
 
   const categories = useSelector((state) => state.categories?.categories ?? []);
   const apiEmploymentTypes = useSelector((state) => state.employmentTypes?.employmentTypes ?? []);
@@ -62,7 +64,7 @@ export default function PostJob() {
     if (companyId && levels.length === 0)
       dispatch(getLevels());
     if (companyId && apiCompanyBranches.length === 0) {
-      dispatch(getCompanyBranches(companyId));
+      dispatch(getCompanyBranches({ companyId: companyId }));
     }
   }, [dispatch]);
 
@@ -200,8 +202,15 @@ export default function PostJob() {
     console.log("Submitting job with payload:", payload);
 
     try {
-      await dispatch(createJob(payload)).unwrap();
-      console.log("Job posted successfully!");
+      const result = await dispatch(createJob(payload)).unwrap();
+      if (createJob.fulfilled.match(result)) {
+        console.log("Job posted successfully: ", result.payload);
+        showSuccess("Job posted successfully!");
+        nav("/", { replace: true });
+      } else {
+        console.error("Failed to create job: ", result);
+        showError("Failed to create job: " + (result.payload || "Unknown error"));
+      }
     } catch (err) {
       console.error("Failed to create job:", err);
     }
@@ -220,7 +229,7 @@ export default function PostJob() {
         transition={{ duration: 0.5, ease: "easeOut" }}
       >
         <FuzzyText color="black" fontSize={32} baseIntensity={0.1} hoverIntensity={0.3}>
-          t("postJob.companyProfileNotFound")
+          {t("postJob.companyProfileNotFound")}
         </FuzzyText>
       </motion.div>
     );

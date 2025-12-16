@@ -10,7 +10,7 @@ import {
   DropdownMenuTrigger,
 } from "../../../../components/ui";
 import { ChevronDown, X, Search } from "lucide-react";
-import { useState, useMemo, useEffect } from "react";
+import { useState, useMemo, useEffect, use } from "react";
 import { useTranslation } from "react-i18next";
 
 export default function Step1JobInfo({
@@ -56,7 +56,7 @@ export default function Step1JobInfo({
 
   const handleSalaryBlur = (index) => {
     if (index === 0) {
-      const newMin = Math.min(tempSalaryRange[0], tempSalaryRange[1]);
+      const newMin = Math.max(0, Math.min(tempSalaryRange[0], tempSalaryRange[1]));
       setSalaryRange([newMin, tempSalaryRange[1]]);
       setTempSalaryRange([newMin, tempSalaryRange[1]]);
     } else {
@@ -83,8 +83,6 @@ export default function Step1JobInfo({
     value: branch.id,
     label: branch.name
   })) || [];
-
-  useEffect(() => {console.log(options)}, [options]);
 
   return (
     <div className="space-y-8">
@@ -116,7 +114,7 @@ export default function Step1JobInfo({
         </div>
       </div>
 
-      {/* Employment Type */}
+      {/* Employment Type && Company Branch */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4 items-start border-b border-border pb-6 border-gray-300">
         <div className="grid grid-cols-1 md:grid-cols-5 gap-4 items-center">
           <div className="md:col-span-2">
@@ -141,14 +139,15 @@ export default function Step1JobInfo({
         </div>
         <div className="grid grid-cols-1 md:grid-cols-5 gap-4 items-center">
           <div className="md:col-span-2">
-            <Label className="text-foreground font-semibold text-lg">{t("postJob.employmentType")}</Label>
-            <p className="text-normal font-regular text-muted-foreground mt-1">{t("postJob.employmentTypeDesc")}</p>
+            <Label className="text-foreground font-semibold text-lg">{t("postJob.companyBranch")}</Label>
+            <p className="text-normal font-regular text-muted-foreground mt-1">{t("postJob.companyBranchDesc")}</p>
           </div>
           <Space className="md:col-span-3" style={{ width: '100%' }} vertical>
             <Select
               allowClear
+              mode="multiple"
               style={{ width: '100%' }}
-              placeholder="Chọn chi nhánh công ty"
+              placeholder={t("postJob.companyBranchPlaceholder")}
               defaultValue={[]}
               onChange={() => {}}
               options={options}
@@ -226,6 +225,28 @@ export default function Step1JobInfo({
                 top: "50%",
                 transform: `translate(-50%, -50%)`,
               }}
+              onMouseDown={(e) => {
+                e.preventDefault();
+                const slider = e.currentTarget.parentElement;
+                const rect = slider.getBoundingClientRect();
+                const handleMove = (moveEvent) => {
+                  const x = Math.max(0, Math.min(rect.width, moveEvent.clientX - rect.left));
+                  const percentage = x / rect.width;
+                  const newValue = Math.round(percentage * 50000);
+                  const clampedValue = Math.min(newValue, salaryRange[1] - 100);
+                  setSalaryRange([Math.max(0, clampedValue), salaryRange[1]]);
+                  setTempSalaryRange([Math.max(0, clampedValue), tempSalaryRange[1]]);
+                };
+                const handleUp = () => {
+                  document.removeEventListener("mousemove", handleMove);
+                  document.removeEventListener("mouseup", handleUp);
+                  document.body.style.userSelect = "";
+                };
+                document.body.style.userSelect = "none";
+                document.addEventListener("mousemove", handleMove);
+                document.addEventListener("mouseup", handleUp);
+              }}
+              onMouseUp={(e) => handleSalaryBlur(0)}
             />
             <div
               className="absolute w-5 h-5 rounded-full bg-primary shadow-lg cursor-grab active:cursor-grabbing hover:scale-110 transition-transform z-10"
@@ -234,7 +255,29 @@ export default function Step1JobInfo({
                 top: "50%",
                 transform: `translate(-50%, -50%)`,
               }}
-            ></div>
+              onMouseDown={(e) => {
+                e.preventDefault();
+                const slider = e.currentTarget.parentElement;
+                const rect = slider.getBoundingClientRect();
+                const handleMove = (moveEvent) => {
+                  const x = Math.max(0, Math.min(rect.width, moveEvent.clientX - rect.left));
+                  const percentage = x / rect.width;
+                  const newValue = Math.round(percentage * 50000);
+                  const clampedValue = Math.max(newValue, salaryRange[0] + 100);
+                  setSalaryRange([salaryRange[0], Math.min(50000, clampedValue)]);
+                  setTempSalaryRange([tempSalaryRange[0], Math.min(50000, clampedValue)]);
+                };
+                const handleUp = () => {
+                  document.removeEventListener("mousemove", handleMove);
+                  document.removeEventListener("mouseup", handleUp);
+                  document.body.style.userSelect = "";
+                };
+                document.body.style.userSelect = "none";
+                document.addEventListener("mousemove", handleMove);
+                document.addEventListener("mouseup", handleUp);
+              }}
+              onMouseUp={(e) => handleSalaryBlur(1)}
+            />
           </div>
         </div>
       </div>

@@ -37,7 +37,7 @@ const getColumns = (t) => [
         dataIndex: 'salary',
         key: 'salary',
         render: (salary) => {
-            if (!salary || !salary.from || !salary.to || !salary.currency) {
+            if (!salary || salary.from === null || salary.to === null || !salary.currency) {
                 return 'N/A';
             }
             return `${salary.from.toLocaleString()} - ${salary.to.toLocaleString()} ${salary.currency}`;

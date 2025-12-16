@@ -6,6 +6,7 @@ import {
     Stack,
     Button,
     PaginationItem,
+    CircularProgress,
 } from '@mui/material';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
@@ -38,11 +39,11 @@ export default function JobListSection({ onJobSelect, selectedJob }) {
     };
 
     useEffect(() => {
-        dispatch(getJobs({ ...queryParams, page: currentPage, limit: pageSize}));
+        dispatch(getJobs({ ...queryParams, page: currentPage, limit: pageSize }));
     }, [currentPage, pageSize, queryParams]);
 
     useEffect(() => {
-        dispatch(getTopCVJobs({ ...queryParams, page: currentTopCVPage, limit: pageTopCVSize }) );
+        dispatch(getTopCVJobs({ ...queryParams, page: currentTopCVPage, limit: pageTopCVSize }));
     }, [currentTopCVPage, pageTopCVSize, queryParams]);
 
     useEffect(() => {
@@ -100,145 +101,158 @@ export default function JobListSection({ onJobSelect, selectedJob }) {
     // }, [selectedJob, jobsList, pageSize]);
 
     return (
-        <Box sx={{ flexGrow: 1, minWidth: 0 }} className="space-y-3 md:space-y-5">
-            <Box className="bg-white rounded-xl p-2 md:p-3 shadow-sm border border-gray-100">
-                <div className='body-large font-semibold ml-2'>
-                    {pagination.total} {pagination.total <= 1 ? 'job' : 'jobs'} found
-                </div>
-            </Box>
-
+        <>
             {status === 'loading' ? (
-                <div className="flex items-center justify-center">
-                <Spin indicator={<LoadingOutlined spin />} size="large" />
-                </div>
-            ) : (jobsList.length > 0 ? (
-                    <div className={`grid ${selectedJob ? 'grid-cols-1' : 'grid-cols-3 2xl:grid-cols-4'} gap-4`}>
-                        {jobsList.map((job) => {
-                            const keyId = job.id ?? job.job_id ?? job.jobId ?? job._id;
-                            const isSelected = selectedJob && ((selectedJob?.id ?? selectedJob?.job_id ?? selectedJob?.jobId ?? selectedJob?._id) === keyId);
-
-                            return (
-                                <Box
-                                    key={keyId}
-                                    ref={(el) => { if (keyId) itemRefs.current[keyId] = el; }}
-                                    sx={{
-                                        border: isSelected ? '2px solid' : '1px solid',
-                                        borderColor: isSelected ? 'primary.main' : 'transparent',
-                                        borderRadius: 2,
-                                        transition: 'all 0.2s ease-in-out',
-                                        '&:hover': {
-                                            borderColor: 'primary.light',
-                                            transform: 'translateY(-1px)',
-                                            boxShadow: 2,
-                                        },
-                                    }}
-                                >
-                                    <JobCard
-                                        job={job}
-                                        variant="list"
-                                        showPopup={false}
-                                        onBookmark={(job) => handleJobAction('bookmark', job)}
-                                        onClick={() => onJobSelect?.(job)}
-                                    />
-                                </Box>
-                            );
-                        })}
-                    </div>
-                ) : (
-                    <Box sx={{ textAlign: 'center', py: 8 }}>
-                        <Typography variant="h6" sx={{ mb: 2, color: 'text.secondary' }}>
-                            No jobs found
+                <Box className="bg-white rounded-xl p-8 shadow-sm border border-gray-100">
+                    <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 2, py: 8 }}>
+                        <CircularProgress size={48} />
+                        <Typography variant="body1" sx={{ color: 'text.secondary', fontWeight: 500 }}>
+                            Đang tìm kiếm công việc...
                         </Typography>
-                        <Typography variant="body2" sx={{ mb: 3, color: 'text.secondary' }}>
-                            Try adjusting your search criteria or filters
-                        </Typography>
-                        <Button variant="outlined" onClick={() => window.location.reload()}>
-                            Clear Filters
-                        </Button>
                     </Box>
-                )
-            )}
-
-            <div>
-                <Pagination align="center" 
-                    current={currentPage}
-                    total={pagination?.total ?? 0}
-                    pageSize={pageSize}
-                    onChange={
-                        (newPage, newPageSize) => {
-                            setCurrentPage(newPage)
-                            setPageSize(newPageSize)
-                        }
-                    }
-                />
-            </div>
-
-            {/* TOPCV */}
-            {statusTopCV === 'loading' ? (
-                <div className="flex items-center justify-center">
-                <Spin indicator={<LoadingOutlined spin />} size="large" />
-                </div>
-            ) : (jobsTopCV.length > 0 ? (
-                    <div className={`grid ${selectedJob ? 'grid-cols-1' : 'grid-cols-3 2xl:grid-cols-4'} gap-4`}>
-                        {jobsTopCV.map((job) => {
-                            const keyId = job.id ?? job.job_id ?? job.jobId ?? job._id;
-                            const isSelected = selectedJob && ((selectedJob?.id ?? selectedJob?.job_id ?? selectedJob?.jobId ?? selectedJob?._id) === keyId);
-
-                            return (
-                                <Box
-                                    key={keyId}
-                                    ref={(el) => { if (keyId) itemRefs.current[keyId] = el; }}
-                                    sx={{
-                                        border: isSelected ? '2px solid' : '1px solid',
-                                        borderColor: isSelected ? 'primary.main' : 'transparent',
-                                        borderRadius: 2,
-                                        transition: 'all 0.2s ease-in-out',
-                                        '&:hover': {
-                                            borderColor: 'primary.light',
-                                            transform: 'translateY(-1px)',
-                                            boxShadow: 2,
-                                        },
-                                    }}
-                                >
-                                    <JobCard
-                                        job={job}
-                                        variant="list"
-                                        showPopup={false}
-                                        onBookmark={(job) => handleJobAction('bookmark', job)}
-                                        onClick={() => onJobSelect?.(job)}
-                                    />
-                                </Box>
-                            );
-                        })}
-                    </div>
-                ) : (
-                    <Box sx={{ textAlign: 'center', py: 8 }}>
-                        <Typography variant="h6" sx={{ mb: 2, color: 'text.secondary' }}>
-                            No jobs found
-                        </Typography>
-                        <Typography variant="body2" sx={{ mb: 3, color: 'text.secondary' }}>
-                            Try adjusting your search criteria or filters
-                        </Typography>
-                        <Button variant="outlined" onClick={() => window.location.reload()}>
-                            Clear Filters
-                        </Button>
+                </Box>
+            ) : (
+                <Box sx={{ flexGrow: 1, minWidth: 0 }} className="space-y-3 md:space-y-5">
+                    <Box className="bg-white rounded-xl p-2 md:p-3 shadow-sm border border-gray-100">
+                        <div className='body-large font-semibold ml-2'>
+                            {pagination.total} {pagination.total <= 1 ? 'job' : 'jobs'} found
+                        </div>
                     </Box>
-                )
-            )}
 
-            <div>
-                <Pagination align="center" 
-                    current={currentTopCVPage}
-                    total={paginationTopCV?.totalItems ?? 0}
-                    pageSize={pageTopCVSize}
-                    onChange={
-                        (newPage, newPageSize) => {
-                            setCurrentTopCVPage(newPage)
-                            setPageTopCVSize(newPageSize)
-                        }
-                    }
-                />
-            </div>
-        </Box>
+                    {status === 'loading' ? (
+                        <div className="flex items-center justify-center">
+                            <Spin indicator={<LoadingOutlined spin />} size="large" />
+                        </div>
+                    ) : (jobsList.length > 0 ? (
+                        <div className={`grid ${selectedJob ? 'grid-cols-1' : 'grid-cols-3 2xl:grid-cols-4'} gap-4`}>
+                            {jobsList.map((job) => {
+                                const keyId = job.id ?? job.job_id ?? job.jobId ?? job._id;
+                                const isSelected = selectedJob && ((selectedJob?.id ?? selectedJob?.job_id ?? selectedJob?.jobId ?? selectedJob?._id) === keyId);
+
+                                return (
+                                    <Box
+                                        key={keyId}
+                                        ref={(el) => { if (keyId) itemRefs.current[keyId] = el; }}
+                                        sx={{
+                                            border: isSelected ? '2px solid' : '1px solid',
+                                            borderColor: isSelected ? 'primary.main' : 'transparent',
+                                            borderRadius: 2,
+                                            transition: 'all 0.2s ease-in-out',
+                                            '&:hover': {
+                                                borderColor: 'primary.light',
+                                                transform: 'translateY(-1px)',
+                                                boxShadow: 2,
+                                            },
+                                        }}
+                                    >
+                                        <JobCard
+                                            job={job}
+                                            variant="list"
+                                            showPopup={false}
+                                            onBookmark={(job) => handleJobAction('bookmark', job)}
+                                            onClick={() => onJobSelect?.(job)}
+                                        />
+                                    </Box>
+                                );
+                            })}
+                        </div>
+                    ) : (
+                        <Box sx={{ textAlign: 'center', py: 8 }}>
+                            <Typography variant="h6" sx={{ mb: 2, color: 'text.secondary' }}>
+                                No jobs found
+                            </Typography>
+                            <Typography variant="body2" sx={{ mb: 3, color: 'text.secondary' }}>
+                                Try adjusting your search criteria or filters
+                            </Typography>
+                            <Button variant="outlined" onClick={() => window.location.reload()}>
+                                Clear Filters
+                            </Button>
+                        </Box>
+                    )
+                    )}
+
+                    <div>
+                        <Pagination align="center"
+                            current={currentPage}
+                            total={pagination?.total ?? 0}
+                            pageSize={pageSize}
+                            onChange={
+                                (newPage, newPageSize) => {
+                                    setCurrentPage(newPage)
+                                    setPageSize(newPageSize)
+                                }
+                            }
+                        />
+                    </div>
+
+                    {/* TOPCV */}
+                    {statusTopCV === 'loading' ? (
+                        <div className="flex items-center justify-center">
+                            <Spin indicator={<LoadingOutlined spin />} size="large" />
+                        </div>
+                    ) : (jobsTopCV.length > 0 ? (
+                        <div className={`grid ${selectedJob ? 'grid-cols-1' : 'grid-cols-3 2xl:grid-cols-4'} gap-4`}>
+                            {jobsTopCV.map((job) => {
+                                const keyId = job.id ?? job.job_id ?? job.jobId ?? job._id;
+                                const isSelected = selectedJob && ((selectedJob?.id ?? selectedJob?.job_id ?? selectedJob?.jobId ?? selectedJob?._id) === keyId);
+
+                                return (
+                                    <Box
+                                        key={keyId}
+                                        ref={(el) => { if (keyId) itemRefs.current[keyId] = el; }}
+                                        sx={{
+                                            border: isSelected ? '2px solid' : '1px solid',
+                                            borderColor: isSelected ? 'primary.main' : 'transparent',
+                                            borderRadius: 2,
+                                            transition: 'all 0.2s ease-in-out',
+                                            '&:hover': {
+                                                borderColor: 'primary.light',
+                                                transform: 'translateY(-1px)',
+                                                boxShadow: 2,
+                                            },
+                                        }}
+                                    >
+                                        <JobCard
+                                            job={job}
+                                            variant="list"
+                                            showPopup={false}
+                                            onBookmark={(job) => handleJobAction('bookmark', job)}
+                                            onClick={() => onJobSelect?.(job)}
+                                        />
+                                    </Box>
+                                );
+                            })}
+                        </div>
+                    ) : (
+                        <Box sx={{ textAlign: 'center', py: 8 }}>
+                            <Typography variant="h6" sx={{ mb: 2, color: 'text.secondary' }}>
+                                No jobs found
+                            </Typography>
+                            <Typography variant="body2" sx={{ mb: 3, color: 'text.secondary' }}>
+                                Try adjusting your search criteria or filters
+                            </Typography>
+                            <Button variant="outlined" onClick={() => window.location.reload()}>
+                                Clear Filters
+                            </Button>
+                        </Box>
+                    )
+                    )}
+
+                    <div>
+                        <Pagination align="center"
+                            current={currentTopCVPage}
+                            total={paginationTopCV?.totalItems ?? 0}
+                            pageSize={pageTopCVSize}
+                            onChange={
+                                (newPage, newPageSize) => {
+                                    setCurrentTopCVPage(newPage)
+                                    setPageTopCVSize(newPageSize)
+                                }
+                            }
+                        />
+                    </div>
+                </Box>
+            )}
+        </>
     );
 }

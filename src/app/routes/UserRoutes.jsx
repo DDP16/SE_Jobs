@@ -15,7 +15,7 @@ import {
 } from "../pages";
 import { Outlet, Route, Routes } from "react-router-dom";
 import PrivateRoute from "./PrivateRoute";
-import PageNotFound from "@/layouts/PageNotFound";
+import PageNotFound from "../layouts/PageNotFound";
 
 function MainLayoutWrapper() {
   return (

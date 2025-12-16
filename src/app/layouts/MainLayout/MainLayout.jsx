@@ -9,30 +9,21 @@ export default function MainLayout({
     disableGutters = false
 }) {
     return (
-        <Box sx={{
-            display: 'flex',
-            flexDirection: 'column',
-            minHeight: '100vh',
-            bgcolor: 'background.default'
-        }}>
-            {/* Header */}
+        <div className="min-h-screen flex flex-col bg-neutral-100">
             <Header />
-
-            {/* Main Content */}
             <Box
                 component="main"
                 sx={{
                     flexGrow: 1,
                     display: 'flex',
+                    justifyContent: 'center',
                     flexDirection: 'column',
                     marginTop: { xs: '40px', md: '50px' }
                 }}
             >
                 {children}
             </Box>
-
-            {/* Footer */}
             <Footer />
-        </Box>
+        </div>
     );
 }
