@@ -474,7 +474,13 @@
     "companyBranch": "Chi nhánh công ty",
     "companyBranchDesc": "Chi nhánh công ty nơi tuyển vị trí này",
     "selectCompanyBranch": "Chọn chi nhánh công ty",
-    "companyBranchPlaceholder": "Chọn chi nhánh công ty"
+    "companyBranchPlaceholder": "Chọn chi nhánh công ty",
+    "quantity": "Số lượng tuyển",
+    "quantityDesc": "Số lượng vị trí cần tuyển",
+    "quantityPlaceholder": "Nhập số lượng",
+    "deadlineDate": "Hạn chót nộp",
+    "deadlineDateDesc": "Ngày hết hạn nộp hồ sơ",
+    "deadlineDatePlaceholder": "Chọn ngày"
   },
   "jobListing": {
     "title": "Danh sách việc làm",

@@ -474,7 +474,13 @@
     "companyBranch": "Company Branch",
     "companyBranchDesc": "Company branch where this position is hired",
     "selectCompanyBranch": "Select company branch",
-    "companyBranchPlaceholder": "Select company branch"
+    "companyBranchPlaceholder": "Select company branch",
+    "quantity": "Quantity",
+    "quantityDesc": "Number of positions to hire",
+    "quantityPlaceholder": "Enter quantity",
+    "deadlineDate": "Deadline Date",
+    "deadlineDateDesc": "Application deadline",
+    "deadlineDatePlaceholder": "Select date"
   },
   "jobListing": {
     "title": "Job Listing",

@@ -83,6 +83,8 @@ export default function PostJob() {
   const [niceToHaves, setNiceToHaves] = useState("");
   const [benefits, setBenefits] = useState([]);
   const [companyBranchId, setCompanyBranchId] = useState(null);
+  const [quantity, setQuantity] = useState("");
+  const [jobDeadline, setJobDeadline] = useState("");
 
   const [employmentTypeIds, setEmploymentTypeIds] = useState([]);
   const [skillIds, setSkillIds] = useState([]);
@@ -92,7 +94,7 @@ export default function PostJob() {
   useEffect(() => {
     console.log(benefits);
     console.log(apiCompanyBranches);
-  }, [benefits,apiCompanyBranches]);
+  }, [benefits, apiCompanyBranches]);
 
   const steps = [
     { number: 1, title: t("postJob.jobInformation"), icon: FileText },
@@ -196,6 +198,8 @@ export default function PostJob() {
       level_ids: levelId ? [levelId] : [],
       required_skill_ids: skillIds,
       employment_type_ids: employmentTypeIds,
+      quantity: quantity ? parseInt(quantity) : null,
+      job_deadline: jobDeadline || null,
       status: "Pending",
     };
 
@@ -254,25 +258,23 @@ export default function PostJob() {
           return (
             <div
               key={step.number}
-              className={`flex-1 flex items-center gap-3 p-4 rounded-lg transition-colors cursor-pointer ${
-                isActive
-                  ? "bg-primary/10 border-2 border-primary"
-                  : isCompleted
+              className={`flex-1 flex items-center gap-3 p-4 rounded-lg transition-colors cursor-pointer ${isActive
+                ? "bg-primary/10 border-2 border-primary"
+                : isCompleted
                   ? "bg-primary/5 border-2 border-primary/30"
                   : "bg-input border-2 border-border"
-              }`}
+                }`}
               onClick={() => {
                 setCurrentStep(step.number);
               }}
             >
               <div
-                className={`flex items-center justify-center w-12 h-12 rounded-full transition-colors ${
-                  isActive
-                    ? "bg-primary text-white"
-                    : isCompleted
+                className={`flex items-center justify-center w-12 h-12 rounded-full transition-colors ${isActive
+                  ? "bg-primary text-white"
+                  : isCompleted
                     ? "bg-primary/20 text-primary"
                     : "bg-input text-muted-foreground border border-border"
-                }`}
+                  }`}
               >
                 <Icon className="h-6 w-6" />
               </div>
@@ -317,6 +319,10 @@ export default function PostJob() {
             removeSkill={removeSkill}
             apiSkills={apiSkills}
             onSkillSelect={addSkillFromApi}
+            quantity={quantity}
+            setQuantity={setQuantity}
+            jobDeadline={jobDeadline}
+            setJobDeadline={setJobDeadline}
           />
         )}
 
