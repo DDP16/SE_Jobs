@@ -9,7 +9,7 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "../../../../components/ui";
-import { ChevronDown, X, Search } from "lucide-react";
+import { ChevronDown, X, Search, Calendar } from "lucide-react";
 import { useState, useMemo, useEffect, use } from "react";
 import { useTranslation } from "react-i18next";
 
@@ -39,6 +39,10 @@ export default function Step1JobInfo({
   removeSkill,
   apiSkills,
   onSkillSelect,
+  quantity,
+  setQuantity,
+  jobDeadline,
+  setJobDeadline,
 }) {
   const { t } = useTranslation();
   const [searchQuery, setSearchQuery] = useState("");
@@ -402,6 +406,48 @@ export default function Step1JobInfo({
                 </button>
               </div>
             ))}
+          </div>
+        </div>
+      </div>
+
+      {/* Quantity & Deadline Date */}
+      <div className="grid grid-cols-1 md:grid-cols-2 border-b border-border border-gray-300 pb-6 gap-10">
+        {/* Quantity */}
+        <div className="grid grid-cols-1 md:grid-cols-5 gap-4 items-center">
+          <div className="md:col-span-2">
+            <Label className="text-foreground font-semibold text-lg">{t("postJob.quantity")}</Label>
+            <p className="text-normal font-regular text-muted-foreground mt-1">{t("postJob.quantityDesc")}</p>
+          </div>
+          <div className="md:col-span-3">
+            <Input
+              type="number"
+              placeholder={t("postJob.quantityPlaceholder")}
+              value={quantity}
+              onChange={(e) => setQuantity(e.target.value)}
+              className="bg-white border-border"
+              min="1"
+            />
+          </div>
+        </div>
+
+        {/* Deadline Date */}
+        <div className="grid grid-cols-1 md:grid-cols-5 gap-4 items-center">
+          <div className="md:col-span-2">
+            <Label className="text-foreground font-semibold text-lg">{t("postJob.deadlineDate")}</Label>
+            <p className="text-normal font-regular text-muted-foreground mt-1">{t("postJob.deadlineDateDesc")}</p>
+          </div>
+          <div className="md:col-span-3">
+            <div className="relative">
+              <Input
+                type="date"
+                placeholder={t("postJob.deadlineDatePlaceholder")}
+                value={jobDeadline}
+                onChange={(e) => setJobDeadline(e.target.value)}
+                className="bg-white border-border pr-10 [&::-webkit-calendar-picker-indicator]:opacity-0 [&::-webkit-calendar-picker-indicator]:absolute [&::-webkit-calendar-picker-indicator]:right-0 [&::-webkit-calendar-picker-indicator]:w-full [&::-webkit-calendar-picker-indicator]:h-full [&::-moz-calendar-picker-indicator]:hidden"
+                min={new Date().toISOString().split("T")[0]}
+              />
+              <Calendar className="absolute right-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground pointer-events-none z-10" />
+            </div>
           </div>
         </div>
       </div>

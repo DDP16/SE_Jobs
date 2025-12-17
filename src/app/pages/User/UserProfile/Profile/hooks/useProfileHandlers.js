@@ -27,6 +27,7 @@ export const useProfileHandlers = ({
     selectedCertificate,
     dispatch,
     currentUser,
+    setOpenForOpportunities,
 }) => {
     // CV Handlers
     const handleCVFileChange = (file) => {
@@ -327,6 +328,50 @@ export const useProfileHandlers = ({
         }
     };
 
+    // Open for Opportunities Handler
+    const handleToggleOpenForOpportunities = async (newValue) => {
+        // Update local state first
+        setOpenForOpportunities(newValue);
+
+        if (!currentUser?.user_id) {
+            alert('Không tìm thấy người dùng. Vui lòng đăng nhập lại.');
+            return;
+        }
+
+        try {
+            // Get current student_info and spread it
+            const currentStudentInfo = currentUser?.student_info || {};
+            
+            const payload = {
+                userId: currentUser.user_id,
+                userData: {
+                    student_info: {
+                        ...currentStudentInfo,
+                        open_for_opportunities: newValue
+                    }
+                }
+            };
+
+            // Debug: log current value, new value and full payload
+            console.log('=== Toggle Open for Opportunities ===');
+            console.log('Current value:', currentUser?.student_info?.open_for_opportunities);
+            console.log('New value:', newValue);
+            console.log('Full payload:', JSON.stringify(payload, null, 2));
+            console.log('open_for_opportunities in payload:', payload.userData.student_info.open_for_opportunities);
+
+            const result = await dispatch(updateUser(payload)).unwrap();
+            console.log('Update result:', result);
+            
+            await dispatch(getMe()).unwrap();
+        } catch (error) {
+            console.error('Error updating open for opportunities:', error);
+            const message = typeof error === 'string' ? error : (error?.message || 'Có lỗi xảy ra khi cập nhật trạng thái');
+            alert(message);
+            // Revert on error
+            setOpenForOpportunities(currentUser?.student_info?.open_for_opportunities === true);
+        }
+    };
+
     return {
         handleCVFileChange,
         handleDeleteCV,
@@ -344,5 +389,6 @@ export const useProfileHandlers = ({
         handleSaveCertificate,
         handleDeleteCertificate,
         handleDeleteAward,
+        handleToggleOpenForOpportunities,
     };
 };
