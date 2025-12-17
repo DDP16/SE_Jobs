@@ -3,7 +3,7 @@ import { srcAsset } from "../../../../lib";
 import { JobCardSecond } from "@/components";
 import { useTranslation } from "react-i18next";
 import { useDispatch, useSelector } from 'react-redux';
-import { getJobsByCompanyId } from '../../../../modules';
+import { getJobs } from '../../../../modules';
 import { useEffect, useMemo } from 'react';
 import { Spin } from 'antd';
 import { LoadingOutlined } from '@ant-design/icons';
@@ -19,8 +19,8 @@ export default function OpenJobs({ company = {} }) {
   // Fetch jobs when company id is available
   useEffect(() => {
     if (company?.id) {
-      dispatch(getJobsByCompanyId({
-        companyId: company.id,
+      dispatch(getJobs({
+        company_id: company.id,
         page: 1,
         limit: 8
       }));
@@ -125,7 +125,7 @@ export default function OpenJobs({ company = {} }) {
           <Spin indicator={<LoadingOutlined spin />} size="large" />
         </div>
       ) : transformedJobs.length > 0 ? (
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-5">
+        <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-5">
           {transformedJobs.map((job, index) => (
             <JobCardSecond key={job.id || index} job={job} index={index} />
           ))}

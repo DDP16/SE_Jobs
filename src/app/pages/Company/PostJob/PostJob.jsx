@@ -82,7 +82,7 @@ export default function PostJob() {
   const [whoYouAre, setWhoYouAre] = useState("");
   const [niceToHaves, setNiceToHaves] = useState("");
   const [benefits, setBenefits] = useState([]);
-  const [companyBranchId, setCompanyBranchId] = useState(null);
+  const [companyBranchId, setCompanyBranchId] = useState([]);
 
   const [employmentTypeIds, setEmploymentTypeIds] = useState([]);
   const [skillIds, setSkillIds] = useState([]);
@@ -196,6 +196,8 @@ export default function PostJob() {
       level_ids: levelId ? [levelId] : [],
       required_skill_ids: skillIds,
       employment_type_ids: employmentTypeIds,
+      company_branches_id: companyBranchId[0],
+      company_branches_ids: companyBranchId,
       status: "Pending",
     };
 
@@ -203,16 +205,12 @@ export default function PostJob() {
 
     try {
       const result = await dispatch(createJob(payload)).unwrap();
-      if (createJob.fulfilled.match(result)) {
-        console.log("Job posted successfully: ", result.payload);
-        showSuccess("Job posted successfully!");
-        nav("/", { replace: true });
-      } else {
-        console.error("Failed to create job: ", result);
-        showError("Failed to create job: " + (result.payload || "Unknown error"));
-      }
+      console.log("Job posted successfully: ", result);
+      showSuccess("Job posted successfully!");
+      nav("/", { replace: true });
     } catch (err) {
       console.error("Failed to create job:", err);
+      showError("Failed to create job: " + (err?.message || err || "Unknown error"));
     }
   };
 

@@ -5,7 +5,7 @@ import { Button, DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMe
 import { Edit, Eye, MoreVertical, Trash2, Diamond, Flame, Zap } from "lucide-react";
 import { useDispatch, useSelector } from "react-redux";
 import { useTranslation } from "react-i18next";
-import { getJobsByCompanyId } from "../../../../modules";
+import { getJobs, getJobsByCompanyId } from "../../../../modules";
 import { useEffect, useState } from "react";
 
 const getColumns = (t) => [
@@ -154,7 +154,7 @@ export default function JobTable() {
     const pagination = useSelector((state) => state.jobs.pagination);
 
     useEffect(() => {
-        dispatch(getJobsByCompanyId({companyId: companyId, page: currentPage, limit: pageSize}));
+        dispatch(getJobs({company_id: companyId, page: currentPage, limit: pageSize}));
     }, [currentPage, pageSize]);
 
     const currentData = jobs;
