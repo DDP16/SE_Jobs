@@ -14,6 +14,7 @@ export const useProfileData = () => {
         gender: '',
         currentAddress: '',
         personalLinks: '',
+        openForOpportunities: false,
     });
 
     // Profile Data
@@ -44,6 +45,7 @@ export const useProfileData = () => {
                 location: studentInfo.location || '',
                 phone: studentInfo.phone || '012345678',
                 dateOfBirth: studentInfo.date_of_birth || '',
+                openForOpportunities: studentInfo.open_for_opportunities === true,
             }));
 
             // Sync about
@@ -195,6 +197,10 @@ export const useProfileData = () => {
         setCompletionPercentage(Math.round((completed / sections.length) * 100));
     }, [user, about, experiences, educations, projects, certificates, skills]);
 
+    const setOpenForOpportunities = (value) => {
+        setUser(prev => ({ ...prev, openForOpportunities: value }));
+    };
+
     return {
         currentUser,
         user,
@@ -220,5 +226,7 @@ export const useProfileData = () => {
         showAllEducations,
         setShowAllEducations,
         completionPercentage,
+        openForOpportunities: user.openForOpportunities === true,
+        setOpenForOpportunities,
     };
 };
