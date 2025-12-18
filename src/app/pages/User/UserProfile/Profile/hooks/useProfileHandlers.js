@@ -73,23 +73,21 @@ export const useProfileHandlers = ({
             }
 
             const studentInfo = getStudentInfo() || {};
-
-            await dispatch(
-                updateUser({
-                    userId: currentUser.user_id,
-                    userData: {
-                        first_name: formData.fullName?.split(' ')[0] || '',
-                        last_name: formData.fullName?.split(' ').slice(1).join(' ') || '',
-                        student_info: {
-                            ...studentInfo,
-                            phone: formData.phone,
-                            date_of_birth: formData.dateOfBirth,
-                            location: formData.address,
-                        },
+            const userData = {
+                userId: currentUser.user_id,
+                userData: {
+                    first_name: formData.fullName?.split(' ')[0] || '',
+                    last_name: formData.fullName?.split(' ').slice(1).join(' ') || '',
+                    student_info: {
+                        ...studentInfo,
+                        phone: formData.phone,
+                        date_of_birth: formData.dateOfBirth,
+                        location: formData.address,
                     },
-                })
-            ).unwrap();
+                },
+            };
 
+            await dispatch(updateUser(userData)).unwrap();
             await dispatch(getMe()).unwrap();
             closeModal('information');
         } catch (error) {
@@ -106,19 +104,18 @@ export const useProfileHandlers = ({
             }
 
             const studentInfo = getStudentInfo() || {};
-
-            await dispatch(
-                updateUser({
-                    userId: currentUser.user_id,
-                    userData: {
-                        student_info: {
-                            ...studentInfo,
-                            about: formData.about || formData.content || '',
-                        },
+            const aboutText = formData.about || formData.content || '';
+            const userData = {
+                userId: currentUser.user_id,
+                userData: {
+                    student_info: {
+                        ...studentInfo,
+                        about: aboutText,
                     },
-                })
-            ).unwrap();
+                },
+            };
 
+            await dispatch(updateUser(userData)).unwrap();
             await dispatch(getMe()).unwrap();
             closeModal('about');
         } catch (error) {
@@ -149,10 +146,8 @@ export const useProfileHandlers = ({
             };
 
             if (selectedExperience?.id) {
-                // Update existing experience
                 await dispatch(updateExperience({ id: selectedExperience.id, experienceData })).unwrap();
             } else {
-                // Create new experience
                 await dispatch(createExperience(experienceData)).unwrap();
             }
 
@@ -185,10 +180,12 @@ export const useProfileHandlers = ({
                 return;
             }
 
+            const transformedData = transformEducationToAPI(formData);
+
             if (selectedEducation?.id) {
-                await dispatch(updateEducation({ id: selectedEducation.id, educationData: transformEducationToAPI(formData) })).unwrap();
+                await dispatch(updateEducation({ id: selectedEducation.id, educationData: transformedData })).unwrap();
             } else {
-                await dispatch(createEducation(transformEducationToAPI(formData))).unwrap();
+                await dispatch(createEducation(transformedData)).unwrap();
             }
 
             await dispatch(getMe()).unwrap();
@@ -222,18 +219,17 @@ export const useProfileHandlers = ({
 
         try {
             const studentInfo = getStudentInfo() || {};
-            await dispatch(
-                updateUser({
-                    userId: currentUser.user_id,
-                    userData: {
-                        student_info: {
-                            ...(studentInfo || {}),
-                            skills: skillsArray,
-                        },
+            const userData = {
+                userId: currentUser.user_id,
+                userData: {
+                    student_info: {
+                        ...(studentInfo || {}),
+                        skills: skillsArray,
                     },
-                })
-            ).unwrap();
+                },
+            };
 
+            await dispatch(updateUser(userData)).unwrap();
             await dispatch(getMe()).unwrap();
         } catch (error) {
             console.error('Error updating skills:', error);
@@ -260,16 +256,32 @@ export const useProfileHandlers = ({
     // Projects
     const handleSaveProject = async (formData) => {
         try {
-            const validation = validateProjectForm(formData);
-            if (!validation.valid) {
-                alert(validation.message);
+            // Basic validation - formData đã được validate trong modal rồi
+            if (!formData?.projectName || !formData?.startYear || !formData?.startMonth) {
+                alert('Vui lòng điền đầy đủ thông tin bắt buộc');
                 return;
             }
 
+            // Ensure websiteLink is included - check all possible field names
+            const websiteLinkValue = formData?.websiteLink || formData?.website || formData?.website_link || '';
+
+            const dataToTransform = {
+                projectName: formData.projectName || '',
+                isCurrentlyWorking: formData.isCurrentlyWorking || false,
+                startMonth: formData.startMonth || '',
+                startYear: formData.startYear || '',
+                endMonth: formData.endMonth || '',
+                endYear: formData.endYear || '',
+                description: formData.description || '',
+                websiteLink: websiteLinkValue,
+            };
+
+            const transformedData = transformProjectToAPI(dataToTransform);
+
             if (selectedProject?.id) {
-                await dispatch(updateProject({ id: selectedProject.id, projectData: transformProjectToAPI(formData) })).unwrap();
+                await dispatch(updateProject({ id: selectedProject.id, projectData: transformedData })).unwrap();
             } else {
-                await dispatch(createProject(transformProjectToAPI(formData))).unwrap();
+                await dispatch(createProject(transformedData)).unwrap();
             }
 
             await dispatch(getMe()).unwrap();
@@ -301,10 +313,12 @@ export const useProfileHandlers = ({
                 return;
             }
 
+            const transformedData = transformCertificateToAPI(formData);
+
             if (selectedCertificate?.id) {
-                await dispatch(updateCertificate({ id: selectedCertificate.id, certificateData: transformCertificateToAPI(formData) })).unwrap();
+                await dispatch(updateCertificate({ id: selectedCertificate.id, certificateData: transformedData })).unwrap();
             } else {
-                await dispatch(createCertificate(transformCertificateToAPI(formData))).unwrap();
+                await dispatch(createCertificate(transformedData)).unwrap();
             }
 
             await dispatch(getMe()).unwrap();

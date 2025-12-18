@@ -57,8 +57,8 @@ export const deleteProject = createAsyncThunk(
     "projects/deleteProject",
     async (id, { rejectWithValue }) => {
         try {
-            const response = await api.delete(`${apiBaseUrl}/${id}`);
-            return response.data;
+            await api.delete(`${apiBaseUrl}/${id}`);
+            return id; 
         } catch (error) {
             return rejectWithValue(error.response?.data?.message || "Something went wrong");
         }

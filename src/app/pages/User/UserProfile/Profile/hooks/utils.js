@@ -10,7 +10,7 @@
  */
 export const transformExperienceFromAPI = (exp) => {
   if (!exp) return null;
-  
+
   try {
     let startMonth = '';
     let startYear = '';
@@ -53,7 +53,7 @@ export const transformExperienceFromAPI = (exp) => {
 export const transformExperienceToAPI = (formData) => {
   const startMonth = String(formData.startMonth || '').padStart(2, '0');
   const startDate = `${formData.startYear}-${startMonth}-01`;
-  
+
   let endDate = null;
   if (!formData.isCurrentlyWorking && formData.endYear && formData.endMonth) {
     const endMonth = String(formData.endMonth).padStart(2, '0');
@@ -76,7 +76,7 @@ export const transformExperienceToAPI = (formData) => {
  */
 export const transformEducationFromAPI = (edu) => {
   if (!edu) return null;
-  
+
   try {
     let startMonth = '';
     let startYear = '';
@@ -119,7 +119,7 @@ export const transformEducationFromAPI = (edu) => {
 export const transformEducationToAPI = (formData) => {
   const startMonth = String(formData.startMonth || '').padStart(2, '0');
   const startDate = `${formData.startYear}-${startMonth}-01`;
-  
+
   let endDate = null;
   if (!formData.isCurrentlyStudying && formData.endYear && formData.endMonth) {
     const endMonth = String(formData.endMonth).padStart(2, '0');
@@ -141,7 +141,7 @@ export const transformEducationToAPI = (formData) => {
  */
 export const transformProjectFromAPI = (proj) => {
   if (!proj) return null;
-  
+
   try {
     let startMonth = '';
     let startYear = '';
@@ -184,19 +184,22 @@ export const transformProjectFromAPI = (proj) => {
 export const transformProjectToAPI = (formData) => {
   const startMonth = String(formData.startMonth || '').padStart(2, '0');
   const startDate = `${formData.startYear}-${startMonth}-01`;
-  
+
   let endDate = null;
   if (!formData.isCurrentlyWorking && formData.endYear && formData.endMonth) {
     const endMonth = String(formData.endMonth).padStart(2, '0');
     endDate = `${formData.endYear}-${endMonth}-01`;
   }
 
+  // Get websiteLink from multiple possible field names
+  const websiteLink = formData.websiteLink || formData.website || formData.website_link || '';
+
   return {
     name: formData.projectName || '',
     start_date: startDate,
     end_date: endDate,
     description: formData.description || '',
-    website: formData.websiteLink || '',
+    website: websiteLink,
   };
 };
 
@@ -205,7 +208,7 @@ export const transformProjectToAPI = (formData) => {
  */
 export const transformCertificateFromAPI = (cert) => {
   if (!cert) return null;
-  
+
   try {
     let issueMonth = '';
     let issueYear = '';

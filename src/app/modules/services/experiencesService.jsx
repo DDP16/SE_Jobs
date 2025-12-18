@@ -4,14 +4,34 @@ import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 const apiBaseUrl = "/api/experiences";
 
 /**
- * Get list of current user's experiences with pagination
+ * Get list of all experiences with pagination (public, no auth required)
+ * @param {Object} params - { page: number, limit: number }
+ */
+export const getExperiences = createAsyncThunk(
+    "experiences/getExperiences",
+    async ({ page = 1, limit = 10 } = {}, { rejectWithValue }) => {
+        try {
+            const response = await api.get(`${apiBaseUrl}/`, {
+                params: { page, limit }
+            });
+            // Response structure: { success: true, data: [...], pagination: {...} }
+            return response.data;
+        } catch (error) {
+            return rejectWithValue(error.response?.data?.message || "Something went wrong");
+        }
+    }
+);
+
+/**
+ * Get list of current user's experiences with pagination (auth required, role Student)
+ * GET /api/experiences/student/me
  * @param {Object} params - { page: number, limit: number }
  */
 export const getExperiencesByStudentId = createAsyncThunk(
     "experiences/getExperiencesByStudentId",
     async ({ page = 1, limit = 10 } = {}, { rejectWithValue }) => {
         try {
-            const response = await api.get(`${apiBaseUrl}/`, {
+            const response = await api.get(`${apiBaseUrl}/student/me`, {
                 params: { page, limit }
             });
             // Response structure: { success: true, data: [...], pagination: {...} }
@@ -112,7 +132,26 @@ const experiencesSlice = createSlice({
         }
     },
     extraReducers: (builder) => {
-        // Get experiences list with pagination
+        // Get all experiences list with pagination (public)
+        builder
+            .addCase(getExperiences.pending, (state) => {
+                state.status = 'loading';
+                state.error = null;
+            })
+            .addCase(getExperiences.fulfilled, (state, action) => {
+                state.status = 'succeeded';
+                // Extract data and pagination from response
+                state.experiences = action.payload?.data || action.payload || [];
+                if (action.payload?.pagination) {
+                    state.pagination = action.payload.pagination;
+                }
+            })
+            .addCase(getExperiences.rejected, (state, action) => {
+                state.status = 'failed';
+                state.error = action.payload;
+            });
+
+        // Get current student's experiences list with pagination (auth required)
         builder
             .addCase(getExperiencesByStudentId.pending, (state) => {
                 state.status = 'loading';
