@@ -18,18 +18,18 @@ import { FuzzyText } from "../../../components";
 
 export default function CompanyProfile() {
   const { t } = useTranslation();
-  const dispatch = useDispatch();
+  // const dispatch = useDispatch();
   const { company, status } = useSelector((state) => state.company);
-  const user = useSelector((state) => state.auth.user);
+  // const user = useSelector((state) => state.auth.user);
 
-  const { id } = useParams();
-  const companyId = id ? Number(id) : user?.company.id;
+  // const { id } = useParams();
+  // const companyId = id ? Number(id) : user?.company.id;
 
-  useEffect(() => {
-    if (companyId) {
-      dispatch(getCompany(companyId));
-    }
-  }, [dispatch, companyId]);
+  // useEffect(() => {
+  //   if (companyId) {
+  //     dispatch(getCompany(companyId));
+  //   }
+  // }, [dispatch, companyId]);
 
   if (status === "loading")
     return (
