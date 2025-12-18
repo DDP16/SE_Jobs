@@ -1,8 +1,17 @@
+import { createExperience, updateExperience, deleteExperience } from '../../../../../modules/services/experiencesService';
 import { createEducation, updateEducation, deleteEducation } from '../../../../../modules/services/educationsService';
 import { createProject, updateProject, deleteProject } from '../../../../../modules/services/projectsService';
 import { createCertificate, updateCertificate, deleteCertificate } from '../../../../../modules/services/certificateService';
 import { updateUser } from '../../../../../modules/services/userService';
 import { getMe } from '../../../../../modules/services/authService';
+import {
+    transformEducationToAPI,
+    transformProjectToAPI,
+    transformCertificateToAPI,
+    validateEducationForm,
+    validateProjectForm,
+    validateCertificateForm,
+} from './utils';
 
 export const useProfileHandlers = ({
     setUser,
@@ -29,13 +38,20 @@ export const useProfileHandlers = ({
     currentUser,
     setOpenForOpportunities,
 }) => {
+    // Helpers
+    const getStudentInfo = () => {
+        return Array.isArray(currentUser?.student_info)
+            ? currentUser.student_info[0]
+            : currentUser?.student_info || null;
+    };
+
     // CV Handlers
     const handleCVFileChange = (file) => {
         setCvFile({
             name: file.name,
             size: (file.size / 1024 / 1024).toFixed(2),
             uploadDate: new Date().toLocaleDateString('vi-VN'),
-            file: file
+            file: file,
         });
     };
 
@@ -49,118 +65,153 @@ export const useProfileHandlers = ({
     };
 
     // Information Handlers
-    const handleSaveInformation = (formData) => {
-        setUser(prev => ({
-            ...prev,
-            name: formData.fullName,
-            email: formData.email,
-            phone: formData.phone,
-            dateOfBirth: formData.dateOfBirth,
-            gender: formData.gender,
-            currentAddress: formData.address,
-            personalLinks: formData.personalLink,
-            ...(formData.title && { title: formData.title }),
-        }));
-        closeModal('information');
+    const handleSaveInformation = async (formData) => {
+        try {
+            if (!currentUser?.user_id) {
+                alert('Không tìm thấy người dùng. Vui lòng đăng nhập lại.');
+                return;
+            }
+
+            const studentInfo = getStudentInfo() || {};
+
+            await dispatch(
+                updateUser({
+                    userId: currentUser.user_id,
+                    userData: {
+                        first_name: formData.fullName?.split(' ')[0] || '',
+                        last_name: formData.fullName?.split(' ').slice(1).join(' ') || '',
+                        student_info: {
+                            ...studentInfo,
+                            phone: formData.phone,
+                            date_of_birth: formData.dateOfBirth,
+                            location: formData.address,
+                        },
+                    },
+                })
+            ).unwrap();
+
+            await dispatch(getMe()).unwrap();
+            closeModal('information');
+        } catch (error) {
+            console.error('Error saving information:', error);
+            alert(error?.message || 'Có lỗi xảy ra khi lưu thông tin');
+        }
     };
 
-    const handleSaveAbout = (formData) => {
-        setAbout(formData.about || formData.content || '');
-        closeModal('about');
+    const handleSaveAbout = async (formData) => {
+        try {
+            if (!currentUser?.user_id) {
+                alert('Không tìm thấy người dùng. Vui lòng đăng nhập lại.');
+                return;
+            }
+
+            const studentInfo = getStudentInfo() || {};
+
+            await dispatch(
+                updateUser({
+                    userId: currentUser.user_id,
+                    userData: {
+                        student_info: {
+                            ...studentInfo,
+                            about: formData.about || formData.content || '',
+                        },
+                    },
+                })
+            ).unwrap();
+
+            await dispatch(getMe()).unwrap();
+            closeModal('about');
+        } catch (error) {
+            console.error('Error saving about:', error);
+            alert(error?.message || 'Có lỗi xảy ra khi lưu giới thiệu');
+        }
     };
 
     // Experience Handlers
-    const handleSaveExperience = (formData) => {
-        const experienceData = {
-            id: selectedExperience?.id || Date.now(),
-            role: formData.jobTitle,
-            company: formData.company,
-            logo: formData.company?.charAt(0).toUpperCase() || 'C',
-            startMonth: formData.startMonth,
-            startYear: formData.startYear,
-            endMonth: formData.endMonth,
-            endYear: formData.endYear,
-            isCurrentlyWorking: formData.isCurrentlyWorking,
-            description: formData.description,
-        };
+    const handleSaveExperience = async (formData) => {
+        try {
+            const startMonth = String(formData.startMonth || '').padStart(2, '0');
+            const startDate = `${formData.startYear}-${startMonth}-01`;
+            let endDate = null;
+            if (!formData.isCurrentlyWorking && formData.endYear && formData.endMonth) {
+                const endMonth = String(formData.endMonth).padStart(2, '0');
+                endDate = `${formData.endYear}-${endMonth}-01`;
+            }
 
-        if (selectedExperience) {
-            setExperiences(prev => prev.map(exp => exp.id === selectedExperience.id ? experienceData : exp));
-        } else {
-            setExperiences(prev => [...prev, experienceData]);
+            const experienceData = {
+                title: formData.jobTitle || formData.role,
+                company: formData.company,
+                location: formData.location || '',
+                start_date: startDate,
+                end_date: endDate,
+                is_current: formData.isCurrentlyWorking || false,
+                description: formData.description || '',
+            };
+
+            if (selectedExperience?.id) {
+                // Update existing experience
+                await dispatch(updateExperience({ id: selectedExperience.id, experienceData })).unwrap();
+            } else {
+                // Create new experience
+                await dispatch(createExperience(experienceData)).unwrap();
+            }
+
+            await dispatch(getMe()).unwrap();
+            setSelectedExperience(null);
+            closeModal('experience');
+        } catch (error) {
+            console.error('Error saving experience:', error);
+            alert(error?.message || 'Có lỗi xảy ra khi lưu kinh nghiệm làm việc');
         }
-        setSelectedExperience(null);
-        closeModal('experience');
     };
 
-    const handleDeleteExperience = (id) => {
-        if (window.confirm('Bạn có chắc chắn muốn xóa thông tin công việc này?')) {
-            setExperiences(prev => prev.filter(exp => exp.id !== id));
+    const handleDeleteExperience = async (id) => {
+        if (!window.confirm('Bạn có chắc chắn muốn xóa thông tin công việc này?')) return;
+        try {
+            await dispatch(deleteExperience(id)).unwrap();
+            await dispatch(getMe()).unwrap();
+        } catch (error) {
+            console.error('Error deleting experience:', error);
+            alert(error?.message || 'Có lỗi xảy ra khi xóa kinh nghiệm');
         }
     };
 
     // Education Handlers
     const handleSaveEducation = async (formData) => {
         try {
-            if (!formData.school || !formData.degree || !formData.major || !formData.startYear || !formData.startMonth) {
-                alert('Vui lòng điền đầy đủ thông tin bắt buộc');
+            const validation = validateEducationForm(formData);
+            if (!validation.valid) {
+                alert(validation.message);
                 return;
             }
-
-            if (!currentUser?.student_info?.id) {
-                alert('Không tìm thấy thông tin sinh viên. Vui lòng đăng nhập lại.');
-                return;
-            }
-
-            const startMonth = String(formData.startMonth || '').padStart(2, '0');
-            const startDate = `${formData.startYear}-${startMonth}-01`;
-            let endDate = null;
-            if (!formData.isCurrentlyStudying && formData.endYear && formData.endMonth) {
-                const endMonth = String(formData.endMonth).padStart(2, '0');
-                endDate = `${formData.endYear}-${endMonth}-01`;
-            }
-
-            const educationData = {
-                school: formData.school || '',
-                degree: formData.degree || '',
-                major: formData.major || '',
-                start_date: startDate,
-                end_date: endDate, // null if currently studying
-                description: formData.description || '',
-            };
 
             if (selectedEducation?.id) {
-                await dispatch(updateEducation({ id: selectedEducation.id, educationData })).unwrap();
+                await dispatch(updateEducation({ id: selectedEducation.id, educationData: transformEducationToAPI(formData) })).unwrap();
             } else {
-                await dispatch(createEducation(educationData)).unwrap();
+                await dispatch(createEducation(transformEducationToAPI(formData))).unwrap();
             }
 
-            // Refresh user data to get updated education list
             await dispatch(getMe()).unwrap();
-
             setSelectedEducation(null);
             closeModal('education');
         } catch (error) {
             console.error('Error saving education:', error);
-            const errorMessage = typeof error === 'string' ? error : (error?.message || 'Có lỗi xảy ra khi lưu thông tin học vấn');
-            alert(errorMessage);
+            alert(error?.message || 'Có lỗi xảy ra khi lưu thông tin học vấn');
         }
     };
 
     const handleDeleteEducation = async (id) => {
-        if (window.confirm('Bạn có chắc chắn muốn xóa thông tin học vấn này?')) {
-            try {
-                await dispatch(deleteEducation(id)).unwrap();
-
-                // Refresh user data to get updated education list
-                await dispatch(getMe()).unwrap();
-            } catch (error) {
-                console.error('Error deleting education:', error);
-                alert(error || 'Có lỗi xảy ra khi xóa thông tin học vấn');
-            }
+        if (!window.confirm('Bạn có chắc chắn muốn xóa thông tin học vấn này?')) return;
+        try {
+            await dispatch(deleteEducation(id)).unwrap();
+            await dispatch(getMe()).unwrap();
+        } catch (error) {
+            console.error('Error deleting education:', error);
+            alert(error?.message || 'Có lỗi xảy ra khi xóa thông tin học vấn');
         }
     };
 
+    // Skills
     const handleSkills = async (skillsArray = [], { closeAfterSave = true } = {}) => {
         setSkills(skillsArray);
 
@@ -168,23 +219,26 @@ export const useProfileHandlers = ({
             alert('Không tìm thấy người dùng. Vui lòng đăng nhập lại.');
             return;
         }
+
         try {
-            await dispatch(updateUser({
-                userId: currentUser.user_id,
-                userData: {
-                    student_info: {
-                        ...(currentUser?.student_info || {}),
-                        skills: skillsArray,
+            const studentInfo = getStudentInfo() || {};
+            await dispatch(
+                updateUser({
+                    userId: currentUser.user_id,
+                    userData: {
+                        student_info: {
+                            ...(studentInfo || {}),
+                            skills: skillsArray,
+                        },
                     },
-                },
-            })).unwrap();
+                })
+            ).unwrap();
 
             await dispatch(getMe()).unwrap();
         } catch (error) {
             console.error('Error updating skills:', error);
-            const message = typeof error === 'string' ? error : (error?.message || 'Có lỗi xảy ra khi cập nhật kỹ năng');
-            alert(message);
-            setSkills(currentUser?.student_info?.skills || []);
+            alert(error?.message || 'Có lỗi xảy ra khi cập nhật kỹ năng');
+            setSkills(getStudentInfo()?.skills || []);
         } finally {
             if (closeAfterSave) {
                 setSelectedSkillGroup(null);
@@ -199,176 +253,114 @@ export const useProfileHandlers = ({
 
     const handleDeleteSkillGroup = async (skillToDelete) => {
         if (!window.confirm('Bạn có chắc chắn muốn xóa kỹ năng này?')) return;
-
-        const nextSkills = (prevSkills => prevSkills.filter(skill => skill !== skillToDelete))(currentUser?.student_info?.skills || []);
+        const nextSkills = (getStudentInfo()?.skills || []).filter((s) => s !== skillToDelete);
         await handleSkills(nextSkills, { closeAfterSave: false });
     };
 
-    // Projects Handlers
+    // Projects
     const handleSaveProject = async (formData) => {
         try {
-            if (!formData.projectName || !formData.startYear || !formData.startMonth) {
-                alert('Vui lòng điền đầy đủ thông tin bắt buộc');
+            const validation = validateProjectForm(formData);
+            if (!validation.valid) {
+                alert(validation.message);
                 return;
             }
-
-            if (!currentUser?.student_info?.id) {
-                alert('Không tìm thấy thông tin sinh viên. Vui lòng đăng nhập lại.');
-                return;
-            }
-
-            const startMonth = String(formData.startMonth || '').padStart(2, '0');
-            const startDate = `${formData.startYear}-${startMonth}-01`;
-            let endDate = null;
-            if (!formData.isCurrentlyWorking && formData.endYear && formData.endMonth) {
-                const endMonth = String(formData.endMonth).padStart(2, '0');
-                endDate = `${formData.endYear}-${endMonth}-01`;
-            }
-
-            const projectData = {
-                name: formData.projectName || '',
-                start_date: startDate,
-                end_date: endDate, // null if currently working
-                description: formData.description || '',
-                website: formData.websiteLink || '',
-            };
 
             if (selectedProject?.id) {
-                await dispatch(updateProject({ id: selectedProject.id, projectData })).unwrap();
+                await dispatch(updateProject({ id: selectedProject.id, projectData: transformProjectToAPI(formData) })).unwrap();
             } else {
-                await dispatch(createProject(projectData)).unwrap();
+                await dispatch(createProject(transformProjectToAPI(formData))).unwrap();
             }
 
-            // Refresh user data to get updated projects list
             await dispatch(getMe()).unwrap();
-
             setSelectedProject(null);
             closeModal('projects');
         } catch (error) {
             console.error('Error saving project:', error);
-            const errorMessage = typeof error === 'string' ? error : (error?.message || 'Có lỗi xảy ra khi lưu thông tin dự án');
-            alert(errorMessage);
+            alert(error?.message || 'Có lỗi xảy ra khi lưu thông tin dự án');
         }
     };
 
     const handleDeleteProject = async (id) => {
-        if (window.confirm('Bạn có chắc chắn muốn xóa dự án này?')) {
-            try {
-                await dispatch(deleteProject(id)).unwrap();
-
-                // Refresh user data to get updated projects list
-                await dispatch(getMe()).unwrap();
-            } catch (error) {
-                console.error('Error deleting project:', error);
-                alert(error || 'Có lỗi xảy ra khi xóa dự án');
-            }
+        if (!window.confirm('Bạn có chắc chắn muốn xóa dự án này?')) return;
+        try {
+            await dispatch(deleteProject(id)).unwrap();
+            await dispatch(getMe()).unwrap();
+        } catch (error) {
+            console.error('Error deleting project:', error);
+            alert(error?.message || 'Có lỗi xảy ra khi xóa dự án');
         }
     };
 
-    // Certificates Handlers
+    // Certificates
     const handleSaveCertificate = async (formData) => {
         try {
-            if (!formData.certificateName || !formData.organization || !formData.issueYear || !formData.issueMonth) {
-                alert('Vui lòng điền đầy đủ thông tin bắt buộc');
+            const validation = validateCertificateForm(formData);
+            if (!validation.valid) {
+                alert(validation.message);
                 return;
             }
-
-            if (!currentUser?.student_info?.id) {
-                alert('Không tìm thấy thông tin sinh viên. Vui lòng đăng nhập lại.');
-                return;
-            }
-
-            const issueMonth = String(formData.issueMonth || '').padStart(2, '0');
-            const issueDate = `${formData.issueYear}-${issueMonth}-01`;
-
-            const certificateData = {
-                name: formData.certificateName || '',
-                organization: formData.organization || '',
-                issue_date: issueDate,
-                url: formData.certificateUrl || '',
-                description: formData.description || '',
-            };
 
             if (selectedCertificate?.id) {
-                await dispatch(updateCertificate({ id: selectedCertificate.id, certificateData })).unwrap();
+                await dispatch(updateCertificate({ id: selectedCertificate.id, certificateData: transformCertificateToAPI(formData) })).unwrap();
             } else {
-                await dispatch(createCertificate(certificateData)).unwrap();
+                await dispatch(createCertificate(transformCertificateToAPI(formData))).unwrap();
             }
 
-            // Refresh user data to get updated certificates list
             await dispatch(getMe()).unwrap();
-
             setSelectedCertificate(null);
             closeModal('certificates');
         } catch (error) {
             console.error('Error saving certificate:', error);
-            const errorMessage = typeof error === 'string' ? error : (error?.message || 'Có lỗi xảy ra khi lưu thông tin chứng chỉ');
-            alert(errorMessage);
+            alert(error?.message || 'Có lỗi xảy ra khi lưu chứng chỉ');
         }
     };
 
     const handleDeleteCertificate = async (id) => {
-        if (window.confirm('Bạn có chắc chắn muốn xóa chứng chỉ này?')) {
-            try {
-                await dispatch(deleteCertificate(id)).unwrap();
-
-                // Refresh user data to get updated certificates list
-                await dispatch(getMe()).unwrap();
-            } catch (error) {
-                console.error('Error deleting certificate:', error);
-                alert(error || 'Có lỗi xảy ra khi xóa chứng chỉ');
-            }
+        if (!window.confirm('Bạn có chắc chắn muốn xóa chứng chỉ này?')) return;
+        try {
+            await dispatch(deleteCertificate(id)).unwrap();
+            await dispatch(getMe()).unwrap();
+        } catch (error) {
+            console.error('Error deleting certificate:', error);
+            alert(error?.message || 'Có lỗi xảy ra khi xóa chứng chỉ');
         }
     };
 
-    // Awards Handlers
+    // Awards
     const handleDeleteAward = (id) => {
         if (window.confirm('Bạn có chắc chắn muốn xóa giải thưởng này?')) {
-            setAwards(prev => prev.filter(award => award.id !== id));
+            setAwards((prev) => prev.filter((award) => award.id !== id));
         }
     };
 
-    // Open for Opportunities Handler
+    // Open for Opportunities
     const handleToggleOpenForOpportunities = async (newValue) => {
-        // Update local state first
         setOpenForOpportunities(newValue);
-
         if (!currentUser?.user_id) {
             alert('Không tìm thấy người dùng. Vui lòng đăng nhập lại.');
             return;
         }
 
         try {
-            // Get current student_info and spread it
-            const currentStudentInfo = currentUser?.student_info || {};
-            
-            const payload = {
-                userId: currentUser.user_id,
-                userData: {
-                    student_info: {
-                        ...currentStudentInfo,
-                        open_for_opportunities: newValue
-                    }
-                }
-            };
+            const currentStudentInfo = getStudentInfo() || {};
+            await dispatch(
+                updateUser({
+                    userId: currentUser.user_id,
+                    userData: {
+                        student_info: {
+                            ...currentStudentInfo,
+                            open_for_opportunities: newValue,
+                        },
+                    },
+                })
+            ).unwrap();
 
-            // Debug: log current value, new value and full payload
-            console.log('=== Toggle Open for Opportunities ===');
-            console.log('Current value:', currentUser?.student_info?.open_for_opportunities);
-            console.log('New value:', newValue);
-            console.log('Full payload:', JSON.stringify(payload, null, 2));
-            console.log('open_for_opportunities in payload:', payload.userData.student_info.open_for_opportunities);
-
-            const result = await dispatch(updateUser(payload)).unwrap();
-            console.log('Update result:', result);
-            
             await dispatch(getMe()).unwrap();
         } catch (error) {
             console.error('Error updating open for opportunities:', error);
-            const message = typeof error === 'string' ? error : (error?.message || 'Có lỗi xảy ra khi cập nhật trạng thái');
-            alert(message);
-            // Revert on error
-            setOpenForOpportunities(currentUser?.student_info?.open_for_opportunities === true);
+            alert(error?.message || 'Có lỗi xảy ra khi cập nhật trạng thái');
+            setOpenForOpportunities(getStudentInfo()?.open_for_opportunities === true);
         }
     };
 
