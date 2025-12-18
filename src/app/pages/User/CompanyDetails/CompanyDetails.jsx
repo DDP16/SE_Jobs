@@ -79,7 +79,6 @@ export default function CompanyDetails() {
                 }}>
                     <Box sx={{ display: 'flex', flexDirection: 'column', gap: { xs: 3, md: 4 } }} >
                         <CompanyOverview company={company} />
-                        {/* <CompanyJobs jobs={companyJobs} company={company} /> */}
 
                         <Paper
                             elevation={0}

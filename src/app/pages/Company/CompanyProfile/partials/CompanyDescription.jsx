@@ -4,19 +4,28 @@ import { Pencil, Save, X } from "lucide-react";
 
 import { ActionButton } from "./ActionButton";
 import { updateCompany } from "../../../../modules/services/companyService";
+import { useTranslation } from "react-i18next";
+import { Spin } from "antd";
+import { LoadingOutlined } from '@ant-design/icons';
 
-export default function CompanyDescription({ company }) {
+export default function CompanyDescription({ company, status }) {
+  const { t } = useTranslation();
   const dispatch = useDispatch();
   const [isEditing, setIsEditing] = useState(false);
   const [text, setText] = useState(company.description || "");
+  const [isLoading, setIsLoading] = useState(false);
 
-  const handleSave = () => {
-    dispatch(
+  const handleSave = async () => {
+    setIsLoading(true);
+    await dispatch(
       updateCompany({
         companyId: company.id,
         companyData: { description: text },
       })
     );
+    if (status === "succeeded") {
+      setIsLoading(false);
+    }
     setIsEditing(false);
   };
 
@@ -25,39 +34,75 @@ export default function CompanyDescription({ company }) {
     setIsEditing(false);
   };
 
-  if (isEditing) {
-    return (
-      <div className="bg-card border-b border-gray-300 p-2 pb-6">
-        <div className="flex items-start justify-between mb-4">
-          <h4 className="text-xl font-bold text-foreground">Company Profile</h4>
-          <div className="flex gap-2">
-            <ActionButton icon={<Save className="w-4 h-4" />} aria-label="Save" onClick={handleSave} />
-            <ActionButton icon={<X className="w-4 h-4" />} aria-label="Cancel" onClick={handleCancel} />
-          </div>
-        </div>
-        <textarea
-          value={text}
-          onChange={(e) => setText(e.target.value)}
-          className="w-full text-sm p-2 border border-border rounded text-foreground bg-background focus:outline-none focus:ring-1 focus:ring-primary"
-          rows="4"
-        />
-      </div>
-    );
-  }
+  // if (isEditing) {
+  //   return (
+  //     <div className="bg-white border border-gray-300 rounded-lg p-4 pt-2 md:p-6 md:pt-3 gap-2 flex flex-col">
+  //       <div className="flex items-center justify-between">
+  //         <h5 className="text-xl font-bold text-foreground">{t('company.overview.title')}</h5>
+  //         <div className="flex gap-2">
+  //           <ActionButton 
+  //             disabled={text.trim() === (company.description || "").trim()}
+  //             icon={<Save className="w-4 h-4" />}
+  //             aria-label="Save"
+  //             onClick={handleSave}
+  //           />
+  //           <ActionButton icon={<X className="w-4 h-4" />} aria-label="Cancel" onClick={handleCancel} />
+  //         </div>
+  //       </div>
+  //       <textarea
+  //         value={text}
+  //         onChange={(e) => setText(e.target.value)}
+  //         className="w-full text-sm p-2 border border-border rounded text-foreground bg-background focus:outline-none focus:ring-1 focus:ring-primary"
+  //         rows="4"
+  //       />
+  //     </div>
+  //   );
+  // }
 
   return (
-    <div className="bg-card border-b border-gray-300 p-2 pb-6">
-      <div className="flex items-start justify-between mb-4">
-        <h4 className="text-xl font-bold text-foreground">Company Profile</h4>
-        <ActionButton
-          icon={<Pencil className="w-4 h-4" />}
-          aria-label="Edit description"
-          onClick={() => setIsEditing(true)}
-        />
+    <div className="bg-white border border-gray-300 rounded-lg p-4 pt-2 md:p-6 md:pt-3 gap-2 flex flex-col">
+      <div className="flex items-center justify-between">
+        <h5 className="text-xl font-bold text-foreground">{t('company.overview.title')}</h5>
+
+        {!isEditing ? (
+          <ActionButton
+            icon={<Pencil className="w-4 h-4" />}
+            aria-label="Edit description"
+            onClick={() => setIsEditing(true)}
+          />
+        ) : (
+          <div className="flex gap-2">
+            <ActionButton 
+              disabled={text.trim() === (company.description || "").trim()}
+              icon={<Save className="w-4 h-4" />}
+              aria-label="Save"
+              onClick={handleSave}
+            />
+            <ActionButton icon={<X className="w-4 h-4" />} aria-label="Cancel" onClick={handleCancel} />
+          </div>
+        )}
+
       </div>
-      <p className="text-sm text-muted-foreground leading-relaxed whitespace-pre-wrap">
-        {text || "No description available."}
-      </p>
+
+      {!isLoading ? (
+        !isEditing ? (
+          <p className="text-sm text-muted-foreground leading-relaxed whitespace-pre-wrap">
+            {text || "No description available."}
+          </p>
+        ) : (
+          <textarea
+            value={text}
+            onChange={(e) => setText(e.target.value)}
+            className="w-full text-sm p-2 border border-border rounded text-foreground bg-background focus:outline-none focus:ring-1 focus:ring-primary"
+            rows="4"
+          />
+        )
+      ) : (
+        <div className="flex items-center justify-center h-full">
+          <Spin indicator={<LoadingOutlined spin />} size="large" />
+        </div>
+      )}
+
     </div>
   );
 }

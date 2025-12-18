@@ -1,7 +1,15 @@
 import React from 'react';
 import { Box, Typography, Paper, Button, Stack, Grid } from '@mui/material';
-import { Link } from 'lucide-react';
+import { Facebook, Link, Linkedin, Mail, X, Youtube } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
+
+const SOCIAL_ICONS = {
+  twitter: { icon: X, color: "text-sky-500" },
+  facebook: { icon: Facebook, color: "text-blue-600" },
+  linkedin: { icon: Linkedin, color: "text-blue-700" },
+  youtube: { icon: Youtube, color: "text-red-500" },
+  mail: { icon: Mail, color: "text-red-500" },
+};
 
 export default function CompanyOverview({ company = {} }) {
     const { t } = useTranslation();
@@ -14,7 +22,9 @@ export default function CompanyOverview({ company = {} }) {
         ? socials
         : Object.entries(socials).map(([platform, url]) => ({
             platform,
-            url: url.startsWith('http') ? url : `https://${url}`
+            url,
+            icon: SOCIAL_ICONS[platform]?.icon || Link,
+            color: SOCIAL_ICONS[platform]?.color || "text-gray-500"
         }));
 
     return (
@@ -57,21 +67,25 @@ export default function CompanyOverview({ company = {} }) {
                     <Grid container spacing={2}>
                         {socialLinks.map((social, index) => {
                             const url = typeof social === 'string' ? social : social.url;
-                            const platform = typeof social === 'string' ? social : social.platform;
+                            const platform = typeof social === 'string' ? social : social.platform;                            
                             
                             return (
                                 <Grid item key={index}>
-                                    <Button
-                                        variant="outlined"
-                                        href={url.startsWith('http') ? url : `https://${url}`}
-                                        target="_blank"
-                                        rel="noopener noreferrer"
+                                    <button
+                                        key={platform}
+                                        className="
+                                            flex items-center gap-3 px-4 py-3
+                                            border rounded-lg bg-white
+                                            hover:border-primary hover:scale-105 hover:shadow-xl
+                                            active:scale-95 active:shadow-md
+                                            transition-all cursor-pointer
+                                            text-left hover:text-primary
+                                        "
+                                        onClick={() => window.open((contact.url).startsWith('http') ? contact.url : `https://${contact.url}`, '_blank')}
                                     >
-                                        <div className='flex items-center gap-2'>
-                                            <Link size={15} />
-                                            <span className='text-[15px]'>{platform}</span>
-                                        </div>
-                                    </Button>
+                                        <social.icon className={`w-5 h-5 ${social.color}`} />
+                                        <span className="text-sm font-medium">{url}</span>
+                                    </button>
                                 </Grid>
                             );
                         })}

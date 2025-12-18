@@ -189,7 +189,7 @@
       "founded": "Founded",
       "employees": "Employees",
       "location": "Location",
-      "locations": "{{count}} countries",
+      "locations": "{{count}} branches",
       "industry": "Company Type",
       "jobs_count": "{{count}} jobs",
       "following": "Following",

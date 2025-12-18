@@ -34,7 +34,7 @@ export default function CompanySidebar() {
   const nav = useNavigate();
 
   return (
-    <aside className="h-screen w-1/6 min-w-[220px] border-r border-border bg-sidebar-background flex flex-col overflow-y-auto border-gray-300">
+    <aside className="h-screen w-1/6 min-w-[220px] border-r border-border bg-white flex flex-col overflow-y-auto border-gray-300">
       {/* Logo */}
       <div className="flex items-center px-3 py-4 justify-center">
         <Box

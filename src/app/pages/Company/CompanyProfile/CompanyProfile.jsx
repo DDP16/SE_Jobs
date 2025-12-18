@@ -18,20 +18,9 @@ import { FuzzyText } from "../../../components";
 
 export default function CompanyProfile() {
   const { t } = useTranslation();
-  // const dispatch = useDispatch();
   const { company, status } = useSelector((state) => state.company);
-  // const user = useSelector((state) => state.auth.user);
 
-  // const { id } = useParams();
-  // const companyId = id ? Number(id) : user?.company.id;
-
-  // useEffect(() => {
-  //   if (companyId) {
-  //     dispatch(getCompany(companyId));
-  //   }
-  // }, [dispatch, companyId]);
-
-  if (status === "loading")
+  if (status === "loading" && !company)
     return (
       <div className="flex items-center justify-center h-full">
         <Spin indicator={<LoadingOutlined spin />} size="large" />
@@ -55,21 +44,18 @@ export default function CompanyProfile() {
 
   return (
     <div className="min-h-screen bg-background">
-      <div className="w-full p-6 space-y-2">
+      <div className="w-full p-6 space-y-6 md:space-y-8">
         <CompanyHeader company={company} />
 
-        <div className="grid grid-cols-3 gap-8">
-          <div className="col-span-2 space-y-2">
-            <CompanyDescription company={company} />
-            <Contact />
-            <WorkingAtCompany />
-            <Team />
-            <Benefits company={company} />
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-y-8 lg:gap-x-8">
+          <div className="col-span-2 space-y-3 md:space-y-6">
+            <CompanyDescription company={company} status={status} />
+            <Contact company={company} />
+            <OfficeLocations company={company} />
           </div>
 
-          <div className="space-y-6">
+          <div className="sticky top-20">
             <Techstack company={company} />
-            <OfficeLocations />
           </div>
         </div>
       </div>
