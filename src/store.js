@@ -15,6 +15,7 @@ import educationsReducer from "./app/modules/services/educationsService";
 import mediaReducer from "./app/modules/services/mediaService";
 import projectsReducer from "./app/modules/services/projectsService";
 import certificatesReducer from "./app/modules/services/certificateService";
+import experiencesReducer from "./app/modules/services/experiencesService";
 
 export default configureStore({
   reducer: {
@@ -34,5 +35,6 @@ export default configureStore({
     media: mediaReducer,
     projects: projectsReducer,
     certificates: certificatesReducer,
+    experiences: experiencesReducer,
   },
 });

@@ -48,7 +48,7 @@ export default function Step2JobDescription({
           <Label htmlFor="jobDescriptions" className="text-foreground font-semibold text-lg">
             {t("postJob.jobDescriptionText")}
           </Label>
-          <p className="text-normal font-regular text-muted-foreground mt-1">{t("postJob.jobDescriptionDesc")}</p>
+          <p className="text-normal font-regular text-muted-foreground mt-1">{t("postJob.jobDescriptionTextDesc")}</p>
         </div>
         <div className="md:col-span-2">
           <div className="border border-border rounded-lg overflow-hidden bg-white">

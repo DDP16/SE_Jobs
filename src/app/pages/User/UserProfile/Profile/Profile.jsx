@@ -80,6 +80,8 @@ export default function Profile() {
         showAllEducations,
         setShowAllEducations,
         completionPercentage,
+        openForOpportunities,
+        setOpenForOpportunities,
     } = profileData;
 
     const {
@@ -204,6 +206,53 @@ export default function Profile() {
 
                     {/* Right Sidebar - Completion (hidden on small screens) */}
                     <Box sx={{ width: 320, minWidth: 0, flexShrink: 0, display: { xs: 'none', md: 'block' }, mt: 0 }}>
+                        {/* Open for Opportunities Toggle */}
+                        <Box sx={{ width: { xs: '100%', sm: 300 }, position: { xs: 'static', sm: 'sticky' }, top: { sm: 20 }, mb: { xs: 3, sm: 0 } }}>
+                            <Box sx={{ 
+                                bgcolor: 'background.paper', 
+                                p: { xs: 2.5, sm: 4 }, 
+                                borderRadius: 2, 
+                                border: 1, 
+                                borderColor: 'divider',
+                                mb: 2
+                            }}>
+                                <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+                                    <Typography variant="body1" sx={{ fontWeight: 500 }}>
+                                        {t("profile.open_for_opportunities")}
+                                    </Typography>
+                                    <Box 
+                                        onClick={() => handlers.handleToggleOpenForOpportunities(!openForOpportunities)}
+                                        sx={{
+                                            width: 50,
+                                            height: 28,
+                                            borderRadius: 14,
+                                            bgcolor: openForOpportunities ? 'primary.main' : 'grey.300',
+                                            position: 'relative',
+                                            cursor: 'pointer',
+                                            transition: 'background-color 0.3s',
+                                            '&:hover': {
+                                                opacity: 0.9
+                                            }
+                                        }}
+                                    >
+                                        <Box
+                                            sx={{
+                                                width: 22,
+                                                height: 22,
+                                                borderRadius: '50%',
+                                                bgcolor: 'white',
+                                                position: 'absolute',
+                                                top: 3,
+                                                left: openForOpportunities ? 25 : 3,
+                                                transition: 'left 0.3s',
+                                                boxShadow: '0 2px 4px rgba(0,0,0,0.2)'
+                                            }}
+                                        />
+                                    </Box>
+                                </Box>
+                            </Box>
+                        </Box>
+                        
                         <ProfileCompletionCard
                             completionPercentage={completionPercentage}
                         />

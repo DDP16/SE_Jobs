@@ -100,7 +100,7 @@ export const validateProjectForm = (formData = {}) => {
     endMonth: formData.isCurrentlyWorking ? '' : (formData.endMonth || ''),
     endYear: formData.isCurrentlyWorking ? '' : (formData.endYear || ''),
     description: formData.description || '',
-    websiteLink: sanitizeUrl(formData.websiteLink || formData.website || ''),
+    websiteLink: sanitizeUrl(formData.websiteLink || formData.website || formData.website_link || ''),
   };
 
   const errors = {};

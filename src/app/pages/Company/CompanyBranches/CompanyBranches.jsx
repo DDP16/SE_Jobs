@@ -1,6 +1,6 @@
 import { use, useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { Plus, Search, Edit, Trash2, MapPin } from 'lucide-react';
+import { Plus, Search, Edit, Trash2, MapPin, ChevronDown } from 'lucide-react';
 import { Table, Spin } from 'antd';
 import { LoadingOutlined } from '@ant-design/icons';
 import {
@@ -13,6 +13,10 @@ import {
   DialogHeader,
   DialogTitle,
   Label,
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
 } from "@/components/ui";
 import {
   getCompanyBranches,
@@ -20,6 +24,7 @@ import {
   updateCompanyBranch,
   deleteCompanyBranch
 } from '../../../modules/services/companyBranchesService';
+import { getProvinces, getWards } from '../../../modules/services/addressService';
 
 export default function CompanyBranches() {
   const dispatch = useDispatch();
@@ -32,7 +37,7 @@ export default function CompanyBranches() {
   const [formData, setFormData] = useState({
     name: '',
     address: '',
-    country_id: '',
+    country_id: 1, // Hardcoded: Vietnam
     province_id: '',
     ward_id: '',
   });
@@ -41,12 +46,27 @@ export default function CompanyBranches() {
   const branches = useSelector((state) => state.companyBranches?.branches || []);
   const pagination = useSelector((state) => state.companyBranches?.pagination);
   const loading = useSelector((state) => state.companyBranches?.loading);
+  const provinces = useSelector((state) => {
+    const data = state.address?.provinces;
+    return Array.isArray(data) ? data : (data?.data && Array.isArray(data.data) ? data.data : []);
+  });
+  const wards = useSelector((state) => {
+    const data = state.address?.wards;
+    return Array.isArray(data) ? data : (data?.data && Array.isArray(data.data) ? data.data : []);
+  });
 
+  
   useEffect(() => {
     if (companyId) {
       dispatch(getCompanyBranches({ page: currentPage, limit: pageSize, companyId: companyId }));
     }
   }, [currentPage, pageSize, companyId, dispatch]);
+
+  useEffect(() => {
+    if (formData.province_id) {
+      dispatch(getWards(formData.province_id));
+    }
+  }, [formData.province_id, dispatch]);
 
   const columns = [
     {
@@ -66,22 +86,22 @@ export default function CompanyBranches() {
       key: 'address',
     },
     {
-      title: 'Country ID',
-      dataIndex: 'country_id',
-      key: 'country_id',
-      render: (country_id) => country_id || 'N/A',
+      title: 'Country',
+      dataIndex: 'country',
+      key: 'country',
+      render: (country, record) => country?.name || record.country_name || 'N/A',
     },
     {
-      title: 'Province ID',
-      dataIndex: 'province_id',
-      key: 'province_id',
-      render: (province_id) => province_id || 'N/A',
+      title: 'Province',
+      dataIndex: 'province',
+      key: 'province',
+      render: (province, record) => province?.name || record.province_name || 'N/A',
     },
     {
-      title: 'Ward ID',
-      dataIndex: 'ward_id',
-      key: 'ward_id',
-      render: (ward_id) => ward_id || 'N/A',
+      title: 'Ward',
+      dataIndex: 'ward',
+      key: 'ward',
+      render: (ward, record) => ward?.name || record.ward_name || 'N/A',
     },
     {
       title: 'Created At',
@@ -119,25 +139,25 @@ export default function CompanyBranches() {
     await dispatch(createCompanyBranch(
       {
         ...formData,
-        country_id: parseInt(formData.country_id),
-        province_id: parseInt(formData.province_id),
-        ward_id: parseInt(formData.ward_id),
+        country_id: 1, // Hardcoded: Vietnam
+        province_id: formData.province_id || null,
+        ward_id: formData.ward_id || null,
         company_id: companyId
       }
     ));
     setIsCreateDialogOpen(false);
-    setFormData({ name: '', address: '', country_id: '', province_id: '', ward_id: '' });
+    setFormData({ name: '', address: '', country_id: 1, province_id: '', ward_id: '' });
     dispatch(getCompanyBranches({ page: currentPage, limit: pageSize, companyId: companyId }));
   };
 
   const handleUpdateBranch = async () => {
     await dispatch(updateCompanyBranch({
       id: selectedBranch.id,
-      branchData: formData
+      branchData: { ...formData, country_id: 1 } // Hardcoded: Vietnam
     }));
     setIsEditDialogOpen(false);
     setSelectedBranch(null);
-    setFormData({ name: '', address: '', country_id: '', province_id: '', ward_id: '' });
+    setFormData({ name: '', address: '', country_id: 1, province_id: '', ward_id: '' });
     dispatch(getCompanyBranches({ page: currentPage, limit: pageSize, companyId: companyId }));
   };
 
@@ -153,7 +173,7 @@ export default function CompanyBranches() {
     setFormData({
       name: branch.name,
       address: branch.address,
-      country_id: branch.country_id || '',
+      country_id: 1, // Hardcoded: Vietnam
       province_id: branch.province_id || '',
       ward_id: branch.ward_id || '',
     });
@@ -247,32 +267,76 @@ export default function CompanyBranches() {
               />
             </div>
             <div className="grid grid-cols-3 gap-4">
+              {/* Country is hardcoded to Vietnam (id = 1) */}
               <div className="space-y-2">
-                <Label htmlFor="country_id">Country ID</Label>
+                <Label htmlFor="edit-country_id">Country</Label>
                 <Input
-                  id="country_id"
-                  placeholder="Country ID"
-                  value={formData.country_id}
-                  onChange={(e) => setFormData({ ...formData, country_id: e.target.value })}
+                  id="edit-country_id"
+                  value="Việt Nam"
+                  disabled
+                  className="bg-gray-50 cursor-not-allowed"
                 />
               </div>
               <div className="space-y-2">
-                <Label htmlFor="province_id">Province ID</Label>
-                <Input
-                  id="province_id"
-                  placeholder="Province ID"
-                  value={formData.province_id}
-                  onChange={(e) => setFormData({ ...formData, province_id: e.target.value })}
-                />
+                <Label htmlFor="province_id">Province *</Label>
+                <DropdownMenu>
+                  <DropdownMenuTrigger asChild>
+                    <Button
+                      variant="outline"
+                      className="justify-between bg-white border-border hover:bg-white rounded-lg w-full"
+                    >
+                      {(Array.isArray(provinces) && provinces.find(p => p.id === formData.province_id)?.name) || 'Select Province'}
+                      <ChevronDown className="ml-2 h-4 w-4 opacity-50" />
+                    </Button>
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent
+                    side="bottom"
+                    align="center"
+                    className="bg-white rounded-lg overflow-y-auto max-h-[25vh] scrollbar-hide w-full"
+                  >
+                    {Array.isArray(provinces) && provinces.length > 0 ? provinces.map((province) => (
+                      <DropdownMenuItem
+                        key={province.id}
+                        onClick={() => setFormData({ ...formData, province_id: province.id, ward_id: '' })}
+                      >
+                        {province.name}
+                      </DropdownMenuItem>
+                    )) : (
+                      <DropdownMenuItem disabled>No provinces available</DropdownMenuItem>
+                    )}
+                  </DropdownMenuContent>
+                </DropdownMenu>
               </div>
               <div className="space-y-2">
-                <Label htmlFor="ward_id">Ward ID</Label>
-                <Input
-                  id="ward_id"
-                  placeholder="Ward ID"
-                  value={formData.ward_id}
-                  onChange={(e) => setFormData({ ...formData, ward_id: e.target.value })}
-                />
+                <Label htmlFor="ward_id">Ward</Label>
+                <DropdownMenu>
+                  <DropdownMenuTrigger asChild>
+                    <Button
+                      variant="outline"
+                      className="justify-between bg-white border-border hover:bg-white rounded-lg w-full"
+                      disabled={!formData.province_id}
+                    >
+                      {(Array.isArray(wards) && wards.find(w => w.id === formData.ward_id)?.name) || 'Select Ward'}
+                      <ChevronDown className="ml-2 h-4 w-4 opacity-50" />
+                    </Button>
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent
+                    side="bottom"
+                    align="center"
+                    className="bg-white rounded-lg overflow-y-auto max-h-[25vh] scrollbar-hide w-full"
+                  >
+                    {Array.isArray(wards) && wards.length > 0 ? wards.map((ward) => (
+                      <DropdownMenuItem
+                        key={ward.id}
+                        onClick={() => setFormData({ ...formData, ward_id: ward.id })}
+                      >
+                        {ward.name}
+                      </DropdownMenuItem>
+                    )) : (
+                      <DropdownMenuItem disabled>No wards available</DropdownMenuItem>
+                    )}
+                  </DropdownMenuContent>
+                </DropdownMenu>
               </div>
             </div>
           </div>
@@ -320,32 +384,76 @@ export default function CompanyBranches() {
               />
             </div>
             <div className="grid grid-cols-3 gap-4">
+              {/* Country is hardcoded to Vietnam (id = 1) */}
               <div className="space-y-2">
-                <Label htmlFor="edit-country_id">Country ID</Label>
+                <Label htmlFor="country_id">Country</Label>
                 <Input
-                  id="edit-country_id"
-                  placeholder="Country ID"
-                  value={formData.country_id}
-                  onChange={(e) => setFormData({ ...formData, country_id: e.target.value })}
+                  id="country_id"
+                  value="Việt Nam"
+                  disabled
+                  className="bg-gray-50 cursor-not-allowed"
                 />
               </div>
               <div className="space-y-2">
-                <Label htmlFor="edit-province_id">Province ID</Label>
-                <Input
-                  id="edit-province_id"
-                  placeholder="Province ID"
-                  value={formData.province_id}
-                  onChange={(e) => setFormData({ ...formData, province_id: e.target.value })}
-                />
+                <Label htmlFor="edit-province_id">Province *</Label>
+                <DropdownMenu>
+                  <DropdownMenuTrigger asChild>
+                    <Button
+                      variant="outline"
+                      className="justify-between bg-white border-border hover:bg-white rounded-lg w-full"
+                    >
+                      {(Array.isArray(provinces) && provinces.find(p => p.id === formData.province_id)?.name) || 'Select Province'}
+                      <ChevronDown className="ml-2 h-4 w-4 opacity-50" />
+                    </Button>
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent
+                    side="bottom"
+                    align="center"
+                    className="bg-white rounded-lg overflow-y-auto max-h-[25vh] scrollbar-hide w-full"
+                  >
+                    {Array.isArray(provinces) && provinces.length > 0 ? provinces.map((province) => (
+                      <DropdownMenuItem
+                        key={province.id}
+                        onClick={() => setFormData({ ...formData, province_id: province.id, ward_id: '' })}
+                      >
+                        {province.name}
+                      </DropdownMenuItem>
+                    )) : (
+                      <DropdownMenuItem disabled>No provinces available</DropdownMenuItem>
+                    )}
+                  </DropdownMenuContent>
+                </DropdownMenu>
               </div>
               <div className="space-y-2">
-                <Label htmlFor="edit-ward_id">Ward ID</Label>
-                <Input
-                  id="edit-ward_id"
-                  placeholder="Ward ID"
-                  value={formData.ward_id}
-                  onChange={(e) => setFormData({ ...formData, ward_id: e.target.value })}
-                />
+                <Label htmlFor="edit-ward_id">Ward</Label>
+                <DropdownMenu>
+                  <DropdownMenuTrigger asChild>
+                    <Button
+                      variant="outline"
+                      className="justify-between bg-white border-border hover:bg-white rounded-lg w-full"
+                      disabled={!formData.province_id}
+                    >
+                      {(Array.isArray(wards) && wards.find(w => w.id === formData.ward_id)?.name) || 'Select Ward'}
+                      <ChevronDown className="ml-2 h-4 w-4 opacity-50" />
+                    </Button>
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent
+                    side="bottom"
+                    align="center"
+                    className="bg-white rounded-lg overflow-y-auto max-h-[25vh] scrollbar-hide w-full"
+                  >
+                    {Array.isArray(wards) && wards.length > 0 ? wards.map((ward) => (
+                      <DropdownMenuItem
+                        key={ward.id}
+                        onClick={() => setFormData({ ...formData, ward_id: ward.id })}
+                      >
+                        {ward.name}
+                      </DropdownMenuItem>
+                    )) : (
+                      <DropdownMenuItem disabled>No wards available</DropdownMenuItem>
+                    )}
+                  </DropdownMenuContent>
+                </DropdownMenu>
               </div>
             </div>
           </div>
