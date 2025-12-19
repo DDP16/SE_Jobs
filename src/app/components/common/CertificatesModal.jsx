@@ -16,30 +16,31 @@ export default function CertificatesModal({ open, onOpenChange, initialData, onS
         organization: initialData?.organization || "",
         issueMonth: initialData?.issueMonth || "",
         issueYear: initialData?.issueYear || "",
-        certificateUrl: initialData?.certificateUrl || initialData?.url || "",
+        certificateUrl: initialData?.certificateUrl || initialData?.certification_url || initialData?.certificate_url || initialData?.url || "",
         description: initialData?.description || "",
     });
     const [charCount, setCharCount] = useState(0);
     const editorRef = useRef(null);
     const maxChars = 2500;
     const [errors, setErrors] = useState({});
+    const [editorKey, setEditorKey] = useState(0); // Force re-render editor
 
     // Update form data when initialData changes
     useEffect(() => {
         if (initialData) {
             const description = initialData?.description || "";
+            const certificateUrl = initialData?.certificateUrl || initialData?.certification_url || initialData?.certificate_url || initialData?.url || "";
             setFormData({
                 certificateName: initialData?.certificateName || initialData?.name || "",
                 organization: initialData?.organization || "",
                 issueMonth: initialData?.issueMonth || "",
                 issueYear: initialData?.issueYear || "",
-                certificateUrl: initialData?.certificateUrl || initialData?.url || "",
+                certificateUrl: certificateUrl,
                 description: description,
             });
-            setCharCount(description.length);
-            if (editorRef.current) {
-                editorRef.current.innerHTML = description;
-            }
+            // Calculate character count (strip HTML tags for accurate count)
+            const textLength = description ? description.replace(/<[^>]*>/g, '').length : 0;
+            setCharCount(textLength);
             setErrors({});
         } else {
             setFormData({
@@ -51,12 +52,50 @@ export default function CertificatesModal({ open, onOpenChange, initialData, onS
                 description: "",
             });
             setCharCount(0);
-            if (editorRef.current) {
-                editorRef.current.innerHTML = "";
-            }
             setErrors({});
         }
     }, [initialData, open]);
+
+    // Sync editor content when modal opens or formData.description changes
+    useEffect(() => {
+        if (!open) {
+            // Reset editor key when modal closes to force fresh render
+            setEditorKey(prev => prev + 1);
+            return;
+        }
+
+        // Function to update editor content
+        const updateEditorContent = () => {
+            if (editorRef.current) {
+                const description = formData.description || "";
+                // Always set content to ensure it's displayed
+                editorRef.current.innerHTML = description;
+            }
+        };
+
+        // Try multiple times with different delays to ensure editor is ready
+        updateEditorContent();
+        const timer1 = setTimeout(updateEditorContent, 0);
+        const timer2 = setTimeout(updateEditorContent, 50);
+        const timer3 = setTimeout(updateEditorContent, 150);
+        const timer4 = setTimeout(updateEditorContent, 300);
+
+        return () => {
+            clearTimeout(timer1);
+            clearTimeout(timer2);
+            clearTimeout(timer3);
+            clearTimeout(timer4);
+        };
+    }, [open, formData.description]);
+
+    // Callback ref to set content immediately when editor is mounted
+    const setEditorRef = (element) => {
+        editorRef.current = element;
+        if (element && open && formData.description) {
+            // Set content immediately when element is mounted
+            element.innerHTML = formData.description || "";
+        }
+    };
 
     const handleChange = (field, value) => {
         setFormData((prev) => ({ ...prev, [field]: value }));
@@ -337,7 +376,8 @@ export default function CertificatesModal({ open, onOpenChange, initialData, onS
 
                                 {/* Editor Area */}
                                 <div
-                                    ref={editorRef}
+                                    ref={setEditorRef}
+                                    key={editorKey}
                                     contentEditable
                                     onInput={handleContentChange}
                                     className="min-h-[200px] p-4 border border-t-0 border-neutrals-40 rounded-b-lg focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-0"

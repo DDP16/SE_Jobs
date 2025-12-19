@@ -42,10 +42,10 @@ export const useProfileData = () => {
     // Sync all data from currentUser.student_info when it changes
     useEffect(() => {
         // IMPORTANT: student_info is an ARRAY, not an object!
-        const studentInfo = Array.isArray(currentUser?.student_info) 
-            ? currentUser.student_info[0] 
+        const studentInfo = Array.isArray(currentUser?.student_info)
+            ? currentUser.student_info[0]
             : currentUser?.student_info;
-        
+
         if (studentInfo) {
 
             // Sync user basic info

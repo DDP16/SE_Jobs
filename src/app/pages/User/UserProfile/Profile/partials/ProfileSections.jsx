@@ -6,7 +6,7 @@ import { useTranslation } from 'react-i18next';
 // Skills Section
 export function SkillsSection({ skills, onEdit, onDelete, onAdd }) {
   const { t } = useTranslation();
-  
+
   // Ensure skills is always an array to prevent undefined errors
   const skillsArray = Array.isArray(skills) ? skills : [];
 
@@ -92,7 +92,7 @@ export function SkillsSection({ skills, onEdit, onDelete, onAdd }) {
 // Languages Section
 export function LanguagesSection({ languages, onEdit }) {
   const { t } = useTranslation();
-  
+
   return (
     <Box sx={{ bgcolor: 'background.paper', p: 4, borderRadius: 2, border: 1, borderColor: 'divider', mb: 2 }}>
       <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', mb: 3 }}>
@@ -124,7 +124,7 @@ export function LanguagesSection({ languages, onEdit }) {
 // Projects Section
 export function ProjectsSection({ projects, onEdit, onDelete, onAdd }) {
   const { t } = useTranslation();
-  
+
   const formatDate = (project) => {
     // Handle backend date format (start_date: "2021-09-01", end_date: null for present)
     if (project.start_date) {
@@ -240,7 +240,7 @@ export function ProjectsSection({ projects, onEdit, onDelete, onAdd }) {
 // Certificates Section
 export function CertificatesSection({ certificates, onEdit, onDelete, onAdd }) {
   const { t } = useTranslation();
-  
+
   const formatDate = (cert) => {
     // Handle backend date format (issue_date: "2021-09-01")
     if (cert.issue_date) {
@@ -309,17 +309,17 @@ export function CertificatesSection({ certificates, onEdit, onDelete, onAdd }) {
                 dangerouslySetInnerHTML={{ __html: cert.description }}
               />
             )}
-            {(cert.url || cert.certificate_url) && (
+            {(cert.url || cert.certificate_url || cert.certification_url || cert.certificateUrl) && (
               <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.5, mt: 1 }}>
                 <LinkIcon sx={{ fontSize: 16, color: 'text.disabled' }} />
                 <Link
-                  href={cert.url || cert.certificate_url}
+                  href={cert.url || cert.certificate_url || cert.certification_url || cert.certificateUrl}
                   target="_blank"
                   rel="noopener noreferrer"
                   variant="body2"
                   sx={{ color: 'primary.main', textDecoration: 'none', '&:hover': { textDecoration: 'underline' } }}
                 >
-                  {cert.url || cert.certificate_url}
+                  {cert.url || cert.certificate_url || cert.certification_url || cert.certificateUrl}
                 </Link>
               </Box>
             )}
@@ -333,7 +333,7 @@ export function CertificatesSection({ certificates, onEdit, onDelete, onAdd }) {
 // Awards Section
 export function AwardsSection({ awards, onEdit, onDelete, onAdd }) {
   const { t } = useTranslation();
-  
+
   const formatDate = (issueMonth, issueYear) => {
     return issueMonth ? `${String(issueMonth).padStart(2, '0')}/${issueYear}` : issueYear;
   };
