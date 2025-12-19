@@ -199,7 +199,8 @@ export const transformProjectToAPI = (formData) => {
     start_date: startDate,
     end_date: endDate,
     description: formData.description || '',
-    website: websiteLink,
+    website_link: websiteLink,
+    // website: websiteLink,
   };
 };
 
@@ -223,7 +224,7 @@ export const transformCertificateFromAPI = (cert) => {
       certificateName: cert.name,
       issueMonth,
       issueYear,
-      certificateUrl: cert.certification_url || cert.url || cert.certificateUrl,
+      certificateUrl: cert.certification_url,
       description: cert.description || '',
     };
   } catch (error) {
@@ -243,6 +244,7 @@ export const transformCertificateToAPI = (formData) => {
     name: formData.certificateName || '',
     organization: formData.organization || '',
     issue_date: issueDate,
+    certification_url: formData.certificateUrl || '',
     url: formData.certificateUrl || '',
     description: formData.description || '',
   };

@@ -19,7 +19,7 @@ export default function ProjectsModal({ open, onOpenChange, initialData, onSave 
         endMonth: initialData?.endMonth || "",
         endYear: initialData?.endYear || "",
         description: initialData?.description || "",
-        websiteLink: initialData?.website_link || "",
+        websiteLink: initialData?.websiteLink || initialData?.website || initialData?.website_link || "",
     });
     const [charCount, setCharCount] = useState(0);
     const editorRef = useRef(null);

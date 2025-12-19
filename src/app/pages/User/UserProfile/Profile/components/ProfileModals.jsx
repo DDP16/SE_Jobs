@@ -187,7 +187,7 @@ export const ProfileModals = ({
                         endYear,
                         isCurrentlyWorking,
                         description: selectedProject.description || '',
-                        websiteLink: selectedProject.website || selectedProject.website_link || '',
+                        websiteLink: selectedProject.websiteLink || selectedProject.website || selectedProject.website_link || '',
                     };
                 })() : null}
                 onSave={handlers.handleSaveProject}
@@ -218,7 +218,7 @@ export const ProfileModals = ({
                         organization: selectedCertificate.organization || '',
                         issueMonth,
                         issueYear,
-                        certificateUrl: selectedCertificate.url || selectedCertificate.certificate_url || '',
+                        certificateUrl: selectedCertificate.certificateUrl || selectedCertificate.certification_url || selectedCertificate.certificate_url || selectedCertificate.url || '',
                         description: selectedCertificate.description || '',
                     };
                 })() : null}
