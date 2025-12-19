@@ -14,9 +14,7 @@ import { getCategories } from "../modules";
 
 export default function MainRoutes() {
   const dispatch = useDispatch();
-  const isAuthenticated = useSelector((state) => state.auth.isAuthenticated);
-  const user = useSelector((state) => state.auth.user);
-  const isLoading = useSelector((state) => state.auth.isLoadingGetMe);
+  const {isAuthenticated, user, isLoadingGetMe: isLoading} = useSelector((state) => state.auth);
 
   useEffect(() => {
     if (isAuthenticated && !user) {

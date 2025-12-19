@@ -2,70 +2,17 @@ import JobHeader from "./partials/JobHeader";
 import JobDetails from "./partials/JobDetails";
 import JobSidebar from "./partials/JobSidebar";
 import { PerksSection } from "../../../components";
-import CompanySection from "./partials/CompanySection";
-import SimilarJobs from "./partials/SimilarJobs";
-import { layoutType } from "../../../lib";
 import { useSearchParams } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
 import { getJobById } from "../../../modules/services/jobsService";
 import { useEffect } from "react";
 import { CircularProgress, Box, Skeleton, Container } from "@mui/material";
+import { useTranslation } from "react-i18next";
 
 export default function JobDescription({
   job,
-  showBreadcrumb = true,
-  showJobHeader = true,
-  showJobDetails = true,
-  showJobSidebar = true,
-  showPerksSection = true,
-  showCompanySection = true,
-  showSimilarJobs = true,
-  layout = layoutType.full, // "full" | "compact" | "minimal" | "preview"
 }) {
-  // Layout configurations
-  const layoutConfig = {
-    [layoutType.full]: {
-      showBreadcrumb: true,
-      showJobSidebar: true,
-      showPerksSection: true,
-      showCompanySection: true,
-      showSimilarJobs: true,
-    },
-    [layoutType.compact]: {
-      showBreadcrumb: false,
-      showJobSidebar: true,
-      showPerksSection: false,
-      showCompanySection: false,
-      showSimilarJobs: false,
-    },
-    [layoutType.preview]: {
-      showBreadcrumb: false,
-      showJobSidebar: true,
-      showPerksSection: false,
-      showCompanySection: false,
-      showSimilarJobs: false,
-    },
-    [layoutType.minimal]: {
-      showBreadcrumb: false,
-      showJobSidebar: false,
-      showPerksSection: false,
-      showCompanySection: false,
-      showSimilarJobs: false,
-    },
-  };
-
-  // Use layout config if layout prop is provided
-  const config = layoutConfig[layout] || {};
-  const finalConfig = {
-    showBreadcrumb: showBreadcrumb && config.showBreadcrumb,
-    showJobHeader: showJobHeader,
-    showJobDetails: showJobDetails,
-    showJobSidebar: showJobSidebar && config.showJobSidebar,
-    showPerksSection: showPerksSection && config.showPerksSection,
-    showCompanySection: showCompanySection && config.showCompanySection,
-    showSimilarJobs: showSimilarJobs && config.showSimilarJobs,
-  };
-
+  const { t } = useTranslation();
   const [searchParams] = useSearchParams();
   const jobId = searchParams.get("id");
   const dispatch = useDispatch();
@@ -93,7 +40,7 @@ export default function JobDescription({
   if (jobStatus === "loading" && !job) {
     return (
       <div className="min-h-screen bg-white mx-auto space-y-12 pb-12">
-        <div className={`pt-10 pb-5 ${layout !== layoutType.preview ? "px-10 lg:px-25" : ""} bg-background-lightBlue`}>
+        <div className={`pt-10 pb-5 px-10 lg:px-25 bg-background-lightBlue`}>
           {/* Header Skeleton */}
           <Container maxWidth="lg">
             <Skeleton variant="text" width="40%" height={40} sx={{ mb: 2 }} />
@@ -101,7 +48,7 @@ export default function JobDescription({
           </Container>
         </div>
 
-        <div className={`grid grid-cols-1 gap-8 ${layout !== layoutType.preview ? "px-10 lg:px-25 lg:grid-cols-3 md:grid-cols-2" : "px-15 lg:grid-cols-1"}`}>
+        <div className={`grid grid-cols-1 gap-8 px-10 lg:px-25 lg:grid-cols-3 md:grid-cols-2`}>
           {/* Main Content Skeleton */}
           <div className="lg:col-span-2 space-y-4">
             <Skeleton variant="text" width="60%" height={40} />
@@ -203,35 +150,23 @@ export default function JobDescription({
   }
 
   return (
-    <div className={`min-h-screen w-full bg-white mx-auto ${layout !== layoutType.preview ? "space-y-12 pb-12" : "space-y-6 pb-6"}`}>
-      <div className={`${layout !== layoutType.preview ? "px-10 xl:px-50 py-8" : "sticky top-0 z-10"} bg-background-lightBlue`}>
-        {finalConfig.showJobHeader && <JobHeader job={job} layout={layout} />}
+    <div className={`min-h-screen w-full bg-white mx-auto space-y-12 pb-12`}>
+      <div className={`px-10 2xl:px-50 py-8 bg-background-lightBlue`}>
+        <JobHeader job={job} textButton={t("edit")} onClickButton={() => {}} />
       </div>
 
-      <div className={`grid grid-cols-1 ${layout !== layoutType.preview ? "px-10 lg:px-25 lg:grid-cols-3 md:grid-cols-2 gap-8" : "px-10 lg:grid-cols-1 gap-y-8"}`}>
+      <div className={`grid grid-cols-1 px-10 lg:px-25 lg:grid-cols-3 md:grid-cols-2 gap-8`}>
         <div className="lg:col-span-2">
-          {finalConfig.showJobDetails && <JobDetails job={job} />}
+          <JobDetails job={job} />
         </div>
-        <div className={`${layout !== layoutType.preview ? "sticky top-15 z-10 self-start" : ""}`}>
-          {finalConfig.showJobSidebar && <JobSidebar job={job} />}
+        <div className={`sticky top-15 z-10 self-start`}>
+          <JobSidebar job={job} />
         </div>
       </div>
 
-      {finalConfig.showPerksSection &&
-        <div className="px-10 lg:px-25">
-          <PerksSection job={job} />
-        </div>
-      }
-      {/* {finalConfig.showCompanySection &&
-        <div className="px-10 lg:px-25">
-          <CompanySection job={job} />
-        </div>
-      } */}
-      {finalConfig.showSimilarJobs &&
-        <div className="px-10 lg:px-25">
-          <SimilarJobs job={job} />
-        </div>
-      }
+      <div className="px-10 lg:px-25">
+        <PerksSection job={job} />
+      </div>
     </div>
   );
 }

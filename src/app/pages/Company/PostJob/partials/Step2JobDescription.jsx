@@ -34,6 +34,11 @@ export default function Step2JobDescription({
   setNiceToHaves,
 }) {
   const { t } = useTranslation();
+  const maxDescription = 1000;
+  const maxResponsibilities = 1000;
+  const maxWhoYouAre = 1000;
+  const maxNiceToHaves = 1000;
+
   return (
     <div className="space-y-8">
       {/* Details Section */}
@@ -56,13 +61,12 @@ export default function Step2JobDescription({
               id="jobDescriptions"
               placeholder={t("postJob.jobDescriptionPlaceholder")}
               value={jobDescription}
-              onChange={(e) => setJobDescription(e.target.value.slice(0, 500))}
+              onChange={(e) => setJobDescription(e.target.value.slice(0, maxDescription))}
               className="min-h-[120px] border-0 resize-none focus-visible:ring-0 rounded-none"
             />
-            <RichTextToolbar />
-            <div className="px-3 py-2 text-xs text-muted-foreground text-right bg-muted/30">
-              {t("postJob.maxCharacters", { max: 500 })}
-              <span className="ml-4 font-medium">{jobDescription.length} / 500</span>
+            <div className="px-3 py-2 text-xs text-muted-foreground text-right bg-muted/30 flex justify-end gap-2">
+              {t("postJob.maxCharacters", { max: maxDescription })}
+              <span className="font-medium">{jobDescription.length} / {maxDescription}</span>
             </div>
           </div>
         </div>
@@ -82,13 +86,12 @@ export default function Step2JobDescription({
               id="responsibilities"
               placeholder={t("postJob.responsibilitiesPlaceholder")}
               value={responsibilities}
-              onChange={(e) => setResponsibilities(e.target.value.slice(0, 500))}
+              onChange={(e) => setResponsibilities(e.target.value.slice(0, maxResponsibilities))}
               className="min-h-[120px] border-0 resize-none focus-visible:ring-0 rounded-none"
             />
-            <RichTextToolbar />
-            <div className="px-3 py-2 text-xs text-muted-foreground text-right bg-muted/30">
-              {t("postJob.maxCharacters", { max: 500 })}
-              <span className="ml-4 font-medium">{responsibilities.length} / 500</span>
+            <div className="px-3 py-2 text-xs text-muted-foreground text-right bg-muted/30 flex justify-end gap-2">
+              {t("postJob.maxCharacters", { max: maxResponsibilities })}
+              <span className="font-medium">{responsibilities.length} / {maxResponsibilities}</span>
             </div>
           </div>
         </div>
@@ -108,13 +111,12 @@ export default function Step2JobDescription({
               id="whoYouAre"
               placeholder={t("postJob.whoYouArePlaceholder")}
               value={whoYouAre}
-              onChange={(e) => setWhoYouAre(e.target.value.slice(0, 500))}
+              onChange={(e) => setWhoYouAre(e.target.value.slice(0, maxWhoYouAre))}
               className="min-h-[120px] border-0 resize-none focus-visible:ring-0 rounded-none"
             />
-            <RichTextToolbar />
-            <div className="px-3 py-2 text-xs text-muted-foreground text-right bg-muted/30">
-              {t("postJob.maxCharacters", { max: 500 })}
-              <span className="ml-4 font-medium">{whoYouAre.length} / 500</span>
+            <div className="px-3 py-2 text-xs text-muted-foreground text-right bg-muted/30 flex justify-end gap-2">
+              {t("postJob.maxCharacters", { max: maxWhoYouAre })}
+              <span className="font-medium">{whoYouAre.length} / {maxWhoYouAre}</span>
             </div>
           </div>
         </div>
@@ -134,13 +136,12 @@ export default function Step2JobDescription({
               id="niceToHaves"
               placeholder={t("postJob.niceToHavesPlaceholder")}
               value={niceToHaves}
-              onChange={(e) => setNiceToHaves(e.target.value.slice(0, 500))}
+              onChange={(e) => setNiceToHaves(e.target.value.slice(0, maxNiceToHaves))}
               className="min-h-[120px] border-0 resize-none focus-visible:ring-0 rounded-none"
             />
-            <RichTextToolbar />
-            <div className="px-3 py-2 text-xs text-muted-foreground text-right bg-muted/30">
-              {t("postJob.maxCharacters", { max: 500 })}
-              <span className="ml-4 font-medium">{niceToHaves.length} / 500</span>
+            <div className="px-3 py-2 text-xs text-muted-foreground text-right bg-muted/30 flex justify-end gap-2">
+              {t("postJob.maxCharacters", { max: maxNiceToHaves })}
+              <span className="font-medium">{niceToHaves.length} / {maxNiceToHaves}</span>
             </div>
           </div>
         </div>

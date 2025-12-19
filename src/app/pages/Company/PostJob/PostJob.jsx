@@ -83,8 +83,8 @@ export default function PostJob() {
   const [niceToHaves, setNiceToHaves] = useState("");
   const [benefits, setBenefits] = useState([]);
   const [companyBranchId, setCompanyBranchId] = useState(null);
-  const [quantity, setQuantity] = useState("");
-  const [jobDeadline, setJobDeadline] = useState("");
+  const [quantity, setQuantity] = useState(1);
+  const [jobDeadline, setJobDeadline] = useState();
 
   const [employmentTypeIds, setEmploymentTypeIds] = useState([]);
   const [skillIds, setSkillIds] = useState([]);

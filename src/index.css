@@ -474,6 +474,11 @@ body {
     animation-fill-mode: both;
   }
 
+  .animate-gradient {
+    background-size: 1000% 1000%;
+    animation: gradient 4s linear infinite;
+  }
+
   .fade-in-0 {
     animation-name: fadeIn;
   }

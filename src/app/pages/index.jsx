@@ -19,6 +19,7 @@ export { default as CompanySetting } from "./Company/CompanySetting";
 export { default as PostJob } from "./Company/PostJob";
 export { default as JobListing } from "./Company/JobListing";
 export { default as CompanyBranches } from "./Company/CompanyBranches";
+export { default as JobDescriptionCompany } from "./Company/JobDescription/JobDescription";
 
 // Admin Pages
 export { default as AdminDashboard } from "./Admin/Dashboard";

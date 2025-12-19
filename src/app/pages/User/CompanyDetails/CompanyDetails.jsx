@@ -1,5 +1,5 @@
-import { React, useEffect } from 'react';
-import { useParams, useSearchParams } from 'react-router-dom';
+import { useEffect } from 'react';
+import { useSearchParams } from 'react-router-dom';
 import { Box, Paper, Typography } from '@mui/material';
 import CompanyHeader from './partials/CompanyHeader';
 import CompanyOverview from './partials/CompanyOverview';
@@ -8,9 +8,8 @@ import CompanyJobs from './partials/CompanyJobs';
 import { PerksSection } from "../../../components";
 import { getCompany } from '../../../modules/services/companyService';
 import { useDispatch, useSelector } from 'react-redux';
-import { mockCompanies, mockJobs } from '../../../../mocks/mockData';
+import { mockJobs } from '../../../../mocks/mockData';
 import OpenJobs from './partials/OpenJobs';
-import { ArrowRight } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 
 export default function CompanyDetails() {
