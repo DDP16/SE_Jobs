@@ -153,7 +153,7 @@ export default function Step1JobInfo({
               style={{ width: '100%' }}
               placeholder={t("postJob.companyBranchPlaceholder")}
               defaultValue={[]}
-              onChange={() => { }}
+              onChange={(value) => {setCompanyBranchId(value)}}
               options={options}
             />
           </Space>

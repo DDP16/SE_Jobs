@@ -11,8 +11,22 @@ import {
     CompanyBranches,
 } from "../pages";
 import ApplicantsTable from "../pages/Company/ApplicantList/ApplicantList";
+import { useDispatch, useSelector } from "react-redux";
+import { getCompany } from "../modules";
+import { useEffect } from "react";
 
 export default function CompanyRoutes() {
+    const dispatch = useDispatch();
+    const user = useSelector((state) => state.auth.user);
+    const { company } = useSelector((state) => state.company);
+    const companyId = user?.company.id;
+    
+    useEffect(() => {
+        if (!company && companyId) {
+          dispatch(getCompany(companyId));
+        }
+    }, [dispatch, companyId, company]);
+
     return (
         <Routes>
             <Route path="/" element={
@@ -22,7 +36,7 @@ export default function CompanyRoutes() {
             }>
                 <Route index element={<Dashboard />} />
                 <Route path="company" element={<CompanyProfile />} />
-                <Route path="company/:id" element={<CompanyProfile />} />
+                {/* <Route path="company/:id" element={<CompanyProfile />} /> */}
                 <Route path="applicants/:id" element={<ApplicantDetails />} />
                 <Route path="applicants" element={<ApplicantsTable />} />
                 <Route path="settings" element={<CompanySetting />} />

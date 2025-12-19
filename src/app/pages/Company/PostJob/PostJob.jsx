@@ -198,6 +198,8 @@ export default function PostJob() {
       level_ids: levelId ? [levelId] : [],
       required_skill_ids: skillIds,
       employment_type_ids: employmentTypeIds,
+      company_branches_id: companyBranchId[0],
+      company_branches_ids: companyBranchId,
       quantity: quantity ? parseInt(quantity) : null,
       job_deadline: jobDeadline || null,
       status: "Pending",
@@ -207,16 +209,12 @@ export default function PostJob() {
 
     try {
       const result = await dispatch(createJob(payload)).unwrap();
-      if (createJob.fulfilled.match(result)) {
-        console.log("Job posted successfully: ", result.payload);
-        showSuccess("Job posted successfully!");
-        nav("/", { replace: true });
-      } else {
-        console.error("Failed to create job: ", result);
-        showError("Failed to create job: " + (result.payload || "Unknown error"));
-      }
+      console.log("Job posted successfully: ", result);
+      showSuccess("Job posted successfully!");
+      nav("/", { replace: true });
     } catch (err) {
       console.error("Failed to create job:", err);
+      showError("Failed to create job: " + (err?.message || err || "Unknown error"));
     }
   };
 

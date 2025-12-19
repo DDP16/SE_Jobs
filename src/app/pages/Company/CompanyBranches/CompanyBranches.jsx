@@ -458,11 +458,11 @@ export default function CompanyBranches() {
             </div>
           </div>
           <DialogFooter>
-            <Button variant="outline" onClick={() => setIsEditDialogOpen(false)}>
+            <Button className="rounded-lg cursor-pointer" variant="outline" onClick={() => setIsEditDialogOpen(false)}>
               Cancel
             </Button>
             <Button
-              className="bg-primary/90 hover:bg-primary text-white"
+              className="bg-primary/90 hover:bg-primary text-white rounded-lg cursor-pointer"
               onClick={handleUpdateBranch}
               disabled={!formData.name || !formData.address}
             >

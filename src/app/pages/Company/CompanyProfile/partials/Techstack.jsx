@@ -1,15 +1,48 @@
-import { useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useDispatch } from "react-redux";
 import { Plus, Pencil, Save, X, Trash2 } from "lucide-react";
 
 import { ActionButton } from "./ActionButton";
 import { updateCompany } from "../../../../modules/services/companyService";
+import { useTranslation } from "react-i18next";
+import { Image } from "antd";
+import { srcAsset } from "../../../../lib";
+
+const techIconCache = new Map();
+
+const getTechIconUrl = (tech) => {
+  const key = tech.toLowerCase().trim();
+  if (!techIconCache.has(key)) {
+    techIconCache.set(
+      key,
+      `https://cdn.jsdelivr.net/gh/devicons/devicon/icons/${key}/${key}-original.svg`
+    );
+  }
+  return techIconCache.get(key);
+};
 
 export default function Techstack({ company }) {
+  const { t } = useTranslation();
   const dispatch = useDispatch();
   const [isEditing, setIsEditing] = useState(false);
   const [techList, setTechList] = useState(company.tech_stack || []);
   const [newTech, setNewTech] = useState("");
+
+  useEffect(() => {
+    if (company.tech_stack && Array.isArray(company.tech_stack)) {
+      company.tech_stack.forEach((tech) => {
+        if (tech && typeof tech === 'string') {
+          const img = new window.Image();
+          img.src = getTechIconUrl(tech);
+        }
+      });
+    }
+  }, [company.tech_stack]);
+  
+  const TechStack = useMemo(() => {
+    if (!company.tech_stack || !Array.isArray(company.tech_stack)) return [];
+    return company.tech_stack.filter(tech => tech && typeof tech === 'string');
+  }, [company.tech_stack]);
 
   const handleAdd = () => {
     if (newTech.trim() && !techList.includes(newTech.trim())) {
@@ -39,9 +72,9 @@ export default function Techstack({ company }) {
 
   if (isEditing) {
     return (
-      <div className="bg-card border-b border-gray-300 p-2 pb-6">
-        <div className="flex items-start justify-between mb-6">
-          <h4 className="text-xl font-bold text-foreground">Tech Stack</h4>
+      <div className="bg-white border border-gray-300 rounded-lg p-4 pt-2 md:p-6 md:pt-3 gap-2 flex flex-col">
+        <div className="flex items-center justify-between">
+          <h5 className="text-xl font-bold text-foreground">{t('company.tech_stack.title')}</h5>
           <div className="flex gap-2">
             <ActionButton icon={<Save className="w-4 h-4" />} onClick={handleSave} />
             <ActionButton icon={<X className="w-4 h-4" />} onClick={handleCancel} />
@@ -75,9 +108,9 @@ export default function Techstack({ company }) {
   }
 
   return (
-    <div className="bg-card border-b border-gray-300 p-2 pb-6">
-      <div className="flex items-start justify-between mb-6">
-        <h4 className="text-xl font-bold text-foreground">Tech Stack</h4>
+    <div className="bg-white border border-gray-300 rounded-lg p-4 pt-2 md:p-6 md:pt-3 gap-2 flex flex-col">
+      <div className="flex items-center justify-between">
+        <h5 className="text-xl font-bold text-foreground">{t('company.tech_stack.title')}</h5>
         <div className="flex gap-2">
           <ActionButton icon={<Plus className="w-4 h-4" />} aria-label="Add tech" />
           <ActionButton
@@ -88,19 +121,27 @@ export default function Techstack({ company }) {
         </div>
       </div>
       <div className="flex flex-wrap gap-4">
-        {(company.tech_stack || []).map((tech) => (
-          <div
-            key={tech}
-            className="flex flex-col items-center justify-center w-24 h-24 border border-border rounded-sm hover:bg-accent transition-colors"
-          >
-            <div className="w-10 h-10 rounded-full bg-muted flex items-center justify-center mb-2">
-              <span className="text-xs font-bold">{tech.charAt(0)}</span>
-            </div>
-            <span className="text-xs text-foreground font-medium">{tech}</span>
+        {TechStack.length > 0 ? (
+          <div className='grid grid-cols-4 lg:grid-cols-2 xl:grid-cols-4 gap-4'>
+            {TechStack.map((tech, index) => (
+                <div key={index} className=' flex flex-col justify-center items-center'>
+                  <Image
+                    src={getTechIconUrl(tech)}
+                    alt={tech}
+                    width={50}
+                    height={50}
+                    preview={false}
+                    fallback={srcAsset.techIcon}
+                    loading="lazy"
+                  />
+                  <span className='text-base text-center mt-2'>{tech}</span>
+                </div>
+              ))}
           </div>
-        ))}
-        {(!company.tech_stack || company.tech_stack.length === 0) && (
-          <p className="text-sm text-muted-foreground">No tech stack specified.</p>
+        ) : (
+          <p>
+            {t('company.tech_stack.no_tech_stack') || 'No tech stack available'}
+          </p>
         )}
       </div>
     </div>

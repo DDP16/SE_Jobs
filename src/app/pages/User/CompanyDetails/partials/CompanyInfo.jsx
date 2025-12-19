@@ -19,7 +19,7 @@ export default function CompanyInfo({ company = {} }) {
     const { t } = useTranslation();
 
     return (
-        <Box sx={{ position: 'sticky', top: 16 }}>
+        <Box sx={{ position: 'sticky', top: 55 }}>
             <Paper
                 elevation={0}
                 sx={{
@@ -52,7 +52,7 @@ export default function CompanyInfo({ company = {} }) {
                                         preview={false}
                                         fallback={srcAsset.techIcon}
                                     />
-                                    <span className='text-base mt-2'>{tech}</span>
+                                    <span className='text-base text-center mt-2'>{tech}</span>
                                 </div>
                             ))}
                     </div>
@@ -68,22 +68,6 @@ export default function CompanyInfo({ company = {} }) {
                     {t('company.tech_stack.view_all')}
                     <ArrowRight className="w-5 h-5" />
                 </a>
-
-                {/* <Divider sx={{ my: 1 }} />
-
-                <Typography variant="h6" sx={{ fontWeight: 700 }}>
-                    {t('company.office_location.title')}
-                </Typography>
-                <Typography variant="body2" color="text.secondary">
-                    {t('company.office_location.description', { companyName: company.name || 'the company' })}
-                </Typography>
-                <a
-                    href="#"
-                    className="text-primary flex items-center gap-2 hover:underline font-medium"
-                >
-                    {t('company.office_location.view_all')}
-                    <ArrowRight className="w-5 h-5" />
-                </a> */}
             </Paper>
         </Box>
     );

@@ -23,7 +23,12 @@ export default function CompanyHeader({ company = {} }) {
   // Get location from first branch if available
   const firstBranch = company.company_branches?.[0];
   const location = firstBranch
-    ? `${firstBranch.address || ""}, ${firstBranch.provinces?.name || ""}, ${firstBranch.countries?.name || ""}`.trim()
+    ? `${[
+        firstBranch.address,
+        firstBranch.ward?.name,
+        firstBranch.province?.name,
+        firstBranch.country?.name
+      ].filter(Boolean).join(', ')}`
     : "";
 
   // Get industry from company_types array
@@ -176,6 +181,17 @@ export default function CompanyHeader({ company = {} }) {
                 </>
               )}
             </Box>
+
+            {company.website_url && (
+              <a
+                href={company.website_url.trim()}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-primary text-sm hover:underline inline-block"
+              >
+                {company.website_url.trim()}
+              </a>
+            )}
 
             {/* Stats - Desktop: flex row, Mobile: 2x2 grid */}
             <Box

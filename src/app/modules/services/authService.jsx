@@ -179,11 +179,16 @@ export const getMe = createAsyncThunk("auth/getMe", async (_, { rejectWithValue 
     const result = await new Promise((resolve, reject) => {
       get(
         "/api/auth/me",
-        (data) => {
-          if (data.success) {
-            resolve(data.data);
-          } else {
-            reject(data.message || "Failed to fetch user data");
+        async (res) => {
+          try {
+            const data = await res.json();
+            if (res.ok && data.success) {
+              resolve(data.data);
+            } else {
+              reject(data.message || "Failed to fetch user data: " + res.status);
+            }
+          } catch (error) {
+            reject("Failed to parse response: " + error.message);
           }
         },
         async (res) => {
@@ -342,7 +347,7 @@ const authSlice = createSlice({
         state.isAuthenticated = true;
         state.error = null;
         if (action.payload) {
-          setAuthStorage(action.payload.user_id, true, action.payload.role, action.payload);
+          setAuthStorage(action.payload.user_id, true);
         }
       })
       .addCase(getMe.rejected, (state, action) => {
