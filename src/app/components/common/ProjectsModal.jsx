@@ -19,7 +19,7 @@ export default function ProjectsModal({ open, onOpenChange, initialData, onSave 
         endMonth: initialData?.endMonth || "",
         endYear: initialData?.endYear || "",
         description: initialData?.description || "",
-        websiteLink: initialData?.website_link || "",
+        websiteLink: initialData?.websiteLink || initialData?.website || initialData?.website_link || "",
     });
     const [charCount, setCharCount] = useState(0);
     const editorRef = useRef(null);
@@ -159,9 +159,24 @@ export default function ProjectsModal({ open, onOpenChange, initialData, onSave 
             return;
         }
 
-        setFormData(sanitizedData);
+        // Ensure websiteLink is included - prioritize currentFormData (user input)
+        const websiteLinkValue = currentFormData?.websiteLink || sanitizedData?.websiteLink || '';
+
+        // Build finalData with all required fields, explicitly including websiteLink
+        const finalData = {
+            projectName: sanitizedData?.projectName || currentFormData?.projectName || '',
+            isCurrentlyWorking: sanitizedData?.isCurrentlyWorking ?? currentFormData?.isCurrentlyWorking ?? false,
+            startMonth: sanitizedData?.startMonth || currentFormData?.startMonth || '',
+            startYear: sanitizedData?.startYear || currentFormData?.startYear || '',
+            endMonth: sanitizedData?.endMonth || currentFormData?.endMonth || '',
+            endYear: sanitizedData?.endYear || currentFormData?.endYear || '',
+            description: sanitizedData?.description || currentFormData?.description || '',
+            websiteLink: websiteLinkValue,
+        };
+
+        setFormData(finalData);
         if (onSave) {
-            onSave(sanitizedData);
+            onSave(finalData);
         }
         onOpenChange(false);
     };
@@ -512,7 +527,8 @@ export default function ProjectsModal({ open, onOpenChange, initialData, onSave 
                             </Label>
                             <Input
                                 id="websiteLink"
-                                value={formData.websiteLink}
+                                type="url"
+                                value={formData.websiteLink || ''}
                                 onChange={(e) => handleChange("websiteLink", e.target.value)}
                                 placeholder={t('modals.projects.websitePlaceholder')}
                                 aria-invalid={Boolean(errors.websiteLink)}

@@ -17,6 +17,7 @@ export { default as ApplicantDetails } from "./Company/ApplicantDetails";
 export { default as CompanySignUp } from "./Auth/CompanySignUp";
 export { default as CompanySetting } from "./Company/CompanySetting";
 export { default as PostJob } from "./Company/PostJob";
+export { default as EditJob } from "./Company/EditJob";
 export { default as JobListing } from "./Company/JobListing";
 export { default as CompanyBranches } from "./Company/CompanyBranches";
 export { default as JobDescriptionCompany } from "./Company/JobDescription/JobDescription";

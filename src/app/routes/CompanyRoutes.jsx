@@ -8,6 +8,7 @@ import {
     CompanyDashboard as Dashboard,
     CompanySetting,
     PostJob,
+    EditJob,
     JobListing,
     CompanyBranches,
     JobDescriptionCompany,
@@ -22,10 +23,10 @@ export default function CompanyRoutes() {
     const user = useSelector((state) => state.auth.user);
     const { company } = useSelector((state) => state.company);
     const companyId = user?.company.id;
-    
+
     useEffect(() => {
         if (!company && companyId) {
-          dispatch(getCompany(companyId));
+            dispatch(getCompany(companyId));
         }
     }, [dispatch, companyId, company]);
 
@@ -45,6 +46,7 @@ export default function CompanyRoutes() {
                 <Route path="applicants" element={<ComingSoon />} />
                 <Route path="settings" element={<CompanySetting />} />
                 <Route path="post-job" element={<PostJob />} />
+                <Route path="edit-job/:jobId" element={<EditJob />} />
                 <Route path="job-listing" element={<JobListing />} />
                 <Route path="job" element={<JobDescriptionCompany />} />
                 <Route path="branches" element={<CompanyBranches />} />

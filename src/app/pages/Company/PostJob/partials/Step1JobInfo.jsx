@@ -49,6 +49,10 @@ export default function Step1JobInfo({
   const [searchQuery, setSearchQuery] = useState("");
   const [tempSalaryRange, setTempSalaryRange] = useState(salaryRange);
 
+  useEffect(() => {
+    setTempSalaryRange(salaryRange);
+  }, [salaryRange]);
+
   const filteredSkills = useMemo(() => {
     if (!searchQuery.trim()) return [];
     return apiSkills.filter((skill) => skill.name.toLowerCase().includes(searchQuery.toLowerCase()));
@@ -153,8 +157,8 @@ export default function Step1JobInfo({
               mode="multiple"
               style={{ width: '100%', alignItems: 'center' }}
               placeholder={t("postJob.companyBranchPlaceholder")}
-              defaultValue={[]}
-              onChange={(value) => {setCompanyBranchId(value)}}
+              value={Array.isArray(companyBranchId) ? companyBranchId : (companyBranchId ? [companyBranchId] : [])}
+              onChange={(value) => { setCompanyBranchId(value) }}
               options={options}
               className="h-10"
             />

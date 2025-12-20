@@ -29,7 +29,7 @@ export default function ExperienceModal({ open, onOpenChange, initialData, onSav
     });
     const [errors, setErrors] = useState({});
 
-    // Update form data and editor when initialData changes
+    // Update form data when initialData changes
     useEffect(() => {
         if (initialData) {
             setFormData({
@@ -45,7 +45,6 @@ export default function ExperienceModal({ open, onOpenChange, initialData, onSav
             const introContent = initialData?.description || initialData?.content || "";
             setContent(introContent);
             setCharCount((introContent || "").length);
-            if (editorRef.current) editorRef.current.innerHTML = introContent;
         } else {
             setFormData({
                 jobTitle: "",
@@ -59,10 +58,39 @@ export default function ExperienceModal({ open, onOpenChange, initialData, onSav
             });
             setContent("");
             setCharCount(0);
-            if (editorRef.current) editorRef.current.innerHTML = "";
         }
         setErrors({});
-    }, [initialData, open]);
+    }, [initialData]);
+
+    // Set editor content when modal opens and editor is mounted
+    useEffect(() => {
+        if (!open) {
+            // Reset editor when modal closes
+            if (editorRef.current) {
+                editorRef.current.innerHTML = "";
+            }
+            return;
+        }
+
+        // Use setTimeout to ensure editor is mounted after DOM render
+        const timer = setTimeout(() => {
+            if (editorRef.current) {
+                const introContent = initialData?.description || initialData?.content || "";
+
+                if (introContent) {
+                    editorRef.current.innerHTML = introContent;
+                    // Update char count based on text content, not HTML
+                    const textLength = editorRef.current.innerText?.length || introContent.length;
+                    setCharCount(textLength);
+                } else {
+                    editorRef.current.innerHTML = "";
+                    setCharCount(0);
+                }
+            }
+        }, 50); // Small delay to ensure DOM is ready
+
+        return () => clearTimeout(timer);
+    }, [open, initialData]);
 
     const handleChange = (field, value) => {
         setFormData((prev) => {
@@ -348,7 +376,7 @@ export default function ExperienceModal({ open, onOpenChange, initialData, onSav
                                 ref={editorRef}
                                 contentEditable
                                 onInput={handleContentChange}
-                                className="min-h-40 p-4 border border-t-0 border-neutrals-40 rounded-b-lg focus:outline-none focus:ring-2 focus:ring-primary"
+                                className="min-h-40 p-4 border border-t-0 border-neutrals-40 rounded-b-lg focus:outline-none focus:ring-2 focus:ring-primary text-foreground"
                                 style={{ whiteSpace: 'pre-wrap', wordBreak: 'break-word' }}
                             />
 

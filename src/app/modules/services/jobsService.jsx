@@ -26,9 +26,21 @@ export const getJobs = createAsyncThunk(
 
 export const getJobById = createAsyncThunk(
     "jobs/getJobById",
-    async (jobId, { rejectWithValue }) => {
+    async (payload, { rejectWithValue }) => {
         try {
+            // Support both formats:
+            // 1. getJobById(jobId) - for backward compatibility
+            // 2. getJobById({ jobId, formatTopCv }) - new format with options
+            const jobId = typeof payload === 'object' ? payload.jobId : payload;
+            const formatTopCv = typeof payload === 'object' ? payload.formatTopCv : undefined;
+
+            const params = {};
+            if (formatTopCv !== undefined) {
+                params.formatTopCv = formatTopCv;
+            }
+
             const response = await api.get(`${apiBaseUrl}/${jobId}`, {
+                params,
                 // withCredentials: true,
             });
             return response.data;

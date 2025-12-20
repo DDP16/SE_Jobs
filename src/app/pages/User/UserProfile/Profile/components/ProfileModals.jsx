@@ -51,8 +51,12 @@ export const ProfileModals = ({
             <ExperienceModal
                 open={modals.experience}
                 onOpenChange={(open) => {
-                    if (open) openModal('experience');
-                    else { closeModal('experience'); setSelectedExperience(null); }
+                    if (open) {
+                        openModal('experience');
+                    } else {
+                        closeModal('experience');
+                        setSelectedExperience(null);
+                    }
                 }}
                 initialData={selectedExperience ? {
                     jobTitle: selectedExperience.role || selectedExperience.position,
@@ -70,8 +74,12 @@ export const ProfileModals = ({
             <EducationModal
                 open={modals.education}
                 onOpenChange={(open) => {
-                    if (open) openModal('education');
-                    else { closeModal('education'); setSelectedEducation(null); }
+                    if (open) {
+                        openModal('education');
+                    } else {
+                        closeModal('education');
+                        setSelectedEducation(null);
+                    }
                 }}
                 initialData={selectedEducation ? (() => {
                     let startMonth = selectedEducation.startMonth || '';
@@ -132,7 +140,6 @@ export const ProfileModals = ({
                 onOpenChange={(open) => open ? openModal('languages') : closeModal('languages')}
                 initialData={null}
                 onSave={(formData) => {
-                    console.log('Languages saved:', formData);
                     closeModal('languages');
                 }}
             />
@@ -140,8 +147,12 @@ export const ProfileModals = ({
             <ProjectsModal
                 open={modals.projects}
                 onOpenChange={(open) => {
-                    if (open) openModal('projects');
-                    else { closeModal('projects'); setSelectedProject(null); }
+                    if (open) {
+                        openModal('projects');
+                    } else {
+                        closeModal('projects');
+                        setSelectedProject(null);
+                    }
                 }}
                 initialData={selectedProject ? (() => {
                     let startMonth = selectedProject.startMonth || '';
@@ -176,7 +187,7 @@ export const ProfileModals = ({
                         endYear,
                         isCurrentlyWorking,
                         description: selectedProject.description || '',
-                        websiteLink: selectedProject.website || selectedProject.website_link || '',
+                        websiteLink: selectedProject.websiteLink || selectedProject.website || selectedProject.website_link || '',
                     };
                 })() : null}
                 onSave={handlers.handleSaveProject}
@@ -185,8 +196,12 @@ export const ProfileModals = ({
             <CertificatesModal
                 open={modals.certificates}
                 onOpenChange={(open) => {
-                    if (open) openModal('certificates');
-                    else { closeModal('certificates'); setSelectedCertificate(null); }
+                    if (open) {
+                        openModal('certificates');
+                    } else {
+                        closeModal('certificates');
+                        setSelectedCertificate(null);
+                    }
                 }}
                 initialData={selectedCertificate ? (() => {
                     let issueMonth = selectedCertificate.issueMonth || '';
@@ -203,7 +218,7 @@ export const ProfileModals = ({
                         organization: selectedCertificate.organization || '',
                         issueMonth,
                         issueYear,
-                        certificateUrl: selectedCertificate.url || selectedCertificate.certificate_url || '',
+                        certificateUrl: selectedCertificate.certificateUrl || selectedCertificate.certification_url || selectedCertificate.certificate_url || selectedCertificate.url || '',
                         description: selectedCertificate.description || '',
                     };
                 })() : null}
@@ -218,7 +233,6 @@ export const ProfileModals = ({
                 }}
                 initialData={selectedAward}
                 onSave={(formData) => {
-                    console.log('Award saved:', formData);
                     closeModal('awards');
                 }}
             />
