@@ -153,7 +153,7 @@ const projectsSlice = createSlice({
             })
             .addCase(deleteProject.fulfilled, (state, action) => {
                 state.status = "succeeded";
-                const id = action.meta.arg;
+                const id = action.payload;
                 state.projects = state.projects.filter((p) => p.id !== id);
                 if (state.project && state.project.id === id) {
                     state.project = null;
