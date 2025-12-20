@@ -8,7 +8,6 @@ import { useTranslation } from "react-i18next";
 import { useNavigate } from "react-router-dom";
 import { getJobs, getJobsByCompanyId } from "../../../../modules";
 import { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
 import { updateJob } from "../../../../modules/services/jobsService";
 
 export default function JobTable() {
@@ -173,7 +172,7 @@ export default function JobTable() {
                             <Eye className="w-4 h-4 mr-2" />
                             {t('jobListing.table.viewDetails')}
                         </DropdownMenuItem>
-                        <DropdownMenuItem>
+                        <DropdownMenuItem onClick={() => nav(`/edit-job/${job.id}`)}>
                             <Edit className="w-4 h-4 mr-2" />
                             {t('jobListing.table.edit')}
                         </DropdownMenuItem>

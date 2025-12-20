@@ -2,7 +2,7 @@ import JobHeader from "./partials/JobHeader";
 import JobDetails from "./partials/JobDetails";
 import JobSidebar from "./partials/JobSidebar";
 import { PerksSection } from "../../../components";
-import { useSearchParams } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
 import { getJobById } from "../../../modules/services/jobsService";
 import { useEffect } from "react";
@@ -16,6 +16,7 @@ export default function JobDescription({
   const [searchParams] = useSearchParams();
   const jobId = searchParams.get("id");
   const dispatch = useDispatch();
+  const nav = useNavigate();
 
   const jobFromStore = useSelector(state => state.jobs.job);
   const jobStatus = useSelector(state => state.jobs.status);
@@ -152,7 +153,7 @@ export default function JobDescription({
   return (
     <div className={`min-h-screen w-full bg-white mx-auto space-y-12 pb-12`}>
       <div className={`px-10 2xl:px-50 py-8 bg-background-lightBlue`}>
-        <JobHeader job={job} textButton={t("edit")} onClickButton={() => {}} />
+        <JobHeader job={job} textButton={t("edit")} onClickButton={() => {nav(`/edit-job/${jobId}`)}} />
       </div>
 
       <div className={`grid grid-cols-1 px-10 lg:px-25 lg:grid-cols-3 md:grid-cols-2 gap-8`}>
