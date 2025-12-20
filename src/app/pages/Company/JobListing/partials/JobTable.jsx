@@ -156,14 +156,16 @@ export default function JobTable() {
     const [isViewDialogOpen, setIsViewDialogOpen] = useState(false);
 
     const dispatch = useDispatch();
-    const companyId = useSelector((state) => state.auth.user.company.id);
+    const companyId = useSelector((state) => state.auth.user?.company?.id);
     const status = useSelector((state) => state.jobs.status);
     const jobs = useSelector((state) => state.jobs.jobs);
     const pagination = useSelector((state) => state.jobs.pagination);
 
     useEffect(() => {
-        dispatch(getJobsByCompanyId({ company_id: companyId, page: currentPage, limit: pageSize }));
-    }, [currentPage, pageSize]);
+        if (companyId) {
+            dispatch(getJobsByCompanyId({ companyId: companyId, page: currentPage, limit: pageSize }));
+        }
+    }, [dispatch, companyId, currentPage, pageSize]);
 
     const currentData = jobs;
 
