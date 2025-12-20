@@ -5,10 +5,11 @@ import { Button, DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMe
 import { Edit, Eye, MoreVertical, Trash2, Diamond, Flame, Zap } from "lucide-react";
 import { useDispatch, useSelector } from "react-redux";
 import { useTranslation } from "react-i18next";
+import { useNavigate } from "react-router-dom";
 import { getJobs, getJobsByCompanyId } from "../../../../modules";
 import { useEffect, useState } from "react";
 
-const getColumns = (t) => [
+const getColumns = (t, navigate, setSelectedJob, setIsViewDialogOpen) => [
     {
         title: t('jobListing.table.jobTitle'),
         dataIndex: 'title',
@@ -128,7 +129,11 @@ const getColumns = (t) => [
                         <Eye className="w-4 h-4 mr-2" />
                         {t('jobListing.table.viewDetails')}
                     </DropdownMenuItem>
-                    <DropdownMenuItem>
+                    <DropdownMenuItem onClick={() => {
+                        navigate(`/edit-job/${job.id}`, {
+                            state: { job, jobId: job.id }
+                        });
+                    }}>
                         <Edit className="w-4 h-4 mr-2" />
                         {t('jobListing.table.edit')}
                     </DropdownMenuItem>
@@ -144,8 +149,11 @@ const getColumns = (t) => [
 
 export default function JobTable() {
     const { t } = useTranslation();
+    const navigate = useNavigate();
     const [currentPage, setCurrentPage] = useState(1);
     const [pageSize, setPageSize] = useState(10);
+    const [selectedJob, setSelectedJob] = useState(null);
+    const [isViewDialogOpen, setIsViewDialogOpen] = useState(false);
 
     const dispatch = useDispatch();
     const companyId = useSelector((state) => state.auth.user.company.id);
@@ -154,7 +162,7 @@ export default function JobTable() {
     const pagination = useSelector((state) => state.jobs.pagination);
 
     useEffect(() => {
-        dispatch(getJobs({company_id: companyId, page: currentPage, limit: pageSize}));
+        dispatch(getJobsByCompanyId({ company_id: companyId, page: currentPage, limit: pageSize }));
     }, [currentPage, pageSize]);
 
     const currentData = jobs;
@@ -168,7 +176,7 @@ export default function JobTable() {
             ) : (
                 <div className="relative flex flex-col h-[60vh]">
                     <Table
-                        columns={getColumns(t)}
+                        columns={getColumns(t, navigate, setSelectedJob, setIsViewDialogOpen)}
                         dataSource={currentData}
                         rowKey="id"
                         pagination={{

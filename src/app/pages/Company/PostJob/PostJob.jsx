@@ -1,5 +1,5 @@
 // src/app/pages/Company/PostJob/PostJob.jsx
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useTranslation } from "react-i18next";
 import { Button } from "@/components/ui/button";
@@ -33,13 +33,13 @@ import { getCategories } from "../../../modules/services/categoriesService";
 import { getEmploymentTypes } from "../../../modules/services/employmentTypeService";
 import { getSkills } from "../../../modules/services/skillsService";
 import { getLevels } from "../../../modules/services/levelsService";
-import { createJob } from "../../../modules/services/jobsService";
+import { createJob, updateJob } from "../../../modules/services/jobsService";
 import { useNavigate } from "react-router-dom";
 import { FuzzyText } from "../../../components";
 import { getCompanyBranches } from "../../../modules/services/companyBranchesService";
 import { useCustomAlert } from "../../../hooks/useCustomAlert";
 
-export default function PostJob() {
+export default function PostJob({ isEditing = false, job = null, jobId = null }) {
   const { t } = useTranslation();
   const dispatch = useDispatch();
   const { alertConfig, hideAlert, showSuccess, showError } = useCustomAlert();
@@ -82,7 +82,7 @@ export default function PostJob() {
   const [whoYouAre, setWhoYouAre] = useState("");
   const [niceToHaves, setNiceToHaves] = useState("");
   const [benefits, setBenefits] = useState([]);
-  const [companyBranchId, setCompanyBranchId] = useState(null);
+  const [companyBranchId, setCompanyBranchId] = useState([]); // Array for multi-select
   const [quantity, setQuantity] = useState("");
   const [jobDeadline, setJobDeadline] = useState("");
 
@@ -91,10 +91,167 @@ export default function PostJob() {
   const [categoryIds, setCategoryIds] = useState([]);
   const [levelId, setLevelId] = useState(null);
 
+  // Ref to track if form has been populated (for edit mode)
+  const hasPopulatedRef = useRef(false);
+
   useEffect(() => {
     console.log(benefits);
     console.log(apiCompanyBranches);
   }, [benefits, apiCompanyBranches]);
+
+  // Populate form when editing and all API data is loaded
+  useEffect(() => {
+    if (
+      isEditing &&
+      job &&
+      !hasPopulatedRef.current &&
+      categories.length > 0 &&
+      apiEmploymentTypes.length > 0 &&
+      apiSkills.length > 0 &&
+      levels.length > 0 &&
+      apiCompanyBranches.length > 0
+    ) {
+
+      hasPopulatedRef.current = true;
+
+      if (job.title) setJobTitle(job.title);
+      if (job.description) setJobDescription(job.description);
+
+      if (job.responsibilities) {
+        const resp = Array.isArray(job.responsibilities)
+          ? job.responsibilities.join('\n')
+          : job.responsibilities;
+        setResponsibilities(resp);
+      }
+
+
+      if (job.requirement) {
+        let req = '';
+        if (Array.isArray(job.requirement)) {
+          req = job.requirement.join('\n');
+        } else if (typeof job.requirement === 'string') {
+          req = job.requirement.replace(/<br\s*\/?>/gi, '\n').trim();
+        }
+        if (req) setWhoYouAre(req);
+      }
+
+      // Set nice_to_haves (can be array or string with <br />)
+      if (job.nice_to_haves) {
+        let nth = '';
+        if (Array.isArray(job.nice_to_haves)) {
+          nth = job.nice_to_haves.join('\n');
+        } else if (typeof job.nice_to_haves === 'string') {
+          nth = job.nice_to_haves.replace(/<br\s*\/?>/gi, '\n').trim();
+        }
+        if (nth) setNiceToHaves(nth);
+      }
+
+      const salaryFrom = job.salary_from ?? job.salary?.from;
+      const salaryTo = job.salary_to ?? job.salary?.to;
+      const salaryCurr = job.salary_currency || job.salary?.currency || 'USD';
+      if (salaryFrom !== undefined && salaryTo !== undefined) {
+        setSalaryRange([salaryFrom, salaryTo]);
+      }
+      if (salaryCurr) setSalaryCurrency(salaryCurr);
+
+      // Set benefits
+      if (job.benefit && Array.isArray(job.benefit)) {
+        const formattedBenefits = job.benefit.map((b, index) => ({
+          id: b.id || `benefit-${index}`,
+          icon: b.icon || "Gift",
+          title: b.title || "",
+          description: b.description || "",
+          isEditing: false,
+        }));
+        setBenefits(formattedBenefits);
+      }
+
+      // Set quantity and deadline (raw data uses job_deadline)
+      if (job.quantity) setQuantity(String(job.quantity));
+      if (job.job_deadline) setJobDeadline(job.job_deadline);
+      else if (job.deadline) setJobDeadline(job.deadline);
+
+      if (job.company_branches_id) {
+        setCompanyBranchId(Array.isArray(job.company_branches_id) ? job.company_branches_id : [job.company_branches_id]);
+      } else if (job.company_branches && Array.isArray(job.company_branches) && job.company_branches.length > 0) {
+        const branchIds = job.company_branches.map(b => b.id).filter(Boolean);
+        if (branchIds.length > 0) setCompanyBranchId(branchIds);
+        else setCompanyBranchId([]);
+      } else {
+        setCompanyBranchId([]);
+      }
+
+      const employmentTypesData = job.employment_types || job.workingTime || [];
+      if (Array.isArray(employmentTypesData) && employmentTypesData.length > 0 && apiEmploymentTypes.length > 0) {
+        const empTypeNames = employmentTypesData.map(et => {
+          if (typeof et === 'object' && et.name) return et.name;
+          if (typeof et === 'string') {
+            const found = apiEmploymentTypes.find(e => e.name.toLowerCase() === et.toLowerCase());
+            return found ? found.name : et;
+          }
+          return et;
+        });
+        setEmploymentTypes(empTypeNames);
+
+        const empTypeIds = employmentTypesData.map(et => {
+          if (typeof et === 'object' && et.id) return et.id;
+          const etName = typeof et === 'string' ? et : (et.name || '');
+          const found = apiEmploymentTypes.find(e => e.name.toLowerCase() === etName.toLowerCase());
+          return found?.id;
+        }).filter(Boolean);
+        setEmploymentTypeIds(empTypeIds);
+      }
+
+      const jobSkills = job.skills || job.required_skills || [];
+      if (Array.isArray(jobSkills) && jobSkills.length > 0) {
+        const skillNames = jobSkills.map(skill =>
+          typeof skill === 'string' ? skill : (skill.name || skill)
+        );
+        setSkills(skillNames);
+
+        const skillIdList = jobSkills.map(skill => {
+          if (typeof skill === 'object' && skill.id) return skill.id;
+          const found = apiSkills.find(s => s.name === (typeof skill === 'string' ? skill : skill.name));
+          return found?.id;
+        }).filter(Boolean);
+        setSkillIds(skillIdList);
+      }
+
+      if (job.categories && Array.isArray(job.categories) && job.categories.length > 0) {
+        const categoryName = typeof job.categories[0] === 'string'
+          ? job.categories[0]
+          : (job.categories[0].name || job.categories[0]);
+        setSelectedCategory(categoryName);
+
+        const cat = job.categories[0];
+        const categoryId = (typeof cat === 'object' && cat.id)
+          ? cat.id
+          : categories.find(c => c.name === categoryName)?.id;
+        if (categoryId) setCategoryIds([categoryId]);
+      }
+
+      if (job.levels && Array.isArray(job.levels) && job.levels.length > 0) {
+        const levelName = typeof job.levels[0] === 'string'
+          ? job.levels[0]
+          : (job.levels[0].name || job.levels[0]);
+        setSelectedLevel(levelName);
+
+        const lvl = job.levels[0];
+        const levelIdValue = (typeof lvl === 'object' && lvl.id)
+          ? lvl.id
+          : levels.find(l => l.name === levelName)?.id;
+        if (levelIdValue) setLevelId(levelIdValue);
+      }
+    }
+  }, [
+    isEditing,
+    job,
+    categories,
+    apiEmploymentTypes,
+    apiSkills,
+    levels,
+    apiCompanyBranches,
+  ]);
 
   const steps = [
     { number: 1, title: t("postJob.jobInformation"), icon: FileText },
@@ -102,7 +259,9 @@ export default function PostJob() {
     { number: 3, title: t("postJob.perksBenefit"), icon: Gift },
   ];
 
-  const employmentOptions = ["Full-Time", "Part-Time", "Remote", "Internship", "Contract"];
+  const employmentOptions = apiEmploymentTypes.length > 0
+    ? apiEmploymentTypes.map(et => et.name)
+    : ["Full-Time", "Part-Time", "Remote", "Internship", "Contract"];
 
   const toggleEmploymentType = (type) => {
     setEmploymentTypes((prev) => (prev.includes(type) ? prev.filter((t) => t !== type) : [...prev, type]));
@@ -183,7 +342,6 @@ export default function PostJob() {
 
     const payload = {
       company_id: companyId,
-      // company_branches_id: companyBranchId,
       title: jobTitle,
       description: jobDescription,
       responsibilities: responsibilities ? [responsibilities] : [],
@@ -205,16 +363,66 @@ export default function PostJob() {
       status: "Pending",
     };
 
-    console.log("Submitting job with payload:", payload);
 
     try {
-      const result = await dispatch(createJob(payload)).unwrap();
-      console.log("Job posted successfully: ", result);
+      await dispatch(createJob(payload)).unwrap();
       showSuccess("Job posted successfully!");
       nav("/", { replace: true });
     } catch (err) {
       console.error("Failed to create job:", err);
       showError("Failed to create job: " + (err?.message || err || "Unknown error"));
+    }
+  };
+
+  const handleUpdate = async () => {
+    if (!companyId) {
+      console.error("Cannot update job: user is not associated with a company");
+      return;
+    }
+
+    if (!jobId && !job) {
+      console.error("Cannot update job: jobId or job is required");
+      showError("Job ID is required for update");
+      return;
+    }
+
+    const targetJobId = jobId || job?.job_id || job?.id;
+    if (!targetJobId) {
+      console.error("Cannot update job: job ID not found");
+      showError("Job ID not found");
+      return;
+    }
+
+    const payload = {
+      company_id: companyId,
+      company_branches_id: Array.isArray(companyBranchId) ? companyBranchId[0] : companyBranchId,
+      company_branches_ids: Array.isArray(companyBranchId) ? companyBranchId : (companyBranchId ? [companyBranchId] : null),
+      title: jobTitle,
+      description: jobDescription,
+      responsibilities: responsibilities ? responsibilities.split('\n').filter(line => line.trim()) : [],
+      requirement: whoYouAre ? whoYouAre.split('\n').filter(line => line.trim()) : [],
+      nice_to_haves: niceToHaves ? niceToHaves.split('\n').filter(line => line.trim()) : [],
+      benefit: benefits.map((b) => ({ icon: b.icon, title: b.title, description: b.description })),
+      salary_from: salaryRange[0],
+      salary_to: salaryRange[1],
+      salary_currency: salaryCurrency,
+      salary_text: `${salaryRange[0]} - ${salaryRange[1]} ${salaryCurrency}`,
+      category_ids: categoryIds,
+      level_ids: levelId ? [levelId] : [],
+      required_skill_ids: skillIds,
+      employment_type_ids: employmentTypeIds,
+      quantity: quantity ? parseInt(quantity) : null,
+      job_deadline: jobDeadline || null,
+      // Keep existing status if editing
+      status: job?.status || "Pending",
+    };
+    try {
+      await dispatch(updateJob({ jobId: targetJobId, jobData: payload })).unwrap();
+      showSuccess("Job updated successfully!");
+      nav("/job-listing", { replace: true });
+    } catch (err) {
+      console.error("Failed to update job:", err);
+      showError("Failed to update job: " + (err?.message || err || "Unknown error"));
     }
   };
 
@@ -362,8 +570,12 @@ export default function PostJob() {
               {t("postJob.nextStep")}
             </Button>
           ) : (
-            <Button size="lg" onClick={handleSubmit} className="bg-primary hover:bg-primary/90 text-white px-8 ml-auto">
-              {t("postJob.postJob")}
+            <Button
+              size="lg"
+              onClick={isEditing ? handleUpdate : handleSubmit}
+              className="bg-primary hover:bg-primary/90 text-white px-8 ml-auto"
+            >
+              {isEditing ? "Update Job" : t("postJob.postJob")}
             </Button>
           )}
         </div>
