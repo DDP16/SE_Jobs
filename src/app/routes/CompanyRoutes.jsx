@@ -12,6 +12,7 @@ import {
     JobListing,
     CompanyBranches,
     JobDescriptionCompany,
+    ContactUs,
 } from "../pages";
 import ApplicantsTable from "../pages/Company/ApplicantList/ApplicantList";
 import { useDispatch, useSelector } from "react-redux";
@@ -50,6 +51,7 @@ export default function CompanyRoutes() {
                 <Route path="job-listing" element={<JobListing />} />
                 <Route path="job" element={<JobDescriptionCompany />} />
                 <Route path="branches" element={<CompanyBranches />} />
+                <Route path="help-center" element={<ContactUs />} />
                 <Route path="*" element={<PageNotFound />} />
             </Route>
         </Routes>
