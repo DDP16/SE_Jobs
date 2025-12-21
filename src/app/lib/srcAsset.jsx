@@ -1,5 +1,5 @@
 // const assetBasePath = '/src/app/assets';
-const assetBasePath = '/public/assets';
+const assetBasePath = import.meta.env.MODE === "production" ? '/assets' : '/src/app/assets';
 
 export const srcAsset = Object.freeze({
   SELargeLogo: `${assetBasePath}/logo_with_text.svg`,
