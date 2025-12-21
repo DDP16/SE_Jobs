@@ -1,5 +1,6 @@
 import React from 'react';
 import { Container, Box, CircularProgress, Typography } from '@mui/material';
+import { motion } from 'framer-motion';
 import { useSelector, useDispatch } from 'react-redux';
 import { useTranslation } from 'react-i18next';
 
@@ -134,67 +135,128 @@ export default function Profile() {
         openModal('awards');
     };
 
+    const sectionVariants = {
+        hidden: { opacity: 0, y: 20 },
+        visible: { opacity: 1, y: 0 }
+    };
+
     return (
         <Box sx={{ bgcolor: 'background.default', minHeight: '100vh' }}>
             <Container maxWidth="xl">
                 <Box sx={{ display: 'flex', gap: 4, alignItems: 'flex-start' }}>
                     {/* Main Content */}
                     <Box sx={{ flex: 1, maxWidth: 900 }}>
-                        <ProfileHeader
-                            user={user}
-                            onEdit={() => openModal('information')}
-                        />
+                        <motion.div
+                            initial="hidden"
+                            animate="visible"
+                            variants={sectionVariants}
+                            transition={{ duration: 0.5, delay: 0.1 }}
+                        >
+                            <ProfileHeader
+                                user={user}
+                                onEdit={() => openModal('information')}
+                            />
+                        </motion.div>
 
-                        <CVUpload
-                            cvFile={cvFile}
-                            onFileChange={handlers.handleCVFileChange}
-                            onDelete={handlers.handleDeleteCV}
-                            onView={() => handlers.handleViewCV(cvFile)}
-                        />
+                        <motion.div
+                            initial="hidden"
+                            animate="visible"
+                            variants={sectionVariants}
+                            transition={{ duration: 0.5, delay: 0.2 }}
+                        >
+                            <CVUpload
+                                cvFile={cvFile}
+                                onFileChange={handlers.handleCVFileChange}
+                                onDelete={handlers.handleDeleteCV}
+                                onView={() => handlers.handleViewCV(cvFile)}
+                            />
+                        </motion.div>
 
-                        <AboutSection
-                            about={about}
-                            onEdit={() => openModal('about')}
-                        />
+                        <motion.div
+                            initial="hidden"
+                            animate="visible"
+                            variants={sectionVariants}
+                            transition={{ duration: 0.5, delay: 0.3 }}
+                        >
+                            <AboutSection
+                                about={about}
+                                onEdit={() => openModal('about')}
+                            />
+                        </motion.div>
 
-                        <ExperienceSection
-                            experiences={experiences}
-                            showAll={showAllExperiences}
-                            onToggleShowAll={() => setShowAllExperiences(!showAllExperiences)}
-                            onEdit={handleEditExperience}
-                            onDelete={handlers.handleDeleteExperience}
-                            onAdd={() => { setSelectedExperience(null); openModal('experience'); }}
-                        />
+                        <motion.div
+                            initial="hidden"
+                            animate="visible"
+                            variants={sectionVariants}
+                            transition={{ duration: 0.5, delay: 0.4 }}
+                        >
+                            <ExperienceSection
+                                experiences={experiences}
+                                showAll={showAllExperiences}
+                                onToggleShowAll={() => setShowAllExperiences(!showAllExperiences)}
+                                onEdit={handleEditExperience}
+                                onDelete={handlers.handleDeleteExperience}
+                                onAdd={() => { setSelectedExperience(null); openModal('experience'); }}
+                            />
+                        </motion.div>
 
-                        <EducationSection
-                            educations={educations}
-                            showAll={showAllEducations}
-                            onToggleShowAll={() => setShowAllEducations(!showAllEducations)}
-                            onEdit={handleEditEducation}
-                            onDelete={handlers.handleDeleteEducation}
-                            onAdd={() => { setSelectedEducation(null); openModal('education'); }}
-                        />
+                        <motion.div
+                            initial="hidden"
+                            animate="visible"
+                            variants={sectionVariants}
+                            transition={{ duration: 0.5, delay: 0.5 }}
+                        >
+                            <EducationSection
+                                educations={educations}
+                                showAll={showAllEducations}
+                                onToggleShowAll={() => setShowAllEducations(!showAllEducations)}
+                                onEdit={handleEditEducation}
+                                onDelete={handlers.handleDeleteEducation}
+                                onAdd={() => { setSelectedEducation(null); openModal('education'); }}
+                            />
+                        </motion.div>
 
-                        <SkillsSection
-                            skills={skills}
-                            onEdit={handleEditSkillGroup}
-                            onDelete={handlers.handleDeleteSkillGroup}
-                            onAdd={() => { setSelectedSkillGroup(null); openModal('skills'); }}
-                        />
+                        <motion.div
+                            initial="hidden"
+                            animate="visible"
+                            variants={sectionVariants}
+                            transition={{ duration: 0.5, delay: 0.6 }}
+                        >
+                            <SkillsSection
+                                skills={skills}
+                                onEdit={handleEditSkillGroup}
+                                onDelete={handlers.handleDeleteSkillGroup}
+                                onAdd={() => { setSelectedSkillGroup(null); openModal('skills'); }}
+                            />
+                        </motion.div>
 
-                        <ProjectsSection
-                            projects={projects}
-                            onEdit={handleEditProject}
-                            onDelete={handlers.handleDeleteProject}
-                            onAdd={() => { setSelectedProject(null); openModal('projects'); }}
-                        />
+                        <motion.div
+                            initial="hidden"
+                            animate="visible"
+                            variants={sectionVariants}
+                            transition={{ duration: 0.5, delay: 0.7 }}
+                        >
+                            <ProjectsSection
+                                projects={projects}
+                                onEdit={handleEditProject}
+                                onDelete={handlers.handleDeleteProject}
+                                onAdd={() => { setSelectedProject(null); openModal('projects'); }}
+                            />
+                        </motion.div>
 
-                        <CertificatesSection
-                            certificates={certificates}
-                            onEdit={handleEditCertificate}
-                            onDelete={handlers.handleDeleteCertificate}
-                            onAdd={() => { setSelectedCertificate(null); openModal('certificates'); }}
-                        />
+                        <motion.div
+                            initial="hidden"
+                            animate="visible"
+                            variants={sectionVariants}
+                            transition={{ duration: 0.5, delay: 0.8 }}
+                        >
+                            <CertificatesSection
+                                certificates={certificates}
+                                onEdit={handleEditCertificate}
+                                onDelete={handlers.handleDeleteCertificate}
+                                onAdd={() => { setSelectedCertificate(null); openModal('certificates'); }}
+                            />
+                        </motion.div>
 
                         {/* <AwardsSection
                             awards={awards}
@@ -205,7 +267,13 @@ export default function Profile() {
                     </Box>
 
                     {/* Right Sidebar - Completion (hidden on small screens) */}
-                    <Box sx={{ width: 320, minWidth: 0, flexShrink: 0, display: { xs: 'none', md: 'block' }, mt: 0 }}>
+                    <Box 
+                        component={motion.div}
+                        initial={{ opacity: 0, x: 20 }}
+                        animate={{ opacity: 1, x: 0 }}
+                        transition={{ duration: 0.5, delay: 0.3, ease: "easeOut" }}
+                        sx={{ width: 320, minWidth: 0, flexShrink: 0, display: { xs: 'none', md: 'block' }, mt: 0 }}
+                    >
                         {/* Open for Opportunities Toggle */}
                         <Box sx={{ width: { xs: '100%', sm: 300 }, position: { xs: 'static', sm: 'sticky' }, top: { sm: 20 }, mb: { xs: 3, sm: 0 } }}>
                             <Box sx={{ 
@@ -253,9 +321,15 @@ export default function Profile() {
                             </Box>
                         </Box>
                         
-                        <ProfileCompletionCard
-                            completionPercentage={completionPercentage}
-                        />
+                        <motion.div
+                            initial={{ opacity: 0, scale: 0.95 }}
+                            animate={{ opacity: 1, scale: 1 }}
+                            transition={{ duration: 0.5, delay: 0.4, type: "spring", stiffness: 200 }}
+                        >
+                            <ProfileCompletionCard
+                                completionPercentage={completionPercentage}
+                            />
+                        </motion.div>
                     </Box>
                 </Box>
             </Container>

@@ -138,12 +138,13 @@ export default function JobCard({
         return { top: `${top}px`, left: `${left}px`, transform: 'none' };
     }, []);
 
+
     const normalizedJob = useMemo(() => {
         let locationFromBranch = null;
         if (job.company_branches) {
             const { ward, province, country } = job.company_branches;
-            const parts = [province, ward].filter(Boolean);
-            locationFromBranch = parts.length > 0 ? parts.join(': ') : null;
+            const parts = [province?.name, ward?.name].filter(Boolean);
+            locationFromBranch = parts.length > 0 ? parts.join(', ') : null;
         }
 
         return {
@@ -151,8 +152,7 @@ export default function JobCard({
             company: job.company,
             location: locationFromBranch
                 || (Array.isArray(job.locations) && job.locations.length > 0 ? job.locations[0] : null) // TopCV locations
-                // || (Array.isArray(job.workLocation) && job.workLocation.length > 0 ? job.workLocation[0] : null)
-                // || job.location 
+
                 || job.shortCity,
             type: job.type || (Array.isArray(job.employment_types) && job.employment_types.length > 0
                 ? job.employment_types.map(et => et.name || et).join(', ')
@@ -168,7 +168,7 @@ export default function JobCard({
             experience: job.experience || (Array.isArray(job.levels) && job.levels.length > 0
                 ? job.levels.map(l => l.name || l).join(', ')
                 : null),
-            locations: locationFromBranch 
+            locations: locationFromBranch // system locations
                 ? [locationFromBranch]
                 : (Array.isArray(job.locations) && job.locations.length > 0
                     ? job.locations
@@ -539,26 +539,26 @@ export default function JobCard({
                                     .map((loc, index) => {
                                         const truncatedLoc = loc.length > 35 ? loc.substring(0, 35) + '...' : loc;
                                         return (
-                                        <Chip
-                                            key={index}
-                                            label={truncatedLoc}
-                                            title={loc}
-                                            size="small"
-                                            sx={{
-                                                bgcolor: '#f5f5f5',
-                                                color: 'text.secondary',
-                                                fontSize: '0.8125rem',
-                                                fontWeight: 500,
-                                                height: '32px',
-                                                borderRadius: '20px',
-                                                border: 'none',
-                                                '& .MuiChip-label': {
-                                                    px: 2
-                                                },
-                                                ml: 0
-                                            }}
-                                        />
-                                    );
+                                            <Chip
+                                                key={index}
+                                                label={truncatedLoc}
+                                                title={loc}
+                                                size="small"
+                                                sx={{
+                                                    bgcolor: '#f5f5f5',
+                                                    color: 'text.secondary',
+                                                    fontSize: '0.8125rem',
+                                                    fontWeight: 500,
+                                                    height: '32px',
+                                                    borderRadius: '20px',
+                                                    border: 'none',
+                                                    '& .MuiChip-label': {
+                                                        px: 2
+                                                    },
+                                                    ml: 0
+                                                }}
+                                            />
+                                        );
                                     })
                             ) : location && isValidValue(location) ? (
                                 <Chip

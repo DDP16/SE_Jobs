@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { motion } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
 import { Check } from "lucide-react";
 import { AccountTab, NotificationsTab } from "./partials";
 import { useTranslation } from "react-i18next";
@@ -9,13 +9,13 @@ export default function UserProfileSettings() {
   const [activeTab, setActiveTab] = useState("account");
 
   return (
-    <div className="w-full min-h-screen bg-white">
-      <div className="mx-auto px-6 sm:px-10 lg:px-14 py-8">
+    <div className="w-full bg-white rounded-lg">
+      <div className="p-6">
         <motion.div
           initial={{ opacity: 0, y: -20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5, ease: "easeOut" }}
-          className="border-b border-gray-200"
+          className="border-b border-gray-200 pb-4 mb-6"
         >
           <div className="flex gap-8">
             <button
@@ -53,13 +53,31 @@ export default function UserProfileSettings() {
           </div>
         </motion.div>
 
-        {activeTab === "account" && (
-          <AccountTab />
-        )}
+        <AnimatePresence mode="wait">
+          {activeTab === "account" && (
+            <motion.div
+              key="account"
+              initial={{ opacity: 0, x: -20 }}
+              animate={{ opacity: 1, x: 0 }}
+              exit={{ opacity: 0, x: 20 }}
+              transition={{ duration: 0.3, ease: "easeOut" }}
+            >
+              <AccountTab />
+            </motion.div>
+          )}
 
-        {activeTab === "notifications" && (
-          <NotificationsTab />
-        )}
+          {activeTab === "notifications" && (
+            <motion.div
+              key="notifications"
+              initial={{ opacity: 0, x: -20 }}
+              animate={{ opacity: 1, x: 0 }}
+              exit={{ opacity: 0, x: 20 }}
+              transition={{ duration: 0.3, ease: "easeOut" }}
+            >
+              <NotificationsTab />
+            </motion.div>
+          )}
+        </AnimatePresence>
       </div>
     </div>
   );

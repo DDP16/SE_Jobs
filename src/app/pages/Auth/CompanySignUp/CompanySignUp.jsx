@@ -218,7 +218,7 @@ export default function CompanySignUp() {
           }
         };
 
-        console.log("Registration Payload:", payload);
+        // console.log("Registration Payload:", payload);
         const result = await dispatch(register(payload));
         if (register.fulfilled.match(result)) {
           showSuccess("Đăng ký thành công! Vui lòng đăng nhập.");
@@ -247,10 +247,11 @@ export default function CompanySignUp() {
         initial={{ opacity: 0, scale: 0.95 }}
         animate={{ opacity: 1, scale: 1 }}
         transition={{ duration: 0.5, delay: 0.2 }}
-        className="bg-white rounded-3xl shadow-2xl p-8 md:p-12 w-full lg:max-w-3xl md:max-w-2xl max-w-full my-8 z-100"
+        className="bg-white rounded-3xl shadow-2xl p-8 md:p-12 w-full lg:max-w-6xl xl:max-w-7xl max-w-full my-8 z-100"
       >
         <form onSubmit={handleSubmit}>
           <div className="flex flex-col gap-6">
+            {/* Header */}
             <div className="flex justify-between items-center gap-4">
               <h3 className="text-2xl md:text-3xl font-medium text-gray-900">Đăng ký tài khoản</h3>
               <button
@@ -261,554 +262,572 @@ export default function CompanySignUp() {
                 Bạn đã có tài khoản? Đăng nhập
               </button>
             </div>
-            <div className="flex flex-col gap-4">
-              {/* Name Fields */}
-              <div className="flex flex-col md:flex-row gap-4">
-                <div className="flex-1">
-                  <label className="block text-sm font-medium text-gray-900">
-                    Họ <span className="text-red-500">*</span>
+
+            {/* Grid Layout: 2 columns */}
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 lg:gap-8">
+              {/* Left Column: Đăng ký tài khoản */}
+              <div className="space-y-6">
+                <h4 className="text-lg font-semibold text-gray-900 border-b border-gray-200 pb-2">Thông tin tài khoản</h4>
+
+                {/* Name Fields */}
+                <div className="flex flex-col md:flex-row gap-4">
+                  <div className="flex-1 space-y-2">
+                    <label className="block text-sm font-medium text-gray-900 h-5">
+                      Họ <span className="text-red-500">*</span>
+                    </label>
+                    <div className="relative">
+                      <PersonIcon className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 z-10" style={{ fontSize: '20px' }} />
+                      <input
+                        type="text"
+                        placeholder="Họ"
+                        value={lastName}
+                        onChange={e => setLastName(e.target.value)}
+                        className={`w-full h-12 rounded-lg border px-3 pl-10 focus:border-blue-500 focus:ring-blue-500 ${lastNameError ? 'border-red-500' : 'border-gray-300'}`}
+                      />
+                    </div>
+                    {lastNameError && (
+                      <p className="text-xs text-red-500 mt-1">{lastNameError}</p>
+                    )}
+                  </div>
+                  <div className="flex-1 space-y-2">
+                    <label className="block text-sm font-medium text-gray-900 h-5">
+                      Tên <span className="text-red-500">*</span>
+                    </label>
+                    <div className="relative">
+                      <PersonIcon className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 z-10" style={{ fontSize: '20px' }} />
+                      <input
+                        type="text"
+                        placeholder="Tên"
+                        value={firstName}
+                        onChange={e => setFirstName(e.target.value)}
+                        className={`w-full h-12 rounded-lg border px-3 pl-10 focus:border-blue-500 focus:ring-blue-500 ${firstNameError ? 'border-red-500' : 'border-gray-300'}`}
+                      />
+                    </div>
+                    {firstNameError && (
+                      <p className="text-xs text-red-500 mt-1">{firstNameError}</p>
+                    )}
+                  </div>
+                </div>
+
+                {/* Email */}
+                <div className="space-y-2">
+                  <label htmlFor="email" className="block text-sm font-medium text-gray-900 h-5">
+                    Email đăng nhập <span className="text-red-500">*</span>
                   </label>
                   <div className="relative">
-                    <PersonIcon className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 z-10" style={{ fontSize: '20px' }} />
+                    <MailIcon className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 z-10" style={{ fontSize: '20px' }} />
                     <input
-                      type="text"
-                      placeholder="Họ"
-                      value={lastName}
-                      onChange={e => setLastName(e.target.value)}
-                      className={`w-full h-12 rounded-lg border px-3 pl-10 focus:border-blue-500 focus:ring-blue-500 ${lastNameError ? 'border-red-500' : 'border-gray-300'}`}
+                      id="email"
+                      type="email"
+                      placeholder="Email đăng nhập"
+                      value={loginEmail}
+                      onChange={(e) => setLoginEmail(e.target.value)}
+                      className={`w-full h-12 rounded-lg border px-3 pl-10 focus:border-blue-500 focus:ring-blue-500 ${loginEmailError ? 'border-red-500' : 'border-gray-300'}`}
                     />
+                    {loginEmailError && (
+                      <ErrorIcon className="absolute right-3 top-1/2 -translate-y-1/2 text-red-500 z-10" style={{ fontSize: '16px' }} />
+                    )}
                   </div>
-                  {lastNameError && (
-                    <p className="text-xs text-red-500 mt-1">{lastNameError}</p>
-                  )}
-                </div>
-                <div className="flex-1">
-                  <label className="block text-sm font-medium text-gray-900">
-                    Tên <span className="text-red-500">*</span>
-                  </label>
-                  <div className="relative">
-                    <PersonIcon className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 z-10" style={{ fontSize: '20px' }} />
-                    <input
-                      type="text"
-                      placeholder="Tên"
-                      value={firstName}
-                      onChange={e => setFirstName(e.target.value)}
-                      className={`w-full h-12 rounded-lg border px-3 pl-10 focus:border-blue-500 focus:ring-blue-500 ${firstNameError ? 'border-red-500' : 'border-gray-300'}`}
-                    />
-                  </div>
-                  {firstNameError && (
-                    <p className="text-xs text-red-500 mt-1">{firstNameError}</p>
-                  )}
-                </div>
-              </div>
-              {/* Email */}
-              <div className="space-y-2">
-                <label htmlFor="email" className="block text-sm font-medium text-gray-900">
-                  Email đăng nhập <span className="text-red-500">*</span>
-                </label>
-                <div className="relative">
-                  <MailIcon className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 z-10" style={{ fontSize: '20px' }} />
-                  <input
-                    id="email"
-                    type="email"
-                    placeholder="Email đăng nhập"
-                    value={loginEmail}
-                    onChange={(e) => setLoginEmail(e.target.value)}
-                    className={`w-full h-12 rounded-lg border px-3 pl-10 focus:border-blue-500 focus:ring-blue-500 ${loginEmailError ? 'border-red-500' : 'border-gray-300'}`}
-                  />
                   {loginEmailError && (
-                    <ErrorIcon className="absolute right-3 top-1/2 -translate-y-1/2 text-red-500 z-10" style={{ fontSize: '16px' }} />
+                    <p className="text-xs text-red-500 mt-1">{loginEmailError}</p>
                   )}
                 </div>
-                {loginEmailError && (
-                  <p className="text-xs text-red-500 mt-1">{loginEmailError}</p>
-                )}
-              </div>
-            </div>
-            {/* Password */}
-            <div className="space-y-2">
-              <label htmlFor="password" className="block text-sm font-medium text-gray-900">
-                Mật khẩu nên có ký tự viết hoa, viết thường, số và ký tự đặc biệt <span className="text-red-500">*</span>
-              </label>
-              <div className="relative">
-                <LockIcon className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 z-10" style={{ fontSize: '20px' }} />
-                <input
-                  id="password"
-                  type={showPassword ? "text" : "password"}
-                  placeholder="Mật khẩu"
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                  className={`w-full h-12 rounded-lg border px-3 pl-10 pr-12 focus:border-blue-500 focus:ring-blue-500 ${passwordError ? 'border-red-500' : 'border-gray-300'}`}
-                />
-                {passwordError && (
-                  <ErrorIcon className="absolute right-12 top-1/2 -translate-y-1/2 text-red-500 z-10" style={{ fontSize: '16px' }} />
-                )}
-                <button
-                  type="button"
-                  onClick={() => setShowPassword(!showPassword)}
-                  className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 z-10"
-                >
-                  {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
-                </button>
-              </div>
-              {passwordError && (
-                <p className="text-xs text-red-500 mt-1">{passwordError}</p>
-              )}
-            </div>
-            {/* Confirm Password */}
-            <div className="space-y-2">
-              <label htmlFor="confirmPassword" className="block text-sm font-medium text-gray-900">
-                Nhập lại mật khẩu <span className="text-red-500">*</span>
-              </label>
-              <div className="relative">
-                <LockIcon className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 z-10" style={{ fontSize: '20px' }} />
-                <input
-                  id="confirmPassword"
-                  type={showConfirmPassword ? "text" : "password"}
-                  placeholder="Nhập lại mật khẩu"
-                  value={confirmPassword}
-                  onChange={(e) => setConfirmPassword(e.target.value)}
-                  className={`w-full h-12 rounded-lg border px-3 pl-10 pr-12 focus:border-blue-500 focus:ring-blue-500 ${confirmPasswordError ? 'border-red-500' : 'border-gray-300'}`}
-                />
-                {confirmPasswordError && (
-                  <ErrorIcon className="absolute right-12 top-1/2 -translate-y-1/2 text-red-500 z-10" style={{ fontSize: '16px' }} />
-                )}
-                <button
-                  type="button"
-                  onClick={() => setShowConfirmPassword(!showConfirmPassword)}
-                  className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 z-10"
-                >
-                  {showConfirmPassword ? <EyeOff size={20} /> : <Eye size={20} />}
-                </button>
-              </div>
-              {confirmPasswordError && (
-                <p className="text-xs text-red-500 mt-1">{confirmPasswordError}</p>
-              )}
-            </div>
-            {/* ...rest of the form fields (company, phone, etc.) ... */}
 
-            {/* Section: Thông tin nhà tuyển dụng */}
-            <div className="space-y-4 pt-4 border-t border-gray-200">
-              <h4 className="text-lg font-semibold text-gray-900 mb-4">Thông tin nhà tuyển dụng</h4>
+                {/* Password */}
+                <div className="space-y-2">
+                  <label htmlFor="password" className="block text-sm font-medium text-gray-900">
+                    Mật khẩu<span className="text-red-500">*</span>
+                  </label>
+                  <div className="relative">
+                    <LockIcon className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 z-10" style={{ fontSize: '20px' }} />
+                    <input
+                      id="password"
+                      type={showPassword ? "text" : "password"}
+                      placeholder="Mật khẩu"
+                      value={password}
+                      onChange={(e) => setPassword(e.target.value)}
+                      className={`w-full h-12 rounded-lg border px-3 pl-10 pr-12 focus:border-blue-500 focus:ring-blue-500 ${passwordError ? 'border-red-500' : 'border-gray-300'}`}
+                    />
+                    {passwordError && (
+                      <ErrorIcon className="absolute right-12 top-1/2 -translate-y-1/2 text-red-500 z-10" style={{ fontSize: '16px' }} />
+                    )}
+                    <button
+                      type="button"
+                      onClick={() => setShowPassword(!showPassword)}
+                      className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 z-10"
+                    >
+                      {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
+                    </button>
+                  </div>
+                  <p className="text-xs text-gray-500 mt-1">Mật khẩu nên có ký tự viết hoa, viết thường, số và ký tự đặc biệt</p>
+                  {passwordError && (
+                    <p className="text-xs text-red-500 mt-1">{passwordError}</p>
+                  )}
+                </div>
 
-              {/* Company Name */}
-              <div className="space-y-2">
-                <label htmlFor="companyName" className="block text-sm font-medium text-gray-900">
-                  Tên công ty <span className="text-red-500">*</span>
-                </label>
-                <div className="relative">
-                  <BusinessIcon className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 z-10" style={{ fontSize: '20px' }} />
-                  <input
-                    id="companyName"
-                    type="text"
-                    placeholder="Tên công ty"
-                    value={companyName}
-                    onChange={(e) => setCompanyName(e.target.value)}
-                    className={`w-full h-12 rounded-lg border px-3 pl-10 focus:border-blue-500 focus:ring-blue-500 ${companyNameError ? 'border-red-500' : 'border-gray-300'}`}
+                {/* Confirm Password */}
+                <div className="space-y-2">
+                  <label htmlFor="confirmPassword" className="block text-sm font-medium text-gray-900 h-5">
+                    Nhập lại mật khẩu <span className="text-red-500">*</span>
+                  </label>
+                  <div className="relative">
+                    <LockIcon className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 z-10" style={{ fontSize: '20px' }} />
+                    <input
+                      id="confirmPassword"
+                      type={showConfirmPassword ? "text" : "password"}
+                      placeholder="Nhập lại mật khẩu"
+                      value={confirmPassword}
+                      onChange={(e) => setConfirmPassword(e.target.value)}
+                      className={`w-full h-12 rounded-lg border px-3 pl-10 pr-12 focus:border-blue-500 focus:ring-blue-500 ${confirmPasswordError ? 'border-red-500' : 'border-gray-300'}`}
+                    />
+                    {confirmPasswordError && (
+                      <ErrorIcon className="absolute right-12 top-1/2 -translate-y-1/2 text-red-500 z-10" style={{ fontSize: '16px' }} />
+                    )}
+                    <button
+                      type="button"
+                      onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                      className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 z-10"
+                    >
+                      {showConfirmPassword ? <EyeOff size={20} /> : <Eye size={20} />}
+                    </button>
+                  </div>
+                  {confirmPasswordError && (
+                    <p className="text-xs text-red-500 mt-1">{confirmPasswordError}</p>
+                  )}
+                </div>
+
+                {/* Terms and Privacy */}
+                <div className="pt-4">
+                  <FormControlLabel
+                    control={
+                      <Checkbox
+                        checked={agreeTerms}
+                        onChange={(e) => setAgreeTerms(e.target.checked)}
+                        sx={{
+                          color: '#0041D9',
+                          '&.Mui-checked': {
+                            color: '#0041D9',
+                          },
+                        }}
+                      />
+                    }
+                    label={
+                      <span className="text-sm text-gray-700">
+                        Tôi đã đọc và đồng ý với{' '}
+                        <Link to="/terms" className="text-blue-600 hover:underline">
+                          Điều khoản dịch vụ
+                        </Link>
+                        {' '}và{' '}
+                        <Link to="/privacy" className="text-blue-600 hover:underline">
+                          Chính sách bảo mật
+                        </Link>
+                        {' '}của SE JOBS.
+                      </span>
+                    }
                   />
+                </div>
+              </div>
+
+              {/* Right Column: Thông tin nhà tuyển dụng */}
+              <div className="space-y-6">
+                <h4 className="text-lg font-semibold text-gray-900 border-b border-gray-200 pb-2">Thông tin nhà tuyển dụng</h4>
+
+                {/* Company Name */}
+                <div className="space-y-2">
+                  <label htmlFor="companyName" className="block text-sm font-medium text-gray-900 h-5">
+                    Tên công ty <span className="text-red-500">*</span>
+                  </label>
+                  <div className="relative">
+                    <BusinessIcon className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 z-10" style={{ fontSize: '20px' }} />
+                    <input
+                      id="companyName"
+                      type="text"
+                      placeholder="Tên công ty"
+                      value={companyName}
+                      onChange={(e) => setCompanyName(e.target.value)}
+                      className={`w-full h-12 rounded-lg border px-3 pl-10 focus:border-blue-500 focus:ring-blue-500 ${companyNameError ? 'border-red-500' : 'border-gray-300'}`}
+                    />
+                    {companyNameError && (
+                      <ErrorIcon className="absolute right-3 top-1/2 -translate-y-1/2 text-red-500 z-10" style={{ fontSize: '16px' }} />
+                    )}
+                  </div>
                   {companyNameError && (
-                    <ErrorIcon className="absolute right-3 top-1/2 -translate-y-1/2 text-red-500 z-10" style={{ fontSize: '16px' }} />
+                    <p className="text-xs text-red-500 mt-1">{companyNameError}</p>
                   )}
                 </div>
-                {companyNameError && (
-                  <p className="text-xs text-red-500 mt-1">{companyNameError}</p>
-                )}
-              </div>
-              {/* Company Type */}
-              <div className="space-y-2">
-                <label htmlFor="companyType" className="block text-sm font-medium text-gray-900">
-                  Loại hình công ty <span className="text-red-500">*</span>
-                </label>
-                <div className="relative" id="company-type-dropdown">
-                  <div
-                    className="w-full min-h-12 rounded-lg border border-gray-300 hover:border-blue-500 bg-white cursor-pointer"
-                    onClick={() => setShowCompanyTypeDropdown(!showCompanyTypeDropdown)}
-                  >
-                    <div className="flex flex-wrap gap-2 p-2 min-h-12">
-                      {companyType.length === 0 ? (
-                        <span className="text-gray-400 py-1.5 px-1">Chọn loại hình công ty</span>
-                      ) : (
-                        companyType.map(id => {
-                          const found = companyTypes.find(type => type.id === id);
-                          return (
-                            <span
-                              key={id}
-                              className="inline-flex items-center gap-1 bg-blue-100 text-blue-800 px-2 py-1 rounded text-sm"
-                            >
-                              {found ? found.name : id}
-                              <button
-                                type="button"
+
+                {/* Company Type and Website URL - 2 columns */}
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  {/* Company Type */}
+                  <div className="space-y-2">
+                    <label htmlFor="companyType" className="block text-sm font-medium text-gray-900 h-5">
+                      Loại hình công ty <span className="text-red-500">*</span>
+                    </label>
+                    <div className="relative" id="company-type-dropdown">
+                      <div
+                        className="w-full h-12 rounded-lg border border-gray-300 hover:border-blue-500 bg-white cursor-pointer flex items-center"
+                        onClick={() => setShowCompanyTypeDropdown(!showCompanyTypeDropdown)}
+                      >
+                        <div className="flex flex-wrap gap-2 p-2 w-full items-center h-full overflow-y-auto">
+                          {companyType.length === 0 ? (
+                            <span className="text-gray-400 py-1.5 px-1">Chọn loại hình công ty</span>
+                          ) : (
+                            companyType.map(id => {
+                              const found = companyTypes.find(type => type.id === id);
+                              return (
+                                <span
+                                  key={id}
+                                  className="inline-flex items-center gap-1 bg-blue-100 text-blue-800 px-2 py-1 rounded text-sm"
+                                >
+                                  {found ? found.name : id}
+                                  <button
+                                    type="button"
+                                    onClick={(e) => {
+                                      e.stopPropagation();
+                                      setCompanyType(prev => prev.filter(k => k !== id));
+                                    }}
+                                    className="hover:bg-blue-200 rounded-full p-0.5"
+                                  >
+                                    <svg className="w-3 h-3" fill="currentColor" viewBox="0 0 20 20">
+                                      <path fillRule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clipRule="evenodd" />
+                                    </svg>
+                                  </button>
+                                </span>
+                              );
+                            })
+                          )}
+                        </div>
+                      </div>
+                      {showCompanyTypeDropdown && (
+                        <div className="absolute top-full left-0 right-0 mt-1 bg-white border border-gray-300 rounded-lg shadow-lg max-h-60 overflow-y-auto z-50">
+                          {companyTypes.map((type) => {
+                            const isChecked = companyType.includes(type.id);
+
+                            return (
+                              <div
+                                key={type.id}
+                                className="flex items-center gap-2 px-4 py-2 hover:bg-gray-100 cursor-pointer"
                                 onClick={(e) => {
                                   e.stopPropagation();
-                                  setCompanyType(prev => prev.filter(k => k !== id));
+                                  e.preventDefault();
+                                  toggleCompanyType(type.id);
                                 }}
-                                className="hover:bg-blue-200 rounded-full p-0.5"
                               >
-                                <svg className="w-3 h-3" fill="currentColor" viewBox="0 0 20 20">
-                                  <path fillRule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clipRule="evenodd" />
-                                </svg>
-                              </button>
-                            </span>
-                          );
-                        })
+                                <input
+                                  type="checkbox"
+                                  checked={isChecked}
+                                  readOnly
+                                  className="w-4 h-4 text-blue-600 rounded border-gray-300 focus:ring-blue-500 pointer-events-none"
+                                />
+                                <span className="text-sm text-gray-900">{type.name}</span>
+                              </div>
+                            );
+                          })}
+                        </div>
                       )}
                     </div>
                   </div>
-                  {showCompanyTypeDropdown && (
-                    <div className="absolute top-full left-0 right-0 mt-1 bg-white border border-gray-300 rounded-lg shadow-lg max-h-60 overflow-y-auto z-50">
-                      {companyTypes.map((type) => {
-                        const isChecked = companyType.includes(type.id);
 
-                        return (
-                          <div
-                            key={type.id}
-                            className="flex items-center gap-2 px-4 py-2 hover:bg-gray-100 cursor-pointer"
-                            onClick={(e) => {
-                              e.stopPropagation();
-                              e.preventDefault();
-                              toggleCompanyType(type.id);
+                  {/* Company URL */}
+                  <div className="space-y-2">
+                    <label htmlFor="websiteUrl" className="block text-sm font-medium text-gray-900 h-5">
+                      Đường dẫn website
+                    </label>
+                    <div className="relative">
+                      <BusinessIcon className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 z-10" style={{ fontSize: '20px' }} />
+                      <input
+                        id="websiteUrl"
+                        type="text"
+                        placeholder="https://example.com"
+                        value={websiteUrl}
+                        onChange={(e) => setWebsiteUrl(e.target.value)}
+                        className={`w-full h-12 rounded-lg border px-3 pl-10 focus:border-blue-500 focus:ring-blue-500 ${websiteUrlError ? 'border-red-500' : 'border-gray-300'}`}
+                      />
+                      {websiteUrlError && (
+                        <ErrorIcon className="absolute right-3 top-1/2 -translate-y-1/2 text-red-500 z-10" style={{ fontSize: '16px' }} />
+                      )}
+                    </div>
+                    {websiteUrlError && (
+                      <p className="text-xs text-red-500 mt-1">{websiteUrlError}</p>
+                    )}
+                  </div>
+                </div>
+
+                {/* Phone and Company Email - 2 columns */}
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  {/* Phone */}
+                  <div className="space-y-2">
+                    <label htmlFor="phone" className="block text-sm font-medium text-gray-900 h-5">
+                      Số điện thoại <span className="text-red-500">*</span>
+                    </label>
+                    <div className="relative">
+                      <PhoneIcon className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 z-10" style={{ fontSize: '20px' }} />
+                      <input
+                        id="phone"
+                        type="text"
+                        placeholder="Số điện thoại"
+                        value={phone}
+                        onChange={(e) => setPhone(e.target.value)}
+                        className={`w-full h-12 rounded-lg border px-3 pl-10 focus:border-blue-500 focus:ring-blue-500 ${phoneError ? 'border-red-500' : 'border-gray-300'}`}
+                      />
+                      {phoneError && (
+                        <ErrorIcon className="absolute right-3 top-1/2 -translate-y-1/2 text-red-500 z-10" style={{ fontSize: '16px' }} />
+                      )}
+                    </div>
+                    {phoneError && (
+                      <p className="text-xs text-red-500 mt-1">{phoneError}</p>
+                    )}
+                  </div>
+
+                  {/* Company Email */}
+                  <div className="space-y-2">
+                    <label htmlFor="companyEmail" className="block text-sm font-medium text-gray-900 h-5">
+                      Email doanh nghiệp <span className="text-red-500">*</span>
+                    </label>
+                    <div className="relative">
+                      <MailIcon className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 z-10" style={{ fontSize: '20px' }} />
+                      <input
+                        id="companyEmail"
+                        type="email"
+                        placeholder="Email doanh nghiệp"
+                        value={companyEmail}
+                        onChange={(e) => setCompanyEmail(e.target.value)}
+                        className={`w-full h-12 rounded-lg border px-3 pl-10 focus:border-blue-500 focus:ring-blue-500 ${companyEmailError ? 'border-red-500' : 'border-gray-300'}`}
+                      />
+                      {companyEmailError && (
+                        <ErrorIcon className="absolute right-3 top-1/2 -translate-y-1/2 text-red-500 z-10" style={{ fontSize: '16px' }} />
+                      )}
+                    </div>
+                    {companyEmailError && (
+                      <p className="text-xs text-red-500 mt-1">{companyEmailError}</p>
+                    )}
+                  </div>
+                </div>
+
+                {/* Company Branches */}
+                <div className="space-y-4 pt-4 border-t border-gray-200">
+                  <h5 className="text-base font-semibold text-gray-900 mb-2">Chi nhánh công ty</h5>
+                  {companyBranches.map((branch, idx) => (
+                    <div key={idx} className="border rounded-lg p-4 mb-2 relative">
+                      <div className="flex flex-col md:flex-row gap-4 mb-2">
+                        <div className="flex-1">
+                          <label className="block text-sm font-medium text-gray-900">Tên chi nhánh <span className="text-red-500">*</span></label>
+                          <input
+                            type="text"
+                            placeholder={companyName || 'Tên chi nhánh'}
+                            value={branch.name}
+                            onChange={e => {
+                              const arr = [...companyBranches]; arr[idx].name = e.target.value; setCompanyBranches(arr);
+                            }}
+                            className={`w-full h-12 rounded-lg border px-3 focus:border-blue-500 focus:ring-blue-500 ${branchesError[idx]?.name ? 'border-red-500' : 'border-gray-300'}`}
+                          />
+                          {branchesError[idx]?.name && (
+                            <p className="text-xs text-red-500 mt-1">{branchesError[idx]?.name}</p>
+                          )}
+                        </div>
+                        <div className="flex-1">
+                          <label className="block text-sm font-medium text-gray-900">Địa chỉ <span className="text-red-500">*</span></label>
+                          <input
+                            type="text"
+                            placeholder="Địa chỉ chi nhánh"
+                            value={branch.address}
+                            onChange={e => {
+                              const arr = [...companyBranches]; arr[idx].address = e.target.value; setCompanyBranches(arr);
+                            }}
+                            className={`w-full h-12 rounded-lg border px-3 focus:border-blue-500 focus:ring-blue-500 ${branchesError[idx]?.address ? 'border-red-500' : 'border-gray-300'}`}
+                          />
+                          {branchesError[idx]?.address && (
+                            <p className="text-xs text-red-500 mt-1">{branchesError[idx]?.address}</p>
+                          )}
+                        </div>
+                      </div>
+                      <div className="flex flex-col md:flex-row gap-4">
+                        <div className="flex-1">
+                          <label className="block text-sm font-medium text-gray-900">Quốc gia <span className="text-red-500">*</span></label>
+                          <select
+                            className={`w-full h-12 rounded-lg border px-3 focus:border-blue-500 focus:ring-blue-500 ${branchesError[idx]?.country_id ? 'border-red-500' : 'border-gray-300'}`}
+                            value={branch.country_id}
+                            onChange={e => {
+                              const arr = [...companyBranches];
+                              arr[idx].country_id = e.target.value;
+                              arr[idx].province_id = '';
+                              arr[idx].ward_id = '';
+                              setCompanyBranches(arr);
+
+                              // Fetch provinces for selected country
+                              if (e.target.value) {
+                                dispatch(getProvinces(e.target.value));
+                              }
                             }}
                           >
-                            <input
-                              type="checkbox"
-                              checked={isChecked}
-                              readOnly
-                              className="w-4 h-4 text-blue-600 rounded border-gray-300 focus:ring-blue-500 pointer-events-none"
-                            />
-                            <span className="text-sm text-gray-900">{type.name}</span>
-                          </div>
-                        );
-                      })}
-                    </div>
-                  )}
-                </div>
-              </div>
-
-              {/* Company URL */}
-              <div className="space-y-2">
-                <label htmlFor="websiteUrl" className="block text-sm font-medium text-gray-900">
-                  Đường dẫn website
-                </label>
-                <div className="relative">
-                  <BusinessIcon className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 z-10" style={{ fontSize: '20px' }} />
-                  <input
-                    id="websiteUrl"
-                    type="text"
-                    placeholder="https://example.com"
-                    value={websiteUrl}
-                    onChange={(e) => setWebsiteUrl(e.target.value)}
-                    className={`w-full h-12 rounded-lg border px-3 pl-10 focus:border-blue-500 focus:ring-blue-500 ${websiteUrlError ? 'border-red-500' : 'border-gray-300'}`}
-                  />
-                  {websiteUrlError && (
-                    <ErrorIcon className="absolute right-3 top-1/2 -translate-y-1/2 text-red-500 z-10" style={{ fontSize: '16px' }} />
-                  )}
-                </div>
-                {websiteUrlError && (
-                  <p className="text-xs text-red-500 mt-1">{websiteUrlError}</p>
-                )}
-              </div>
-
-              {/* Phone */}
-              <div className="space-y-2">
-                <label htmlFor="phone" className="block text-sm font-medium text-gray-900">
-                  Số điện thoại <span className="text-red-500">*</span>
-                </label>
-                <div className="relative">
-                  <PhoneIcon className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 z-10" style={{ fontSize: '20px' }} />
-                  <input
-                    id="phone"
-                    type="text"
-                    placeholder="Số điện thoại"
-                    value={phone}
-                    onChange={(e) => setPhone(e.target.value)}
-                    className={`w-full h-12 rounded-lg border px-3 pl-10 focus:border-blue-500 focus:ring-blue-500 ${phoneError ? 'border-red-500' : 'border-gray-300'}`}
-                  />
-                  {phoneError && (
-                    <ErrorIcon className="absolute right-3 top-1/2 -translate-y-1/2 text-red-500 z-10" style={{ fontSize: '16px' }} />
-                  )}
-                </div>
-                {phoneError && (
-                  <p className="text-xs text-red-500 mt-1">{phoneError}</p>
-                )}
-              </div>
-
-              <div className="space-y-2">
-                <label htmlFor="companyEmail" className="block text-sm font-medium text-gray-900">
-                  Email doanh nghiệp <span className="text-red-500">*</span>
-                </label>
-                <div className="relative">
-                  <MailIcon className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 z-10" style={{ fontSize: '20px' }} />
-                  <input
-                    id="companyEmail"
-                    type="email"
-                    placeholder="Email doanh nghiệp"
-                    value={companyEmail}
-                    onChange={(e) => setCompanyEmail(e.target.value)}
-                    className={`w-full h-12 rounded-lg border px-3 pl-10 focus:border-blue-500 focus:ring-blue-500 ${companyEmailError ? 'border-red-500' : 'border-gray-300'}`}
-                  />
-                  {companyEmailError && (
-                    <ErrorIcon className="absolute right-3 top-1/2 -translate-y-1/2 text-red-500 z-10" style={{ fontSize: '16px' }} />
-                  )}
-                </div>
-                {companyEmailError && (
-                  <p className="text-xs text-red-500 mt-1">{companyEmailError}</p>
-                )}
-              </div>
-            </div>
-
-            {/* Company Branches */}
-            <div className="space-y-4 pt-4 border-t border-gray-200">
-              <h4 className="text-lg font-semibold text-gray-900 mb-2">Chi nhánh công ty</h4>
-              {companyBranches.map((branch, idx) => (
-                <div key={idx} className="border rounded-lg p-4 mb-2 relative">
-                  <div className="flex flex-col md:flex-row gap-4 mb-2">
-                    <div className="flex-1">
-                      <label className="block text-sm font-medium text-gray-900">Tên chi nhánh <span className="text-red-500">*</span></label>
-                      <input
-                        type="text"
-                        placeholder={companyName || 'Tên chi nhánh'}
-                        value={branch.name}
-                        onChange={e => {
-                          const arr = [...companyBranches]; arr[idx].name = e.target.value; setCompanyBranches(arr);
-                        }}
-                        className={`w-full h-12 rounded-lg border px-3 focus:border-blue-500 focus:ring-blue-500 ${branchesError[idx]?.name ? 'border-red-500' : 'border-gray-300'}`}
-                      />
-                      {branchesError[idx]?.name && (
-                        <p className="text-xs text-red-500 mt-1">{branchesError[idx]?.name}</p>
-                      )}
-                    </div>
-                    <div className="flex-1">
-                      <label className="block text-sm font-medium text-gray-900">Địa chỉ <span className="text-red-500">*</span></label>
-                      <input
-                        type="text"
-                        placeholder="Địa chỉ chi nhánh"
-                        value={branch.address}
-                        onChange={e => {
-                          const arr = [...companyBranches]; arr[idx].address = e.target.value; setCompanyBranches(arr);
-                        }}
-                        className={`w-full h-12 rounded-lg border px-3 focus:border-blue-500 focus:ring-blue-500 ${branchesError[idx]?.address ? 'border-red-500' : 'border-gray-300'}`}
-                      />
-                      {branchesError[idx]?.address && (
-                        <p className="text-xs text-red-500 mt-1">{branchesError[idx]?.address}</p>
-                      )}
-                    </div>
-                  </div>
-                  <div className="flex flex-col md:flex-row gap-4">
-                    <div className="flex-1">
-                      <label className="block text-sm font-medium text-gray-900">Quốc gia <span className="text-red-500">*</span></label>
-                      <select
-                        className={`w-full h-12 rounded-lg border-gray-300 focus:border-blue-500 focus:ring-blue-500 px-3 ${branchesError[idx]?.country_id ? 'border-red-500' : ''}`}
-                        value={branch.country_id}
-                        onChange={e => {
-                          const arr = [...companyBranches];
-                          arr[idx].country_id = e.target.value;
-                          arr[idx].province_id = '';
-                          arr[idx].ward_id = '';
-                          setCompanyBranches(arr);
-
-                          // Fetch provinces for selected country
-                          if (e.target.value) {
-                            dispatch(getProvinces(e.target.value));
-                          }
-                        }}
-                      >
-                        <option value="">Chọn quốc gia</option>
-                        {countries.map((country) => (
-                          <option key={country.id} value={country.id}>{country.name}</option>
-                        ))}
-                      </select>
-                      {branchesError[idx]?.country_id && (
-                        <p className="text-xs text-red-500 mt-1">{branchesError[idx]?.country_id}</p>
-                      )}
-                    </div>
-                    <div className="flex-1 relative">
-                      <label className="block text-sm font-medium text-gray-900">Tỉnh/Thành <span className="text-red-500">*</span></label>
-                      <input
-                        type="text"
-                        placeholder="Nhập để tìm tỉnh/thành"
-                        value={provinceSearchTerms[idx] || ''}
-                        onChange={e => {
-                          const newTerms = [...provinceSearchTerms];
-                          newTerms[idx] = e.target.value;
-                          setProvinceSearchTerms(newTerms);
-
-                          const newShowDropdowns = [...showProvinceDropdowns];
-                          newShowDropdowns[idx] = true;
-                          setShowProvinceDropdowns(newShowDropdowns);
-                        }}
-                        onFocus={() => {
-                          const newShowDropdowns = [...showProvinceDropdowns];
-                          newShowDropdowns[idx] = true;
-                          setShowProvinceDropdowns(newShowDropdowns);
-                        }}
-                        className={`w-full h-12 rounded-lg border px-3 focus:border-blue-500 focus:ring-blue-500 ${branchesError[idx]?.province_id ? 'border-red-500' : 'border-gray-300'}`}
-                      />
-                      {showProvinceDropdowns[idx] && (
-                        <div className="absolute top-full left-0 right-0 mt-1 bg-white border border-gray-300 rounded-lg shadow-lg max-h-60 overflow-y-auto z-50">
-                          {provinces
-                            .filter(prov =>
-                              String(prov.country_id) === String(branch.country_id) &&
-                              prov.name.toLowerCase().includes((provinceSearchTerms[idx] || '').toLowerCase())
-                            )
-                            .map((prov) => (
-                              <div
-                                key={prov.id}
-                                className="px-4 py-2 hover:bg-gray-100 cursor-pointer"
-                                onClick={() => {
-                                  const arr = [...companyBranches];
-                                  arr[idx].province_id = Number(prov.id);
-                                  arr[idx].ward_id = '';
-                                  setCompanyBranches(arr);
-
-                                  const newTerms = [...provinceSearchTerms];
-                                  newTerms[idx] = prov.name;
-                                  setProvinceSearchTerms(newTerms);
-
-                                  const newShowDropdowns = [...showProvinceDropdowns];
-                                  newShowDropdowns[idx] = false;
-                                  setShowProvinceDropdowns(newShowDropdowns);
-
-                                  const newWardTerms = [...wardSearchTerms];
-                                  newWardTerms[idx] = '';
-                                  setWardSearchTerms(newWardTerms);
-
-                                  dispatch(getWards(prov.id));
-                                }}
-                              >
-                                {prov.name}
-                              </div>
-                            ))
-                          }
-                          {provinces.filter(prov =>
-                            String(prov.country_id) === String(branch.country_id) &&
-                            prov.name.toLowerCase().includes((provinceSearchTerms[idx] || '').toLowerCase())
-                          ).length === 0 && (
-                              <div className="px-4 py-2 text-gray-500">Không tìm thấy tỉnh/thành</div>
-                            )}
+                            <option value="">Chọn quốc gia</option>
+                            {countries.map((country) => (
+                              <option key={country.id} value={country.id}>{country.name}</option>
+                            ))}
+                          </select>
+                          {branchesError[idx]?.country_id && (
+                            <p className="text-xs text-red-500 mt-1">{branchesError[idx]?.country_id}</p>
+                          )}
                         </div>
-                      )}
-                      {branchesError[idx]?.province_id && (
-                        <p className="text-xs text-red-500 mt-1">{branchesError[idx]?.province_id}</p>
-                      )}
-                    </div>
-                    <div className="flex-1 relative">
-                      <label className="block text-sm font-medium text-gray-900">Phường/Xã <span className="text-red-500">*</span></label>
-                      <input
-                        type="text"
-                        placeholder={!branch.province_id ? "Chọn tỉnh/thành trước" : "Nhập để tìm phường/xã"}
-                        value={wardSearchTerms[idx] || ''}
-                        onChange={e => {
-                          const newTerms = [...wardSearchTerms];
-                          newTerms[idx] = e.target.value;
-                          setWardSearchTerms(newTerms);
+                        <div className="flex-1 relative">
+                          <label className="block text-sm font-medium text-gray-900">Tỉnh/Thành <span className="text-red-500">*</span></label>
+                          <input
+                            type="text"
+                            placeholder="Nhập để tìm tỉnh/thành"
+                            value={provinceSearchTerms[idx] || ''}
+                            onChange={e => {
+                              const newTerms = [...provinceSearchTerms];
+                              newTerms[idx] = e.target.value;
+                              setProvinceSearchTerms(newTerms);
 
-                          const newShowDropdowns = [...showWardDropdowns];
-                          newShowDropdowns[idx] = true;
-                          setShowWardDropdowns(newShowDropdowns);
-                        }}
-                        onFocus={() => {
-                          if (branch.province_id) {
-                            const newShowDropdowns = [...showWardDropdowns];
-                            newShowDropdowns[idx] = true;
-                            setShowWardDropdowns(newShowDropdowns);
-                          }
-                        }}
-                        disabled={!branch.province_id}
-                        className={`w-full h-12 rounded-lg border px-3 focus:border-blue-500 focus:ring-blue-500 ${branchesError[idx]?.ward_id ? 'border-red-500' : 'border-gray-300'} ${!branch.province_id ? 'bg-gray-100' : ''}`}
-                      />
-                      {showWardDropdowns[idx] && branch.province_id && (
-                        <div className="absolute top-full left-0 right-0 mt-1 bg-white border border-gray-300 rounded-lg shadow-lg max-h-60 overflow-y-auto z-50">
-                          {wards
-                            .filter(ward =>
-                              String(ward.province_id) === String(branch.province_id) &&
-                              ward.name.toLowerCase().includes((wardSearchTerms[idx] || '').toLowerCase())
-                            )
-                            .map((ward) => (
-                              <div
-                                key={ward.id}
-                                className="px-4 py-2 hover:bg-gray-100 cursor-pointer"
-                                onClick={() => {
-                                  const arr = [...companyBranches];
-                                  arr[idx].ward_id = Number(ward.id);
-                                  setCompanyBranches(arr);
+                              const newShowDropdowns = [...showProvinceDropdowns];
+                              newShowDropdowns[idx] = true;
+                              setShowProvinceDropdowns(newShowDropdowns);
+                            }}
+                            onFocus={() => {
+                              const newShowDropdowns = [...showProvinceDropdowns];
+                              newShowDropdowns[idx] = true;
+                              setShowProvinceDropdowns(newShowDropdowns);
+                            }}
+                            className={`w-full h-12 rounded-lg border px-3 focus:border-blue-500 focus:ring-blue-500 ${branchesError[idx]?.province_id ? 'border-red-500' : 'border-gray-300'}`}
+                          />
+                          {showProvinceDropdowns[idx] && (
+                            <div className="absolute top-full left-0 right-0 mt-1 bg-white border border-gray-300 rounded-lg shadow-lg max-h-60 overflow-y-auto z-50">
+                              {provinces
+                                .filter(prov =>
+                                  String(prov.country_id) === String(branch.country_id) &&
+                                  prov.name.toLowerCase().includes((provinceSearchTerms[idx] || '').toLowerCase())
+                                )
+                                .map((prov) => (
+                                  <div
+                                    key={prov.id}
+                                    className="px-4 py-2 hover:bg-gray-100 cursor-pointer"
+                                    onClick={() => {
+                                      const arr = [...companyBranches];
+                                      arr[idx].province_id = Number(prov.id);
+                                      arr[idx].ward_id = '';
+                                      setCompanyBranches(arr);
 
-                                  const newTerms = [...wardSearchTerms];
-                                  newTerms[idx] = ward.name;
-                                  setWardSearchTerms(newTerms);
+                                      const newTerms = [...provinceSearchTerms];
+                                      newTerms[idx] = prov.name;
+                                      setProvinceSearchTerms(newTerms);
 
-                                  const newShowDropdowns = [...showWardDropdowns];
-                                  newShowDropdowns[idx] = false;
-                                  setShowWardDropdowns(newShowDropdowns);
-                                }}
-                              >
-                                {ward.name}
-                              </div>
-                            ))
-                          }
-                          {wards.filter(ward =>
-                            String(ward.province_id) === String(branch.province_id) &&
-                            ward.name.toLowerCase().includes((wardSearchTerms[idx] || '').toLowerCase())
-                          ).length === 0 && (
-                              <div className="px-4 py-2 text-gray-500">Không tìm thấy phường/xã</div>
-                            )}
+                                      const newShowDropdowns = [...showProvinceDropdowns];
+                                      newShowDropdowns[idx] = false;
+                                      setShowProvinceDropdowns(newShowDropdowns);
+
+                                      const newWardTerms = [...wardSearchTerms];
+                                      newWardTerms[idx] = '';
+                                      setWardSearchTerms(newWardTerms);
+
+                                      dispatch(getWards(prov.id));
+                                    }}
+                                  >
+                                    {prov.name}
+                                  </div>
+                                ))
+                              }
+                              {provinces.filter(prov =>
+                                String(prov.country_id) === String(branch.country_id) &&
+                                prov.name.toLowerCase().includes((provinceSearchTerms[idx] || '').toLowerCase())
+                              ).length === 0 && (
+                                  <div className="px-4 py-2 text-gray-500">Không tìm thấy tỉnh/thành</div>
+                                )}
+                            </div>
+                          )}
+                          {branchesError[idx]?.province_id && (
+                            <p className="text-xs text-red-500 mt-1">{branchesError[idx]?.province_id}</p>
+                          )}
                         </div>
-                      )}
-                      {branchesError[idx]?.ward_id && (
-                        <p className="text-xs text-red-500 mt-1">{branchesError[idx]?.ward_id}</p>
+                        <div className="flex-1 relative">
+                          <label className="block text-sm font-medium text-gray-900">Phường/Xã <span className="text-red-500">*</span></label>
+                          <input
+                            type="text"
+                            placeholder={!branch.province_id ? "Chọn tỉnh/thành trước" : "Nhập để tìm phường/xã"}
+                            value={wardSearchTerms[idx] || ''}
+                            onChange={e => {
+                              const newTerms = [...wardSearchTerms];
+                              newTerms[idx] = e.target.value;
+                              setWardSearchTerms(newTerms);
+
+                              const newShowDropdowns = [...showWardDropdowns];
+                              newShowDropdowns[idx] = true;
+                              setShowWardDropdowns(newShowDropdowns);
+                            }}
+                            onFocus={() => {
+                              if (branch.province_id) {
+                                const newShowDropdowns = [...showWardDropdowns];
+                                newShowDropdowns[idx] = true;
+                                setShowWardDropdowns(newShowDropdowns);
+                              }
+                            }}
+                            disabled={!branch.province_id}
+                            className={`w-full h-12 rounded-lg border px-3 focus:border-blue-500 focus:ring-blue-500 ${branchesError[idx]?.ward_id ? 'border-red-500' : 'border-gray-300'} ${!branch.province_id ? 'bg-gray-100' : ''}`}
+                          />
+                          {showWardDropdowns[idx] && branch.province_id && (
+                            <div className="absolute top-full left-0 right-0 mt-1 bg-white border border-gray-300 rounded-lg shadow-lg max-h-60 overflow-y-auto z-50">
+                              {wards
+                                .filter(ward =>
+                                  String(ward.province_id) === String(branch.province_id) &&
+                                  ward.name.toLowerCase().includes((wardSearchTerms[idx] || '').toLowerCase())
+                                )
+                                .map((ward) => (
+                                  <div
+                                    key={ward.id}
+                                    className="px-4 py-2 hover:bg-gray-100 cursor-pointer"
+                                    onClick={() => {
+                                      const arr = [...companyBranches];
+                                      arr[idx].ward_id = Number(ward.id);
+                                      setCompanyBranches(arr);
+
+                                      const newTerms = [...wardSearchTerms];
+                                      newTerms[idx] = ward.name;
+                                      setWardSearchTerms(newTerms);
+
+                                      const newShowDropdowns = [...showWardDropdowns];
+                                      newShowDropdowns[idx] = false;
+                                      setShowWardDropdowns(newShowDropdowns);
+                                    }}
+                                  >
+                                    {ward.name}
+                                  </div>
+                                ))
+                              }
+                              {wards.filter(ward =>
+                                String(ward.province_id) === String(branch.province_id) &&
+                                ward.name.toLowerCase().includes((wardSearchTerms[idx] || '').toLowerCase())
+                              ).length === 0 && (
+                                  <div className="px-4 py-2 text-gray-500">Không tìm thấy phường/xã</div>
+                                )}
+                            </div>
+                          )}
+                          {branchesError[idx]?.ward_id && (
+                            <p className="text-xs text-red-500 mt-1">{branchesError[idx]?.ward_id}</p>
+                          )}
+                        </div>
+                      </div>
+                      {companyBranches.length > 1 && (
+                        <button type="button" className="absolute top-2 right-2 text-red-500 hover:text-red-700" onClick={() => {
+                          setCompanyBranches(companyBranches.filter((_, i) => i !== idx));
+                          setProvinceSearchTerms(provinceSearchTerms.filter((_, i) => i !== idx));
+                          setWardSearchTerms(wardSearchTerms.filter((_, i) => i !== idx));
+                          setShowProvinceDropdowns(showProvinceDropdowns.filter((_, i) => i !== idx));
+                          setShowWardDropdowns(showWardDropdowns.filter((_, i) => i !== idx));
+                        }}>Xóa</button>
                       )}
                     </div>
-                  </div>
-                  {companyBranches.length > 1 && (
-                    <button type="button" className="absolute top-2 right-2 text-red-500 hover:text-red-700" onClick={() => {
-                      setCompanyBranches(companyBranches.filter((_, i) => i !== idx));
-                      setProvinceSearchTerms(provinceSearchTerms.filter((_, i) => i !== idx));
-                      setWardSearchTerms(wardSearchTerms.filter((_, i) => i !== idx));
-                      setShowProvinceDropdowns(showProvinceDropdowns.filter((_, i) => i !== idx));
-                      setShowWardDropdowns(showWardDropdowns.filter((_, i) => i !== idx));
-                    }}>Xóa</button>
-                  )}
+                  ))}
+                  <button type="button" className="bg-blue-100 text-blue-700 px-4 py-2 rounded hover:bg-blue-200" onClick={() => {
+                    setCompanyBranches([...companyBranches, { name: '', address: '', country_id: 1, province_id: '', ward_id: '' }]);
+                    setProvinceSearchTerms([...provinceSearchTerms, '']);
+                    setWardSearchTerms([...wardSearchTerms, '']);
+                    setShowProvinceDropdowns([...showProvinceDropdowns, false]);
+                    setShowWardDropdowns([...showWardDropdowns, false]);
+                  }}>
+                    Thêm chi nhánh
+                  </button>
                 </div>
-              ))}
-              <button type="button" className="bg-blue-100 text-blue-700 px-4 py-2 rounded hover:bg-blue-200" onClick={() => {
-                setCompanyBranches([...companyBranches, { name: '', address: '', country_id: 1, province_id: '', ward_id: '' }]);
-                setProvinceSearchTerms([...provinceSearchTerms, '']);
-                setWardSearchTerms([...wardSearchTerms, '']);
-                setShowProvinceDropdowns([...showProvinceDropdowns, false]);
-                setShowWardDropdowns([...showWardDropdowns, false]);
-              }}>
-                Thêm chi nhánh
-              </button>
-            </div>
-
-            {/* Terms and Privacy */}
-            <div className="pt-4">
-              <FormControlLabel
-                control={
-                  <Checkbox
-                    checked={agreeTerms}
-                    onChange={(e) => setAgreeTerms(e.target.checked)}
-                    sx={{
-                      color: '#0041D9',
-                      '&.Mui-checked': {
-                        color: '#0041D9',
-                      },
-                    }}
-                  />
-                }
-                label={
-                  <span className="text-sm text-gray-700">
-                    Tôi đã đọc và đồng ý với{' '}
-                    <Link to="/terms" className="text-blue-600 hover:underline">
-                      Điều khoản dịch vụ
-                    </Link>
-                    {' '}và{' '}
-                    <Link to="/privacy" className="text-blue-600 hover:underline">
-                      Chính sách bảo mật
-                    </Link>
-                    {' '}của SE JOBS.
-                  </span>
-                }
-              />
+              </div>
             </div>
 
             {/* Submit Button */}

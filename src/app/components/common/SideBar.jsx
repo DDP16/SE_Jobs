@@ -1,5 +1,6 @@
 import React from 'react';
 import { Box, List, ListItemButton, ListItemIcon, ListItemText, Badge, Typography, Avatar, useTheme } from '@mui/material';
+import { motion } from 'framer-motion';
 import { useTranslation } from 'react-i18next';
 import {
     Dashboard as DashboardIcon,
@@ -39,6 +40,10 @@ export default function ProfileSidebar({ user }) {
 
     return (
         <Box
+            component={motion.div}
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ duration: 0.5, ease: "easeOut" }}
             sx={{
                 width: 280,
                 bgcolor: 'background.paper',
@@ -48,64 +53,122 @@ export default function ProfileSidebar({ user }) {
                 height: 'fit-content',
                 position: 'sticky',
                 top: 20,
+                alignSelf: 'flex-start',
             }}
         >
             {/* Welcome Section */}
-            <Box sx={{ p: 3, borderBottom: '1px solid', borderColor: 'divider' }}>
+            <Box
+                component={motion.div}
+                initial={{ opacity: 0, y: -10 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.4, delay: 0.1 }}
+                sx={{ p: 3, borderBottom: '1px solid', borderColor: 'divider' }}
+            >
                 <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 1 }}>
-                    <WavingHandIcon sx={{ fontSize: 20, color: theme.palette.warning.main }} />
+                    <motion.div
+                        initial={{ rotate: -20, scale: 0 }}
+                        animate={{ rotate: 0, scale: 1 }}
+                        transition={{ duration: 0.5, delay: 0.2, type: "spring", stiffness: 200 }}
+                    >
+                        <WavingHandIcon sx={{ fontSize: 20, color: theme.palette.warning.main }} />
+                    </motion.div>
                     <Typography variant="body2" color="text.secondary">
                         {t('sidebar.welcome')}
                     </Typography>
                 </Box>
-                <Typography variant="h6" sx={{ fontWeight: 600, color: theme.palette.text.primary }}>
-                    {currentUser?.last_name || ''}
-                </Typography>
+                <motion.div
+                    initial={{ opacity: 0, x: -10 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    transition={{ duration: 0.4, delay: 0.3 }}
+                >
+                    <Typography variant="h6" sx={{ fontWeight: 600, color: theme.palette.text.primary }}>
+                        {currentUser?.last_name || ''}
+                    </Typography>
+                </motion.div>
             </Box>
 
             {/* Menu Items */}
             <List sx={{ py: 1 }}>
-                {menuItems.map((item, index) => (
-                    <ListItemButton
-                        key={index}
-                        onClick={() => handleNavigation(item.path)}
-                        sx={{
-                            px: 3,
-                            py: 1.5,
-                            borderLeft: isActive(item.path) ? '3px solid' : '3px solid transparent',
-                            borderColor: isActive(item.path) ? theme.palette.primary.main : 'transparent',
-                            bgcolor: isActive(item.path) ? theme.palette.primary.main + '14' : 'transparent',
-                            '&:hover': {
-                                bgcolor: isActive(item.path) ? theme.palette.primary.main + '1F' : 'action.hover',
-                            },
-                        }}
-                    >
-                        <ListItemIcon
-                            sx={{
-                                minWidth: 40,
-                                color: isActive(item.path)
-                                    ? theme.palette.primary.main
-                                    : theme.palette.text.secondary,
-                            }}
+                {menuItems.map((item, index) => {
+                    const active = isActive(item.path);
+                    return (
+                        <motion.div
+                            key={index}
+                            initial={{ opacity: 0 }}
+                            animate={{ opacity: 1 }}
+                            transition={{ duration: 0.4, delay: 0.4 + index * 0.1 }}
                         >
-                            {item.badge !== undefined ? (
-                                <Badge badgeContent={item.badge} color="primary">
-                                    {item.icon}
-                                </Badge>
-                            ) : (
-                                item.icon
-                            )}
-                        </ListItemIcon>
-                        <ListItemText
-                            primary={item.text}
-                            primaryTypographyProps={{
-                                fontSize: '0.9rem',
-                                fontWeight: isActive(item.path) ? 600 : 400,
-                                color: isActive(item.path) ? theme.palette.text.primary : theme.palette.text.secondary,
-                            }}
-                        />
-                    </ListItemButton>
-                ))}
+                            <ListItemButton
+                                component={motion.div}
+                                whileHover={{
+                                    x: 4,
+                                    transition: { duration: 0.2 },
+                                }}
+                                whileTap={{ scale: 0.98 }}
+                                onClick={() => handleNavigation(item.path)}
+                                sx={{
+                                    px: 3,
+                                    py: 1.5,
+                                    position: 'relative',
+                                    borderLeft: active ? '3px solid' : '3px solid transparent',
+                                    borderColor: active ? theme.palette.primary.main : 'transparent',
+                                    bgcolor: active ? theme.palette.primary.main + '14' : 'transparent',
+                                    '&:hover': {
+                                        bgcolor: active ? theme.palette.primary.main + '1F' : 'action.hover',
+                                    },
+                                }}
+                            >
+                                {/* Active Indicator Animation */}
+                                {active && (
+                                    <motion.div
+                                        layoutId="activeIndicator"
+                                        style={{
+                                            position: 'absolute',
+                                            left: 0,
+                                            top: 0,
+                                            bottom: 0,
+                                            width: '3px',
+                                            backgroundColor: theme.palette.primary.main,
+                                        }}
+                                        transition={{ type: "spring", stiffness: 500, damping: 30 }}
+                                    />
+                                )}
+
+                                <ListItemIcon
+                                    sx={{
+                                        minWidth: 40,
+                                        color: active
+                                            ? theme.palette.primary.main
+                                            : theme.palette.text.secondary,
+                                    }}
+                                >
+                                    <motion.div
+                                        animate={{
+                                            scale: active ? 1.1 : 1,
+                                        }}
+                                        transition={{ duration: 0.3 }}
+                                    >
+                                        {item.badge !== undefined ? (
+                                            <Badge badgeContent={item.badge} color="primary">
+                                                {item.icon}
+                                            </Badge>
+                                        ) : (
+                                            item.icon
+                                        )}
+                                    </motion.div>
+                                </ListItemIcon>
+                                <ListItemText
+                                    primary={item.text}
+                                    primaryTypographyProps={{
+                                        fontSize: '0.9rem',
+                                        fontWeight: active ? 600 : 400,
+                                        color: active ? theme.palette.text.primary : theme.palette.text.secondary,
+                                    }}
+                                />
+                            </ListItemButton>
+                        </motion.div>
+                    );
+                })}
             </List>
         </Box>
     );
@@ -113,5 +176,5 @@ export default function ProfileSidebar({ user }) {
 
 // Keep the old component for backward compatibility
 export function DefaultSidebar() {
-    return <ProfileSidebar user={{ name: currentUser?.name || 'User' }} />;``
+    return <ProfileSidebar user={{ name: currentUser?.name || 'User' }} />; ``
 }

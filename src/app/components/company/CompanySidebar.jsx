@@ -15,7 +15,7 @@ import { Box } from "@mui/material";
 import logo from "@/assets/logo.svg";
 import NavLink from "./NavLink";
 import { logout } from "../../modules";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 
 const navigation = [
@@ -32,7 +32,7 @@ const navigation = [
 export default function CompanySidebar() {
   const dispatch = useDispatch();
   const nav = useNavigate();
-
+  const user = useSelector((state) => state.auth.user);
   return (
     <aside className="h-screen w-1/6 min-w-[220px] border-r border-border bg-white flex flex-col overflow-y-auto border-gray-300">
       {/* Logo */}
@@ -51,15 +51,27 @@ export default function CompanySidebar() {
             <NavLink
               key={item.name}
               to={item.path ? item.path : "#"}
-              className="group w-full flex items-center gap-3 px-3 py-2.5 text-sm text-muted-foreground rounded-md transition-colors relative hover:bg-primary-50 "
+              className={({ isActive }) =>
+                `group w-full flex items-center gap-3 px-3 py-2.5 text-sm rounded-md transition-colors relative hover:bg-primary-50 ${isActive
+                  ? "bg-primary-50 text-primary font-medium"
+                  : "text-muted-foreground"
+                }`
+              }
             >
-              <span className="absolute left-0 top-0 h-full w-1 rounded-r bg-transparent group-hover:bg-primary group-active:bg-primary transition-colors"></span>
-              <item.icon className="w-5 h-5" />
-              <span>{item.name}</span>
-              {item.badge && (
-                <Badge className="ml-auto h-5 w-5 flex items-center justify-center p-0 bg-primary text-primary-foreground">
-                  {item.badge}
-                </Badge>
+              {({ isActive }) => (
+                <>
+                  <span
+                    className={`absolute left-0 top-0 h-full w-1 rounded-r transition-colors ${isActive ? "bg-primary" : "bg-transparent group-hover:bg-primary"
+                      }`}
+                  ></span>
+                  <item.icon className="w-5 h-5" />
+                  <span>{item.name}</span>
+                  {item.badge && (
+                    <Badge className="ml-auto h-5 w-5 flex items-center justify-center p-0 bg-primary text-primary-foreground">
+                      {item.badge}
+                    </Badge>
+                  )}
+                </>
               )}
             </NavLink>
           );
@@ -70,13 +82,25 @@ export default function CompanySidebar() {
         <div className="px-3 py-2 text-xs font-medium text-muted-foreground">SETTINGS</div>
         <NavLink
           to="/settings"
-          className="group w-full flex items-center gap-3 px-3 py-2.5 text-sm text-muted-foreground rounded-md transition-colors relative hover:bg-primary-50"
+          className={({ isActive }) =>
+            `group w-full flex items-center gap-3 px-3 py-2.5 text-sm rounded-md transition-colors relative hover:bg-primary-50 ${isActive
+              ? "bg-primary-50 text-primary font-medium"
+              : "text-muted-foreground"
+            }`
+          }
         >
-          <span className="absolute left-0 top-0 h-full w-1 rounded-r bg-transparent group-hover:bg-primary group-active:bg-primary transition-colors"></span>
-          <Settings className="w-5 h-5" />
-          <span>Settings</span>
+          {({ isActive }) => (
+            <>
+              <span
+                className={`absolute left-0 top-0 h-full w-1 rounded-r transition-colors ${isActive ? "bg-primary" : "bg-transparent group-hover:bg-primary"
+                  }`}
+              ></span>
+              <Settings className="w-5 h-5" />
+              <span>Settings</span>
+            </>
+          )}
         </NavLink>
-        <button 
+        <button
           className="
             group w-full flex items-center gap-3 px-3 py-2.5
             text-sm text-muted-foreground hover:text-foreground rounded-md hover:bg-primary-50 transition-colors
@@ -97,8 +121,8 @@ export default function CompanySidebar() {
             <AvatarFallback>MK</AvatarFallback>
           </Avatar>
           <div className="flex-1 min-w-0">
-            <p className="text-sm font-medium text-foreground">Maria Kelly</p>
-            <p className="text-xs text-muted-foreground truncate">mariakelly@email.com</p>
+            <p className="text-sm font-medium text-foreground">{user?.last_name} {user?.first_name} </p>
+            <p className="text-xs text-muted-foreground truncate">{user?.email}</p>
           </div>
         </div>
         <Button
