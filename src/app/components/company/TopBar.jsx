@@ -10,7 +10,7 @@ export default function TopBar() {
   const nav = useNavigate();
   const company = useSelector((state) => state.auth.user?.company);
   return (
-    <header className="h-16 border-b border-l border-gray-300 bg-neutral-100 z-10 flex items-center justify-between px-6">
+    <header className="h-16 border-b border-l border-gray-300 bg-white z-10 flex items-center justify-between px-6">
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
           <button className="flex items-center gap-3 hover:opacity-80 transition-opacity">

@@ -3,6 +3,7 @@ const assetBasePath = '/src/app/assets';
 export const srcAsset = Object.freeze({
   SELargeLogo: `${assetBasePath}/logo_with_text.svg`,
   techIcon: `${assetBasePath}/techIcon.png`,
+  contactUsImage: `${assetBasePath}/contact_us_image.png`,
 
   stripeIcon: `${assetBasePath}/companyIcon/stripe.svg`,
   nomadIcon: `${assetBasePath}/companyIcon/nomad.svg`,

@@ -3,6 +3,7 @@ import {
   CompanyDetails,
   CompanyList,
   CompanySignUp,
+  ContactUs,
   FindJobs,
   Home,
   JobDescription,
@@ -38,6 +39,7 @@ export default function UserRoutes() {
         <Route path="job" element={<JobDescription />} />
         <Route path="companies" element={<CompanyList />} />
         <Route path="company" element={<CompanyDetails />} />
+        <Route path="contact-us" element={<ContactUs />} />
 
         <Route path="profile" element={<PrivateRoute><Outlet /></PrivateRoute>}>
           <Route path="dashboard" element={<ProfileDashboard />} />

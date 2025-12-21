@@ -34,7 +34,7 @@ export default function CompanySidebar() {
   const nav = useNavigate();
 
   return (
-    <aside className="h-screen w-1/6 min-w-[220px] border-r border-border bg-sidebar-background flex flex-col overflow-y-auto border-gray-300">
+    <aside className="h-screen w-1/6 min-w-[220px] border-r border-border bg-white flex flex-col overflow-y-auto border-gray-300">
       {/* Logo */}
       <div className="flex items-center px-3 py-4 justify-center">
         <Box
@@ -76,7 +76,15 @@ export default function CompanySidebar() {
           <Settings className="w-5 h-5" />
           <span>Settings</span>
         </NavLink>
-        <button className="w-full flex items-center gap-3 px-3 py-2.5 text-sm text-muted-foreground hover:text-foreground hover:bg-accent rounded-md transition-colors">
+        <button 
+          className="
+            group w-full flex items-center gap-3 px-3 py-2.5
+            text-sm text-muted-foreground hover:text-foreground rounded-md hover:bg-primary-50 transition-colors
+            cursor-pointer relative
+          "
+          onClick={() => nav("/help-center")}
+        >
+          <span className="absolute left-0 top-0 h-full w-1 rounded-r bg-transparent group-hover:bg-primary group-active:bg-primary transition-colors"></span>
           <HelpCircle className="w-5 h-5" />
           <span>Help Center</span>
         </button>

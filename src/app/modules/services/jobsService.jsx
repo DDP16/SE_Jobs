@@ -26,9 +26,21 @@ export const getJobs = createAsyncThunk(
 
 export const getJobById = createAsyncThunk(
     "jobs/getJobById",
-    async (jobId, { rejectWithValue }) => {
+    async (payload, { rejectWithValue }) => {
         try {
+            // Support both formats:
+            // 1. getJobById(jobId) - for backward compatibility
+            // 2. getJobById({ jobId, formatTopCv }) - new format with options
+            const jobId = typeof payload === 'object' ? payload.jobId : payload;
+            const formatTopCv = typeof payload === 'object' ? payload.formatTopCv : undefined;
+
+            const params = {};
+            if (formatTopCv !== undefined) {
+                params.formatTopCv = formatTopCv;
+            }
+
             const response = await api.get(`${apiBaseUrl}/${jobId}`, {
+                params,
                 // withCredentials: true,
             });
             return response.data;
@@ -173,7 +185,7 @@ const jobsSlice = createSlice({
             })
             .addCase(updateJob.fulfilled, (state, action) => {
                 state.status = "succeeded";
-                const index = state.jobs.findIndex(job => job.job_id === action.payload.data.job_id);
+                const index = state.jobs.findIndex(job => job.id === action.payload.data.id);
                 if (index !== -1) {
                     state.jobs[index] = action.payload.data;
                 }
@@ -188,7 +200,7 @@ const jobsSlice = createSlice({
             })
             .addCase(deleteJob.fulfilled, (state, action) => {
                 state.status = "succeeded";
-                state.jobs = state.jobs.filter(job => job.job_id !== action.payload.response.jobId);
+                state.jobs = state.jobs.filter(job => job.id !== action.payload.data.id);
             })
             .addCase(deleteJob.rejected, (state, action) => {
                 state.status = "failed";

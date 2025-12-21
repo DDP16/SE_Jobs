@@ -27,9 +27,12 @@
   "last_name": "Họ",
   "save": "Lưu",
   "apply": "Ứng tuyển",
+  "edit": "Chỉnh sửa",
   "applied": "Đã có {{count}} ứng tuyển",
   "of": "trong tổng số",
   "capacity": "vị trí",
+  "comingSoon": "Sắp ra mắt!",
+  "comingSoonDescription": "Chúng tôi đang nỗ lực để mang đến tính năng này. Hãy chờ đón nhé!",
   "auth": {
     "sign_in": "Đăng nhập",
     "sign_up": "Đăng ký",
@@ -189,7 +192,7 @@
       "founded": "Thành lập",
       "employees": "Nhân viên",
       "location": "Địa điểm",
-      "locations": "{{count}} quốc gia",
+      "locations": "{{count}} chi nhánh",
       "industry": "Loại công ty",
       "jobs_count": "{{count}} việc làm",
       "following": "Đang theo dõi",
@@ -439,6 +442,9 @@
     "remote": "Làm việc từ xa",
     "internship": "Thực tập",
     "contract": "Hợp đồng",
+    "temporary": "Tạm thời",
+    "freelance": "Tự do",
+    "hybrid": "Kết hợp",
     "salaryRange": "Khoảng lương",
     "salaryRangeDesc": "Mức lương dự kiến cho vị trí",
     "to": "đến",
@@ -504,9 +510,16 @@
       "viewDetails": "Xem chi tiết",
       "edit": "Chỉnh sửa",
       "delete": "Xóa",
+      "closeJob": "Đóng việc",
       "approved": "Đã duyệt",
       "pending": "Đang chờ",
       "rejected": "Đã từ chối"
+    },
+    "closedConfirm": {
+      "title": "Xác nhận đóng công việc",
+      "content": "Bạn có chắc chắn muốn đóng công việc này không?",
+      "confirm": "Đồng ý",
+      "cancel": "Hủy"
     }
   },
   "applicantList": {

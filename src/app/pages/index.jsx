@@ -9,6 +9,7 @@ export { default as ProfileDashboard } from "./User/UserProfile/Dashboard";
 export { default as Profile } from "./User/UserProfile/Profile";
 export { default as UserProfileSettings } from "./User/UserProfile/Settings";
 export { default as MyJobs } from "./User/UserProfile/MyJobs";
+export { default as ContactUs } from "./ContactUs";
 
 // Company Pages
 export { default as CompanyDashboard } from "./Company/DashBoard";
@@ -17,8 +18,10 @@ export { default as ApplicantDetails } from "./Company/ApplicantDetails";
 export { default as CompanySignUp } from "./Auth/CompanySignUp";
 export { default as CompanySetting } from "./Company/CompanySetting";
 export { default as PostJob } from "./Company/PostJob";
+export { default as EditJob } from "./Company/EditJob";
 export { default as JobListing } from "./Company/JobListing";
 export { default as CompanyBranches } from "./Company/CompanyBranches";
+export { default as JobDescriptionCompany } from "./Company/JobDescription/JobDescription";
 
 // Admin Pages
 export { default as AdminDashboard } from "./Admin/Dashboard";

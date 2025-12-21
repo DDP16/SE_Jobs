@@ -5,8 +5,9 @@ import axios from "axios";
 // } from "../CookieHelper/CookieHelper";
 // import { message } from "antd";
 import { BE_ENPOINT } from "src/settings/localVar";
+import { PUBLIC_ENPOINT } from "../../settings/localVar";
 
-const productURL = "";
+const productURL = PUBLIC_ENPOINT;
 const developmentURL = BE_ENPOINT;
 
 const baseURL = import.meta.env.MODE === "production" ? productURL : developmentURL;
