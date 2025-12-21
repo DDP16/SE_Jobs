@@ -271,8 +271,8 @@ export default function CompanySignUp() {
 
                 {/* Name Fields */}
                 <div className="flex flex-col md:flex-row gap-4">
-                  <div className="flex-1">
-                    <label className="block text-sm font-medium text-gray-900">
+                  <div className="flex-1 space-y-2">
+                    <label className="block text-sm font-medium text-gray-900 h-5">
                       Họ <span className="text-red-500">*</span>
                     </label>
                     <div className="relative">
@@ -289,8 +289,8 @@ export default function CompanySignUp() {
                       <p className="text-xs text-red-500 mt-1">{lastNameError}</p>
                     )}
                   </div>
-                  <div className="flex-1">
-                    <label className="block text-sm font-medium text-gray-900">
+                  <div className="flex-1 space-y-2">
+                    <label className="block text-sm font-medium text-gray-900 h-5">
                       Tên <span className="text-red-500">*</span>
                     </label>
                     <div className="relative">
@@ -311,7 +311,7 @@ export default function CompanySignUp() {
 
                 {/* Email */}
                 <div className="space-y-2">
-                  <label htmlFor="email" className="block text-sm font-medium text-gray-900">
+                  <label htmlFor="email" className="block text-sm font-medium text-gray-900 h-5">
                     Email đăng nhập <span className="text-red-500">*</span>
                   </label>
                   <div className="relative">
@@ -336,7 +336,7 @@ export default function CompanySignUp() {
                 {/* Password */}
                 <div className="space-y-2">
                   <label htmlFor="password" className="block text-sm font-medium text-gray-900">
-                    Mật khẩu nên có ký tự viết hoa, viết thường, số và ký tự đặc biệt <span className="text-red-500">*</span>
+                    Mật khẩu<span className="text-red-500">*</span>
                   </label>
                   <div className="relative">
                     <LockIcon className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 z-10" style={{ fontSize: '20px' }} />
@@ -359,6 +359,7 @@ export default function CompanySignUp() {
                       {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
                     </button>
                   </div>
+                  <p className="text-xs text-gray-500 mt-1">Mật khẩu nên có ký tự viết hoa, viết thường, số và ký tự đặc biệt</p>
                   {passwordError && (
                     <p className="text-xs text-red-500 mt-1">{passwordError}</p>
                   )}
@@ -366,7 +367,7 @@ export default function CompanySignUp() {
 
                 {/* Confirm Password */}
                 <div className="space-y-2">
-                  <label htmlFor="confirmPassword" className="block text-sm font-medium text-gray-900">
+                  <label htmlFor="confirmPassword" className="block text-sm font-medium text-gray-900 h-5">
                     Nhập lại mật khẩu <span className="text-red-500">*</span>
                   </label>
                   <div className="relative">
@@ -394,6 +395,37 @@ export default function CompanySignUp() {
                     <p className="text-xs text-red-500 mt-1">{confirmPasswordError}</p>
                   )}
                 </div>
+
+                {/* Terms and Privacy */}
+                <div className="pt-4">
+                  <FormControlLabel
+                    control={
+                      <Checkbox
+                        checked={agreeTerms}
+                        onChange={(e) => setAgreeTerms(e.target.checked)}
+                        sx={{
+                          color: '#0041D9',
+                          '&.Mui-checked': {
+                            color: '#0041D9',
+                          },
+                        }}
+                      />
+                    }
+                    label={
+                      <span className="text-sm text-gray-700">
+                        Tôi đã đọc và đồng ý với{' '}
+                        <Link to="/terms" className="text-blue-600 hover:underline">
+                          Điều khoản dịch vụ
+                        </Link>
+                        {' '}và{' '}
+                        <Link to="/privacy" className="text-blue-600 hover:underline">
+                          Chính sách bảo mật
+                        </Link>
+                        {' '}của SE JOBS.
+                      </span>
+                    }
+                  />
+                </div>
               </div>
 
               {/* Right Column: Thông tin nhà tuyển dụng */}
@@ -402,7 +434,7 @@ export default function CompanySignUp() {
 
                 {/* Company Name */}
                 <div className="space-y-2">
-                  <label htmlFor="companyName" className="block text-sm font-medium text-gray-900">
+                  <label htmlFor="companyName" className="block text-sm font-medium text-gray-900 h-5">
                     Tên công ty <span className="text-red-500">*</span>
                   </label>
                   <div className="relative">
@@ -428,15 +460,15 @@ export default function CompanySignUp() {
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   {/* Company Type */}
                   <div className="space-y-2">
-                    <label htmlFor="companyType" className="block text-sm font-medium text-gray-900">
+                    <label htmlFor="companyType" className="block text-sm font-medium text-gray-900 h-5">
                       Loại hình công ty <span className="text-red-500">*</span>
                     </label>
                     <div className="relative" id="company-type-dropdown">
                       <div
-                        className="w-full min-h-12 rounded-lg border border-gray-300 hover:border-blue-500 bg-white cursor-pointer"
+                        className="w-full h-12 rounded-lg border border-gray-300 hover:border-blue-500 bg-white cursor-pointer flex items-center"
                         onClick={() => setShowCompanyTypeDropdown(!showCompanyTypeDropdown)}
                       >
-                        <div className="flex flex-wrap gap-2 p-2 min-h-12">
+                        <div className="flex flex-wrap gap-2 p-2 w-full items-center h-full overflow-y-auto">
                           {companyType.length === 0 ? (
                             <span className="text-gray-400 py-1.5 px-1">Chọn loại hình công ty</span>
                           ) : (
@@ -498,7 +530,7 @@ export default function CompanySignUp() {
 
                   {/* Company URL */}
                   <div className="space-y-2">
-                    <label htmlFor="websiteUrl" className="block text-sm font-medium text-gray-900">
+                    <label htmlFor="websiteUrl" className="block text-sm font-medium text-gray-900 h-5">
                       Đường dẫn website
                     </label>
                     <div className="relative">
@@ -525,7 +557,7 @@ export default function CompanySignUp() {
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   {/* Phone */}
                   <div className="space-y-2">
-                    <label htmlFor="phone" className="block text-sm font-medium text-gray-900">
+                    <label htmlFor="phone" className="block text-sm font-medium text-gray-900 h-5">
                       Số điện thoại <span className="text-red-500">*</span>
                     </label>
                     <div className="relative">
@@ -549,7 +581,7 @@ export default function CompanySignUp() {
 
                   {/* Company Email */}
                   <div className="space-y-2">
-                    <label htmlFor="companyEmail" className="block text-sm font-medium text-gray-900">
+                    <label htmlFor="companyEmail" className="block text-sm font-medium text-gray-900 h-5">
                       Email doanh nghiệp <span className="text-red-500">*</span>
                     </label>
                     <div className="relative">
@@ -613,7 +645,7 @@ export default function CompanySignUp() {
                         <div className="flex-1">
                           <label className="block text-sm font-medium text-gray-900">Quốc gia <span className="text-red-500">*</span></label>
                           <select
-                            className={`w-full h-12 rounded-lg border-gray-300 focus:border-blue-500 focus:ring-blue-500 px-3 ${branchesError[idx]?.country_id ? 'border-red-500' : ''}`}
+                            className={`w-full h-12 rounded-lg border px-3 focus:border-blue-500 focus:ring-blue-500 ${branchesError[idx]?.country_id ? 'border-red-500' : 'border-gray-300'}`}
                             value={branch.country_id}
                             onChange={e => {
                               const arr = [...companyBranches];
@@ -796,37 +828,6 @@ export default function CompanySignUp() {
                   </button>
                 </div>
               </div>
-            </div>
-
-            {/* Terms and Privacy */}
-            <div className="pt-4">
-              <FormControlLabel
-                control={
-                  <Checkbox
-                    checked={agreeTerms}
-                    onChange={(e) => setAgreeTerms(e.target.checked)}
-                    sx={{
-                      color: '#0041D9',
-                      '&.Mui-checked': {
-                        color: '#0041D9',
-                      },
-                    }}
-                  />
-                }
-                label={
-                  <span className="text-sm text-gray-700">
-                    Tôi đã đọc và đồng ý với{' '}
-                    <Link to="/terms" className="text-blue-600 hover:underline">
-                      Điều khoản dịch vụ
-                    </Link>
-                    {' '}và{' '}
-                    <Link to="/privacy" className="text-blue-600 hover:underline">
-                      Chính sách bảo mật
-                    </Link>
-                    {' '}của SE JOBS.
-                  </span>
-                }
-              />
             </div>
 
             {/* Submit Button */}

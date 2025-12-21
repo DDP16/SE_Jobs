@@ -15,7 +15,7 @@ import { Box } from "@mui/material";
 import logo from "@/assets/logo.svg";
 import NavLink from "./NavLink";
 import { logout } from "../../modules";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 
 const navigation = [
@@ -32,7 +32,7 @@ const navigation = [
 export default function CompanySidebar() {
   const dispatch = useDispatch();
   const nav = useNavigate();
-
+  const user = useSelector((state) => state.auth.user);
   return (
     <aside className="h-screen w-1/6 min-w-[220px] border-r border-border bg-white flex flex-col overflow-y-auto border-gray-300">
       {/* Logo */}
@@ -97,8 +97,8 @@ export default function CompanySidebar() {
             <AvatarFallback>MK</AvatarFallback>
           </Avatar>
           <div className="flex-1 min-w-0">
-            <p className="text-sm font-medium text-foreground">Maria Kelly</p>
-            <p className="text-xs text-muted-foreground truncate">mariakelly@email.com</p>
+            <p className="text-sm font-medium text-foreground">{user?.last_name} {user?.first_name} </p>
+            <p className="text-xs text-muted-foreground truncate">{user?.email}</p>
           </div>
         </div>
         <Button
