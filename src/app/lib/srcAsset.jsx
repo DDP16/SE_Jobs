@@ -1,4 +1,5 @@
-const assetBasePath = '/src/app/assets';
+// const assetBasePath = '/src/app/assets';
+const assetBasePath = '/public/assets';
 
 export const srcAsset = Object.freeze({
   SELargeLogo: `${assetBasePath}/logo_with_text.svg`,
