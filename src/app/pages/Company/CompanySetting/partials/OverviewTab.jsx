@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
+import { motion } from 'framer-motion';
 import { Save, Loader2, ChevronDown, MapPin } from 'lucide-react';
 import { Input, Label, Button } from '../../../../components/ui';
 import { LogoUpload } from './logoUpload';
@@ -185,25 +186,45 @@ export function OverviewTab({ company, companyId }) {
     return (
         <form onSubmit={handleSubmit} className="space-y-8 py-8">
             {/* Basic Information */}
-            <section className="space-y-6">
-                <div className="border-b border-gray-300 pb-6">
+            <motion.section
+                className="space-y-6"
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.5, delay: 0.1, ease: "easeOut" }}
+            >
+                <motion.div
+                    className="border-b border-gray-300 pb-6"
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    transition={{ duration: 0.4, delay: 0.2 }}
+                >
                     <p className="text-lg font-semibold mb-2 text-foreground">{t("companySetting.overview.basicInformation")}</p>
                     <p className="text-normal text-muted-foreground">{t("companySetting.overview.basicInformationDesc")}</p>
-                </div>
+                </motion.div>
 
                 {/* Company Logo */}
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-4 items-start border-b border-border pb-6">
+                <motion.div
+                    className="grid grid-cols-1 md:grid-cols-3 gap-4 items-start border-b border-border pb-6"
+                    initial={{ opacity: 0, y: 15 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.4, delay: 0.3 }}
+                >
                     <div>
                         <Label className="text-foreground font-semibold text-lg">{t("companySetting.overview.companyLogo")}</Label>
                         <p className="text-normal text-muted-foreground mt-1">{t("companySetting.overview.companyLogoDesc")}</p>
                     </div>
-                    <div className="md:col-span-2">
+                    <motion.div
+                        className="md:col-span-2"
+                        initial={{ opacity: 0, scale: 0.95 }}
+                        animate={{ opacity: 1, scale: 1 }}
+                        transition={{ duration: 0.4, delay: 0.4 }}
+                    >
                         <LogoUpload
                             currentLogo={company?.logo || "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Cpath fill='%2334d399' d='M30,20 L50,30 L50,60 L30,70 L10,60 L10,30 Z'/%3E%3Cpath fill='%2310b981' d='M50,30 L70,20 L90,30 L90,60 L70,70 L50,60 Z'/%3E%3C/svg%3E"}
                             onLogoChange={(file) => handleInputChange('logo', file)}
                         />
-                    </div>
-                </div>
+                    </motion.div>
+                </motion.div>
 
                 {/* Contact Information */}
                 <ContactInfoSection
@@ -214,13 +235,23 @@ export function OverviewTab({ company, companyId }) {
                 />
 
                 {/* Company Details */}
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-4 items-start border-b border-border pb-6">
+                <motion.div
+                    className="grid grid-cols-1 md:grid-cols-3 gap-4 items-start border-b border-border pb-6"
+                    initial={{ opacity: 0, y: 15 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.4, delay: 0.5 }}
+                >
                     <div>
                         <Label className="text-foreground font-semibold text-lg">{t("companySetting.overview.companyDetails")}</Label>
                         <p className="text-normal text-muted-foreground mt-1">{t("companySetting.overview.companyDetailsDesc")}</p>
                     </div>
 
-                    <div className="md:col-span-2 space-y-6">
+                    <motion.div
+                        className="md:col-span-2 space-y-6"
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        transition={{ duration: 0.4, delay: 0.6 }}
+                    >
                         {/* Company Name & Website - Same Row */}
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                             {/* Company Name */}
@@ -291,19 +322,34 @@ export function OverviewTab({ company, companyId }) {
                                 </div>
                             </div>
                         </div>
-                    </div>
-                </div>
-            </section>
+                    </motion.div>
+                </motion.div>
+            </motion.section>
 
             {/* Company Types & Tech Stack */}
-            <section className="space-y-6">
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-4 items-start border-b border-border pb-6">
+            <motion.section
+                className="space-y-6"
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.5, delay: 0.7, ease: "easeOut" }}
+            >
+                <motion.div
+                    className="grid grid-cols-1 md:grid-cols-3 gap-4 items-start border-b border-border pb-6"
+                    initial={{ opacity: 0, y: 15 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.4, delay: 0.8 }}
+                >
                     <div>
                         <p className="text-lg font-semibold text-foreground">{t("companySetting.overview.companyInformation")}</p>
                         <p className="text-normal text-muted-foreground mt-1">{t("companySetting.overview.companyInformationDesc")}</p>
                     </div>
 
-                    <div className="md:col-span-2 space-y-6">
+                    <motion.div
+                        className="md:col-span-2 space-y-6"
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        transition={{ duration: 0.4, delay: 0.9 }}
+                    >
                         {/* Company Types */}
                         <div>
                             <CompanyTypeSection
@@ -324,23 +370,36 @@ export function OverviewTab({ company, companyId }) {
                                 placeholder={t("companySetting.overview.techStackPlaceholder")}
                             />
                         </div>
-                    </div>
-                </div>
-            </section>
+                    </motion.div>
+                </motion.div>
+            </motion.section>
 
             {/* Company Branches - Read Only */}
-            <section className="border-b border-border pb-6">
-                <div>
+            <motion.section
+                className="border-b border-border pb-6"
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.5, delay: 1.0, ease: "easeOut" }}
+            >
+                <motion.div
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    transition={{ duration: 0.4, delay: 1.1 }}
+                >
                     <p className="text-lg font-semibold mb-2 text-foreground">{t("companySetting.overview.companyBranches")}</p>
                     <p className="text-normal text-muted-foreground mb-6">{t("companySetting.overview.companyBranchesDesc")}</p>
-                </div>
+                </motion.div>
 
                 {companyBranches && companyBranches.length > 0 ? (
                     <div className="space-y-4">
                         {companyBranches.map((branch, index) => (
-                            <div
+                            <motion.div
                                 key={branch.id || index}
                                 className="bg-muted/50 border border-border rounded-lg p-6"
+                                initial={{ opacity: 0, x: -20 }}
+                                animate={{ opacity: 1, x: 0 }}
+                                transition={{ duration: 0.4, delay: 1.2 + index * 0.1 }}
+                                whileHover={{ x: 4, transition: { duration: 0.2 } }}
                             >
                                 <div className="flex items-start gap-3">
                                     <MapPin className="w-5 h-5 text-primary mt-1 flex-shrink-0" />
@@ -361,23 +420,42 @@ export function OverviewTab({ company, companyId }) {
                                         </div>
                                     </div>
                                 </div>
-                            </div>
+                            </motion.div>
                         ))}
                     </div>
                 ) : (
-                    <div className="bg-muted/50 border border-border rounded-lg p-6 text-center text-muted-foreground">
+                    <motion.div
+                        className="bg-muted/50 border border-border rounded-lg p-6 text-center text-muted-foreground"
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        transition={{ duration: 0.4, delay: 1.2 }}
+                    >
                         {t("companySetting.overview.noBranches")}
-                    </div>
+                    </motion.div>
                 )}
-            </section>
+            </motion.section>
 
             {/* About Company */}
-            <section className="grid grid-cols-1 md:grid-cols-3 gap-4 items-start border-b border-border pb-6">
-                <div>
+            <motion.section
+                className="grid grid-cols-1 md:grid-cols-3 gap-4 items-start border-b border-border pb-6"
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.5, delay: 1.3, ease: "easeOut" }}
+            >
+                <motion.div
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    transition={{ duration: 0.4, delay: 1.4 }}
+                >
                     <p className="text-lg font-semibold text-foreground">{t("companySetting.overview.aboutCompany")}</p>
                     <p className="text-normal text-muted-foreground mt-1">{t("companySetting.overview.aboutCompanyDesc")}</p>
-                </div>
-                <div className="md:col-span-2">
+                </motion.div>
+                <motion.div
+                    className="md:col-span-2"
+                    initial={{ opacity: 0, scale: 0.98 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    transition={{ duration: 0.4, delay: 1.5 }}
+                >
                     <Label htmlFor="description" className="text-foreground">
                         {t("companySetting.overview.description")}
                     </Label>
@@ -389,37 +467,52 @@ export function OverviewTab({ company, companyId }) {
                             placeholder={t("companySetting.overview.descriptionPlaceholder")}
                         />
                     </div>
-                </div>
-            </section>
+                </motion.div>
+            </motion.section>
 
             {/* Save Button */}
-            <div className="flex justify-end mt-8">
-                <Button
-                    type="submit"
-                    size="lg"
-                    disabled={isUpdating || updateStatus === 'loading'}
-                    className="bg-primary hover:bg-primary/90 text-white px-8"
+            <motion.div
+                className="flex justify-end mt-8"
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.5, delay: 1.6, ease: "easeOut" }}
+            >
+                <motion.div
+                    whileHover={{ scale: 1.05 }}
+                    whileTap={{ scale: 0.95 }}
                 >
-                    {isUpdating || updateStatus === 'loading' ? (
-                        <>
-                            <Loader2 className="w-5 h-5 animate-spin mr-2" />
-                            <span>{t("companySetting.overview.saving")}</span>
-                        </>
-                    ) : (
-                        <>
-                            <Save className="w-5 h-5 mr-2" />
-                            <span>{t("companySetting.overview.saveChanges")}</span>
-                        </>
-                    )}
-                </Button>
-            </div>
+                    <Button
+                        type="submit"
+                        size="lg"
+                        disabled={isUpdating || updateStatus === 'loading'}
+                        className="bg-primary hover:bg-primary/90 text-white px-8"
+                    >
+                        {isUpdating || updateStatus === 'loading' ? (
+                            <>
+                                <Loader2 className="w-5 h-5 animate-spin mr-2" />
+                                <span>{t("companySetting.overview.saving")}</span>
+                            </>
+                        ) : (
+                            <>
+                                <Save className="w-5 h-5 mr-2" />
+                                <span>{t("companySetting.overview.saveChanges")}</span>
+                            </>
+                        )}
+                    </Button>
+                </motion.div>
+            </motion.div>
 
             {/* Error Message */}
             {updateError && updateStatus === 'failed' && (
-                <div className="bg-destructive/10 border border-destructive/20 text-destructive px-4 py-3 rounded-lg mt-4">
+                <motion.div
+                    className="bg-destructive/10 border border-destructive/20 text-destructive px-4 py-3 rounded-lg mt-4"
+                    initial={{ opacity: 0, scale: 0.95 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    transition={{ duration: 0.3 }}
+                >
                     <p className="font-medium">{t("companySetting.overview.errorUpdating")}</p>
                     <p className="text-sm">{updateError}</p>
-                </div>
+                </motion.div>
             )}
         </form>
     );
