@@ -17,12 +17,21 @@ import {
 import { Outlet, Route, Routes } from "react-router-dom";
 import PrivateRoute from "./PrivateRoute";
 import PageNotFound from "../layouts/PageNotFound";
+import UserProfileLayout from "../pages/User/UserProfile/UserProfileLayout";
 
 function MainLayoutWrapper() {
   return (
     <MainLayout>
       <Outlet />
     </MainLayout>
+  );
+}
+
+function UserProfileLayoutWrapper() {
+  return (
+    <UserProfileLayout>
+      <Outlet />
+    </UserProfileLayout>
   );
 }
 
@@ -41,7 +50,7 @@ export default function UserRoutes() {
         <Route path="company" element={<CompanyDetails />} />
         <Route path="contact-us" element={<ContactUs />} />
 
-        <Route path="profile" element={<PrivateRoute><Outlet /></PrivateRoute>}>
+        <Route path="profile" element={<PrivateRoute><UserProfileLayoutWrapper /></PrivateRoute>}>
           <Route path="dashboard" element={<ProfileDashboard />} />
           <Route path="user-profile" element={<Profile />} />
           <Route path="my-jobs" element={<MyJobs />} />
