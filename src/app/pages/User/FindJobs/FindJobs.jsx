@@ -57,7 +57,7 @@ export default function FindJobs() {
 
     const handleJobSelect = (job) => {
         if (isSmall) {
-            navigate(`/job/${job?.id ?? ''}`);
+            navigate(`/job?id=${job?.id ?? ''}`);
             return;
         }
         setSelectedJob(job);

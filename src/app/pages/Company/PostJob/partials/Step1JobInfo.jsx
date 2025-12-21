@@ -12,6 +12,7 @@ import {
 import { ChevronDown, X, Search, Calendar } from "lucide-react";
 import { useState, useMemo, useEffect, use } from "react";
 import { useTranslation } from "react-i18next";
+import { BorderColor } from "@mui/icons-material";
 
 export default function Step1JobInfo({
   jobTitle,
@@ -150,15 +151,16 @@ export default function Step1JobInfo({
             <Label className="text-foreground font-semibold text-lg">{t("postJob.companyBranch")}</Label>
             <p className="text-normal font-regular text-muted-foreground mt-1">{t("postJob.companyBranchDesc")}</p>
           </div>
-          <Space className="md:col-span-3" style={{ width: '100%' }} vertical>
-            <Select
+          <Space className="md:col-span-3 h-10" style={{ width: '100%' }} vertical>
+            <Select          
               allowClear
               mode="multiple"
-              style={{ width: '100%' }}
+              style={{ width: '100%', alignItems: 'center' }}
               placeholder={t("postJob.companyBranchPlaceholder")}
               value={Array.isArray(companyBranchId) ? companyBranchId : (companyBranchId ? [companyBranchId] : [])}
               onChange={(value) => { setCompanyBranchId(value) }}
               options={options}
+              className="h-10"
             />
           </Space>
         </div>
@@ -428,7 +430,7 @@ export default function Step1JobInfo({
               placeholder={t("postJob.quantityPlaceholder")}
               value={quantity}
               onChange={(e) => setQuantity(e.target.value)}
-              className="bg-white border-border"
+              className="bg-white border-border text-center"
               min="1"
             />
           </div>

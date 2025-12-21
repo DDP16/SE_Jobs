@@ -1,4 +1,4 @@
-import { Eye, Settings2, Users, MapPin, Building } from "lucide-react";
+import { Eye, Settings2 } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { Button } from "@/components/ui";
 import { srcAsset } from "../../../../lib";
@@ -49,12 +49,12 @@ export default function CompanyHeader({ company }) {
   const foundedYear = company.created_at ? new Date(company.created_at).getFullYear() : "Unknown";
 
   return (
-    <div className="bg-white border border-gray-300 rounded-lg p-6 flex items-center gap-3 md:gap-4">
+    <div className="bg-white border border-gray-300 rounded-lg p-6 flex items-center gap-3 md:gap-6">
         <div className="
-          h-20 sm:h-22 md:h-25 lg:h-30 
-          w-20 sm:w-22 md:w-25 lg:w-30
-          aspect-square rounded-2xl flex 
-          items-center justify-center shadow-lg 
+          h-30 sm:h-32 md:h-35 lg:h-40
+          w-30 sm:w-32 md:w-35 lg:w-40
+          aspect-square rounded-2xl flex
+          items-center justify-center shadow-lg
           p-3 border border-gray-200
         ">
           <img

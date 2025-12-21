@@ -185,7 +185,7 @@ const jobsSlice = createSlice({
             })
             .addCase(updateJob.fulfilled, (state, action) => {
                 state.status = "succeeded";
-                const index = state.jobs.findIndex(job => job.job_id === action.payload.data.job_id);
+                const index = state.jobs.findIndex(job => job.id === action.payload.data.id);
                 if (index !== -1) {
                     state.jobs[index] = action.payload.data;
                 }
@@ -200,7 +200,7 @@ const jobsSlice = createSlice({
             })
             .addCase(deleteJob.fulfilled, (state, action) => {
                 state.status = "succeeded";
-                state.jobs = state.jobs.filter(job => job.job_id !== action.payload.response.jobId);
+                state.jobs = state.jobs.filter(job => job.id !== action.payload.data.id);
             })
             .addCase(deleteJob.rejected, (state, action) => {
                 state.status = "failed";

@@ -27,9 +27,12 @@
   "last_name": "Last Name",
   "save": "Save",
   "apply": "Apply",
+  "edit": "Edit",
   "applied": "{{count}} applied",
   "of": "of",
   "capacity": "capacity",
+  "comingSoon": "Coming Soon!",
+  "comingSoonDescription": "We're working hard to bring you this feature. Stay tuned!",
   "auth": {
     "sign_in": "Sign in",
     "sign_up": "Sign up",
@@ -507,9 +510,16 @@
       "viewDetails": "View Details",
       "edit": "Edit",
       "delete": "Delete",
+      "closeJob": "Close Job",
       "approved": "Approved",
       "pending": "Pending",
       "rejected": "Rejected"
+    },
+    "closedConfirm": {
+      "title": "Close Job Confirmation",
+      "content": "Are you sure you want to close this job?",
+      "confirm": "Yes",
+      "cancel": "Cancel"
     }
   },
   "applicantList": {

@@ -41,7 +41,7 @@ export const JobStatus = Object.freeze({
   PENDING: "Pending",
   APPROVED: "Approved",
   REJECTED: "Rejected",
-  EXPIRED: "Expired"
+  CLOSED: "Closed"
 });
 
 // Application Status

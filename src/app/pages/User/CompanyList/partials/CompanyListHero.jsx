@@ -28,7 +28,6 @@ export default function CompanyListHero({ onSearch, searchKeyword = '' }) {
     return (
         <Box
             sx={{
-                bgcolor: 'primary.main',
                 color: 'white',
                 py: { xs: 6, md: 8 },
                 position: 'relative',
@@ -44,6 +43,7 @@ export default function CompanyListHero({ onSearch, searchKeyword = '' }) {
                     zIndex: 0
                 }
             }}
+            className="bg-linear-to-br from-primary-900 via-primary-600 to-primary-900"
         >
             <Container maxWidth="lg" sx={{ position: 'relative', zIndex: 1 }}>
                 <Box sx={{ textAlign: 'center', mb: 4 }}>

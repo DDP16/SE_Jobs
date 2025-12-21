@@ -14,13 +14,11 @@ import { useTranslation } from "react-i18next";
 export default function CompanyHeader({ company = {} }) {
   const { t } = useTranslation();
   const [isFollowing, setIsFollowing] = useState(false);
-  console.log("company from CompanyHeader:", company);
+  // console.log("company from CompanyHeader:", company);
 
   // Extract data from company object
   const name = company.name || "";
   const logo = company.logo || srcAsset.nomadIcon;
-
-  // Get location from first branch if available
   const firstBranch = company.company_branches?.[0];
   const location = firstBranch
     ? `${[
@@ -102,21 +100,21 @@ export default function CompanyHeader({ company = {} }) {
         className="bg-white"
       >
         {/* Left Side - Company Info */}
-        <Box sx={{ display: "flex", gap: { xs: 1.5, md: 2 }, alignItems: "center", flex: 1, width: "100%" }}>
+        <Box sx={{ display: "flex", gap: { xs: 3, md: 4 }, alignItems: "center", flex: 1, width: "100%" }}>
           <Box
             sx={{
               display: "flex",
               alignItems: "center",
               justifyContent: "center",
               flexShrink: 0,
-              width: { xs: 80, sm: 90, md: 100, lg: 120 },
-              height: { xs: 80, sm: 90, md: 100, lg: 120 },
-              borderRadius: 2,
+              width: { xs: 120, sm: 130, md: 140, lg: 160 },
+              height: { xs: 120, sm: 130, md: 140, lg: 160 },
+              aspectRatio: "1 / 1",
               overflow: "hidden",
-              bgcolor: "background.paper",
-              borderColor: "divider",
+              bgcolor: "white",
               p: 1.5,
             }}
+            className="rounded-2xl shadow-lg border border-gray-200"
           >
             <img
               src={logo}
@@ -132,7 +130,7 @@ export default function CompanyHeader({ company = {} }) {
               }}
             />
           </Box>
-          <Box sx={{ minWidth: 0, flex: 1 }}>
+          <Box sx={{ minWidth: 0, display: "flex", flex: 1, flexDirection: "column", rowGap: 1 }}>
             <Typography
               variant="h5"
               sx={{
@@ -147,12 +145,12 @@ export default function CompanyHeader({ company = {} }) {
               sx={{
                 display: "flex",
                 alignItems: "center",
-                gap: { xs: 1, sm: 1.5 },
+                gap: 0.5,
                 flexWrap: "wrap",
               }}
             >
               <Box sx={{ display: "flex", alignItems: "center", gap: 0.5 }}>
-                <LocationOn sx={{ fontSize: { xs: 14, sm: 16 }, color: "text.secondary" }} />
+                <LocationOn sx={{ fontSize: { xs: 14, sm: 16 }, color: "red" }} />
                 <Typography
                   variant="body2"
                   color="text.secondary"
@@ -199,7 +197,6 @@ export default function CompanyHeader({ company = {} }) {
                 display: { xs: "grid", lg: "flex" },
                 gridTemplateColumns: { xs: "1fr 1fr", sm: "1fr 1fr" },
                 gap: { xs: 1.5, sm: 2, lg: 3 },
-                mt: { xs: 1.5, md: 2 },
               }}
             >
               {stats.map((stat, index) => (

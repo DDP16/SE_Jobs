@@ -82,10 +82,9 @@ export default function PostJob({ isEditing = false, job = null, jobId = null })
   const [whoYouAre, setWhoYouAre] = useState("");
   const [niceToHaves, setNiceToHaves] = useState("");
   const [benefits, setBenefits] = useState([]);
-  const [companyBranchId, setCompanyBranchId] = useState([]); // Array for multi-select
-  const [quantity, setQuantity] = useState("");
-  const [jobDeadline, setJobDeadline] = useState("");
-
+  const [companyBranchId, setCompanyBranchId] = useState([]);
+  const [quantity, setQuantity] = useState(1);
+  const [jobDeadline, setJobDeadline] = useState();
   const [employmentTypeIds, setEmploymentTypeIds] = useState([]);
   const [skillIds, setSkillIds] = useState([]);
   const [categoryIds, setCategoryIds] = useState([]);
