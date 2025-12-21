@@ -138,7 +138,6 @@ export default function JobCard({
         return { top: `${top}px`, left: `${left}px`, transform: 'none' };
     }, []);
 
-    console.log('job from JobCard:', job);
 
     const normalizedJob = useMemo(() => {
         let locationFromBranch = null;

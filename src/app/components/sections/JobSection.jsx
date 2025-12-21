@@ -30,7 +30,7 @@ const transformJobData = (job) => {
     return {
         id: job.id || job.external_id,
         title: job.title || "Job Title",
-        company: job.company?.name || "Company Name", 
+        company: job.company?.name || "Company Name",
         location: job.location || job.company_branches?.location || "Location",
         type: job.working_time || job.type || "Full-time",
         salary: salary,
@@ -65,13 +65,14 @@ export default function JobSection() {
     }, [dispatch, currentPage]);
 
     // Get pagination info from API - memoized
+    // API trả về snake_case (total_pages, total) nên cần check cả 2 format
     const totalPages = useMemo(() => {
-        return pagination.totalPages || Math.ceil((latestJobs?.length || 0) / jobsPerPage) || 1;
-    }, [pagination.totalPages, latestJobs?.length, jobsPerPage]);
+        return pagination?.total_pages || pagination?.totalPages || Math.ceil((latestJobs?.length || 0) / jobsPerPage) || 1;
+    }, [pagination?.total_pages, pagination?.totalPages, latestJobs?.length, jobsPerPage]);
 
     const totalItems = useMemo(() => {
-        return pagination.totalItems || latestJobs?.length || 0;
-    }, [pagination.totalItems, latestJobs?.length]);
+        return pagination?.total || pagination?.totalItems || latestJobs?.length || 0;
+    }, [pagination?.total, pagination?.totalItems, latestJobs?.length]);
 
     const handlePageChange = (page) => {
         setCurrentPage(page);
