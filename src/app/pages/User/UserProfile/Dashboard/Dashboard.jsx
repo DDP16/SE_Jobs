@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
+import { motion } from 'framer-motion';
 import {
     Box,
     Container,
@@ -58,6 +59,11 @@ export default function ProfileDashboard() {
                         {/* User Profile Card */}
                         <Grid sx={{ paddingBottom: 2 }}>
                             <Paper
+                                component={motion.div}
+                                initial={{ opacity: 0, y: 20 }}
+                                animate={{ opacity: 1, y: 0 }}
+                                transition={{ duration: 0.5, delay: 0.1, ease: "easeOut" }}
+                                whileHover={{ y: -2, boxShadow: 4 }}
                                 elevation={0}
                                 sx={{
                                     p: 4,
@@ -155,26 +161,42 @@ export default function ProfileDashboard() {
                         </Grid>
 
                         {/* User Activities Section */}
-                        <UserActivities stats={stats} />
+                        <motion.div
+                            initial={{ opacity: 0, y: 20 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            transition={{ duration: 0.5, delay: 0.2, ease: "easeOut" }}
+                        >
+                            <UserActivities stats={stats} />
+                        </motion.div>
 
                         {/* Recent Applications History */}
                         {/* Or Recommend Jobs */}
                         <Paper
+                            component={motion.div}
+                            initial={{ opacity: 0, y: 20 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            transition={{ duration: 0.5, delay: 0.3, ease: "easeOut" }}
                             elevation={0}
                             sx={{
                                 p: 3,
                                 borderRadius: 2,
                                 border: '1px solid',
                                 borderColor: 'divider',
+                                mt: 3,
                             }}
                         >
                             <Typography variant="h6" sx={{ fontWeight: 600, mb: 3 }}>
                                 {t('dashboard.recentApplicationsHistory')}
                             </Typography>
                             <Stack spacing={2}>
-                                {recentApplications.map((application) => (
+                                {recentApplications.map((application, index) => (
                                     <Box
                                         key={application.id}
+                                        component={motion.div}
+                                        initial={{ opacity: 0, x: -20 }}
+                                        animate={{ opacity: 1, x: 0 }}
+                                        transition={{ duration: 0.4, delay: 0.4 + index * 0.1 }}
+                                        whileHover={{ x: 4, transition: { duration: 0.2 } }}
                                         sx={{
                                             '& .MuiCard-root': {
                                                 mb: 0,
@@ -220,22 +242,27 @@ export default function ProfileDashboard() {
                                     </Box>
                                 ))}
                             </Stack>
-                            <Button
-                                variant="text"
-                                endIcon={<ArrowForwardIcon />}
-                                sx={{
-                                    mt: 3,
-                                    textTransform: 'none',
-                                    fontWeight: 600,
-                                    color: theme.palette.primary.main,
-                                    px: 0,
-                                    '&:hover': {
-                                        bgcolor: 'transparent',
-                                    },
-                                }}
+                            <motion.div
+                                whileHover={{ scale: 1.05 }}
+                                whileTap={{ scale: 0.95 }}
                             >
-                                {t('dashboard.viewAllApplicationsHistory')}
-                            </Button>
+                                <Button
+                                    variant="text"
+                                    endIcon={<ArrowForwardIcon />}
+                                    sx={{
+                                        mt: 3,
+                                        textTransform: 'none',
+                                        fontWeight: 600,
+                                        color: theme.palette.primary.main,
+                                        px: 0,
+                                        '&:hover': {
+                                            bgcolor: 'transparent',
+                                        },
+                                    }}
+                                >
+                                    {t('dashboard.viewAllApplicationsHistory')}
+                                </Button>
+                            </motion.div>
                         </Paper>
                     </Box>
                 </Box>

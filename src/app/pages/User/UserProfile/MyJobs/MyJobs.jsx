@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
+import { motion, AnimatePresence } from 'framer-motion';
 import {
     Box,
     Container,
@@ -40,6 +41,10 @@ function EmptyState({ message, onExplore }) {
     const { t } = useTranslation();
     return (
         <Box
+            component={motion.div}
+            initial={{ opacity: 0, scale: 0.9 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ duration: 0.5, ease: "easeOut" }}
             sx={{
                 display: 'flex',
                 flexDirection: 'column',
@@ -75,24 +80,29 @@ function EmptyState({ message, onExplore }) {
                 {message}
             </Typography>
             {onExplore && (
-                <Button
-                    variant="outlined"
-                    onClick={onExplore}
-                    sx={{
-                        borderColor: 'primary',
-                        color: 'primary',
-                        textTransform: 'none',
-                        px: 4,
-                        py: 1,
-                        '&:hover': {
-                            borderColor: 'primary.dark',
-                            bgcolor: 'primary.light',
-                            color: 'primary.dark',
-                        },
-                    }}
+                <motion.div
+                    whileHover={{ scale: 1.05 }}
+                    whileTap={{ scale: 0.95 }}
                 >
-                    {t("myJobs.exploreJobs")}
-                </Button>
+                    <Button
+                        variant="outlined"
+                        onClick={onExplore}
+                        sx={{
+                            borderColor: 'primary',
+                            color: 'primary',
+                            textTransform: 'none',
+                            px: 4,
+                            py: 1,
+                            '&:hover': {
+                                borderColor: 'primary.dark',
+                                bgcolor: 'primary.light',
+                                color: 'primary.dark',
+                            },
+                        }}
+                    >
+                        {t("myJobs.exploreJobs")}
+                    </Button>
+                </motion.div>
             )}
         </Box>
     );
@@ -185,20 +195,30 @@ export default function MyJobs() {
         return (
             <Box sx={{ p: 3 }}>
                 <Stack spacing={2}>
-                    {jobs.map((job) => (
-                        <JobCard
-                            key={job.id}
-                            job={job}
-                            variant="list"
-                            showDescription={true}
-                            showApplyButton={tabIndex === 0 ? false : true}
-                            showActions={true}
-                            isBookmarked={tabIndex === 1}
-                            onBookmark={handleBookmark}
-                            onShare={handleShare}
-                            onApply={handleApply}
-                        />
-                    ))}
+                    <AnimatePresence>
+                        {jobs.map((job, index) => (
+                            <motion.div
+                                key={job.id}
+                                initial={{ opacity: 0, y: 20 }}
+                                animate={{ opacity: 1, y: 0 }}
+                                exit={{ opacity: 0, y: -20 }}
+                                transition={{ duration: 0.3, delay: index * 0.1 }}
+                                whileHover={{ y: -2, transition: { duration: 0.2 } }}
+                            >
+                                <JobCard
+                                    job={job}
+                                    variant="list"
+                                    showDescription={true}
+                                    showApplyButton={tabIndex === 0 ? false : true}
+                                    showActions={true}
+                                    isBookmarked={tabIndex === 1}
+                                    onBookmark={handleBookmark}
+                                    onShare={handleShare}
+                                    onApply={handleApply}
+                                />
+                            </motion.div>
+                        ))}
+                    </AnimatePresence>
                 </Stack>
             </Box>
         );
@@ -213,6 +233,10 @@ export default function MyJobs() {
                     <Box sx={{ flex: 1, maxWidth: 900 }}>
                         {/* Tabs */}
                         <Paper
+                            component={motion.div}
+                            initial={{ opacity: 0, y: 20 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            transition={{ duration: 0.5, delay: 0.1, ease: "easeOut" }}
                             elevation={0}
                             sx={{
                                 border: '1px solid',
@@ -345,27 +369,41 @@ export default function MyJobs() {
                         </Paper>
 
                         {/* Info Message (only for Applied Jobs tab) */}
-                        {activeTab === 0 && (
-                            <Box
-                                sx={{
-                                    display: 'flex',
-                                    alignItems: 'center',
-                                    gap: 1,
-                                    p: 1.5,
-                                    mb: 1.5,
-                                    bgcolor: 'grey.50',
-                                    borderRadius: 1,
-                                }}
-                            >
+                        <AnimatePresence>
+                            {activeTab === 0 && (
+                                <Box
+                                    component={motion.div}
+                                    initial={{ opacity: 0, height: 0 }}
+                                    animate={{ opacity: 1, height: 'auto' }}
+                                    exit={{ opacity: 0, height: 0 }}
+                                    transition={{ duration: 0.3 }}
+                                    sx={{
+                                        display: 'flex',
+                                        alignItems: 'center',
+                                        gap: 1,
+                                        p: 1.5,
+                                        mb: 1.5,
+                                        bgcolor: 'grey.50',
+                                        borderRadius: 1,
+                                        overflow: 'hidden',
+                                    }}
+                                >
                                 <InfoIcon sx={{ fontSize: 18, color: 'text.secondary' }} />
                                 <Typography variant="body2" sx={{ color: 'text.secondary' }}>
                                     {t("myJobs.infoMessage")}
                                 </Typography>
                             </Box>
-                        )}
+                            )}
+                        </AnimatePresence>
 
                         {/* Tab Content */}
                         <Paper
+                            component={motion.div}
+                            key={activeTab}
+                            initial={{ opacity: 0, y: 20 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            exit={{ opacity: 0, y: -20 }}
+                            transition={{ duration: 0.3 }}
                             elevation={0}
                             sx={{
                                 border: '1px solid',

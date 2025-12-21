@@ -1,12 +1,46 @@
-import React, { useState } from "react";
+import React, { useState, useMemo } from "react";
 import { useTranslation } from "react-i18next";
-import { Calendar, ChevronRight, TrendingUp, TrendingDown, Eye, FileCheck } from "lucide-react";
+import { Calendar, ChevronRight, TrendingUp, TrendingDown, Eye, FileCheck, X, Info } from "lucide-react";
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from "recharts";
+import { useSelector } from "react-redux";
 
 const Dashboard = () => {
   const { t } = useTranslation();
   const [timePeriod, setTimePeriod] = useState("Week");
   const [activeTab, setActiveTab] = useState("Overview");
+  const [showInfoBanner, setShowInfoBanner] = useState(true);
+  const currentUser = useSelector((state) => state.auth.user) || {};
+
+  // Tính toán tuần hiện tại (từ thứ 2 đến chủ nhật)
+  const currentWeekRange = useMemo(() => {
+    const today = new Date();
+    const dayOfWeek = today.getDay(); // 0 = Chủ nhật, 1 = Thứ 2, ..., 6 = Thứ 7
+
+    // Tính thứ 2 của tuần hiện tại
+    const mondayOffset = dayOfWeek === 0 ? -6 : 1 - dayOfWeek; // Nếu là CN thì lùi 6 ngày, nếu là T2 thì lùi 0 ngày
+    const monday = new Date(today);
+    monday.setDate(today.getDate() + mondayOffset);
+
+    // Tính chủ nhật của tuần hiện tại
+    const sunday = new Date(monday);
+    sunday.setDate(monday.getDate() + 6);
+
+    // Format ngày tháng theo định dạng DD/MM
+    const formatDateDDMM = (date) => {
+      const day = date.getDate().toString().padStart(2, '0');
+      const month = (date.getMonth() + 1).toString().padStart(2, '0');
+      return `${day}/${month}`;
+    };
+
+    return {
+      fromLong: formatDateDDMM(monday),
+      toLong: formatDateDDMM(sunday),
+      fromShort: formatDateDDMM(monday),
+      toShort: formatDateDDMM(sunday),
+      monday,
+      sunday
+    };
+  }, []);
 
   const chartDataByPeriod = {
     Week: [
@@ -96,16 +130,40 @@ const Dashboard = () => {
   return (
     <div className="min-h-screen bg-gray-50 p-6">
       <div className="max-w-7xl mx-auto">
+        {/* Info Banner */}
+        {showInfoBanner && (
+          <div className="mb-6 bg-blue-50 border border-blue-200 rounded-lg p-4 flex items-start gap-3 relative">
+            <div className="flex-shrink-0 mt-0.5">
+              <Info className="w-5 h-5 text-blue-600" />
+            </div>
+            <div className="flex-1">
+              <h4 className="text-sm font-semibold text-blue-900 mb-1">
+                Lưu ý: Tính năng này đang trong quá trình hoàn thiện.
+              </h4>
+              <p className="text-sm text-blue-800">
+                Dữ liệu hiển thị hiện tại là dữ liệu mẫu và chưa phản ánh số liệu thực tế.              
+              </p>
+            </div>
+            <button
+              onClick={() => setShowInfoBanner(false)}
+              className="flex-shrink-0 text-blue-600 hover:text-blue-800 transition-colors"
+              aria-label="Đóng thông báo"
+            >
+              <X className="w-5 h-5" />
+            </button>
+          </div>
+        )}
+
         {/* Header */}
         <div className="flex justify-between items-center mb-6">
           <div>
-            <h1 className="text-2xl font-bold text-gray-900">{t("company.dashboard.greeting", { name: "Maria" })}</h1>
+            <h2 className="text-2xl font-bold text-gray-900">{t("company.dashboard.greeting", { name: currentUser.first_name })}</h2>
             <p className="text-gray-500 text-sm">
-              {t("company.dashboard.statisticReport", { from: "July 19", to: "July 25" })}
+              {t("company.dashboard.statisticReport", { from: currentWeekRange.fromLong, to: currentWeekRange.toLong })}
             </p>
           </div>
           <button className="flex items-center gap-2 px-4 py-2 border border-gray-300 rounded-lg bg-white hover:bg-gray-50">
-            <span className="text-sm">{t("company.dashboard.dateRange", { from: "Jul 19", to: "Jul 25" })}</span>
+            <span className="text-sm">{t("company.dashboard.dateRange", { from: currentWeekRange.fromShort, to: currentWeekRange.toShort })}</span>
             <Calendar className="w-4 h-4" />
           </button>
         </div>
@@ -142,7 +200,7 @@ const Dashboard = () => {
               <div>
                 <h2 className="text-lg font-semibold text-gray-900">{t("company.dashboard.jobStatistics")}</h2>
                 <p className="text-sm text-gray-500">
-                  {t("company.dashboard.showingJobStatistic", { from: "Jul 19", to: "Jul 25" })}
+                  {t("company.dashboard.showingJobStatistic", { from: currentWeekRange.fromShort, to: currentWeekRange.toShort })}
                 </p>
               </div>
               <div className="flex gap-2">
@@ -150,9 +208,8 @@ const Dashboard = () => {
                   <button
                     key={period}
                     onClick={() => setTimePeriod(period)}
-                    className={`px-4 py-2 text-sm font-medium rounded-lg transition ${
-                      timePeriod === period ? "text-purple-600 bg-purple-50" : "text-gray-600 hover:bg-gray-50"
-                    }`}
+                    className={`px-4 py-2 text-sm font-medium rounded-lg transition ${timePeriod === period ? "text-purple-600 bg-purple-50" : "text-gray-600 hover:bg-gray-50"
+                      }`}
                   >
                     {t(`company.dashboard.${period.toLowerCase()}`) || period}
                   </button>
@@ -165,11 +222,10 @@ const Dashboard = () => {
                 <button
                   key={tab}
                   onClick={() => setActiveTab(tab)}
-                  className={`pb-3 text-sm font-medium transition ${
-                    activeTab === tab
-                      ? "text-purple-600 border-b-2 border-purple-600"
-                      : "text-gray-500 hover:text-gray-700"
-                  }`}
+                  className={`pb-3 text-sm font-medium transition ${activeTab === tab
+                    ? "text-purple-600 border-b-2 border-purple-600"
+                    : "text-gray-500 hover:text-gray-700"
+                    }`}
                 >
                   {t(`company.dashboard.${tab.replace(/\s/g, "").toLowerCase()}`) || tab}
                 </button>
@@ -328,11 +384,10 @@ const Dashboard = () => {
                   {job.tags.map((tag, idx) => (
                     <span
                       key={idx}
-                      className={`px-3 py-1 text-xs font-medium rounded-full ${
-                        tag === "Marketing" || tag === "Business"
-                          ? "bg-orange-50 text-orange-600 border border-orange-200"
-                          : "bg-purple-50 text-purple-600 border border-purple-200"
-                      }`}
+                      className={`px-3 py-1 text-xs font-medium rounded-full ${tag === "Marketing" || tag === "Business"
+                        ? "bg-orange-50 text-orange-600 border border-orange-200"
+                        : "bg-purple-50 text-purple-600 border border-purple-200"
+                        }`}
                     >
                       {tag}
                     </span>
