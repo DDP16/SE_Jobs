@@ -374,7 +374,7 @@ export default function PostJob({ isEditing = false, job = null, jobId = null })
       company_branches_ids: companyBranchId,
       quantity: quantity ? parseInt(quantity) : null,
       job_deadline: jobDeadline || null,
-      status: "Pending",
+      status: "Approved",
     };
 
 
@@ -432,7 +432,7 @@ export default function PostJob({ isEditing = false, job = null, jobId = null })
       quantity: quantity ? parseInt(quantity) : null,
       job_deadline: jobDeadline || null,
       // Keep existing status if editing
-      status: job?.status || "Pending",
+      status: (job?.status && job.status !== "Closed") ? job.status : "Pending",
     };
     try {
       await dispatch(updateJob({ jobId: targetJobId, jobData: payload })).unwrap();
