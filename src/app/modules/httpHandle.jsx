@@ -1,4 +1,9 @@
-import { BE_ENPOINT } from "../../settings/localVar";
+import { BE_ENPOINT, PUBLIC_ENPOINT } from "../../settings/localVar";
+
+const productURL = PUBLIC_ENPOINT;
+const developmentURL = BE_ENPOINT;
+
+const baseURL = import.meta.env.MODE === "production" ? productURL : developmentURL;
 
 const HEADERS = {
   "Content-Type": "application/json",
@@ -7,7 +12,7 @@ const HEADERS = {
 
 export const get = async (uri, onSuccess, onFail) => {
   try {
-    const res = await fetch(BE_ENPOINT + uri, {
+    const res = await fetch(baseURL + uri, {
       headers: HEADERS,
       credentials: "include",
     });
@@ -25,7 +30,7 @@ export const get = async (uri, onSuccess, onFail) => {
 
 export const post = async (uri, reqData, onSuccess, onFail) => {
   try {
-    const res = await fetch(BE_ENPOINT + uri, {
+    const res = await fetch(baseURL + uri, {
       method: "POST",
       headers: HEADERS,
       credentials: "include",
@@ -45,7 +50,7 @@ export const post = async (uri, reqData, onSuccess, onFail) => {
 
 export const put = async (uri, reqData, onSuccess, onFail) => {
   try {
-    const res = await fetch(BE_ENPOINT + uri, {
+    const res = await fetch(baseURL + uri, {
       method: "PUT",
       headers: HEADERS,
       credentials: "include",
@@ -65,7 +70,7 @@ export const put = async (uri, reqData, onSuccess, onFail) => {
 
 export const del = async (uri, onSuccess, onFail) => {
   try {
-    const res = await fetch(BE_ENPOINT + uri, {
+    const res = await fetch(baseURL + uri, {
       method: "DELETE",
       headers: HEADERS,
       credentials: "include",
