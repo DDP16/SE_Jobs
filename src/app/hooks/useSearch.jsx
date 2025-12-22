@@ -15,8 +15,9 @@ export default function useSearch() {
         const params = new URLSearchParams(location.search);
         return {
             page: Number(params.get("page")) || 1,
-            limit: Number(params.get("limit")) || 9,  
+            limit: Number(params.get("limit")) || 9,
             keyword: params.get("keyword") || undefined,
+            city_id: params.get("city_id") || undefined,
             province_ids: params.get("province_ids") || undefined,
             level_ids: params.get("level_ids") || undefined,
             skill_ids: params.get("skill_ids") || undefined,
@@ -64,14 +65,14 @@ export default function useSearch() {
         const updates = {
             page: 1,
             keyword: keyword?.trim() || undefined,
-            province_ids: selectedLocation?.value || undefined,
+            city_id: selectedLocation?.value || undefined,
         };
-        
+
         // If not on jobs page, navigate to it
         if (!location.pathname.includes('/jobs')) {
             const params = new URLSearchParams();
             if (updates.keyword) params.set('keyword', updates.keyword);
-            if (updates.province_ids) params.set('province_ids', updates.province_ids);
+            if (updates.city_id) params.set('city_id', updates.city_id);
             navigate(`/jobs${params.toString() ? '?' + params.toString() : ''}`);
         } else {
             updateQueryParams(updates);
@@ -83,7 +84,7 @@ export default function useSearch() {
     // ---------------------------
     const handleApplyFilters = useCallback((filters) => {
         setIsFilterOpen(false);
-        
+
         // Sync filters to URL params
         const updates = {
             page: 1, // Reset to page 1 when filters change
@@ -94,7 +95,7 @@ export default function useSearch() {
             salary_from: filters.salary?.min || undefined,
             salary_to: filters.salary?.max || undefined,
         };
-        
+
         updateQueryParams(updates);
     }, [updateQueryParams]);
 
@@ -107,7 +108,7 @@ export default function useSearch() {
         const updates = {
             page: 1,
         };
-        
+
         // Map key to URL param name
         const paramMap = {
             levels: 'level_ids',
@@ -115,12 +116,12 @@ export default function useSearch() {
             jobDomains: 'category_ids',
             companyIndustries: 'skill_ids',
         };
-        
+
         const paramKey = paramMap[key];
         if (paramKey) {
             updates[paramKey] = newValues.length ? newValues.join(',') : undefined;
         }
-        
+
         updateQueryParams(updates);
     }, [appliedFilters, updateQueryParams]);
 
@@ -128,7 +129,7 @@ export default function useSearch() {
         const updates = {
             page: 1,
         };
-        
+
         // Map key to URL param name
         const paramMap = {
             levels: 'level_ids',
@@ -136,12 +137,12 @@ export default function useSearch() {
             jobDomains: 'category_ids',
             companyIndustries: 'skill_ids',
         };
-        
+
         const paramKey = paramMap[key];
         if (paramKey) {
             updates[paramKey] = undefined;
         }
-        
+
         updateQueryParams(updates);
     }, [updateQueryParams]);
 
