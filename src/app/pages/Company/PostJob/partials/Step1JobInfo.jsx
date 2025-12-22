@@ -13,6 +13,7 @@ import { ChevronDown, X, Search, Calendar } from "lucide-react";
 import { useState, useMemo, useEffect, use } from "react";
 import { useTranslation } from "react-i18next";
 import { BorderColor } from "@mui/icons-material";
+import { set } from "lodash";
 
 export default function Step1JobInfo({
   jobTitle,
@@ -48,14 +49,43 @@ export default function Step1JobInfo({
   const { t } = useTranslation();
   const [searchQuery, setSearchQuery] = useState("");
   const [tempSalaryRange, setTempSalaryRange] = useState(salaryRange);
+  const [maxSalary, setMaxSalary] = useState(500000000);
+  const [iconCurrency, setIconCurrency] = useState("VND");
+
+  useEffect(() => {
+    setSalaryRange([0, maxSalary]);
+    setTempSalaryRange([0, maxSalary]);
+  }, []);
 
   useEffect(() => {
     setTempSalaryRange(salaryRange);
   }, [salaryRange]);
 
+  useEffect(() => {
+    let max = 500000000;
+    let icon = "VND";
+    if (salaryCurrency === "EUR") {
+      max = 20000; icon = "€";
+    } else if (salaryCurrency === "GBP") {
+      max = 15000; icon = "£";
+    } else if (salaryCurrency === "USD") {
+      max = 20000; icon = "$";
+    }
+    setMaxSalary(max);
+    setIconCurrency(icon);
+
+    if (salaryRange[0] > max) {
+      setSalaryRange([0, max]);
+      setTempSalaryRange([0, max]);
+    } else if (salaryRange[1] > max) {
+      setSalaryRange([salaryRange[0], max]);
+      setTempSalaryRange([salaryRange[0], max]);
+    } 
+  }, [salaryCurrency]);
+
   const filteredSkills = useMemo(() => {
     if (!searchQuery.trim()) return [];
-    return apiSkills.filter((skill) => skill.name.toLowerCase().includes(searchQuery.toLowerCase()));
+    return apiSkills.filter((skill) => skill.name.toLowerCase().includes(searchQuery.replace(/\s+/g, ' ').trim().toLowerCase()));
   }, [searchQuery, apiSkills]);
 
   const handleSkillSelect = (skillName) => {
@@ -78,6 +108,12 @@ export default function Step1JobInfo({
   const handleSalaryKeyDown = (e, index) => {
     if (e.key === "Enter") {
       e.target.blur();
+    }
+  };
+
+  const handleSkillsKeyDown = (e) => {
+    if (e.key === "Enter" && searchQuery.replace(/\s+/g, ' ').trim()) {
+      handleSkillSelect(searchQuery.replace(/\s+/g, ' ').trim());
     }
   };
 
@@ -176,7 +212,7 @@ export default function Step1JobInfo({
           <div className="flex items-center gap-4">
             <div className="flex-1">
               <div className="relative">
-                <span className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground">$</span>
+                <span className="absolute left-3 top-13/25 -translate-y-1/2 text-muted-foreground">{iconCurrency}</span>
                 <Input
                   type="number"
                   value={tempSalaryRange[0]}
@@ -186,14 +222,14 @@ export default function Step1JobInfo({
                   }}
                   onBlur={() => handleSalaryBlur(0)}
                   onKeyDown={(e) => handleSalaryKeyDown(e, 0)}
-                  className="pl-7 bg-white border-border"
+                  className={`${iconCurrency === "VND" ? "pl-12" : "pl-7"} bg-white border-border`}
                 />
               </div>
             </div>
             <span className="text-muted-foreground">{t("postJob.to")}</span>
             <div className="flex-1">
               <div className="relative">
-                <span className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground">$</span>
+                <span className="absolute left-3 top-13/25 -translate-y-1/2 text-muted-foreground">{iconCurrency}</span>
                 <Input
                   type="number"
                   value={tempSalaryRange[1]}
@@ -203,7 +239,7 @@ export default function Step1JobInfo({
                   }}
                   onBlur={() => handleSalaryBlur(1)}
                   onKeyDown={(e) => handleSalaryKeyDown(e, 1)}
-                  className="pl-7 bg-white border-border"
+                  className={`${iconCurrency === "VND" ? "pl-12" : "pl-7"} bg-white border-border`}
                 />
               </div>
             </div>
@@ -224,14 +260,14 @@ export default function Step1JobInfo({
             <div
               className="absolute top-1/2 -translate-y-1/2 h-2 rounded-full bg-primary transition-all pointer-events-none"
               style={{
-                left: `${(salaryRange[0] / 50000) * 100}%`,
-                width: `${((Math.min(salaryRange[1], 50000) - Math.min(salaryRange[0], 50000)) / 50000) * 100}%`,
+                left: `${(salaryRange[0] / maxSalary) * 100}%`,
+                width: `${((Math.min(salaryRange[1], maxSalary) - Math.min(salaryRange[0], maxSalary)) / maxSalary) * 100}%`,
               }}
             />
             <div
               className="absolute w-5 h-5 rounded-full bg-primary shadow-lg cursor-grab active:cursor-grabbing hover:scale-110 transition-transform z-10"
               style={{
-                left: `${(salaryRange[0] / 50000) * 100}%`,
+                left: `${(salaryRange[0] / maxSalary) * 100}%`,
                 top: "50%",
                 transform: `translate(-50%, -50%)`,
               }}
@@ -242,7 +278,7 @@ export default function Step1JobInfo({
                 const handleMove = (moveEvent) => {
                   const x = Math.max(0, Math.min(rect.width, moveEvent.clientX - rect.left));
                   const percentage = x / rect.width;
-                  const newValue = Math.round(percentage * 50000);
+                  const newValue = Math.round(percentage * maxSalary);
                   const clampedValue = Math.min(newValue, salaryRange[1] - 100);
                   setSalaryRange([Math.max(0, clampedValue), salaryRange[1]]);
                   setTempSalaryRange([Math.max(0, clampedValue), tempSalaryRange[1]]);
@@ -261,7 +297,7 @@ export default function Step1JobInfo({
             <div
               className="absolute w-5 h-5 rounded-full bg-primary shadow-lg cursor-grab active:cursor-grabbing hover:scale-110 transition-transform z-10"
               style={{
-                left: `${(Math.min(salaryRange[1], 50000) / 50000) * 100}%`,
+                left: `${(Math.min(salaryRange[1], maxSalary) / maxSalary) * 100}%`,
                 top: "50%",
                 transform: `translate(-50%, -50%)`,
               }}
@@ -272,10 +308,10 @@ export default function Step1JobInfo({
                 const handleMove = (moveEvent) => {
                   const x = Math.max(0, Math.min(rect.width, moveEvent.clientX - rect.left));
                   const percentage = x / rect.width;
-                  const newValue = Math.round(percentage * 50000);
+                  const newValue = Math.round(percentage * maxSalary);
                   const clampedValue = Math.max(newValue, salaryRange[0] + 100);
-                  setSalaryRange([salaryRange[0], Math.min(50000, clampedValue)]);
-                  setTempSalaryRange([tempSalaryRange[0], Math.min(50000, clampedValue)]);
+                  setSalaryRange([salaryRange[0], Math.min(maxSalary, clampedValue)]);
+                  setTempSalaryRange([tempSalaryRange[0], Math.min(maxSalary, clampedValue)]);
                 };
                 const handleUp = () => {
                   document.removeEventListener("mousemove", handleMove);
@@ -349,7 +385,7 @@ export default function Step1JobInfo({
               </DropdownMenuTrigger>
               <DropdownMenuContent
                 side="bottom"
-                align="center"
+                align="end"
                 className="bg-white rounded-lg overflow-y-auto max-h-[25vh] scrollbar-hide"
               >
                 {levels.map((level) => (
@@ -378,6 +414,7 @@ export default function Step1JobInfo({
               placeholder={t("postJob.searchSkills")}
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
+              onKeyDown={(e) => handleSkillsKeyDown(e)}
               className="pl-10 bg-white border-border"
             />
             {searchQuery && filteredSkills.length > 0 && (
@@ -395,7 +432,8 @@ export default function Step1JobInfo({
             )}
             {searchQuery && filteredSkills.length === 0 && (
               <div className="absolute z-10 mt-1 w-full bg-white border border-border rounded-md px-4 py-2 text-muted-foreground text-sm">
-                {t("postJob.noSkillsFound")}
+                <span>{t("postJob.noSkillsFound")}</span>
+                <span>{" " +t("postJob.enterToAddSkill", { skill: searchQuery })}</span>
               </div>
             )}
           </div>
@@ -452,7 +490,7 @@ export default function Step1JobInfo({
                 className="bg-white border-border pr-10 [&::-webkit-calendar-picker-indicator]:opacity-0 [&::-webkit-calendar-picker-indicator]:absolute [&::-webkit-calendar-picker-indicator]:right-0 [&::-webkit-calendar-picker-indicator]:w-full [&::-webkit-calendar-picker-indicator]:h-full [&::-moz-calendar-picker-indicator]:hidden"
                 min={new Date().toISOString().split("T")[0]}
               />
-              <Calendar className="absolute right-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground pointer-events-none z-10" />
+              <Calendar className="absolute right-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground pointer-events-none z-5" />
             </div>
           </div>
         </div>
