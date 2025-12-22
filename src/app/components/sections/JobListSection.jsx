@@ -30,6 +30,17 @@ export default function JobListSection({ onJobSelect, selectedJob }) {
     const jobsList = useSelector(state => state.jobs?.jobs ?? mockJobs);
     const pagination = useSelector(state => state.jobs?.pagination ?? {});
 
+    // Debug: Log Redux state
+    // useEffect(() => {
+    //     console.log('[JobListSection] Redux jobs state:', {
+    //         status,
+    //         jobsLength: jobsList?.length,
+    //         isUsingMockData: jobsList === mockJobs,
+    //         pagination,
+    //         queryParams
+    //     });
+    // }, [status, jobsList, pagination, queryParams]);
+
     const jobsTopCV = useSelector(state => state.topCVJobs?.jobs || []);
     const paginationTopCV = useSelector(state => state.topCVJobs?.pagination || {});
     const statusTopCV = useSelector(state => state.topCVJobs?.status);
