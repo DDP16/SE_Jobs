@@ -35,9 +35,10 @@ import { getSkills } from "../../../modules/services/skillsService";
 import { getLevels } from "../../../modules/services/levelsService";
 import { createJob, updateJob } from "../../../modules/services/jobsService";
 import { useNavigate } from "react-router-dom";
-import { FuzzyText } from "../../../components";
+import { CustomAlert, FuzzyText } from "../../../components";
 import { getCompanyBranches } from "../../../modules/services/companyBranchesService";
 import { useCustomAlert } from "../../../hooks/useCustomAlert";
+import { delay, set } from "lodash";
 
 export default function PostJob({ isEditing = false, job = null, jobId = null }) {
   const { t } = useTranslation();
@@ -56,13 +57,13 @@ export default function PostJob({ isEditing = false, job = null, jobId = null })
 
   useEffect(() => {
     if (companyId && categories.length === 0)
-      dispatch(getCategories());
+      dispatch(getCategories({hasPagination: false}));
     if (companyId && apiEmploymentTypes.length === 0)
-      dispatch(getEmploymentTypes());
+      dispatch(getEmploymentTypes({hasPagination: false}));
     if (companyId && apiSkills.length === 0)
-      dispatch(getSkills());
+      dispatch(getSkills({hasPagination: false}));
     if (companyId && levels.length === 0)
-      dispatch(getLevels());
+      dispatch(getLevels({hasPagination: false}));  
     if (companyId && apiCompanyBranches.length === 0) {
       dispatch(getCompanyBranches({ companyId: companyId }));
     }
@@ -72,7 +73,7 @@ export default function PostJob({ isEditing = false, job = null, jobId = null })
   const [jobTitle, setJobTitle] = useState("");
   const [employmentTypes, setEmploymentTypes] = useState([]);
   const [salaryRange, setSalaryRange] = useState([5000, 22000]);
-  const [salaryCurrency, setSalaryCurrency] = useState("USD");
+  const [salaryCurrency, setSalaryCurrency] = useState("VND");
   const [skills, setSkills] = useState([]);
   const [newSkill, setNewSkill] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("");
@@ -87,6 +88,7 @@ export default function PostJob({ isEditing = false, job = null, jobId = null })
   const [jobDeadline, setJobDeadline] = useState();
   const [employmentTypeIds, setEmploymentTypeIds] = useState([]);
   const [skillIds, setSkillIds] = useState([]);
+  const [skillsSelect, setSkillsSelect] = useState([]);
   const [categoryIds, setCategoryIds] = useState([]);
   const [levelId, setLevelId] = useState(null);
 
@@ -207,6 +209,9 @@ export default function PostJob({ isEditing = false, job = null, jobId = null })
           typeof skill === 'string' ? skill : (skill.name || skill)
         );
         setSkills(skillNames);
+        setSkillsSelect(jobSkills.map(skill => {
+          if (typeof skill === 'object' && skill.id) return {id: skill.id, name: skill.name || ''};
+        }));
 
         const skillIdList = jobSkills.map(skill => {
           if (typeof skill === 'object' && skill.id) return skill.id;
@@ -285,6 +290,7 @@ export default function PostJob({ isEditing = false, job = null, jobId = null })
 
   const removeSkill = (skillToRemove) => {
     setSkills(skills.filter((skill) => skill !== skillToRemove));
+    setSkillsSelect(skillsSelect.filter((s) => s.name !== skillToRemove));
     const skillObj = apiSkills.find((s) => s.name === skillToRemove);
     if (skillObj) {
       setSkillIds((prev) => prev.filter((id) => id !== skillObj.id));
@@ -304,14 +310,22 @@ export default function PostJob({ isEditing = false, job = null, jobId = null })
   };
 
   const addSkillFromApi = (skillName) => {
-    if (!skills.includes(skillName)) {
-      setSkills((prev) => [...prev, skillName]);
-      const skillObj = apiSkills.find((s) => s.name === skillName);
-      if (skillObj) {
+    if (!skills.map(s => s.toLowerCase()).includes(skillName.toLowerCase())) {
+
+      const skillObj = apiSkills.find((s) => s.name.toLowerCase() === skillName.toLowerCase()) || {id: null, name: skillName};
+      if (skillObj.id) {
         setSkillIds((prev) => [...prev, skillObj.id]);
       }
+
+      setSkills((prev) => [...prev, skillObj.name]);
+      setSkillsSelect((prev) => [...prev, {id: skillObj.id, name: skillObj.name}]);
     }
   };
+
+  useEffect(() => {
+    console.log("Skill IDs updated:", skillIds);
+    console.log("Skills Select updated:", skillsSelect);
+  }, [skillIds, skillsSelect]);
 
   const removeBenefit = (benefitId) => {
     setBenefits(benefits.filter((benefit) => benefit.id !== benefitId));
@@ -354,6 +368,7 @@ export default function PostJob({ isEditing = false, job = null, jobId = null })
       category_ids: categoryIds,
       level_ids: levelId ? [levelId] : [],
       required_skill_ids: skillIds,
+      required_skills: skillsSelect,
       employment_type_ids: employmentTypeIds,
       company_branches_id: companyBranchId[0],
       company_branches_ids: companyBranchId,
@@ -366,7 +381,10 @@ export default function PostJob({ isEditing = false, job = null, jobId = null })
     try {
       await dispatch(createJob(payload)).unwrap();
       showSuccess("Job posted successfully!");
-      nav("/", { replace: true });
+      if (skillsSelect.some(s => s.id === null)) {
+        dispatch(getSkills({hasPagination: false}));
+      }
+      nav("/job-listing", { replace: true });
     } catch (err) {
       console.error("Failed to create job:", err);
       showError("Failed to create job: " + (err?.message || err || "Unknown error"));
@@ -409,6 +427,7 @@ export default function PostJob({ isEditing = false, job = null, jobId = null })
       category_ids: categoryIds,
       level_ids: levelId ? [levelId] : [],
       required_skill_ids: skillIds,
+      required_skills: skillsSelect,
       employment_type_ids: employmentTypeIds,
       quantity: quantity ? parseInt(quantity) : null,
       job_deadline: jobDeadline || null,
@@ -418,6 +437,9 @@ export default function PostJob({ isEditing = false, job = null, jobId = null })
     try {
       await dispatch(updateJob({ jobId: targetJobId, jobData: payload })).unwrap();
       showSuccess("Job updated successfully!");
+      if (skillsSelect.some(s => s.id === null)) {
+        dispatch(getSkills({hasPagination: false}));
+      }
       nav("/job-listing", { replace: true });
     } catch (err) {
       console.error("Failed to update job:", err);
@@ -579,6 +601,10 @@ export default function PostJob({ isEditing = false, job = null, jobId = null })
           )}
         </div>
       </div>
+      <CustomAlert
+        {...alertConfig}
+        onClose={hideAlert}
+      />
     </div>
   );
 }
