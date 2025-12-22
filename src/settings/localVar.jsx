@@ -1,5 +1,5 @@
 export const BE_ENPOINT = "http://localhost:3000";
-export const PUBLIC_ENPOINT = "http://157.66.219.178:3000";
+export const PUBLIC_ENPOINT = "https://sejobs.online";
 
 export const TOKEN = "auth_token";
 export const AUTHENTICATED = "is_authenticated";
