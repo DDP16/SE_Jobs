@@ -7,6 +7,7 @@ import {
   FindJobs,
   Home,
   JobDescription,
+  TopCVDescription,
   MyJobs,
   Profile,
   ProfileDashboard,
@@ -46,6 +47,7 @@ export default function UserRoutes() {
         <Route index element={<Home />} />
         <Route path="jobs" element={<FindJobs />} />
         <Route path="job" element={<JobDescription />} />
+        <Route path="topcv-job" element={<TopCVDescription />} />
         <Route path="companies" element={<CompanyList />} />
         <Route path="company" element={<CompanyDetails />} />
         <Route path="contact-us" element={<ContactUs />} />

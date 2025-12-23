@@ -1,21 +1,23 @@
-import React, { useState, useRef, useEffect } from "react";
+import React, { useState, useRef, useEffect, useMemo } from "react";
 import { Container, Box, Stack, useMediaQuery, CircularProgress, Typography } from '@mui/material';
 import { useTheme } from '@mui/material/styles';
 import { useNavigate } from 'react-router-dom';
 import { JobListSection, HeroSection, FilterDialog, FilterToolbar } from "../../../components";
 import JobDescription from "../JobDescription";
+import TopCVDescription from "../TopCVDescription";
 import { layoutType } from "../../../lib";
 import useSearch from "../../../hooks/useSearch";
 import { useDispatch, useSelector } from 'react-redux';
 import { getLevels } from '../../../modules/services/levelsService';
 import { getEmploymentTypes } from '../../../modules/services/employmentTypeService';
+import { getTopCVJobById } from '../../../modules/services/topCVService';
 import { X } from "lucide-react";
 
 export default function FindJobs() {
     const dispatch = useDispatch();
     const navigate = useNavigate();
     const theme = useTheme();
-    
+
     const [selectedJob, setSelectedJob] = useState(null);
     const isSmall = useMediaQuery(theme.breakpoints.down('md'));
     const jobDescRef = useRef(null);
@@ -38,6 +40,16 @@ export default function FindJobs() {
         }
     }, [selectedJob]);
 
+    // Fetch TopCV job data when TopCV job is selected
+    useEffect(() => {
+        if (selectedJob && isTopCVJob(selectedJob)) {
+            const jobId = selectedJob?.id || selectedJob?.job_id || selectedJob?.jobId;
+            if (jobId) {
+                dispatch(getTopCVJobById(jobId));
+            }
+        }
+    }, [selectedJob, dispatch]);
+
     // Sử dụng custom hook để quản lý search và filter
     const {
         queryParams,
@@ -55,13 +67,30 @@ export default function FindJobs() {
         closeFilter,
     } = useSearch();
 
+    // Helper function to check if job is from TopCV
+    const isTopCVJob = (job) => {
+        if (!job) return false;
+        const jobUrl = job.url || job.website_url;
+        return jobUrl && typeof jobUrl === 'string' && jobUrl.includes('topcv.vn');
+    };
+
     const handleJobSelect = (job) => {
         if (isSmall) {
-            navigate(`/job?id=${job?.id ?? ''}`);
+            const jobId = job?.id ?? '';
+            if (isTopCVJob(job)) {
+                navigate(`/topcv-job?id=${jobId}`);
+            } else {
+                navigate(`/job?id=${jobId}`);
+            }
             return;
         }
         setSelectedJob(job);
     };
+
+    // Check if selected job is TopCV job
+    const selectedJobIsTopCV = useMemo(() => {
+        return isTopCVJob(selectedJob);
+    }, [selectedJob]);
 
     return (
         <>
@@ -102,10 +131,17 @@ export default function FindJobs() {
                             }}
                         >
                             <X onClick={() => setSelectedJob(null)} className="h-5 w-5 absolute z-20 top-2 right-3 text-center hover:text-red-500 hover:font-semibold transition-all cursor-pointer" />
-                            <JobDescription
-                                job={selectedJob}
-                                layout={layoutType.preview}
-                            />
+                            {selectedJobIsTopCV ? (
+                                <TopCVDescription
+                                    jobId={selectedJob?.id }
+                                    layout={layoutType.preview}
+                                />
+                            ) : (
+                                <JobDescription
+                                    job={selectedJob}
+                                    layout={layoutType.preview}
+                                />
+                            )}
                         </Box>
                     ) : null}
                 </div>

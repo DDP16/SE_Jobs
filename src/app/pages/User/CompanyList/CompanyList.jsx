@@ -9,7 +9,7 @@ import { getCompanyTypes } from '../../../modules/services/companyTypeService';
 
 const DEFAULT_FILTER = {
     page: 1,
-    limit: 10,
+    limit: 9,
     keyword: '',
     company_type_ids: [],
     employee_count_from: 0,

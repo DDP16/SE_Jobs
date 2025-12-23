@@ -49,19 +49,7 @@ const isValidValue = (value) => {
     return true;
 };
 
-const openExternalUrl = (url) => {
-    if (url.includes('topcv.vn')) {
-        try {
-            window.open(url, '_blank', 'noopener');
-        } catch (err) {
-            const a = document.createElement('a');
-            a.href = url;
-            a.target = '_blank';
-            a.rel = 'noopener noreferrer';
-            a.click();
-        }
-    }
-};
+// Removed openExternalUrl - TopCV jobs now navigate to internal TopCVDescription page
 
 const getTimeAgo = (dateString) => {
     if (!dateString) return null;
@@ -271,16 +259,17 @@ export default function JobCard({
     }, [created_at, createdAt, isFeatured, is_diamond, is_job_flash_active, is_hot]);
 
     const handleNavigate = useCallback(() => {
-        if (isValidUrl(jobUrl) && jobUrl.includes('topcv.vn')) {
-            openExternalUrl(jobUrl);
-            return;
-        }
         if (onClick && typeof onClick === 'function') {
             onClick(job);
         } else {
             const jobId = getJobId(job);
             if (jobId) {
-                navigate(`/job?id=${jobId}`);
+                // Check if it's a TopCV job and navigate to TopCV description page
+                if (isValidUrl(jobUrl) && jobUrl.includes('topcv.vn')) {
+                    navigate(`/topcv-job?id=${jobId}`);
+                } else {
+                    navigate(`/job?id=${jobId}`);
+                }
             }
         }
     }, [jobUrl, onClick, job, navigate]);
