@@ -3,13 +3,15 @@ import api from "../AxiosInstance";
 
 const apiBaseUrl = "/api/skills";
 
-export const getSkills = createAsyncThunk("skills/getSkills", async (_, { rejectWithValue }) => {
-  try {
-    const response = await api.get(`${apiBaseUrl}/`);
-    return response.data;
-  } catch (error) {
-    return rejectWithValue(error.response?.data?.message || "Something went wrong");
-  }
+export const getSkills = createAsyncThunk(
+  "skills/getSkills",
+  async (resquestData, { rejectWithValue }) => {
+    try {
+      const response = await api.get(`${apiBaseUrl}/`, { params: resquestData });
+      return response.data;
+    } catch (error) {
+      return rejectWithValue(error.response?.data?.message || "Something went wrong");
+    }
 });
 
 const initialState = {

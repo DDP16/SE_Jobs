@@ -9,8 +9,79 @@ import {
 import { Search, LocationOn } from '@mui/icons-material';
 import Input from '../common/Input';
 import Button from '../common/Button';
-import { useSelector, useDispatch } from 'react-redux';
-import { getProvinces } from '../../modules/services/addressService';
+
+// Hard-coded TopCV city list
+const TOPCV_CITIES = [
+    { id: 1, name: "Hà Nội" },
+    { id: 2, name: "Hồ Chí Minh" },
+    { id: 3, name: "Bình Dương" },
+    { id: 4, name: "Bắc Ninh" },
+    { id: 5, name: "Đồng Nai" },
+    { id: 6, name: "Hưng Yên" },
+    { id: 7, name: "Hải Dương" },
+    { id: 8, name: "Đà Nẵng" },
+    { id: 9, name: "Hải Phòng" },
+    { id: 10, name: "An Giang" },
+    { id: 11, name: "Bà Rịa-Vũng Tàu" },
+    { id: 12, name: "Bắc Giang" },
+    { id: 13, name: "Bắc Kạn" },
+    { id: 14, name: "Bạc Liêu" },
+    { id: 15, name: "Bến Tre" },
+    { id: 16, name: "Bình Định" },
+    { id: 17, name: "Bình Phước" },
+    { id: 18, name: "Bình Thuận" },
+    { id: 19, name: "Cà Mau" },
+    { id: 20, name: "Cần Thơ" },
+    { id: 21, name: "Cao Bằng" },
+    { id: 22, name: "Cửu Long" },
+    { id: 23, name: "Đắk Lắk" },
+    { id: 24, name: "Đắc Nông" },
+    { id: 25, name: "Điện Biên" },
+    { id: 26, name: "Đồng Tháp" },
+    { id: 27, name: "Gia Lai" },
+    { id: 28, name: "Hà Giang" },
+    { id: 29, name: "Hà Nam" },
+    { id: 30, name: "Hà Tĩnh" },
+    { id: 31, name: "Hậu Giang" },
+    { id: 32, name: "Hòa Bình" },
+    { id: 33, name: "Khánh Hòa" },
+    { id: 34, name: "Kiên Giang" },
+    { id: 35, name: "Kon Tum" },
+    { id: 36, name: "Lai Châu" },
+    { id: 37, name: "Lâm Đồng" },
+    { id: 38, name: "Lạng Sơn" },
+    { id: 39, name: "Lào Cai" },
+    { id: 40, name: "Long An" },
+    { id: 41, name: "Miền Bắc" },
+    { id: 42, name: "Miền Nam" },
+    { id: 43, name: "Miền Trung" },
+    { id: 44, name: "Nam Định" },
+    { id: 45, name: "Nghệ An" },
+    { id: 46, name: "Ninh Bình" },
+    { id: 47, name: "Ninh Thuận" },
+    { id: 48, name: "Phú Thọ" },
+    { id: 49, name: "Phú Yên" },
+    { id: 50, name: "Quảng Bình" },
+    { id: 51, name: "Quảng Nam" },
+    { id: 52, name: "Quảng Ngãi" },
+    { id: 53, name: "Quảng Ninh" },
+    { id: 54, name: "Quảng Trị" },
+    { id: 55, name: "Sóc Trăng" },
+    { id: 56, name: "Sơn La" },
+    { id: 57, name: "Tây Ninh" },
+    { id: 58, name: "Thái Bình" },
+    { id: 59, name: "Thái Nguyên" },
+    { id: 60, name: "Thanh Hóa" },
+    { id: 61, name: "Thừa Thiên Huế" },
+    { id: 62, name: "Tiền Giang" },
+    { id: 63, name: "Toàn Quốc" },
+    { id: 64, name: "Trà Vinh" },
+    { id: 65, name: "Tuyên Quang" },
+    { id: 66, name: "Vĩnh Long" },
+    { id: 67, name: "Vĩnh Phúc" },
+    { id: 68, name: "Yên Bái" },
+    { id: 100, name: "Nước Ngoài" },
+];
 
 const DEFAULT_LOCATION = { label: 'Tất cả thành phố', value: null };
 
@@ -23,8 +94,6 @@ export default function SearchBar({
     initialKeyword = '',
     initialLocation = DEFAULT_LOCATION
 }) {
-    const provinces = useSelector(state => state.address.provinces);
-    const dispatch = useDispatch();
     const [keyword, setKeyword] = useState(initialKeyword || '');
     const [location, setLocation] = useState(initialLocation || DEFAULT_LOCATION);
 
@@ -36,10 +105,6 @@ export default function SearchBar({
     useEffect(() => {
         setLocation(initialLocation || DEFAULT_LOCATION);
     }, [initialLocation]);
-
-    useEffect(() => {
-        dispatch(getProvinces());
-    }, [dispatch]);
 
     const handleSearch = () => {
         if (!location.value) {
@@ -55,23 +120,15 @@ export default function SearchBar({
         }
     };
 
-    const provinceList = React.useMemo(() => {
-        if (!provinces) return [];
-        if (Array.isArray(provinces)) return provinces;
-        if (Array.isArray(provinces.data)) return provinces.data;
-        if (Array.isArray(provinces.provinces)) return provinces.provinces;
-        return [];
-    }, [provinces]);
-
     const options = React.useMemo(() => {
         return [
             DEFAULT_LOCATION,
-            ...provinceList.map(province => ({
-                label: province.name,
-                value: province.id
+            ...TOPCV_CITIES.map(city => ({
+                label: city.name,
+                value: city.id
             }))
         ];
-    }, [provinceList]);
+    }, []);
 
     return (
         <Paper

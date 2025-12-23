@@ -20,7 +20,7 @@ export default function MainRoutes() {
   useEffect(() => {
     if (isAuthenticated && !user) {
       dispatch(getMe());
-      dispatch(getCategories());
+      dispatch(getCategories({hasPagination: false}));
     }
   }, [isAuthenticated, dispatch]);
 

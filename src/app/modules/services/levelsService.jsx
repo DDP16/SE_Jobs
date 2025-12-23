@@ -3,9 +3,10 @@ import api from "../AxiosInstance";
 
 const apiBaseUrl = "/api/levels";
 
-export const getLevels = createAsyncThunk("levels/getLevels", async (_, { rejectWithValue }) => {
+export const getLevels = createAsyncThunk(
+  "levels/getLevels", async (requestData, { rejectWithValue }) => {
   try {
-    const response = await api.get(`${apiBaseUrl}/`);
+    const response = await api.get(`${apiBaseUrl}/`, { params: requestData });
     return response.data;
   } catch (error) {
     return rejectWithValue(error.response?.data?.message || "Something went wrong");

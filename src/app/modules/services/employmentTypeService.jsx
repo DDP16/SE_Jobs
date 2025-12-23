@@ -5,9 +5,9 @@ const apiBaseUrl = "/api/employment-types";
 
 export const getEmploymentTypes = createAsyncThunk(
   "employmentTypes/getEmploymentTypes",
-  async (_, { rejectWithValue }) => {
+  async (requestData, { rejectWithValue }) => {
     try {
-      const response = await api.get(`${apiBaseUrl}/`);
+      const response = await api.get(`${apiBaseUrl}/`, { params: requestData });
       return response.data;
     } catch (error) {
       return rejectWithValue(error.response?.data?.message || "Something went wrong");
