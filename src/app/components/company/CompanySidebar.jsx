@@ -39,7 +39,6 @@ export default function CompanySidebar() {
       <div className="flex items-center px-3 py-4 justify-center">
         <Box
           sx={{ display: "flex", alignItems: "center", cursor: "pointer" }}
-          onClick={() => window.location.assign("/")}
         >
           <img src={logo} alt="SE Jobs Logo" width={"60"} style={{ marginRight: "8px", marginLeft: "10px" }} />
         </Box>

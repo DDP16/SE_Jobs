@@ -314,7 +314,6 @@ const authSlice = createSlice({
         state.userId = action.payload.user_id;
         state.userRole = action.payload.role;
         state.isAuthenticated = true;
-        state.user = action.payload;
         state.error = null;
       })
       .addCase(loginWithEmail.rejected, (state, action) => {
@@ -366,6 +365,7 @@ const authSlice = createSlice({
         state.isAuthenticated = false;
         state.user = null;
         state.error = null;
+        state.isLoadingGetMe = false;
         clearAuthStorage();
       })
       .addCase(logout.rejected, (state, action) => {
