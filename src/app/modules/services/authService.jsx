@@ -314,6 +314,7 @@ const authSlice = createSlice({
         state.userId = action.payload.user_id;
         state.userRole = action.payload.role;
         state.isAuthenticated = true;
+        state.user = action.payload;
         state.error = null;
       })
       .addCase(loginWithEmail.rejected, (state, action) => {
