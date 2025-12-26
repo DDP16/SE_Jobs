@@ -3,10 +3,12 @@ import { Phone, MessageSquare } from "lucide-react";
 import { ContactCard, ContactHeader, IconWrapper } from "./partials";
 import { srcAsset } from "../../lib";
 import { notification } from "antd";
+import { useTranslation } from "react-i18next";
 
 export default function ContactUs() {
-  const phones = ["+012 345 6789", "+098 765 4321"];
-  const email = "support@example.com";
+  const { t } = useTranslation();
+  const phones = ["+8435 9021 926", "+8438 3353 061"];
+  const email = "22521243@gm.uit.edu.vn";
   const [api, contextHolder] = notification.useNotification({
     stack: { threshold: 3, },
   });
@@ -24,10 +26,10 @@ export default function ContactUs() {
     if (navigator && navigator.clipboard) {
       navigator.clipboard.writeText(email)
         .then(() => {
-          openNotification("Email address copied", "The email address has been copied to your clipboard.", "success");
+          openNotification(t("contactUsPage.emailCopied"), t("contactUsPage.emailCopiedDesc"), "success");
         })
         .catch((err) => {
-          openNotification("Failed to copy email address", "An error occurred while copying the email address to your clipboard.", "error");
+          openNotification(t("contactUsPage.emailCopyFailed"), t("contactUsPage.emailCopyFailedDesc"), "error");
         });
     } else {
       const textarea = document.createElement("textarea");
@@ -36,9 +38,9 @@ export default function ContactUs() {
       textarea.select();
       try {
         document.execCommand("copy");
-        openNotification("Email address copied", "The email address has been copied to your clipboard.", "success");
+        openNotification(t("contactUsPage.emailCopied"), t("contactUsPage.emailCopiedDesc"), "success");
       } catch (err) {
-        openNotification("Failed to copy email address", "An error occurred while copying the email address to your clipboard.", "error");
+        openNotification(t("contactUsPage.emailCopyFailed"), t("contactUsPage.emailCopyFailedDesc"), "error");
       }
       document.body.removeChild(textarea);
     }
@@ -48,10 +50,10 @@ export default function ContactUs() {
     if (navigator && navigator.clipboard) {
       navigator.clipboard.writeText(phone)
         .then(() => {
-          openNotification("Phone number copied", "The phone number has been copied to your clipboard.", "success");
+          openNotification(t("contactUsPage.phoneCopied"), t("contactUsPage.phoneCopiedDesc"), "success");
         })
         .catch((err) => {
-          openNotification("Failed to copy phone number", "An error occurred while copying the phone number to your clipboard.", "error");
+          openNotification(t("contactUsPage.phoneCopyFailed"), t("contactUsPage.phoneCopyFailedDesc"), "error");
         });
     } else {
       const textarea = document.createElement("textarea");
@@ -60,11 +62,30 @@ export default function ContactUs() {
       textarea.select();
       try {
         document.execCommand("copy");
-        openNotification("Phone number copied", "The phone number has been copied to your clipboard.", "success");
+        openNotification(t("contactUsPage.phoneCopied"), t("contactUsPage.phoneCopiedDesc"), "success");
       } catch (err) {
-        openNotification("Failed to copy phone number", "An error occurred while copying the phone number to your clipboard.", "error");
+        openNotification(t("contactUsPage.phoneCopyFailed"), t("contactUsPage.phoneCopyFailedDesc"), "error");
       }
       document.body.removeChild(textarea);
+    }
+  };
+
+  const handleClickZalo = () => {
+    const zaloPhone = phones[0]?.replace(/[^0-9]/g, '');
+    if (zaloPhone) {
+      const zaloAppUrl = `zalo://chat?phone=${zaloPhone}`;
+      const zaloWebUrl = `https://zalo.me/${zaloPhone}`;
+
+      const link = document.createElement('a');
+      link.href = zaloAppUrl;
+      link.style.display = 'none';
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+
+      setTimeout(() => {
+        window.open(zaloWebUrl, '_blank');
+      }, 500);
     }
   };
 
@@ -74,8 +95,8 @@ export default function ContactUs() {
       <div className="w-full bg-gray-50">
         {/* Header Section */}
         <ContactHeader
-          title="Get in touch"
-          subtitle="Want to get in touch? We'd love to hear from you. Here's how you can reach us."
+          title={t("contactUsPage.title")}
+          subtitle={t("contactUsPage.subtitle")}
           illustration={srcAsset.contactUsImage}
         />
 
@@ -85,19 +106,21 @@ export default function ContactUs() {
             {/* Talk to Sales Card */}
             <ContactCard
               icon={<IconWrapper icon={Phone} size={40} color="#1f2937" />}
-              title="Talk to Support"
-              description="Just pick up the phone to chat with a member of our support team."
+              title={t("contactUsPage.talkToSupport")}
+              description={t("contactUsPage.talkToSupportDesc")}
               phoneText={phones}
               phoneOnClick={handleClickPhone}
+              zaloText={t("contactUsPage.zaloText")}
+              zaloOnClick={handleClickZalo}
               delay={0.1}
             />
 
             {/* Contact Customer Support Card */}
             <ContactCard
               icon={<IconWrapper icon={MessageSquare} size={40} color="#1f2937" />}
-              title="Mail Support"
-              description="Sometimes you need a little help from your friends. Or a SE-Jobs support rep. Don't worry… we're here for you."
-              actionLabel="Contact Support"
+              title={t("contactUsPage.mailSupport")}
+              description={t("contactUsPage.mailSupportDesc")}
+              actionLabel={t("contactUsPage.contactSupport")}
               actionOnClick={handleContactSupport}
               delay={0.3}
             />

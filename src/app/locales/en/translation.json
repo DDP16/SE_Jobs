@@ -752,5 +752,23 @@
         "jobSeekers": "Job Seekers"
       }
     }
+  },
+  "contactUsPage": {
+    "title": "Get in touch",
+    "subtitle": "Want to get in touch? We'd love to hear from you. Here's how you can reach us.",
+    "talkToSupport": "Talk to Support",
+    "talkToSupportDesc": "Just pick up the phone to chat with a member of our support team.",
+    "mailSupport": "Mail Support",
+    "mailSupportDesc": "Sometimes you need a little help from your friends. Or a SE-Jobs support rep. Don't worry… we're here for you.",
+    "contactSupport": "Contact Support",
+    "emailCopied": "Email address copied",
+    "emailCopiedDesc": "The email address has been copied to your clipboard.",
+    "emailCopyFailed": "Failed to copy email address",
+    "emailCopyFailedDesc": "An error occurred while copying the email address to your clipboard.",
+    "phoneCopied": "Phone number copied",
+    "phoneCopiedDesc": "The phone number has been copied to your clipboard.",
+    "phoneCopyFailed": "Failed to copy phone number",
+    "phoneCopyFailedDesc": "An error occurred while copying the phone number to your clipboard.",
+    "zaloText": "Or contact us via"
   }
 }
