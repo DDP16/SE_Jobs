@@ -17,7 +17,7 @@ import {
 import ApplicantsTable from "../pages/Company/ApplicantList/ApplicantList";
 import { useDispatch, useSelector } from "react-redux";
 import { getCompany } from "../modules";
-import { useEffect } from "react";
+import { use, useEffect } from "react";
 
 export default function CompanyRoutes() {
     const dispatch = useDispatch();
@@ -26,10 +26,17 @@ export default function CompanyRoutes() {
     const companyId = user?.company.id;
 
     useEffect(() => {
-        if (!company && companyId) {
-            dispatch(getCompany(companyId));
+        if (companyId) {
+            if (!company || companyId !== company?.id) {
+                dispatch(getCompany(companyId));
+            }
         }
     }, [dispatch, companyId, company]);
+
+    useEffect(() => {
+        console.log("User ", user);
+        console.log("Company ", company);
+    }, []);
 
     return (
         <Routes>

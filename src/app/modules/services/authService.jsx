@@ -391,6 +391,7 @@ const authSlice = createSlice({
         state.isAuthenticated = false;
         state.user = null;
         state.error = null;
+        state.isLoadingGetMe = false;
         clearAuthStorage();
       })
       .addCase(logout.rejected, (state, action) => {
