@@ -348,35 +348,61 @@ export const useProfileHandlers = ({
         }
     };
 
+    // const handleSaveAbout = async (formData) => {
+    //     try {
+    //         if (!currentUser?.user_id) {
+    //             alert('Không tìm thấy người dùng. Vui lòng đăng nhập lại.');
+    //             return;
+    //         }
+
+    //         const studentInfo = getStudentInfo() || {};
+    //         const aboutText = formData.about || formData.content || '';
+    //         const userData = {
+    //             userId: currentUser.user_id,
+    //             userData: {
+    //                 student_info: {
+    //                     ...studentInfo,
+    //                     about: aboutText,
+    //                 },
+    //             },
+    //         };
+
+    //         await dispatch(updateUser(userData)).unwrap();
+    //         await dispatch(getMe()).unwrap();
+    //         closeModal('about');
+    //     } catch (error) {
+    //         console.error('Error saving about:', error);
+    //         alert(error?.message || 'Có lỗi xảy ra khi lưu giới thiệu');
+    //     }
+    // };
+
     // Open for Opportunities
     const handleToggleOpenForOpportunities = async (newValue) => {
         setOpenForOpportunities(newValue);
-        if (!currentUser?.user_id) {
-            alert('Không tìm thấy người dùng. Vui lòng đăng nhập lại.');
-            return;
-        }
-
         try {
+            if (!currentUser?.user_id) {
+                alert('Không tìm thấy người dùng. Vui lòng đăng nhập lại.');
+                return;
+            }
             const currentStudentInfo = getStudentInfo() || {};
-            await dispatch(
-                updateUser({
-                    userId: currentUser.user_id,
-                    userData: {
-                        student_info: {
-                            ...currentStudentInfo,
-                            open_for_opportunities: newValue,
-                        },
+            const userData = {
+                userId: currentUser.user_id,
+                userData: {
+                    student_info: {
+                        ...currentStudentInfo,
+                        open_for_opportunities: newValue,
                     },
-                })
-            ).unwrap();
-
+                },
+            };
+            await dispatch(updateUser(userData)).unwrap();
             await dispatch(getMe()).unwrap();
         } catch (error) {
             console.error('Error updating open for opportunities:', error);
             alert(error?.message || 'Có lỗi xảy ra khi cập nhật trạng thái');
             setOpenForOpportunities(getStudentInfo()?.open_for_opportunities === true);
         }
-    };
+    }
+
 
     return {
         handleCVFileChange,
