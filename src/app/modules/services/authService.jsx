@@ -174,7 +174,7 @@ export const register = createAsyncThunk(
   }
 );
 
-export const getMe = createAsyncThunk("auth/getMe", async (_, { rejectWithValue }) => {
+export const getMe = createAsyncThunk("auth/getMe", async (_, { rejectWithValue, dispatch }) => {
   try {
     const result = await new Promise((resolve, reject) => {
       get(
@@ -193,9 +193,22 @@ export const getMe = createAsyncThunk("auth/getMe", async (_, { rejectWithValue 
         },
         async (res) => {
           try {
+            // Check if token is expired (401 Unauthorized)
+            if (res && res.status === 401) {
+              // Automatically logout when token expires
+              dispatch(logout());
+              reject("Token expired");
+              return;
+            }
             const data = await res.json();
             reject(data.message || "Network error");
           } catch (error) {
+            // If response doesn't have status, check if it's a network error
+            if (res && res.status === 401) {
+              dispatch(logout());
+              reject("Token expired");
+              return;
+            }
             reject("Network error: " + error.message);
           }
         }
@@ -203,6 +216,10 @@ export const getMe = createAsyncThunk("auth/getMe", async (_, { rejectWithValue 
     });
     return result;
   } catch (error) {
+    // If error indicates token expiration, logout
+    if (error === "Token expired" || (error.message && error.message.includes("401"))) {
+      dispatch(logout());
+    }
     return rejectWithValue(error);
   }
 });
@@ -354,6 +371,14 @@ const authSlice = createSlice({
         state.status = "failed";
         state.isLoadingGetMe = false;
         state.error = action.payload;
+        // If token expired, clear auth state
+        if (action.payload === "Token expired" || (typeof action.payload === "string" && action.payload.includes("401"))) {
+          state.userId = null;
+          state.userRole = null;
+          state.isAuthenticated = false;
+          state.user = null;
+          clearAuthStorage();
+        }
       })
       .addCase(logout.pending, (state) => {
         state.status = "loading";
