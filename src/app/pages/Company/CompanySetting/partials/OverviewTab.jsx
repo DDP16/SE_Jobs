@@ -354,7 +354,7 @@ export function OverviewTab({ company, companyId }) {
                         <div>
                             <CompanyTypeSection
                                 companyTypes={formData.companyTypes}
-                                onCompanyTypesChange={(types) => setFormData({ ...formData, companyTypes: types })}
+                                onCompanyTypesChange={(types) => setFormData(prev => ({ ...prev, companyTypes: types }))}
                                 companyTypeSuggestions={companyTypes.map(ct => ct?.name || '').filter(Boolean)}
                                 allCompanyTypes={companyTypes}
                             />

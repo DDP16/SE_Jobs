@@ -752,5 +752,23 @@
         "jobSeekers": "Người tìm việc"
       }
     }
+  },
+  "contactUsPage": {
+    "title": "Liên hệ với chúng tôi",
+    "subtitle": "Bạn muốn liên hệ? Chúng tôi rất muốn nghe từ bạn. Đây là cách bạn có thể liên hệ với chúng tôi.",
+    "talkToSupport": "Gọi hỗ trợ",
+    "talkToSupportDesc": "Chỉ cần nhấc máy để trò chuyện với một thành viên trong đội ngũ hỗ trợ của chúng tôi.",
+    "mailSupport": "Hỗ trợ qua Email",
+    "mailSupportDesc": "Đôi khi bạn cần một chút giúp đỡ từ bạn bè. Hoặc từ nhân viên hỗ trợ SE-Jobs. Đừng lo lắng… chúng tôi luôn ở đây để giúp bạn.",
+    "contactSupport": "Liên hệ hỗ trợ",
+    "emailCopied": "Đã sao chép địa chỉ email",
+    "emailCopiedDesc": "Địa chỉ email đã được sao chép vào clipboard của bạn.",
+    "emailCopyFailed": "Không thể sao chép địa chỉ email",
+    "emailCopyFailedDesc": "Đã xảy ra lỗi khi sao chép địa chỉ email vào clipboard của bạn.",
+    "phoneCopied": "Đã sao chép số điện thoại",
+    "phoneCopiedDesc": "Số điện thoại đã được sao chép vào clipboard của bạn.",
+    "phoneCopyFailed": "Không thể sao chép số điện thoại",
+    "phoneCopyFailedDesc": "Đã xảy ra lỗi khi sao chép số điện thoại vào clipboard của bạn.",
+    "zaloText": "Hoặc liên hệ qua"
   }
 }

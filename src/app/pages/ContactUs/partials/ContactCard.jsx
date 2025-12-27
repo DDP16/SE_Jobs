@@ -1,7 +1,7 @@
 import React from "react";
 import { motion } from "framer-motion";
 
-const ContactCard = ({ icon, title, description, actionLabel, actionOnClick, phoneText, phoneOnClick, delay = 0 }) => {
+const ContactCard = ({ icon, title, description, actionLabel, actionOnClick, phoneText, phoneOnClick, zaloText, zaloOnClick, delay = 0 }) => {
   return (
     <motion.div
       initial={{ opacity: 0, y: 30 }}
@@ -75,6 +75,31 @@ const ContactCard = ({ icon, title, description, actionLabel, actionOnClick, pho
               </motion.button>
             </motion.div>
           ))}
+        </motion.div>
+      )}
+
+      {zaloText && (
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ duration: 0.4, delay: delay + 0.6 }}
+          className="mt-4 text-center"
+        >
+          <motion.p
+            className="text-sm text-gray-600 mb-2"
+          >
+            {zaloText}
+          </motion.p>
+          {zaloOnClick && (
+            <motion.button
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
+              onClick={zaloOnClick}
+              className="text-blue-600 underline hover:text-blue-700 transition-colors cursor-pointer text-sm font-medium"
+            >
+              Zalo
+            </motion.button>
+          )}
         </motion.div>
       )}
     </motion.div>
