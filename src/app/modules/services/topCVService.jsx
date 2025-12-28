@@ -8,8 +8,20 @@ export const getTopCVJobs = createAsyncThunk(
     async (params = {}, { rejectWithValue }) => {
         try {
             const { page = 1, limit = 10, ...restParams } = params;
+
+            // Filter out undefined, null, and empty string values
+            const filteredParams = Object.fromEntries(
+                Object.entries(restParams).filter(
+                    ([, value]) => value !== undefined && value !== null && value !== ""
+                )
+            );
+
             const response = await api.get(`${apiBaseUrl}/jobs`, {
-                params: { page, per_page: limit, ...restParams }  // Backend expects 'per_page' not 'limit'
+                params: {
+                    page,
+                    per_page: limit,  // Backend expects 'per_page' not 'limit'
+                    ...filteredParams  // Include category_ids, level_ids, keyword, province_ids, etc.
+                }
             });
 
             // Transform backend response to match frontend expectations

@@ -12,6 +12,8 @@ import { Spin } from "antd";
 import { LoadingOutlined } from '@ant-design/icons';
 import { getCategories } from "../modules";
 import { getProvinces } from "../modules/services/addressService";
+import { getLevels } from "../modules/services/levelsService";
+import { getEmploymentTypes } from "../modules/services/employmentTypeService";
 
 export default function MainRoutes() {
   const dispatch = useDispatch();
@@ -26,6 +28,9 @@ export default function MainRoutes() {
 
   useEffect(() => {
     dispatch(getProvinces());
+    dispatch(getLevels());
+    dispatch(getEmploymentTypes());
+    dispatch(getCategories());
   }, [dispatch])
 
   const userRole = useSelector((state) => state.auth.userRole);

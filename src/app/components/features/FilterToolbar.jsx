@@ -37,11 +37,6 @@ export default function FilterToolbar({
     const employmentTypes = useSelector((state) => state.employmentTypes?.employmentTypes || []);
     const categories = useSelector((state) => state.categories?.categories || []);
     
-    useEffect(() => {
-        dispatch(getLevels());
-        dispatch(getEmploymentTypes());
-        dispatch(getCategories());
-    }, [dispatch]);
     
     // Define filter options with API data
     const filterOptions = [
