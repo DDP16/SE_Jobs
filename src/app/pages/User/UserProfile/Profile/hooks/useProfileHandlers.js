@@ -2,6 +2,8 @@ import { createExperience, updateExperience, deleteExperience } from '../../../.
 import { createEducation, updateEducation, deleteEducation } from '../../../../../modules/services/educationsService';
 import { createProject, updateProject, deleteProject } from '../../../../../modules/services/projectsService';
 import { createCertificate, updateCertificate, deleteCertificate } from '../../../../../modules/services/certificateService';
+import { createCv, updateCv, deleteCv, getCvsByStudentId } from '../../../../../modules/services/cvService';
+import { uploadMedia, deleteMedia } from '../../../../../modules/services/mediaService';
 import { updateUser } from '../../../../../modules/services/userService';
 import { getMe } from '../../../../../modules/services/authService';
 import {
@@ -15,7 +17,8 @@ import {
 
 export const useProfileHandlers = ({
     setUser,
-    setCvFile,
+    cvs,
+    setCvs,
     setAbout,
     setExperiences,
     setSkills,
@@ -46,21 +49,183 @@ export const useProfileHandlers = ({
     };
 
     // CV Handlers
-    const handleCVFileChange = (file) => {
-        setCvFile({
-            name: file.name,
-            size: (file.size / 1024 / 1024).toFixed(2),
-            uploadDate: new Date().toLocaleDateString('vi-VN'),
-            file: file,
-        });
+    const handleCVFileChange = async (file, cvId = null) => {
+        try {
+            if (!file) {
+                alert('Vui lòng chọn file');
+                return;
+            }
+
+            if (file.type !== 'application/pdf') {
+                alert('Vui lòng chọn file PDF');
+                return;
+            }
+
+            const maxSize = 5 * 1024 * 1024;
+            if (file.size > maxSize) {
+                alert('File quá lớn. Vui lòng chọn file nhỏ hơn 5MB');
+                return;
+            }
+
+            // Lưu filepath cũ trước khi upload (nếu đang update CV)
+            let oldFileName = null;
+            if (cvId) {
+                const cvToUpdate = cvs.find(cv =>
+                    cv.cvid === cvId || cv.id === cvId || cv.cv_id === cvId
+                );
+                if (cvToUpdate?.filepath) {
+                    oldFileName = extractFileNameFromUrl(cvToUpdate.filepath);
+                }
+            }
+
+            // Upload file mới
+            const formData = new FormData();
+            formData.append('file', file);
+            const uploadResult = await dispatch(uploadMedia(formData)).unwrap();
+
+            if (!uploadResult?.url || !uploadResult?.fileName) {
+                throw new Error('Upload file thất bại: Không nhận được URL từ server');
+            }
+
+            const studentInfo = getStudentInfo();
+            const studentId = studentInfo?.id || studentInfo?.student_id;
+
+            if (!studentId) {
+                throw new Error('Không tìm thấy thông tin sinh viên');
+            }
+
+            const cvData = {
+                studentid: studentId,
+                title: file.name.replace('.pdf', '') || 'CV',
+                filepath: uploadResult.url,
+            };
+
+            // Update hoặc create CV
+            if (cvId) {
+                await dispatch(updateCv({ id: cvId, cvData })).unwrap();
+            } else {
+                await dispatch(createCv(cvData)).unwrap();
+            }
+
+            // Xóa file cũ nếu có và khác file mới
+            if (oldFileName && uploadResult.fileName && oldFileName !== uploadResult.fileName) {
+                try {
+                    await dispatch(deleteMedia(oldFileName)).unwrap();
+                    console.log('Đã xóa file CV cũ:', oldFileName);
+                } catch (fileError) {
+                    console.warn('Không thể xóa file CV cũ (file có thể đã bị xóa trước đó):', fileError);
+                    // Không throw error để không ảnh hưởng đến flow chính
+                }
+            }
+
+            // Refresh danh sách CV
+            await dispatch(getCvsByStudentId({ studentId })).unwrap();
+        } catch (error) {
+            console.error('Error uploading CV:', error);
+            const errorMessage = error?.message || error?.payload || 'Có lỗi xảy ra khi upload CV';
+            alert(errorMessage);
+        }
     };
 
-    const handleDeleteCV = () => setCvFile(null);
+    const extractFileNameFromUrl = (url) => {
+        if (!url || typeof url !== 'string') return null;
+        try {
+            // Nếu là URL đầy đủ, parse bằng URL object
+            if (url.startsWith('http://') || url.startsWith('https://')) {
+                const urlObj = new URL(url);
+                const pathParts = urlObj.pathname.split('/');
+                const fileName = pathParts[pathParts.length - 1];
+                // Loại bỏ query params và hash nếu có
+                return fileName.split('?')[0].split('#')[0];
+            } else {
+                // Nếu là relative path hoặc fileName
+                const pathParts = url.split('/');
+                const fileName = pathParts[pathParts.length - 1];
+                return fileName.split('?')[0].split('#')[0];
+            }
+        } catch {
+            // Fallback: nếu không parse được URL, lấy phần cuối cùng
+            const parts = url.split('/');
+            return parts[parts.length - 1]?.split('?')[0]?.split('#')[0] || null;
+        }
+    };
 
-    const handleViewCV = (cvFile) => {
-        if (cvFile?.file) {
-            const fileURL = URL.createObjectURL(cvFile.file);
+    const handleDeleteCV = async (cvId) => {
+        if (!window.confirm('Bạn có chắc chắn muốn xóa CV này?')) return;
+
+        try {
+            const cvToDelete = cvs.find(cv =>
+                cv.cvid === cvId || cv.id === cvId || cv.cv_id === cvId
+            );
+
+            // Lưu filepath trước khi xóa CV
+            const filepathToDelete = cvToDelete?.filepath;
+
+            // Xóa CV record trước
+            await dispatch(deleteCv(cvId)).unwrap();
+
+            // Sau khi xóa CV thành công, xóa file media
+            if (filepathToDelete) {
+                try {
+                    // Extract fileName từ URL hoặc filepath
+                    const fileName = extractFileNameFromUrl(filepathToDelete);
+
+                    // Chỉ xóa nếu fileName hợp lệ và bắt đầu bằng 'media_'
+                    if (fileName && fileName.startsWith('media_')) {
+                        await dispatch(deleteMedia(fileName)).unwrap();
+                        console.log('Đã xóa file media:', fileName);
+                    } else {
+                        console.warn('File name không hợp lệ hoặc không phải media file:', fileName);
+                    }
+                } catch (fileError) {
+                    console.warn('Không thể xóa file media (file có thể đã bị xóa trước đó):', fileError);
+                    // Không throw error để không ảnh hưởng đến flow chính
+                }
+            }
+
+            // Refresh danh sách CV
+            const studentInfo = getStudentInfo();
+            const studentId = studentInfo?.id || studentInfo?.student_id;
+            if (studentId) {
+                await dispatch(getCvsByStudentId({ studentId })).unwrap();
+            }
+        } catch (error) {
+            console.error('Error deleting CV:', error);
+            alert(error?.message || 'Có lỗi xảy ra khi xóa CV');
+        }
+    };
+
+    const handleViewCV = (cv) => {
+        if (cv?.filepath) {
+            window.open(cv.filepath, '_blank');
+        } else if (cv?.file) {
+            const fileURL = URL.createObjectURL(cv.file);
             window.open(fileURL, '_blank');
+        }
+    };
+
+    const handleUpdateCVTitle = async (cvId, newTitle) => {
+        if (!newTitle?.trim()) {
+            alert('Tên CV không được để trống');
+            return;
+        }
+
+        try {
+            await dispatch(updateCv({
+                id: cvId,
+                cvData: { title: newTitle.trim() }
+            })).unwrap();
+
+            const studentInfo = getStudentInfo();
+            const studentId = studentInfo?.id || studentInfo?.student_id;
+
+            if (studentId) {
+                await dispatch(getCvsByStudentId({ studentId })).unwrap();
+            }
+        } catch (error) {
+            console.error('Error updating CV title:', error);
+            alert(error?.message || 'Có lỗi xảy ra khi cập nhật tên CV');
+            throw error;
         }
     };
 
@@ -381,6 +546,7 @@ export const useProfileHandlers = ({
         handleCVFileChange,
         handleDeleteCV,
         handleViewCV,
+        handleUpdateCVTitle,
         handleSaveInformation,
         handleSaveAbout,
         handleSaveExperience,

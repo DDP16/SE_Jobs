@@ -14,6 +14,7 @@ import {
 } from '../ui';
 import { useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
+import { logout } from '../../modules';
 
 export default function Topbar() {
   const dispatch = useDispatch();

@@ -1,12 +1,28 @@
 import React, { useRef, useState } from 'react';
-import { Box, Typography, IconButton, Chip, Button } from '@mui/material';
-import { CloudUpload as CloudUploadIcon, Description as DescriptionIcon, Visibility as VisibilityIcon, Edit as EditIcon, Delete as DeleteIcon, CheckCircle as CheckCircleIcon } from '@mui/icons-material';
+import { Box, Typography, IconButton, Button, TextField, Menu, MenuItem } from '@mui/material';
+import {
+  CloudUpload as CloudUploadIcon,
+  Description as DescriptionIcon,
+  Visibility as VisibilityIcon,
+  Edit as EditIcon,
+  Delete as DeleteIcon,
+  DriveFileRenameOutline as RenameIcon,
+  Check as CheckIcon,
+  Close as CloseIcon,
+  Download as DownloadIcon,
+  MoreVert as MoreVertIcon
+} from '@mui/icons-material';
 import { useTranslation } from 'react-i18next';
 
-export default function CVUpload({ cvFile, onFileChange, onDelete, onView }) {
+export default function CVUpload({ cvs = [], onFileChange, onDelete, onView, onUpdateTitle }) {
   const { t } = useTranslation();
   const fileInputRef = useRef(null);
   const [isDragging, setIsDragging] = useState(false);
+  const [editingCvId, setEditingCvId] = useState(null);
+  const [editingTitleId, setEditingTitleId] = useState(null);
+  const [editingTitle, setEditingTitle] = useState('');
+  const [menuAnchor, setMenuAnchor] = useState(null);
+  const [selectedCv, setSelectedCv] = useState(null);
 
   const handleDrag = (e) => {
     e.preventDefault();
@@ -21,7 +37,8 @@ export default function CVUpload({ cvFile, onFileChange, onDelete, onView }) {
 
     const file = e.dataTransfer.files[0];
     if (file?.type === 'application/pdf') {
-      onFileChange(file);
+      onFileChange(file, editingCvId);
+      setEditingCvId(null);
     } else {
       alert(t("profile.please_upload_pdf_only"));
     }
@@ -30,23 +47,107 @@ export default function CVUpload({ cvFile, onFileChange, onDelete, onView }) {
   const handleFileSelect = (e) => {
     const file = e.target.files[0];
     if (file?.type === 'application/pdf') {
-      onFileChange(file);
+      onFileChange(file, editingCvId);
+      setEditingCvId(null);
     } else {
       alert(t("profile.please_upload_pdf_only"));
     }
+    if (fileInputRef.current) {
+      fileInputRef.current.value = '';
+    }
   };
 
-  const handleUploadClick = () => fileInputRef.current?.click();
+  const handleUploadClick = (cvId = null) => {
+    setEditingCvId(cvId);
+    fileInputRef.current?.click();
+  };
+
+  const handleEditTitle = (cv) => {
+    const cvId = cv?.cvid || cv?.id || cv?.cv_id;
+    const currentTitle = cv?.title || getFileNameFromPath(cv?.filepath);
+    setEditingTitleId(cvId);
+    setEditingTitle(currentTitle);
+  };
+
+  const handleSaveTitle = async (cvId) => {
+    if (!editingTitle.trim()) return;
+
+    try {
+      if (onUpdateTitle) {
+        await onUpdateTitle(cvId, editingTitle);
+      }
+      setEditingTitleId(null);
+      setEditingTitle('');
+    } catch (error) {
+      console.error('Error saving title:', error);
+    }
+  };
+
+  const handleCancelEditTitle = () => {
+    setEditingTitleId(null);
+    setEditingTitle('');
+  };
+
+  const handleMenuOpen = (event, cv) => {
+    event.stopPropagation();
+    setMenuAnchor(event.currentTarget);
+    setSelectedCv(cv);
+  };
+
+  const handleMenuClose = () => {
+    setMenuAnchor(null);
+    setSelectedCv(null);
+  };
+
+  const handleDownload = (cv) => {
+    if (cv?.filepath) {
+      const link = document.createElement('a');
+      link.href = cv.filepath;
+      link.download = cv?.title || getFileNameFromPath(cv?.filepath) + '.pdf';
+      link.target = '_blank';
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+    }
+    handleMenuClose();
+  };
+
+  const formatDate = (dateString) => {
+    if (!dateString) return '';
+    try {
+      const date = new Date(dateString);
+      const day = String(date.getDate()).padStart(2, '0');
+      const month = String(date.getMonth() + 1).padStart(2, '0');
+      const year = date.getFullYear();
+      return `${day}/${month}/${year}`;
+    } catch {
+      return dateString;
+    }
+  };
+
+  const getFileNameFromPath = (filepath) => {
+    if (!filepath) return 'CV';
+    const parts = filepath.split('/');
+    const fileName = parts[parts.length - 1];
+    return fileName.replace('.pdf', '').replace('media_', '') || 'CV';
+  };
 
   return (
     <Box sx={{ bgcolor: 'background.paper', p: { xs: 2, sm: 3 }, borderRadius: 2, border: 1, borderColor: 'divider', mb: 2 }}>
-      <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', mb: { xs: 1.5, sm: 2 } }}>
-        <Box>
-          <Typography variant="h6" sx={{ fontWeight: 600, mb: 0.5 }}>{t("profile.cv_attachment")}</Typography>
-          <Typography variant="body2" sx={{ color: 'text.secondary' }}>{t("profile.cv_description")}</Typography>
-        </Box>
-        {cvFile && (
-          <Chip icon={<CheckCircleIcon />} label={t("profile.uploaded")} color="success" size="small" />
+      <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', mb: 3 }}>
+        <Typography variant="h6" sx={{ fontWeight: 600 }}>
+          {t("profile.cv_attachment")}
+        </Typography>
+        {cvs.length > 0 && (
+          <Button
+            variant="contained"
+            color="primary"
+            startIcon={<CloudUploadIcon />}
+            onClick={() => handleUploadClick(null)}
+            sx={{ fontWeight: 600 }}
+          >
+            {t("profile.upload_cv")}
+          </Button>
         )}
       </Box>
 
@@ -58,12 +159,186 @@ export default function CVUpload({ cvFile, onFileChange, onDelete, onView }) {
         style={{ display: 'none' }}
       />
 
-        {!cvFile ? (
+      {cvs && cvs.length > 0 && (
+        <Box sx={{ mb: 3, display: 'flex', flexDirection: 'column', gap: 1.5 }}>
+          {cvs.filter(cv => cv != null).map((cv) => {
+            const cvId = cv?.cvid || cv?.id || cv?.cv_id;
+            if (!cvId) return null;
+
+            const cvTitle = cv?.title || getFileNameFromPath(cv?.filepath);
+            const uploadDate = formatDate(cv?.createdat || cv?.created_at || cv?.createdAt);
+
+            return (
+              <Box
+                key={cvId}
+                sx={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: 2,
+                  p: 2,
+                  borderRadius: 1,
+                  border: 1,
+                  borderColor: 'divider',
+                  bgcolor: 'background.paper',
+                  '&:hover': {
+                    bgcolor: 'action.hover',
+                  },
+                  transition: 'background-color 0.2s'
+                }}
+              >
+                <Box
+                  sx={{
+                    width: 48,
+                    height: 48,
+                    bgcolor: 'error.main',
+                    borderRadius: 1,
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    flexShrink: 0
+                  }}
+                >
+                  <DescriptionIcon sx={{ fontSize: 28, color: 'common.white' }} />
+                </Box>
+
+                <Box sx={{ flex: 1, minWidth: 0 }}>
+                  {editingTitleId === cvId ? (
+                    <Box sx={{ display: 'flex', gap: 1, alignItems: 'center' }}>
+                      <TextField
+                        value={editingTitle}
+                        onChange={(e) => setEditingTitle(e.target.value)}
+                        onKeyDown={(e) => {
+                          if (e.key === 'Enter') {
+                            handleSaveTitle(cvId);
+                          } else if (e.key === 'Escape') {
+                            handleCancelEditTitle();
+                          }
+                        }}
+                        autoFocus
+                        size="small"
+                        sx={{ flex: 1 }}
+                      />
+                      <IconButton
+                        onClick={() => handleSaveTitle(cvId)}
+                        size="small"
+                        color="primary"
+                      >
+                        <CheckIcon fontSize="small" />
+                      </IconButton>
+                      <IconButton
+                        onClick={handleCancelEditTitle}
+                        size="small"
+                      >
+                        <CloseIcon fontSize="small" />
+                      </IconButton>
+                    </Box>
+                  ) : (
+                    <Typography
+                      variant="body1"
+                      sx={{
+                        fontWeight: 500,
+                        cursor: 'pointer',
+                        textDecoration: 'underline',
+                        mb: 0.5,
+                        '&:hover': { color: 'primary.main' }
+                      }}
+                      onClick={() => handleEditTitle(cv)}
+                    >
+                      {cvTitle}
+                    </Typography>
+                  )}
+                  {uploadDate && (
+                    <Typography variant="caption" sx={{ color: 'text.secondary', fontSize: '0.75rem' }}>
+                      {t("profile.last_uploaded")}: {uploadDate}
+                    </Typography>
+                  )}
+                </Box>
+
+                <Box sx={{ display: 'flex', gap: 0.5, flexShrink: 0 }}>
+                  <IconButton
+                    onClick={() => onView(cv)}
+                    size="small"
+                    title={t("profile.view")}
+                  >
+                    <VisibilityIcon fontSize="small" />
+                  </IconButton>
+                  <IconButton
+                    onClick={() => handleDownload(cv)}
+                    size="small"
+                    title={t("profile.download")}
+                  >
+                    <DownloadIcon fontSize="small" />
+                  </IconButton>
+                  <IconButton
+                    onClick={(e) => handleMenuOpen(e, cv)}
+                    size="small"
+                    title={t("profile.more_options")}
+                  >
+                    <MoreVertIcon fontSize="small" />
+                  </IconButton>
+                </Box>
+              </Box>
+            );
+          }).filter(Boolean)}
+        </Box>
+      )}
+
+      <Menu
+        anchorEl={menuAnchor}
+        open={Boolean(menuAnchor)}
+        onClose={handleMenuClose}
+      >
+        <MenuItem
+          onClick={() => {
+            onView(selectedCv);
+            handleMenuClose();
+          }}
+        >
+          <VisibilityIcon sx={{ mr: 1, fontSize: 18 }} />
+          {t("profile.view")}
+        </MenuItem>
+        <MenuItem onClick={() => handleDownload(selectedCv)}>
+          <DownloadIcon sx={{ mr: 1, fontSize: 18 }} />
+          {t("profile.download")}
+        </MenuItem>
+        <MenuItem
+          onClick={() => {
+            handleEditTitle(selectedCv);
+            handleMenuClose();
+          }}
+        >
+          <RenameIcon sx={{ mr: 1, fontSize: 18 }} />
+          {t("profile.rename")}
+        </MenuItem>
+        <MenuItem
+          onClick={() => {
+            const cvId = selectedCv?.cvid || selectedCv?.id || selectedCv?.cv_id;
+            handleUploadClick(cvId);
+            handleMenuClose();
+          }}
+        >
+          <EditIcon sx={{ mr: 1, fontSize: 18 }} />
+          {t("profile.replace_file")}
+        </MenuItem>
+        <MenuItem
+          onClick={() => {
+            const cvId = selectedCv?.cvid || selectedCv?.id || selectedCv?.cv_id;
+            onDelete(cvId);
+            handleMenuClose();
+          }}
+          sx={{ color: 'error.main' }}
+        >
+          <DeleteIcon sx={{ mr: 1, fontSize: 18 }} />
+          {t("profile.delete")}
+        </MenuItem>
+      </Menu>
+
+      {cvs.length === 0 && (
         <Box
           onDragOver={handleDrag}
           onDragLeave={handleDrag}
           onDrop={handleDrop}
-          onClick={handleUploadClick}
+          onClick={() => handleUploadClick(null)}
           sx={{
             border: 2,
             borderStyle: 'dashed',
@@ -72,11 +347,11 @@ export default function CVUpload({ cvFile, onFileChange, onDelete, onView }) {
             p: { xs: 3, sm: 4 },
             textAlign: 'center',
             cursor: 'pointer',
-            bgcolor: isDragging ? 'primary.lighter' : 'grey.50',
+            bgcolor: isDragging ? 'action.hover' : 'grey.50',
             transition: 'all 0.2s',
             '&:hover': {
               borderColor: 'primary.main',
-              bgcolor: 'primary.lighter',
+              bgcolor: 'action.hover',
             }
           }}
         >
@@ -84,9 +359,9 @@ export default function CVUpload({ cvFile, onFileChange, onDelete, onView }) {
           <Typography variant="subtitle1" sx={{ fontWeight: 600, mb: { xs: 0.5, sm: 0.5 }, fontSize: { xs: '0.95rem', sm: '1rem' } }}>{t("profile.drag_drop_cv")}</Typography>
           <Typography variant="body2" sx={{ color: 'text.secondary', mb: { xs: 0.75, sm: 1 } }}>{t("profile.or")}</Typography>
           <Button
-            onClick={(e) => { e.stopPropagation(); handleUploadClick(); }}
+            onClick={(e) => { e.stopPropagation(); handleUploadClick(null); }}
             variant="contained"
-            color="error"
+            color="primary"
             startIcon={<CloudUploadIcon />}
             sx={{ fontWeight: 600, py: { xs: 0.4, sm: 0.5 }, px: { xs: 1.5, sm: 2 }, fontSize: { xs: '0.8rem', sm: '0.85rem' } }}
           >
@@ -95,33 +370,6 @@ export default function CVUpload({ cvFile, onFileChange, onDelete, onView }) {
           <Typography variant="caption" sx={{ display: 'block', color: 'text.disabled', mt: 1 }}>
             {t("profile.pdf_max_5mb")}
           </Typography>
-        </Box>
-        ) : (
-        <Box sx={{ display: 'flex', alignItems: 'center', gap: { xs: 1.5, sm: 2 }, p: { xs: 2, sm: 3 }, bgcolor: 'grey.50', borderRadius: 2, border: 1, borderColor: 'divider' }}>
-          <Box sx={{ width: { xs: 44, sm: 56 }, height: { xs: 44, sm: 56 }, bgcolor: 'error.main', borderRadius: 1, display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
-            <DescriptionIcon sx={{ color: 'white', fontSize: { xs: 22, sm: 32 } }} />
-          </Box>
-
-          <Box sx={{ flex: 1, minWidth: 0 }}>
-            <Typography variant="body1" sx={{ fontWeight: 600, mb: 0.5, fontSize: { xs: '0.95rem', sm: '1rem' } }}>{cvFile.name}</Typography>
-            <Box sx={{ display: 'flex', gap: 1 }}>
-              <Typography variant="body2" sx={{ color: 'text.secondary' }}>{cvFile.size} MB</Typography>
-              <Typography variant="body2" sx={{ color: 'text.secondary' }}>•</Typography>
-              <Typography variant="body2" sx={{ color: 'text.secondary' }}>{t("profile.uploaded_on")}: {cvFile.uploadDate}</Typography>
-            </Box>
-          </Box>
-
-          <Box sx={{ display: 'flex', gap: { xs: 0.5, sm: 1 } }}>
-            <IconButton onClick={onView} sx={{ border: 1, borderColor: 'divider', color: 'primary.main', '&:hover': { bgcolor: 'primary.lighter' }, p: { xs: 0.5, sm: 1 } }}>
-              <VisibilityIcon sx={{ fontSize: { xs: 18, sm: 20 } }} />
-            </IconButton>
-            <IconButton onClick={handleUploadClick} sx={{ border: 1, borderColor: 'divider', color: 'text.secondary', '&:hover': { bgcolor: 'grey.100' }, p: { xs: 0.5, sm: 1 } }}>
-              <EditIcon sx={{ fontSize: { xs: 18, sm: 20 } }} />
-            </IconButton>
-            <IconButton onClick={onDelete} sx={{ border: 1, borderColor: 'divider', color: 'error.main', '&:hover': { bgcolor: 'error.lighter' }, p: { xs: 0.5, sm: 1 } }}>
-              <DeleteIcon sx={{ fontSize: { xs: 18, sm: 20 } }} />
-            </IconButton>
-          </Box>
         </Box>
       )}
     </Box>
