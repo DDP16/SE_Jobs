@@ -10,7 +10,6 @@ import useSearch from "../../../hooks/useSearch";
 import { useDispatch, useSelector } from 'react-redux';
 import { getLevels } from '../../../modules/services/levelsService';
 import { getEmploymentTypes } from '../../../modules/services/employmentTypeService';
-import { getTopCVJobById } from '../../../modules/services/topCVService';
 import { X } from "lucide-react";
 
 export default function FindJobs() {
@@ -40,15 +39,8 @@ export default function FindJobs() {
         }
     }, [selectedJob]);
 
-    // Fetch TopCV job data when TopCV job is selected
-    useEffect(() => {
-        if (selectedJob && isTopCVJob(selectedJob)) {
-            const jobId = selectedJob?.id || selectedJob?.job_id || selectedJob?.jobId;
-            if (jobId) {
-                dispatch(getTopCVJobById(jobId));
-            }
-        }
-    }, [selectedJob, dispatch]);
+    // Note: TopCVDescription component will handle fetching TopCV job data internally
+    // No need to fetch here to avoid double requests
 
     // Sử dụng custom hook để quản lý search và filter
     const {
@@ -133,7 +125,7 @@ export default function FindJobs() {
                             <X onClick={() => setSelectedJob(null)} className="h-5 w-5 absolute z-20 top-2 right-3 text-center hover:text-red-500 hover:font-semibold transition-all cursor-pointer" />
                             {selectedJobIsTopCV ? (
                                 <TopCVDescription
-                                    jobId={selectedJob?.id }
+                                    jobId={selectedJob?.id}
                                     layout={layoutType.preview}
                                 />
                             ) : (
