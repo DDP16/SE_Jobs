@@ -382,6 +382,7 @@ export default function JobCard({
                                         }}
                                     />
                                 )}
+                                { !isTopCV && (
                                 <IconButton
                                     size="small"
                                     onClick={(e) => {
@@ -399,6 +400,8 @@ export default function JobCard({
                                 >
                                     {isBookmarked ? <Bookmark /> : <BookmarkBorder />}
                                 </IconButton>
+                            )}
+
                             </div>
                         </Box>
                     )}
@@ -478,26 +481,25 @@ export default function JobCard({
 
 
                         </Box>
-
-                        {variant !== 'list' && (
-                            <IconButton
-                                size="small"
-                                onClick={(e) => {
-                                    e.stopPropagation();
-                                    onBookmark?.(job);
-                                }}
-                                sx={{
-                                    color: isBookmarked ? 'error.main' : 'text.disabled',
-                                    transition: 'all 0.2s ease-in-out',
-                                    '&:hover': {
-                                        color: isBookmarked ? 'error.dark' : 'text.secondary',
-                                        transform: 'scale(1.1)',
-                                    }
-                                }}
-                            >
-                                {isBookmarked ? <Bookmark /> : <BookmarkBorder />}
-                            </IconButton>
-                        )}
+                            {!isTopCV && variant !== 'list' && (
+                                <IconButton
+                                    size="small"
+                                    onClick={(e) => {
+                                        e.stopPropagation();
+                                        onBookmark?.(job);
+                                    }}
+                                    sx={{
+                                        color: isBookmarked ? 'error.main' : 'text.disabled',
+                                        transition: 'all 0.2s ease-in-out',
+                                        '&:hover': {
+                                            color: isBookmarked ? 'error.dark' : 'text.secondary',
+                                            transform: 'scale(1.1)',
+                                        }
+                                    }}
+                                >
+                                    {isBookmarked ? <Bookmark /> : <BookmarkBorder />}
+                                </IconButton>
+                            )}
                     </Box>
 
 

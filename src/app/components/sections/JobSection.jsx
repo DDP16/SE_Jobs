@@ -4,6 +4,7 @@ import { ArrowForward } from '@mui/icons-material';
 import JobCard from '../features/JobCard';
 import { useSelector, useDispatch } from 'react-redux';
 import { getJobs, getJobById } from '../../modules/services/jobsService';
+import { getSavedJobs, addSavedJob, removeSavedJob } from '../../modules/services/savedJobsService';
 import { useNavigate } from 'react-router-dom';
 
 const EMPTY_PAGINATION = {};
@@ -52,6 +53,8 @@ export default function JobSection() {
     const latestJobs = useSelector(state => state.jobs.jobs);
     const paginationState = useSelector(state => state.jobs.pagination);
     const status = useSelector(state => state.jobs.status);
+    const savedJobs = useSelector(state => state.savedJobs.savedJobs);
+    const currentUser = useSelector(state => state.auth.user);
     const [currentPage, setCurrentPage] = useState(1);
     const jobsPerPage = 9; // 3x3 grid
 
@@ -63,6 +66,13 @@ export default function JobSection() {
     useEffect(() => {
         dispatch(getJobs({ page: currentPage, limit: jobsPerPage, sort_by: "created_at", order: "desc" }));
     }, [dispatch, currentPage]);
+
+    // Fetch saved jobs on mount if user is logged in
+    useEffect(() => {
+        if (currentUser?.id) {
+            dispatch(getSavedJobs());
+        }
+    }, [dispatch, currentUser?.id]);
 
     // Get pagination info from API - memoized
     // API trả về snake_case (total_pages, total) nên cần check cả 2 format
@@ -123,8 +133,23 @@ export default function JobSection() {
     const handleJobAction = (action, job) => {
         switch (action) {
             case 'bookmark':
-                // TODO: Implement bookmark functionality
-                console.log('Bookmark job:', job);
+                if (!currentUser) {
+                    navigate('/login');
+                    return;
+                }
+                if (currentUser.role !== 'Student') {
+                    console.warn('Only students can bookmark jobs');
+                    return;
+                }
+                const jobId = job.id || job.job_id;
+                const isBookmarked = savedJobs.some(savedJob => 
+                    (savedJob.id || savedJob.job_id) === jobId
+                );
+                if (isBookmarked) {
+                    dispatch(removeSavedJob(jobId));
+                } else {
+                    dispatch(addSavedJob(jobId));
+                }
                 break;
             case 'share':
                 // TODO: Implement share functionality
@@ -165,15 +190,22 @@ export default function JobSection() {
                 {/* 3x3 Grid */}
                 {status !== 'loading' && (
                     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6 mb-6">
-                        {transformedJobs.map((job) => (
-                            <div key={job.id} className="h-full">
-                                <JobCard
-                                    job={job}
-                                    onBookmark={(job) => handleJobAction('bookmark', job)}
-                                    onClick={() => handleJobAction('click', job)}
-                                />
-                            </div>
-                        ))}
+                        {transformedJobs.map((job) => {
+                            const jobId = job.id || job.job_id;
+                            const isBookmarked = savedJobs.some(savedJob => 
+                                (savedJob.id || savedJob.job_id) === jobId
+                            );
+                            return (
+                                <div key={job.id} className="h-full">
+                                    <JobCard
+                                        job={job}
+                                        isBookmarked={isBookmarked}
+                                        onBookmark={(job) => handleJobAction('bookmark', job)}
+                                        onClick={() => handleJobAction('click', job)}
+                                    />
+                                </div>
+                            );
+                        })}
                     </div>
                 )}
 

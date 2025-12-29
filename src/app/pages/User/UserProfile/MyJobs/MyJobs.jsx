@@ -20,6 +20,9 @@ import {
 import { useNavigate } from 'react-router-dom';
 import { ProfileSidebar, JobCard } from '../../../../components';
 import { mockJobs } from '../../../../../mocks/mockData';
+import { useEffect } from 'react';
+import { useSelector, useDispatch } from 'react-redux';
+import { getSavedJobs } from '../../../../modules';
 
 // Tab panel component
 function TabPanel({ children, value, index, ...other }) {
@@ -112,11 +115,16 @@ export default function MyJobs() {
     const { t } = useTranslation();
     const theme = useTheme();
     const navigate = useNavigate();
+    const dispatch = useDispatch();
+    const savedJobs = useSelector(state => state.savedJobs?.savedJobs ?? []);
+    useEffect(() => {
+        dispatch(getSavedJobs());
+    }, [dispatch]);
+
     const [activeTab, setActiveTab] = useState(0);
 
     // Mock data - replace with actual API calls
     const [appliedJobs] = useState([]); // Mock: []
-    const [savedJobs] = useState([]); // Mock: []
     const [recentViewedJobs] = useState([mockJobs[0]]); // Mock: [mockJobs[0]]
     const [invitedJobs] = useState([]); // Mock: []
 
