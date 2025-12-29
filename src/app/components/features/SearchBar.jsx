@@ -106,12 +106,17 @@ export default function SearchBar({
         setLocation(initialLocation || DEFAULT_LOCATION);
     }, [initialLocation]);
 
+    const normalizeText = (text) => {
+        return text.trim().replace(/\s+/g, ' ');
+    };
+
     const handleSearch = () => {
+        const normalizedKeyword = normalizeText(keyword);
         if (!location.value) {
-            onSearch({ keyword, location: null });
+            onSearch({ keyword: normalizedKeyword, location: null });
             return;
         }
-        onSearch({ keyword, location });
+        onSearch({ keyword: normalizedKeyword, location });
     };
 
     const handleKeyPress = (event) => {
