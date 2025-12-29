@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { useSelector } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
 import {
     transformExperienceFromAPI,
     transformEducationFromAPI,
@@ -7,12 +7,14 @@ import {
     transformCertificateFromAPI,
     calculateCompletionPercentage
 } from './utils';
+import { getCvsByStudentId } from '../../../../../modules/services/cvService';
 
 export const useProfileData = () => {
+    const dispatch = useDispatch();
     const currentUser = useSelector((state) => state.auth.user);
     const authStatus = useSelector((state) => state.auth.status);
+    const cvsFromStore = useSelector((state) => state.cvs?.cvs || []);
 
-    // User Data - Initialize with safe defaults
     const [user, setUser] = useState({
         name: '',
         email: '',
@@ -24,8 +26,7 @@ export const useProfileData = () => {
         openForOpportunities: false,
     });
 
-    // Profile Data
-    const [cvFile, setCvFile] = useState(null);
+    const [cvs, setCvs] = useState([]);
     const [about, setAbout] = useState('');
     const [experiences, setExperiences] = useState([]);
     const [educations, setEducations] = useState([]);
@@ -34,21 +35,16 @@ export const useProfileData = () => {
     const [certificates, setCertificates] = useState([]);
     const [awards, setAwards] = useState([]);
 
-    // UI State
     const [showAllExperiences, setShowAllExperiences] = useState(false);
     const [showAllEducations, setShowAllEducations] = useState(false);
     const [completionPercentage, setCompletionPercentage] = useState(5);
 
-    // Sync all data from currentUser.student_info when it changes
     useEffect(() => {
-        // IMPORTANT: student_info is an ARRAY, not an object!
         const studentInfo = Array.isArray(currentUser?.student_info)
             ? currentUser.student_info[0]
             : currentUser?.student_info;
 
         if (studentInfo) {
-
-            // Sync user basic info
             setUser(prev => ({
                 ...prev,
                 name: `${currentUser.first_name || ''} ${currentUser.last_name || ''}`.trim() || 'User',
@@ -59,31 +55,24 @@ export const useProfileData = () => {
                 openForOpportunities: studentInfo?.open_for_opportunities === true,
             }));
 
-            // Sync about
             setAbout(studentInfo?.about || '');
-
-            // Sync skills
             setSkills(studentInfo?.skills || []);
 
-            // Sync experiences (API returns 'experiences' array - plural)
             const transformedExperiences = (studentInfo?.experiences || [])
                 .map(transformExperienceFromAPI)
-                .filter(Boolean); // Remove nulls from failed transforms
+                .filter(Boolean);
             setExperiences(transformedExperiences);
 
-            // Sync educations (API returns 'educations' array - plural)
             const transformedEducations = (studentInfo?.educations || [])
                 .map(transformEducationFromAPI)
                 .filter(Boolean);
             setEducations(transformedEducations);
 
-            // Sync projects (API returns 'projects' array - plural)
             const transformedProjects = (studentInfo?.projects || [])
                 .map(transformProjectFromAPI)
                 .filter(Boolean);
             setProjects(transformedProjects);
 
-            // Sync certificates (API returns 'certifications' array - plural)
             const transformedCertificates = (studentInfo?.certifications || [])
                 .map(transformCertificateFromAPI)
                 .filter(Boolean);
@@ -91,7 +80,24 @@ export const useProfileData = () => {
         }
     }, [currentUser]);
 
-    // Calculate completion percentage
+    useEffect(() => {
+        const studentInfo = Array.isArray(currentUser?.student_info)
+            ? currentUser.student_info[0]
+            : currentUser?.student_info;
+        const studentId = studentInfo?.id || studentInfo?.student_id;
+
+        if (studentId) {
+            dispatch(getCvsByStudentId({ studentId }));
+        }
+    }, [currentUser, dispatch]);
+
+    useEffect(() => {
+        const validCvs = Array.isArray(cvsFromStore)
+            ? cvsFromStore.filter(cv => cv != null)
+            : [];
+        setCvs(validCvs);
+    }, [cvsFromStore]);
+
     useEffect(() => {
         const percentage = calculateCompletionPercentage(user, about, experiences, educations, projects, certificates, skills);
         setCompletionPercentage(percentage);
@@ -105,8 +111,8 @@ export const useProfileData = () => {
         currentUser,
         user,
         setUser,
-        cvFile,
-        setCvFile,
+        cvs,
+        setCvs,
         about,
         setAbout,
         experiences,

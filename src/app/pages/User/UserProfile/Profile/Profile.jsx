@@ -68,7 +68,7 @@ export default function Profile() {
 
     const {
         user,
-        cvFile,
+        cvs,
         about,
         experiences,
         educations,
@@ -165,10 +165,11 @@ export default function Profile() {
                             transition={{ duration: 0.5, delay: 0.2 }}
                         >
                             <CVUpload
-                                cvFile={cvFile}
+                                cvs={cvs}
                                 onFileChange={handlers.handleCVFileChange}
                                 onDelete={handlers.handleDeleteCV}
-                                onView={() => handlers.handleViewCV(cvFile)}
+                                onView={handlers.handleViewCV}
+                                onUpdateTitle={handlers.handleUpdateCVTitle}
                             />
                         </motion.div>
 
@@ -267,7 +268,7 @@ export default function Profile() {
                     </Box>
 
                     {/* Right Sidebar - Completion (hidden on small screens) */}
-                    <Box 
+                    <Box
                         component={motion.div}
                         initial={{ opacity: 0, x: 20 }}
                         animate={{ opacity: 1, x: 0 }}
@@ -276,11 +277,11 @@ export default function Profile() {
                     >
                         {/* Open for Opportunities Toggle */}
                         <Box sx={{ width: { xs: '100%', sm: 300 }, position: { xs: 'static', sm: 'sticky' }, top: { sm: 20 }, mb: { xs: 3, sm: 0 } }}>
-                            <Box sx={{ 
-                                bgcolor: 'background.paper', 
-                                p: { xs: 2.5, sm: 4 }, 
-                                borderRadius: 2, 
-                                border: 1, 
+                            <Box sx={{
+                                bgcolor: 'background.paper',
+                                p: { xs: 2.5, sm: 4 },
+                                borderRadius: 2,
+                                border: 1,
                                 borderColor: 'divider',
                                 mb: 2
                             }}>
@@ -288,7 +289,7 @@ export default function Profile() {
                                     <Typography variant="body1" sx={{ fontWeight: 500 }}>
                                         {t("profile.open_for_opportunities")}
                                     </Typography>
-                                    <Box 
+                                    <Box
                                         onClick={() => handlers.handleToggleOpenForOpportunities(!openForOpportunities)}
                                         sx={{
                                             width: 50,
@@ -320,7 +321,7 @@ export default function Profile() {
                                 </Box>
                             </Box>
                         </Box>
-                        
+
                         <motion.div
                             initial={{ opacity: 0, scale: 0.95 }}
                             animate={{ opacity: 1, scale: 1 }}
