@@ -28,3 +28,4 @@ export { getProjectsByStudentId, getProject, createProject, updateProject, delet
 export { getCertificatesByStudentId, getCertificate, createCertificate, updateCertificate, deleteCertificate } from "./services/certificateService";
 export { getExperiencesByStudentId, getExperienceById, createExperience, updateExperience, deleteExperience } from "./services/experiencesService";
 export { getEducationByStudentId, getEducation, createEducation, updateEducation, deleteEducation } from "./services/educationsService";
+export { getCvs, getCvsByStudentId, getCvById, createCv, updateCv, deleteCv } from "./services/cvService";

@@ -16,6 +16,7 @@ import mediaReducer from "./app/modules/services/mediaService";
 import projectsReducer from "./app/modules/services/projectsService";
 import certificatesReducer from "./app/modules/services/certificateService";
 import experiencesReducer from "./app/modules/services/experiencesService";
+import cvsReducer from "./app/modules/services/cvService";
 
 export default configureStore({
   reducer: {
@@ -36,5 +37,6 @@ export default configureStore({
     projects: projectsReducer,
     certificates: certificatesReducer,
     experiences: experiencesReducer,
+    cvs: cvsReducer,
   },
 });
