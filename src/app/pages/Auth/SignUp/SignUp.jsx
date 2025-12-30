@@ -43,8 +43,10 @@ export default function SignUp() {
       setEmailError("");
     }
 
-    if (!password || !validatePassword(password)) {
-      setPasswordError("Password must be at least 8 characters.");
+    const resultValidatePassword = validatePassword(password);
+
+    if (!password || resultValidatePassword.length > 0) {
+      setPasswordError(resultValidatePassword.join("\n"));
       valid = false;
     } else {
       setPasswordError("");
@@ -73,7 +75,7 @@ export default function SignUp() {
 
     if (valid) {
       try {
-        const result = await dispatch(register({ email, password, first_name: firstname, last_name: lastname }));
+        const result = await dispatch(register({ email, password, confirm_password: confirmPassword, first_name: firstname, last_name: lastname }));
         if (register.fulfilled.match(result)) {
           showSuccess("Registration successful! Please sign in.");
           delay(() => {nav("/signin");}, 1000);
@@ -193,7 +195,9 @@ export default function SignUp() {
               </button>
             </div>
             {passwordError && (
-              <p className="text-xs text-red-500 mt-1">{passwordError}</p>
+              passwordError.split('\n').map((err, idx) => (
+                <p key={idx} className="text-xs text-red-500 mt-1">{err}</p>
+              ))
             )}
           </div>
 
