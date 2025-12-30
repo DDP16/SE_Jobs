@@ -50,7 +50,7 @@ export default function JobListSection({ onJobSelect, selectedJob }) {
     const paginationTopCV = useSelector(state => state.topCVJobs?.pagination || {});
     const statusTopCV = useSelector(state => state.topCVJobs?.status);
 
-    const handleJobAction = (action, job) => {
+    const handleJobAction = (action, job, meta) => {
         switch (action) {
             case 'bookmark':
                 if (!currentUser) {
@@ -61,11 +61,10 @@ export default function JobListSection({ onJobSelect, selectedJob }) {
                     console.warn('Only students can bookmark jobs');
                     return;
                 }
-                const jobId = job.id || job.job_id;
-                const isBookmarked = savedJobs.some(savedJob => 
-                    (savedJob.id || savedJob.job_id) === jobId
-                );
-                if (isBookmarked) {
+                const jobId = meta?.jobId || job.id;
+                const actionType = meta?.action;
+                if (!jobId) return;
+                if (actionType === 'unsave') {
                     dispatch(removeSavedJob(jobId));
                 } else {
                     dispatch(addSavedJob(jobId));
@@ -198,7 +197,7 @@ export default function JobListSection({ onJobSelect, selectedJob }) {
                                             variant="list"
                                             showPopup={false}
                                             isBookmarked={isBookmarked}
-                                            onBookmark={(job) => handleJobAction('bookmark', job)}
+                                            onBookmark={(job, meta) => handleJobAction('bookmark', job, meta)}
                                             onClick={() => onJobSelect?.(job)}
                                         />
                                     </Box>
@@ -265,7 +264,7 @@ export default function JobListSection({ onJobSelect, selectedJob }) {
                                             job={job}
                                             variant="list"
                                             showPopup={false}
-                                            onBookmark={(job) => handleJobAction('bookmark', job)}
+                                            onBookmark={(job, meta) => handleJobAction('bookmark', job, meta)}
                                             onClick={() => onJobSelect?.(job)}
                                         />
                                     </Box>

@@ -130,22 +130,17 @@ export default function JobSection() {
         return latestJobs.map(transformJobData).filter(Boolean);
     }, [latestJobs]);
 
-    const handleJobAction = (action, job) => {
+    const handleJobAction = (action, job, meta) => {
         switch (action) {
             case 'bookmark':
                 if (!currentUser) {
                     navigate('/login');
                     return;
                 }
-                if (currentUser.role !== 'Student') {
-                    console.warn('Only students can bookmark jobs');
-                    return;
-                }
-                const jobId = job.id || job.job_id;
-                const isBookmarked = savedJobs.some(savedJob => 
-                    (savedJob.id || savedJob.job_id) === jobId
-                );
-                if (isBookmarked) {
+                const jobId = meta?.jobId || job.id;
+                const actionType = meta?.action;
+                if (!jobId) return;
+                if (actionType === 'unsave') {
                     dispatch(removeSavedJob(jobId));
                 } else {
                     dispatch(addSavedJob(jobId));
@@ -200,7 +195,7 @@ export default function JobSection() {
                                     <JobCard
                                         job={job}
                                         isBookmarked={isBookmarked}
-                                        onBookmark={(job) => handleJobAction('bookmark', job)}
+                                        onBookmark={(job, meta) => handleJobAction('bookmark', job, meta)}
                                         onClick={() => handleJobAction('click', job)}
                                     />
                                 </div>
