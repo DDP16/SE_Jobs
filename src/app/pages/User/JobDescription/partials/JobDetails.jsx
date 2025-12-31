@@ -49,9 +49,9 @@ export default function JobDetails({ job }) {
   const parseStringToArray = (value) => {
     if (Array.isArray(value)) return value;
     if (typeof value === 'string' && value.trim()) {
-      // Split by HTML breaks OR newlines and clean
-      // Regex: <br optional-spaces optional-slash > OR newline
-      return value.split(/(<br\s*\/?>|\n)/)
+      // Split by HTML breaks OR newlines and clean (ignore the break tokens themselves)
+      return value
+        .split(/<br\s*\/?>(?:\s*)?|\n/)
         .map(line => line.trim())
         .filter(line => line.length > 0);
     }

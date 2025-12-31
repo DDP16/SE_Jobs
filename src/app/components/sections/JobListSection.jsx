@@ -1,5 +1,6 @@
 import React, { useState, useRef, useEffect, use } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
+import { useNavigate } from 'react-router-dom';
 import {
     Box,
     Typography,
@@ -13,12 +14,14 @@ import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
 import JobCard from '../features/JobCard';
 import { mockJobs } from '../../../mocks/mockData';
 import { getJobs, getTopCVJobs } from '../../modules';
+import { getSavedJobs, addSavedJob, removeSavedJob } from '../../modules/services/savedJobsService';
 import { Pagination, Spin } from 'antd';
 import { LoadingOutlined } from '@ant-design/icons';
 import useSearch from '../../hooks/useSearch';
 
 export default function JobListSection({ onJobSelect, selectedJob }) {
     const dispatch = useDispatch();
+    const navigate = useNavigate();
     const [currentPage, setCurrentPage] = useState(1);
     const [pageSize, setPageSize] = useState(9);
     const [currentTopCVPage, setCurrentTopCVPage] = useState(1);
@@ -29,6 +32,8 @@ export default function JobListSection({ onJobSelect, selectedJob }) {
     const status = useSelector(state => state.jobs?.status ?? 'idle');
     const jobsList = useSelector(state => state.jobs?.jobs ?? mockJobs);
     const pagination = useSelector(state => state.jobs?.pagination ?? {});
+    const savedJobs = useSelector(state => state.savedJobs.savedJobs);
+    const currentUser = useSelector(state => state.auth.user);
 
     // Debug: Log Redux state
     // useEffect(() => {
@@ -45,8 +50,29 @@ export default function JobListSection({ onJobSelect, selectedJob }) {
     const paginationTopCV = useSelector(state => state.topCVJobs?.pagination || {});
     const statusTopCV = useSelector(state => state.topCVJobs?.status);
 
-    const handleJobAction = (action, job) => {
-        console.log('Job action:', action, job);
+    const handleJobAction = (action, job, meta) => {
+        switch (action) {
+            case 'bookmark':
+                if (!currentUser) {
+                    navigate('/login');
+                    return;
+                }
+                if (currentUser.role !== 'Student') {
+                    console.warn('Only students can bookmark jobs');
+                    return;
+                }
+                const jobId = meta?.jobId || job.id;
+                const actionType = meta?.action;
+                if (!jobId) return;
+                if (actionType === 'unsave') {
+                    dispatch(removeSavedJob(jobId));
+                } else {
+                    dispatch(addSavedJob(jobId));
+                }
+                break;
+            default:
+                console.log('Job action:', action, job);
+        }
     };
 
     useEffect(() => {
@@ -56,6 +82,13 @@ export default function JobListSection({ onJobSelect, selectedJob }) {
     useEffect(() => {
         dispatch(getTopCVJobs({ ...queryParams, page: currentTopCVPage, limit: pageTopCVSize }));
     }, [currentTopCVPage, pageTopCVSize, queryParams]);
+
+    // Fetch saved jobs on mount if user is logged in
+    useEffect(() => {
+        if (currentUser?.id) {
+            dispatch(getSavedJobs());
+        }
+    }, [dispatch, currentUser?.id]);
 
     useEffect(() => {
         setCurrentPage(1);
@@ -139,6 +172,9 @@ export default function JobListSection({ onJobSelect, selectedJob }) {
                             {jobsList.map((job) => {
                                 const keyId = job.id ?? job.job_id ?? job.jobId ?? job._id;
                                 const isSelected = selectedJob && ((selectedJob?.id ?? selectedJob?.job_id ?? selectedJob?.jobId ?? selectedJob?._id) === keyId);
+                                const isBookmarked = savedJobs.some(savedJob => 
+                                    (savedJob.id || savedJob.job_id) === keyId
+                                );
 
                                 return (
                                     <Box
@@ -160,7 +196,8 @@ export default function JobListSection({ onJobSelect, selectedJob }) {
                                             job={job}
                                             variant="list"
                                             showPopup={false}
-                                            onBookmark={(job) => handleJobAction('bookmark', job)}
+                                            isBookmarked={isBookmarked}
+                                            onBookmark={(job, meta) => handleJobAction('bookmark', job, meta)}
                                             onClick={() => onJobSelect?.(job)}
                                         />
                                     </Box>
@@ -227,7 +264,7 @@ export default function JobListSection({ onJobSelect, selectedJob }) {
                                             job={job}
                                             variant="list"
                                             showPopup={false}
-                                            onBookmark={(job) => handleJobAction('bookmark', job)}
+                                            onBookmark={(job, meta) => handleJobAction('bookmark', job, meta)}
                                             onClick={() => onJobSelect?.(job)}
                                         />
                                     </Box>

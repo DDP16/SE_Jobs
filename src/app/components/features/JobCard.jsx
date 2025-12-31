@@ -1,4 +1,4 @@
-import React, { useState, useRef, useCallback, useMemo } from 'react';
+import React, { useState, useRef, useCallback, useMemo, useEffect } from 'react';
 import {
     Box,
     Typography,
@@ -39,7 +39,6 @@ const normalizeUrl = (url, website_url) => {
 
 const getJobId = (job) => job.id || job.job_id || job.jobId || job._id;
 
-// Helper function to check if value is a placeholder "string"
 const isValidValue = (value) => {
     if (!value) return false;
     if (typeof value === 'string') {
@@ -48,8 +47,6 @@ const isValidValue = (value) => {
     }
     return true;
 };
-
-// Removed openExternalUrl - TopCV jobs now navigate to internal TopCVDescription page
 
 const getTimeAgo = (dateString) => {
     if (!dateString) return null;
@@ -70,11 +67,75 @@ const getTimeAgo = (dateString) => {
     }
 };
 
+const normalizeNumber = (value) => {
+    if (value === null || value === undefined) return null;
+    const cleaned = String(value).replace(/[^\d]/g, '');
+    if (!cleaned) return null;
+    return parseInt(cleaned, 10);
+};
+
+const formatSalary = (amount, shouldFormatVnd = false) => {
+    const normalized = normalizeNumber(amount);
+    if (normalized === null || Number.isNaN(normalized)) return '';
+    
+    if (shouldFormatVnd) {
+        // 1 triệu = 1,000,000 VND
+        const millions = normalized / 1_000_000;
+        if (millions >= 1) {
+            const display = Number.isInteger(millions) ? millions : millions.toFixed(1);
+            return `${display} triệu`;
+        }
+    }
+    
+    // Default: format with comma separator (e.g., 1,000,000)
+    return normalized.toLocaleString('en-US');
+};
+
+const tryParseSalaryText = (text) => {
+    if (!text || typeof text !== 'string') return null;
+    const numberGroups = text.match(/[\d.,]+/g);
+    if (!numberGroups || numberGroups.length === 0) return null;
+
+    const [fromRaw, toRaw] = numberGroups;
+    const from = normalizeNumber(fromRaw);
+    const to = normalizeNumber(toRaw);
+
+    if ((from === null || Number.isNaN(from)) && (to === null || Number.isNaN(to))) return null;
+
+    const currencyHint = /vnd|₫/i.test(text) ? 'VND' : null;
+    return { from, to, currencyHint };
+};
+
+// ============================================================================
+// Bookmark Button Component
+// ============================================================================
+
+const BookmarkButton = ({ isBookmarked, onClick, size = 'small' }) => (
+    <IconButton
+        size={size}
+        onClick={onClick}
+        sx={{
+            color: isBookmarked ? 'error.main' : 'text.disabled',
+            transition: 'all 0.2s ease-in-out',
+            '&:hover': {
+                color: isBookmarked ? 'error.dark' : 'text.secondary',
+                transform: 'scale(1.1)',
+            }
+        }}
+    >
+        {isBookmarked ? <Bookmark /> : <BookmarkBorder />}
+    </IconButton>
+);
+
+// ============================================================================
+// Main Component
+// ============================================================================
+
 export default function JobCard({
     job = {},
     onBookmark,
     onClick,
-    isBookmarked = false,
+    isBookmarked,
     showPopup = true,
     variant = 'grid'
 }) {
@@ -127,23 +188,33 @@ export default function JobCard({
     }, []);
 
 
-    const normalizedJob = useMemo(() => {
-        let locationFromBranch = null;
-        if (job.company_branches) {
-            const { ward, province, country } = job.company_branches;
-            const parts = [province?.name, ward?.name].filter(Boolean);
-            locationFromBranch = parts.length > 0 ? parts.join(', ') : null;
-        }
+    // Extract location from company branches
+    const getLocationFromBranch = useCallback(() => {
+        if (!job.company_branches) return null;
+        const { ward, province } = job.company_branches;
+        const parts = [province?.name, ward?.name].filter(Boolean);
+        return parts.length > 0 ? parts.join(', ') : null;
+    }, [job.company_branches]);
 
+    // Extract locations array
+    const getLocationsArray = useCallback((locationFromBranch) => {
+        if (locationFromBranch) return [locationFromBranch];
+        if (Array.isArray(job.locations) && job.locations.length > 0) return job.locations;
+        if (Array.isArray(job.workLocation) && job.workLocation.length > 0) return job.workLocation;
+        if (job.location) return [job.location];
+        if (job.shortCity) return [job.shortCity];
+        return [];
+    }, [job.locations, job.workLocation, job.location, job.shortCity]);
+
+    const normalizedJob = useMemo(() => {
+        const locationFromBranch = getLocationFromBranch();
+        
         return {
             title: job.title || "Job Title",
             company: job.company,
-            location: locationFromBranch
-                || (Array.isArray(job.locations) && job.locations.length > 0 ? job.locations[0] : null) // TopCV locations
-
-                || job.shortCity,
-            type: job.type || (Array.isArray(job.employment_types) && job.employment_types.length > 0
-                ? job.employment_types.map(et => et.name || et).join(', ')
+            location: locationFromBranch || (Array.isArray(job.locations) && job.locations[0]) || job.shortCity,
+            type: job.type || (Array.isArray(job.employment_types) 
+                ? job.employment_types.map(et => et.name || et).join(', ') 
                 : null),
             salary_text: job.salary_text || job.salary?.text,
             salary_from: job.salary_from ?? job.salary?.from,
@@ -153,23 +224,17 @@ export default function JobCard({
             url: normalizeUrl(job.url, job.website_url),
             updatedAt: job.updatedAt || job.updated_at,
             publish: job.publish || job.created_at,
-            experience: job.experience || (Array.isArray(job.levels) && job.levels.length > 0
-                ? job.levels.map(l => l.name || l).join(', ')
+            experience: job.experience || (Array.isArray(job.levels) 
+                ? job.levels.map(l => l.name || l).join(', ') 
                 : null),
-            locations: locationFromBranch // system locations
-                ? [locationFromBranch]
-                : (Array.isArray(job.locations) && job.locations.length > 0
-                    ? job.locations
-                    : (Array.isArray(job.workLocation) && job.workLocation.length > 0
-                        ? job.workLocation
-                        : (job.location ? [job.location] : (job.shortCity ? [job.shortCity] : [])))),
+            locations: getLocationsArray(locationFromBranch),
             description: job.description,
             responsibilities: job.responsibilities || [],
             requirements: job.requirement ? job.requirement.split(/(<br\s*\/?>|\n)/) : [],
             requirement: job.requirement || [],
             nice_to_haves: job.nice_to_haves ? job.nice_to_haves.split(/(<br\s*\/?>|\n)/) : [],
             niceToHaves: job.niceToHaves || [],
-            working_time: job.working_time || (Array.isArray(job.workingTime) && job.workingTime.length > 0 ? job.workingTime.join(', ') : null),
+            working_time: job.working_time || (Array.isArray(job.workingTime) ? job.workingTime.join(', ') : null),
             logo: job.logo,
             isFeatured: job.isFeatured,
             is_diamond: job.is_diamond || job.isDiamond,
@@ -180,7 +245,7 @@ export default function JobCard({
             position: job.position,
             quantity: job.quantity
         };
-    }, [job]);
+    }, [job, getLocationFromBranch, getLocationsArray]);
 
     const {
         title,
@@ -210,41 +275,100 @@ export default function JobCard({
         publish
     } = normalizedJob;
 
+    // Company information
     const companyName = typeof companyData === 'string'
         ? companyData
         : companyData?.name || "Company Name";
-
     const companyLogoUrl = logo || companyData?.logo;
     const companyLogoInitial = "SE";
 
-    const displaySalary = useMemo(() => {
-        if (isValidValue(salary_text)) {
-            return salary_text;
+    // Bookmark state management (optimistic updates)
+    const bookmarked = useMemo(() => {
+        if (job?.isSaved !== undefined && job?.isSaved !== null) {
+            return Boolean(job.isSaved);
         }
-        if (salary_from && salary_to && isValidValue(salary_from) && isValidValue(salary_to)) {
-            return `${salary_from} - ${salary_to} ${salary_currency || ''}`.trim();
+        return Boolean(isBookmarked);
+    }, [job?.isSaved, isBookmarked]);
+
+    const [localBookmarked, setLocalBookmarked] = useState(bookmarked);
+
+    useEffect(() => {
+        setLocalBookmarked(bookmarked);
+    }, [bookmarked]);
+
+    // Theme colors based on job source - calculate early since displaySalary depends on it
+    const isTopCV = useMemo(() => 
+        jobUrl && typeof jobUrl === 'string' && jobUrl.includes('topcv.vn'), 
+        [jobUrl]
+    );
+
+ const formatNumber = (num) => {
+    return num.toLocaleString('en-US');
+};
+
+const formatVND = (amount) => {
+    const num = Number(amount);
+    if (isNaN(num) || num === 0) return null;
+    
+    if (num >= 1000000) {
+        const millions = num / 1000000;
+        return `${formatNumber(millions)} Triệu`;
+    }
+    return formatNumber(num);
+};
+
+const formatSalaryValue = (value, isVND) => {
+    if (!isValidValue(value)) return null;
+    const num = Number(value);
+    if (isNaN(num) || num === 0) return null;
+    return isVND ? formatVND(num) : formatNumber(num);
+};
+
+const displaySalary = useMemo(() => {
+    // TopCV data - return as is
+    if (isTopCV && isValidValue(salary_text)) {
+        return salary_text;
+    }
+
+    const currency = (salary_currency || '').trim();
+    const isVND = /vnd|₫/i.test(currency) || /vnd|₫/i.test(salary_text || '');
+    const currencySuffix = isVND ? '' : ` ${currency || 'VND'}`;
+
+    // Try parsing salary_text first
+    if (isValidValue(salary_text)) {
+        const parsed = tryParseSalaryText(salary_text);
+        if (parsed) {
+            const from = formatSalaryValue(parsed.from, isVND);
+            const to = formatSalaryValue(parsed.to, isVND);
+            
+            // Both are 0 or invalid
+            if (!from && !to) return "Thỏa thuận";
+            
+            if (from && to) return `${from} - ${to}${currencySuffix}`;
+            if (from) return `Từ ${from}${currencySuffix}`;
+            if (to) return `Lên đến ${to}${currencySuffix}`;
         }
-        if (salary_from && isValidValue(salary_from)) {
-            return `${salary_from} ${salary_currency || ''}`.trim();
-        }
-        return "Salary not specified";
-    }, [salary_text, salary_from, salary_to, salary_currency]);
+        return salary_text;
+    }
+    
+    // Use salary_from and salary_to
+    const from = formatSalaryValue(salary_from, isVND);
+    const to = formatSalaryValue(salary_to, isVND);
+    
+    // Both are 0 or invalid
+    if (!from && !to) return "Thỏa thuận";
+    
+    if (from && to) return `${from} - ${to}${currencySuffix}`;
+    if (from) return `Từ ${from}${currencySuffix}`;
+    if (to) return `Lên đến ${to}${currencySuffix}`;
+    
+    return "Thỏa thuận";
+}, [salary_text, salary_from, salary_to, salary_currency, isTopCV]);
 
-    const isTopCV = useMemo(() => {
-        return jobUrl && typeof jobUrl === 'string' && jobUrl.includes('topcv.vn');
-    }, [jobUrl]);
 
-    const primaryColor = useMemo(() => {
-        return isTopCV ? '#00B14F' : '#1976d2';
-    }, [isTopCV]);
-
-    const primaryLightColor = useMemo(() => {
-        return isTopCV ? '#00B14F' : theme.palette.primary.light;
-    }, [isTopCV, theme.palette.primary.light]);
-
-    const primaryDarkColor = useMemo(() => {
-        return isTopCV ? '#008B3D' : theme.palette.primary.dark;
-    }, [isTopCV, theme.palette.primary.dark]);
+    const primaryColor = isTopCV ? '#00B14F' : '#1976d2';
+    const primaryLightColor = isTopCV ? '#00B14F' : theme.palette.primary.light;
+    const primaryDarkColor = isTopCV ? '#008B3D' : theme.palette.primary.dark;
 
     const isJobFeatured = useMemo(() => {
         const jobCreatedAt = created_at || createdAt;
@@ -299,6 +423,28 @@ export default function JobCard({
         const timeout = setTimeout(() => setIsHovered(false), closeDelay);
         setHoverTimeout(timeout);
     }, [hoverTimeout, closeDelay]);
+
+    const handleBookmarkClick = useCallback((e) => {
+        e?.stopPropagation();
+        
+        if (typeof onBookmark !== 'function') return;
+        
+        // Optimistic update
+        const nextState = !localBookmarked;
+        setLocalBookmarked(nextState);
+        
+        // Call backend
+        const jobId = getJobId(job);
+        const action = nextState ? 'save' : 'unsave';
+        
+        try {
+            onBookmark(job, { action, jobId });
+        } catch (err) {
+            console.error('Bookmark toggle error:', err);
+            // Revert on error
+            setLocalBookmarked(!nextState);
+        }
+    }, [localBookmarked, job, onBookmark]);
 
     const hoverProps = showPopup && !isSmall ? {
         onMouseEnter: handleHoverStart,
@@ -367,7 +513,7 @@ export default function JobCard({
                                 )}
                                 {isJobFeatured && (
                                     <Chip
-                                        label="HOT"
+                                        label="New"
                                         size="small"
                                         sx={{
                                             bgcolor: '#FF6B2C',
@@ -382,23 +528,13 @@ export default function JobCard({
                                         }}
                                     />
                                 )}
-                                <IconButton
-                                    size="small"
-                                    onClick={(e) => {
-                                        e.stopPropagation();
-                                        onBookmark?.(job);
-                                    }}
-                                    sx={{
-                                        color: isBookmarked ? 'error.main' : 'text.disabled',
-                                        transition: 'all 0.2s ease-in-out',
-                                        '&:hover': {
-                                            color: isBookmarked ? 'error.dark' : 'text.secondary',
-                                            transform: 'scale(1.1)',
-                                        }
-                                    }}
-                                >
-                                    {isBookmarked ? <Bookmark /> : <BookmarkBorder />}
-                                </IconButton>
+                                {!isTopCV && (
+                                    <BookmarkButton
+                                        isBookmarked={localBookmarked}
+                                        onClick={handleBookmarkClick}
+                                    />
+                                )}
+
                             </div>
                         </Box>
                     )}
@@ -478,26 +614,12 @@ export default function JobCard({
 
 
                         </Box>
-
-                        {variant !== 'list' && (
-                            <IconButton
-                                size="small"
-                                onClick={(e) => {
-                                    e.stopPropagation();
-                                    onBookmark?.(job);
-                                }}
-                                sx={{
-                                    color: isBookmarked ? 'error.main' : 'text.disabled',
-                                    transition: 'all 0.2s ease-in-out',
-                                    '&:hover': {
-                                        color: isBookmarked ? 'error.dark' : 'text.secondary',
-                                        transform: 'scale(1.1)',
-                                    }
-                                }}
-                            >
-                                {isBookmarked ? <Bookmark /> : <BookmarkBorder />}
-                            </IconButton>
-                        )}
+                            {!isTopCV && variant !== 'list' && (
+                                <BookmarkButton
+                                    isBookmarked={localBookmarked}
+                                    onClick={handleBookmarkClick}
+                                />
+                            )}
                     </Box>
 
 
