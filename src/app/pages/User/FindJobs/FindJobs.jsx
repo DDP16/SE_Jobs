@@ -54,6 +54,7 @@ export default function FindJobs() {
         handleApplyFilters,
         handleQuickFilter,
         handleClearFilter,
+        handleClearFilterAll,
         handleQuickFilterChange,
         openFilter,
         closeFilter,
@@ -106,6 +107,7 @@ export default function FindJobs() {
                         <JobListSection
                             onPageChange={handlePageChange}
                             onJobSelect={handleJobSelect}
+                            onClearFilters={handleClearFilterAll}
                             selectedJob={selectedJob}
                         />
                     </Box>

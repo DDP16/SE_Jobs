@@ -301,6 +301,44 @@ export const resetPassword = createAsyncThunk(
   }
 );
 
+export const changePassword = createAsyncThunk(
+  "auth/password/change",
+  async ({ old_password, new_password }, { rejectWithValue }) => {
+    const reqData = { old_password, new_password };
+    try {
+      const result = await new Promise((resolve, reject) => {
+        post(
+          "/api/auth/password/change",
+          reqData,
+          async (res) => {
+            try {
+              const data = await res.json();
+              if (res.ok) {
+                resolve(data);
+              } else {
+                reject(data.message || "Change password failed");
+              }
+            } catch (error) {
+              reject(error.message || "Change password processing error");
+            }
+          },
+          async (res) => {
+            try {
+              const data = await res.json();
+              reject(data.message || "Change password failed");
+            } catch (error) {
+              reject("Change password failed");
+            }
+          }
+        );
+      });
+      return result;
+    } catch (error) {
+      return rejectWithValue(error);
+    }
+  }
+);
+
 const authStorage = getAuthStorage();
 
 const authSlice = createSlice({
@@ -408,6 +446,18 @@ const authSlice = createSlice({
         state.error = null;
       })
       .addCase(resetPassword.rejected, (state, action) => {
+        state.status = "failed";
+        state.error = action.payload;
+      })
+      .addCase(changePassword.pending, (state) => {
+        state.status = "loading";
+        state.error = null;
+      })
+      .addCase(changePassword.fulfilled, (state, action) => {
+        state.status = "succeeded";
+        state.error = null;
+      })
+      .addCase(changePassword.rejected, (state, action) => {
         state.status = "failed";
         state.error = action.payload;
       });

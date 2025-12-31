@@ -40,8 +40,10 @@ export default function SignIn() {
       setEmailError("");
     }
 
-    if (!password || !validatePassword(password)) {
-      setPasswordError("Password must be at least 6 characters.");
+    const resultValidatePassword = validatePassword(password);
+
+    if (!password || resultValidatePassword.length > 0) {
+      setPasswordError(resultValidatePassword.join("\n"));
       valid = false;
     } else {
       setPasswordError("");

@@ -164,6 +164,7 @@ export default function SearchBar({
                         onChange={(event, newValue) => {
                             setLocation(newValue || DEFAULT_LOCATION);
                         }}
+                        clearIcon={location === DEFAULT_LOCATION ? null : undefined}
                         isOptionEqualToValue={(option, value) => option.value === value.value}
                         getOptionLabel={(option) => option?.label || ''}
                         renderInput={(params) => (
@@ -178,9 +179,6 @@ export default function SearchBar({
                                             <LocationOn color="action" />
                                         </InputAdornment>
                                     ),
-                                }}
-                                inputProps={{
-                                    ...params.inputProps,
                                 }}
                             />
                         )}

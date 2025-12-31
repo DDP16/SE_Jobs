@@ -17,7 +17,7 @@ import { Pagination, Spin } from 'antd';
 import { LoadingOutlined } from '@ant-design/icons';
 import useSearch from '../../hooks/useSearch';
 
-export default function JobListSection({ onJobSelect, selectedJob }) {
+export default function JobListSection({ onJobSelect, selectedJob, onClearFilters }) {
     const dispatch = useDispatch();
     const [currentPage, setCurrentPage] = useState(1);
     const [pageSize, setPageSize] = useState(9);
@@ -175,7 +175,7 @@ export default function JobListSection({ onJobSelect, selectedJob }) {
                             <Typography variant="body2" sx={{ mb: 3, color: 'text.secondary' }}>
                                 Try adjusting your search criteria or filters
                             </Typography>
-                            <Button variant="outlined" onClick={() => window.location.reload()}>
+                            <Button variant="outlined" onClick={onClearFilters}>
                                 Clear Filters
                             </Button>
                         </Box>

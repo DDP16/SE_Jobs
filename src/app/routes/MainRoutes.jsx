@@ -37,7 +37,7 @@ export default function MainRoutes() {
 
   return (
     <ThemeProvider>
-      {isLoading ? (
+      {isLoading && isAuthenticated && !user ? (
         <div className="flex items-center justify-center min-h-screen">
           <Spin indicator={<LoadingOutlined spin />} size="large" />
         </div>

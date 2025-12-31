@@ -146,6 +146,19 @@ export default function useSearch() {
         updateQueryParams(updates);
     }, [updateQueryParams]);
 
+    const handleClearFilterAll = useCallback(() => {
+        const params = new URLSearchParams(location.search);
+        const searchParams = new URLSearchParams();
+        searchParams.set('page', '1');
+        if (params.get("keyword")) {
+            searchParams.set('keyword', params.get("keyword"));
+        }
+        if (params.get("city_id")) {
+            searchParams.set('city_id', params.get("city_id"));
+        }
+        navigate(`/jobs${searchParams.toString() ? '?' + searchParams.toString() : ''}`);
+    });
+
     // ---------------------------
     // 5. COUNT ACTIVE FILTERS
     // ---------------------------
@@ -199,6 +212,7 @@ export default function useSearch() {
         handleApplyFilters,
         handleQuickFilterChange,
         handleClearFilter,
+        handleClearFilterAll,
         handlePageChange,
         openFilter,
         closeFilter,

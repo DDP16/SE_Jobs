@@ -132,9 +132,12 @@ export default function CompanySignUp() {
     if (!password) {
       setPasswordError("Mật khẩu không được để trống");
       valid = false;
-    } else if (!validatePassword(password)) {
-      setPasswordError("Mật khẩu phải có từ 6 đến 25 ký tự");
-      valid = false;
+    } else {
+      const passwordErrors = validatePassword(password);
+      if (passwordErrors.length > 0) {
+        setPasswordError(passwordErrors.join("\n"));
+        valid = false;
+      }
     }
 
     // Validate confirm password

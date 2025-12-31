@@ -1,15 +1,35 @@
 import { motion } from "framer-motion";
-import { Check, Info } from "lucide-react";
+import { Check, Eye, EyeOff, Info } from "lucide-react";
 import { useState, useEffect } from "react";
 import { useTranslation } from "react-i18next";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { getToken } from "@/modules/utils/encryption";
 import { TOKEN } from "src/settings/localVar";
+import { changePassword, validatePassword } from "../../../../../modules";
+import { notification } from "antd";
 
 export default function AccountTab() {
   const { t } = useTranslation();
   const currentUser = useSelector((state) => state.auth.user);
   const userEmail = currentUser?.email || "";
+  const [showCurrentPassword, setShowCurrentPassword] = useState(false);
+  const [showNewPassword, setShowNewPassword] = useState(false);
+  const dispatch = useDispatch();
+  const [currentPassword, setCurrentPassword] = useState("");
+  const [newPassword, setNewPassword] = useState("");
+
+  const [api, contextHolder] = notification.useNotification({
+    stack: { threshold: 3, },
+  });
+
+  function openNotification(title, description, type = 'info') {
+    api[type]({
+      title: title,
+      description: description,
+      showProgress: true,
+      pauseOnHover: true,
+    });
+  };
 
   // Get token from localStorage
   const [token, setToken] = useState(null);
@@ -30,6 +50,32 @@ export default function AccountTab() {
     }
   }, []);
 
+  const handleChangePassword = async () => {
+    let valid = true;
+    const newPasswordErrors = validatePassword(newPassword);
+    if (newPasswordErrors.length > 0) {
+      openNotification(t("setting.new_password_invalid"), t("setting.password_requirements"), "error");
+      valid = false;
+    }
+    
+    const currentPasswordErrors = validatePassword(currentPassword);
+    if (currentPasswordErrors.length > 0) {
+      openNotification(t("setting.current_password_invalid"), t("setting.password_requirements"), "error");
+      valid = false;
+    }
+
+    if (!valid) return;
+    const result = await dispatch(changePassword({ old_password: currentPassword, new_password: newPassword }));
+    if (changePassword.fulfilled.match(result)) {
+      console.log("Password changed successfully: ", result.payload);
+      openNotification(t("setting.password_change_success"), "", "success");
+      setCurrentPassword("");
+      setNewPassword("");
+    } else {
+      console.error("Password change failed: ", result);
+      openNotification(t("setting.password_change_failed"), result.payload || "Unknown error", "error");
+    }
+  }
 
   return (
     <motion.div
@@ -38,6 +84,7 @@ export default function AccountTab() {
       transition={{ duration: 0.4, ease: "easeOut" }}
       className="space-y-4 py-8"
     >
+      {contextHolder}
       <div>
         <p className="body-large font-semibold text-gray-900 mb-2">{t("setting.basic_information")}</p>
         <p className="text-gray-500">
@@ -93,30 +140,53 @@ export default function AccountTab() {
             <label className="block body-normal font-semibold text-gray-700">
               {t("setting.old_password")}
             </label>
-            <motion.input
-              whileFocus={{ scale: 1.01 }}
-              type="password"
-              placeholder={t("setting.enter_old_password")}
-              className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
-            />
+            <div className="relative">
+              <motion.input
+                whileFocus={{ scale: 1.01 }}
+                type={showCurrentPassword ? "text" : "password"}
+                placeholder={t("setting.enter_old_password")}
+                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
+                value={currentPassword}
+                onChange={(e) => setCurrentPassword(e.target.value)}
+              />
+              <button
+                type="button"
+                onClick={() => setShowCurrentPassword(!showCurrentPassword)}
+                className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600"
+              >
+                {showCurrentPassword ? <EyeOff size={20} /> : <Eye size={20} />}
+              </button>
+            </div>
             <p className="text-gray-400 mt-1">{t("setting.password_requirements")}</p>
           </div>
           <div className="mb-4 space-y-2">
             <label className="block body-normal font-semibold text-gray-700 ">
               {t("setting.new_password")}
             </label>
-            <motion.input
-              whileFocus={{ scale: 1.01 }}
-              type="password"
-              placeholder={t("setting.enter_new_password")}
-              className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
-            />
+            <div className="relative">
+              <motion.input
+                whileFocus={{ scale: 1.01 }}
+                type={showNewPassword ? "text" : "password"}
+                placeholder={t("setting.enter_new_password")}
+                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
+                value={newPassword}
+                onChange={(e) => setNewPassword(e.target.value)}
+              />
+              <button
+                type="button"
+                onClick={() => setShowNewPassword(!showNewPassword)}
+                className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600"
+              >
+                {showNewPassword ? <EyeOff size={20} /> : <Eye size={20} />}
+              </button>
+            </div>
             <p className="text-gray-400 mt-1">{t("setting.password_requirements")}</p>
           </div>
           <motion.button
             whileHover={{ scale: 1.02 }}
             whileTap={{ scale: 0.98 }}
             className="px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
+            onTap={handleChangePassword}
           >
             {t("setting.change_password")}
           </motion.button>
