@@ -6,6 +6,102 @@ import { Badge } from "@/components/ui";
 import { ArrowRight } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 
+const isValidValue = (value) => {
+  if (!value) return false;
+  if (typeof value === 'string') {
+    const trimmed = value.trim();
+    return trimmed !== '' && trimmed !== 'string' && trimmed !== 'null' && trimmed !== 'undefined';
+  }
+  return true;
+};
+
+const tryParseSalaryText = (text) => {
+  if (!text || typeof text !== 'string') return null;
+  const numberGroups = text.match(/[\d.,]+/g);
+  if (!numberGroups || numberGroups.length === 0) return null;
+
+  const [fromRaw, toRaw] = numberGroups;
+  const clean = (val) => {
+    if (val === null || val === undefined) return null;
+    const cleaned = String(val).replace(/[^\d]/g, '');
+    if (!cleaned) return null;
+    return parseInt(cleaned, 10);
+  };
+
+  const from = clean(fromRaw);
+  const to = clean(toRaw);
+
+  if ((from === null || Number.isNaN(from)) && (to === null || Number.isNaN(to))) return null;
+
+  const currencyHint = /vnd|₫/i.test(text) ? 'VND' : null;
+  return { from, to, currencyHint };
+};
+
+const formatNumber = (num) => num.toLocaleString('en-US');
+
+const formatVND = (amount) => {
+  const num = Number(amount);
+  if (Number.isNaN(num) || num === 0) return null;
+
+  if (num >= 1_000_000) {
+    const millions = num / 1_000_000;
+    return `${formatNumber(millions)} Triệu`;
+  }
+  return formatNumber(num);
+};
+
+const formatSalaryValue = (value, isVND) => {
+  if (!isValidValue(value)) return null;
+  const num = Number(value);
+  if (Number.isNaN(num) || num === 0) return null;
+  return isVND ? formatVND(num) : formatNumber(num);
+};
+
+const getDisplaySalary = (job) => {
+  const salaryText = job?.salary_text || job?.salary?.text || job?.salary || null;
+  const salaryFrom = job?.salary_from ?? job?.salary?.from;
+  const salaryTo = job?.salary_to ?? job?.salary?.to;
+  const salaryCurrency = job?.salary_currency ?? job?.salary?.currency;
+  const jobUrl = job?.url;
+
+  const isTopCV = typeof jobUrl === 'string' && jobUrl.includes('topcv.vn');
+
+  // TopCV data - return as is
+  if (isTopCV && isValidValue(salaryText)) {
+    return salaryText;
+  }
+
+  const currency = (salaryCurrency || '').trim();
+  const isVND = /vnd|₫/i.test(currency) || /vnd|₫/i.test(salaryText || '');
+  const currencySuffix = isVND ? '' : ` ${currency || 'VND'}`;
+
+  // Try parsing salaryText first
+  if (isValidValue(salaryText)) {
+    const parsed = tryParseSalaryText(salaryText);
+    if (parsed) {
+      const from = formatSalaryValue(parsed.from, isVND || parsed.currencyHint === 'VND');
+      const to = formatSalaryValue(parsed.to, isVND || parsed.currencyHint === 'VND');
+
+      if (!from && !to) return "Thỏa thuận";
+      if (from && to) return `${from} - ${to}${currencySuffix}`;
+      if (from) return `Từ ${from}${currencySuffix}`;
+      if (to) return `Lên đến ${to}${currencySuffix}`;
+    }
+    return salaryText;
+  }
+
+  // Use salary_from and salary_to
+  const from = formatSalaryValue(salaryFrom, isVND);
+  const to = formatSalaryValue(salaryTo, isVND);
+
+  if (!from && !to) return "Thỏa thuận";
+  if (from && to) return `${from} - ${to}${currencySuffix}`;
+  if (from) return `Từ ${from}${currencySuffix}`;
+  if (to) return `Lên đến ${to}${currencySuffix}`;
+
+  return "Thỏa thuận";
+};
+
 export default function JobSidebar({ job }) {
   const { t } = useTranslation();
   const nav = useNavigate();
@@ -15,6 +111,7 @@ export default function JobSidebar({ job }) {
   const companyName = typeof job?.company === 'string'
     ? job.company
     : job?.company?.name || "Company Name";
+  const displaySalary = getDisplaySalary(job);
 
   if (jobStatus === "loading" && !job) {
     return (
@@ -37,43 +134,6 @@ export default function JobSidebar({ job }) {
       </div>
     );
   }
-
-  // Format salary - handle both object and string formats
-  const formatSalary = () => {
-    // If salary is already a string, return it
-    if (typeof job.salary === 'string') {
-      return job.salary;
-    }
-
-    // If salary is an object with text property
-    if (job.salary?.text) {
-      return job.salary.text;
-    }
-
-    // If salary_text exists (direct field)
-    if (job.salary_text) {
-      return job.salary_text;
-    }
-
-    // If salary is an object with from/to
-    if (job.salary?.from || job.salary?.to || job.salary_from || job.salary_to) {
-      const from = job.salary?.from ?? job.salary_from;
-      const to = job.salary?.to ?? job.salary_to;
-      const currency = job.salary?.currency || job.salary_currency || '';
-
-      if (from && to) {
-        return `${from} - ${to} ${currency}`.trim();
-      } else if (from) {
-        return `${from} ${currency}`.trim();
-      } else if (to) {
-        return `Up to ${to} ${currency}`.trim();
-      }
-    }
-
-    return "N/A";
-  };
-
-  const displaySalary = formatSalary();
 
   // Format job type - handle workingTime array, working_time, type, or employment_types
   const getDisplayType = () => {
