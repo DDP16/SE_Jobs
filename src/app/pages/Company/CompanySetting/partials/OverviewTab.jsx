@@ -19,6 +19,7 @@ import { getProvinces } from '../../../../modules/services/addressService';
 export function OverviewTab({ company, companyId }) {
     const { t } = useTranslation();
     const dispatch = useDispatch();
+    const MAX_UPLOAD_SIZE = 3 * 1024 * 1024; // 3MB
 
     useEffect(() => {
         dispatch(getCategories());
@@ -131,6 +132,11 @@ export function OverviewTab({ company, companyId }) {
 
             // Upload logo
             if (formData.logo instanceof File) {
+                if (formData.logo.size > MAX_UPLOAD_SIZE) {
+                    alert('File logo vượt quá 3MB. Vui lòng chọn file nhỏ hơn.');
+                    setIsUpdating(false);
+                    return;
+                }
                 const logoFormData = new FormData();
                 logoFormData.append('file', formData.logo);
                 const logoResult = await dispatch(uploadMedia(logoFormData)).unwrap();
@@ -154,6 +160,11 @@ export function OverviewTab({ company, companyId }) {
 
             // Upload background
             if (formData.background instanceof File) {
+                if (formData.background.size > MAX_UPLOAD_SIZE) {
+                    alert('File background vượt quá 3MB. Vui lòng chọn file nhỏ hơn.');
+                    setIsUpdating(false);
+                    return;
+                }
                 const bgFormData = new FormData();
                 bgFormData.append('file', formData.background);
                 const bgResult = await dispatch(uploadMedia(bgFormData)).unwrap();
