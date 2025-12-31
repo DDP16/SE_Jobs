@@ -100,6 +100,14 @@ export function OverviewTab({ company, companyId }) {
         }
     };
 
+    const normalizeMediaResponse = (result) => {
+        const data = result?.data || result;
+        return {
+            url: data?.url || data?.filepath || null,
+            fileName: data?.fileName || data?.filename || null,
+        };
+    };
+
     const handleSubmit = async (e) => {
         e?.preventDefault();
         if (!companyId) return;
@@ -108,7 +116,8 @@ export function OverviewTab({ company, companyId }) {
 
         try {
             let logoUrl = formData.logo;
-            let backgroundUrl = formData.background;
+            // Background no longer used: send empty unless newly uploaded
+            let backgroundUrl = null;
             let oldLogoFileName = null;
             let oldBackgroundFileName = null;
 
@@ -125,10 +134,16 @@ export function OverviewTab({ company, companyId }) {
                 const logoFormData = new FormData();
                 logoFormData.append('file', formData.logo);
                 const logoResult = await dispatch(uploadMedia(logoFormData)).unwrap();
-                logoUrl = logoResult.url;
+                const { url: uploadedLogoUrl, fileName: uploadedLogoFile } = normalizeMediaResponse(logoResult);
+
+                if (!uploadedLogoUrl) {
+                    throw new Error('Upload logo failed: missing url from response');
+                }
+
+                logoUrl = uploadedLogoUrl;
 
                 // Delete old logo file if different
-                if (oldLogoFileName && logoResult.fileName && oldLogoFileName !== logoResult.fileName) {
+                if (oldLogoFileName && uploadedLogoFile && oldLogoFileName !== uploadedLogoFile) {
                     try {
                         await dispatch(deleteMedia(oldLogoFileName)).unwrap();
                     } catch (error) {
@@ -142,10 +157,16 @@ export function OverviewTab({ company, companyId }) {
                 const bgFormData = new FormData();
                 bgFormData.append('file', formData.background);
                 const bgResult = await dispatch(uploadMedia(bgFormData)).unwrap();
-                backgroundUrl = bgResult.url;
+                const { url: uploadedBgUrl, fileName: uploadedBgFile } = normalizeMediaResponse(bgResult);
+
+                if (!uploadedBgUrl) {
+                    throw new Error('Upload background failed: missing url from response');
+                }
+
+                backgroundUrl = uploadedBgUrl;
 
                 // Delete old background file if different
-                if (oldBackgroundFileName && bgResult.fileName && oldBackgroundFileName !== bgResult.fileName) {
+                if (oldBackgroundFileName && uploadedBgFile && oldBackgroundFileName !== uploadedBgFile) {
                     try {
                         await dispatch(deleteMedia(oldBackgroundFileName)).unwrap();
                     } catch (error) {
