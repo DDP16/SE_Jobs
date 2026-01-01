@@ -60,8 +60,8 @@ export default function Topbar() {
               <DropdownMenuSeparator />
               <DropdownMenuItem 
                 className="text-red-600"
-                onClick={() => {
-                  dispatch(logout());
+                onClick={async () => {
+                  await dispatch(logout());
                   nav("/", { replace: true });
                 }}
               >

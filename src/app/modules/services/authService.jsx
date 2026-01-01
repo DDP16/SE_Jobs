@@ -120,7 +120,7 @@ export const register = createAsyncThunk(
       first_name,
       last_name,
       confirm_password,
-      role = 'student',
+      role = 'Student',
       company,
       company_branches,
     },
