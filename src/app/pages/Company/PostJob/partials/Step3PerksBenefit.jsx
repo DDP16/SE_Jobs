@@ -4,11 +4,14 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Plus, X, Heart, Plane, Video, Home, Coffee, Zap, Gift } from "lucide-react";
 import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from "@/components/ui/select";
-
 import { useTranslation } from "react-i18next";
 
 export default function Step3PerksBenefit({ benefits, addBenefit, removeBenefit, setBenefits, getBenefitIcon }) {
   const { t } = useTranslation();
+
+  // Check if any benefit is being edited
+  const isAnyBenefitEditing = benefits.some((benefit) => benefit.isEditing);
+
   return (
     <div className="space-y-8">
       {/* Basic Information */}
@@ -24,19 +27,8 @@ export default function Step3PerksBenefit({ benefits, addBenefit, removeBenefit,
           <p className="text-normal font-regular text-muted-foreground mt-1">{t("postJob.perksBenefitHint")}</p>
         </div>
         <div className="md:col-span-2">
-          <Button
-            type="button"
-            variant="outline"
-            size="sm"
-            onClick={addBenefit}
-            className="text-primary bg-white hover:text-white hover:bg-primary/90 mb-4 transition-all"
-          >
-            <Plus className="h-4 w-4 mr-1" />
-            {t("postJob.addBenefit")}
-          </Button>
-
           {/* Benefits Grid */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
             {benefits.map((benefit) => {
               const IconComponent = getBenefitIcon(benefit.icon);
               return (
@@ -53,8 +45,13 @@ export default function Step3PerksBenefit({ benefits, addBenefit, removeBenefit,
                             setBenefits(benefits.map((b) => (b.id === benefit.id ? { ...b, icon: value } : b)));
                           }}
                         >
-                          <SelectTrigger className="w-16 h-10">
-                            <SelectValue />
+                          <SelectTrigger className="w-12 h-12 p-0 flex items-center justify-center">
+                            <SelectValue>
+                              {(() => {
+                                const Icon = getBenefitIcon(benefit.icon);
+                                return <Icon className="h-5 w-5" />;
+                              })()}
+                            </SelectValue>
                           </SelectTrigger>
                           <SelectContent>
                             <SelectItem value="Heart">
@@ -88,7 +85,7 @@ export default function Step3PerksBenefit({ benefits, addBenefit, removeBenefit,
                             );
                           }}
                           placeholder={t("postJob.benefitTitlePlaceholder")}
-                          className="text-lg font-semibold"
+                          className="text-base font-semibold flex-1"
                         />
                       </div>
                       <Textarea
@@ -99,7 +96,7 @@ export default function Step3PerksBenefit({ benefits, addBenefit, removeBenefit,
                           );
                         }}
                         placeholder={t("postJob.benefitDescriptionPlaceholder")}
-                        className="min-h-20]"
+                        className="min-h-[80px]"
                       />
                       <div className="flex justify-end gap-2">
                         <Button
@@ -127,17 +124,13 @@ export default function Step3PerksBenefit({ benefits, addBenefit, removeBenefit,
                       >
                         <X className="h-6 w-6 text-accent-red hover:text-red-500 hover:font-bold" />
                       </button>
-
-                      <div className="mb-4">
-                        <div className="w-12 h-12 rounded-lg bg-primary/10 flex items-center justify-center">
-                          <IconComponent className="h-6 w-6 text-primary" />
+                      <div className="flex items-start gap-3 mb-3">
+                        <div className="w-10 h-10 flex-shrink-0 rounded-lg bg-primary/10 flex items-center justify-center">
+                          <IconComponent className="h-5 w-5 text-primary" />
                         </div>
+                        <h3 className="text-base font-semibold text-foreground flex-1">{benefit.title}</h3>
                       </div>
-
-                      <h3 className="text-lg font-semibold text-foreground mb-2">{benefit.title}</h3>
-
                       <p className="text-sm text-muted-foreground leading-relaxed">{benefit.description}</p>
-
                       <div className="w-full flex justify-end">
                         <Button
                           type="button"
@@ -157,6 +150,19 @@ export default function Step3PerksBenefit({ benefits, addBenefit, removeBenefit,
               );
             })}
           </div>
+
+          {/* Add Benefit Button - Always at bottom */}
+          <Button
+            type="button"
+            variant="outline"
+            size="sm"
+            onClick={addBenefit}
+            disabled={isAnyBenefitEditing}
+            className="text-primary bg-white hover:text-white hover:bg-primary/90 transition-all disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:bg-white disabled:hover:text-primary"
+          >
+            <Plus className="h-4 w-4 mr-1" />
+            {t("postJob.addBenefit")}
+          </Button>
         </div>
       </div>
     </div>
