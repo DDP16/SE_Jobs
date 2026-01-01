@@ -714,8 +714,8 @@
       "popular": "Popular:"
     },
     "jobSection": {
-      "title": "Latest",
-      "jobsOpen": "jobs open",
+      "title": "Jobs",
+      "jobsOpen": "from partner companies",
       "showAllJobs": "Show all jobs",
       "previous": "Previous",
       "next": "Next",

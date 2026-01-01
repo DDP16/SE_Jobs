@@ -13,7 +13,7 @@ export {
 
 export { loginWithEmail, register, getMe, logout, resetPassword, changePassword } from './services/authService';
 export { getProvinces, getWards } from './services/addressService';
-export { getJobs, getJobById, getJobsByCompanyId } from './services/jobsService';
+export { getJobs, getJobById, getJobsByCompanyId, getMergedJobs } from './services/jobsService';
 export { getCompanies, getCompany, createCompany, updateCompany, deleteCompany } from './services/companyService';
 export { getTopCVJobs } from './services/topCVService';
 export { getUserById, updateUser } from './services/userService';
@@ -29,3 +29,4 @@ export { getCertificatesByStudentId, getCertificate, createCertificate, updateCe
 export { getExperiencesByStudentId, getExperienceById, createExperience, updateExperience, deleteExperience } from "./services/experiencesService";
 export { getEducationByStudentId, getEducation, createEducation, updateEducation, deleteEducation } from "./services/educationsService";
 export { getCvs, getCvsByStudentId, getCvById, createCv, updateCv, deleteCv } from "./services/cvService";
+export { getSavedJobs, addSavedJob, removeSavedJob } from "./services/savedJobsService";

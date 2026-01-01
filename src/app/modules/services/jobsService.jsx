@@ -50,6 +50,24 @@ export const getJobById = createAsyncThunk(
     }
 );
 
+export const getMergedJobs = createAsyncThunk(
+    "jobs/getMergedJobs",
+    async (params = {}, { rejectWithValue }) => {
+        try {
+            const queryParams = Object.fromEntries(
+                Object.entries(params).filter(
+                    ([, value]) => value !== undefined && value !== null && value !== ""
+                )
+            );
+
+            const response = await api.get(`${apiBaseUrl}/merged`, { params: queryParams });
+            return response.data;
+        } catch (error) {
+            return rejectWithValue(error.response?.data?.message || "Something went wrong");
+        }
+    }
+);
+
 export const getJobsByCompanyId = createAsyncThunk(
     "jobs/getJobsByCompanyId",
     async ({ companyId, page, limit }, { rejectWithValue }) => {
@@ -205,6 +223,27 @@ const jobsSlice = createSlice({
             .addCase(deleteJob.rejected, (state, action) => {
                 state.status = "failed";
                 state.error = action.payload;
+            })
+            .addCase(getMergedJobs.pending, (state) => {
+                state.status = "loading";
+                state.error = null;
+                state.pagination = null;
+            })
+            .addCase(getMergedJobs.fulfilled, (state, action) => {
+                state.status = "succeeded";
+                // Backend returns: { success: true, data: { jobs: [...], topcv: [...] }, pagination: {...} }
+                const responseData = action.payload.data || {};
+                // Merge jobs and topcv into a single jobs array
+                state.jobs = [
+                    ...(responseData.jobs || []),
+                    ...(responseData.topcv || [])
+                ];
+                state.pagination = action.payload.pagination || null;
+            })
+            .addCase(getMergedJobs.rejected, (state, action) => {
+                state.status = "failed";
+                state.error = action.payload;
+                state.pagination = null;
             });
     },
 });

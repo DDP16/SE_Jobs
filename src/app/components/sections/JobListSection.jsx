@@ -1,5 +1,6 @@
 import React, { useState, useRef, useEffect, use } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
+import { useNavigate } from 'react-router-dom';
 import {
     Box,
     Typography,
@@ -12,23 +13,29 @@ import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
 import JobCard from '../features/JobCard';
 import { mockJobs } from '../../../mocks/mockData';
-import { getJobs, getTopCVJobs } from '../../modules';
+import { getJobs, getTopCVJobs, getMergedJobs } from '../../modules';
+// Note: getJobs and getTopCVJobs are commented out, only using getMergedJobs
+import { getSavedJobs, addSavedJob, removeSavedJob } from '../../modules/services/savedJobsService';
 import { Pagination, Spin } from 'antd';
 import { LoadingOutlined } from '@ant-design/icons';
 import useSearch from '../../hooks/useSearch';
 
 export default function JobListSection({ onJobSelect, selectedJob, onClearFilters }) {
     const dispatch = useDispatch();
+    const navigate = useNavigate();
     const [currentPage, setCurrentPage] = useState(1);
-    const [pageSize, setPageSize] = useState(9);
-    const [currentTopCVPage, setCurrentTopCVPage] = useState(1);
-    const [pageTopCVSize, setPageTopCVSize] = useState(6);
+    const [pageSize, setPageSize] = useState(12); // Match backend page_size
+    // const [currentTopCVPage, setCurrentTopCVPage] = useState(1);
+    // const [pageTopCVSize, setPageTopCVSize] = useState(6);
     const itemRefs = useRef({});
     const { queryParams } = useSearch();
 
     const status = useSelector(state => state.jobs?.status ?? 'idle');
-    const jobsList = useSelector(state => state.jobs?.jobs ?? mockJobs);
+    const jobsList = useSelector(state => state.jobs?.jobs ?? mockJobs); // using merged jobs from getMergedJobs
     const pagination = useSelector(state => state.jobs?.pagination ?? {});
+    // const paginationMerged = useSelector(state => state.jobs?.paginationMerged ?? {});
+    const savedJobs = useSelector(state => state.savedJobs.savedJobs);
+    const currentUser = useSelector(state => state.auth.user);
 
     // Debug: Log Redux state
     // useEffect(() => {
@@ -41,25 +48,58 @@ export default function JobListSection({ onJobSelect, selectedJob, onClearFilter
     //     });
     // }, [status, jobsList, pagination, queryParams]);
 
-    const jobsTopCV = useSelector(state => state.topCVJobs?.jobs || []);
-    const paginationTopCV = useSelector(state => state.topCVJobs?.pagination || {});
-    const statusTopCV = useSelector(state => state.topCVJobs?.status);
+    // Commented out - using merged jobs instead
+    // const jobsTopCV = useSelector(state => state.topCVJobs?.jobs || []);
+    // const paginationTopCV = useSelector(state => state.topCVJobs?.pagination || {});
+    // const statusTopCV = useSelector(state => state.topCVJobs?.status);
 
-    const handleJobAction = (action, job) => {
-        console.log('Job action:', action, job);
+    const handleJobAction = (action, job, meta) => {
+        switch (action) {
+            case 'bookmark':
+                if (!currentUser) {
+                    navigate('/login');
+                    return;
+                }
+                if (currentUser.role !== 'Student') {
+                    console.warn('Only students can bookmark jobs');
+                    return;
+                }
+                const jobId = meta?.jobId || job.id;
+                const actionType = meta?.action;
+                if (!jobId) return;
+                if (actionType === 'unsave') {
+                    dispatch(removeSavedJob(jobId));
+                } else {
+                    dispatch(addSavedJob(jobId));
+                }
+                break;
+            default:
+                console.log('Job action:', action, job);
+        }
     };
 
-    useEffect(() => {
-        dispatch(getJobs({ ...queryParams, page: currentPage, limit: pageSize }));
-    }, [currentPage, pageSize, queryParams]);
+    // useEffect(() => {
+    //     dispatch(getJobs({ ...queryParams, page: currentPage, limit: pageSize }));
+    // }, [currentPage, pageSize, queryParams]);
+
+    // useEffect(() => {
+    //     dispatch(getTopCVJobs({ ...queryParams, page: currentTopCVPage, limit: pageTopCVSize }));
+    // }, [currentTopCVPage, pageTopCVSize, queryParams]);
 
     useEffect(() => {
-        dispatch(getTopCVJobs({ ...queryParams, page: currentTopCVPage, limit: pageTopCVSize }));
-    }, [currentTopCVPage, pageTopCVSize, queryParams]);
+        dispatch(getMergedJobs({ ...queryParams, page: currentPage, limit: pageSize }));
+    }, [currentPage, pageSize, queryParams]);
+
+    // Fetch saved jobs on mount if user is logged in
+    useEffect(() => {
+        if (currentUser?.id) {
+            dispatch(getSavedJobs());
+        }
+    }, [dispatch, currentUser?.id]);
 
     useEffect(() => {
         setCurrentPage(1);
-        setCurrentTopCVPage(1);
+        // setCurrentTopCVPage(1);
     }, [queryParams]);
 
     useEffect(() => {
@@ -139,6 +179,9 @@ export default function JobListSection({ onJobSelect, selectedJob, onClearFilter
                             {jobsList.map((job) => {
                                 const keyId = job.id ?? job.job_id ?? job.jobId ?? job._id;
                                 const isSelected = selectedJob && ((selectedJob?.id ?? selectedJob?.job_id ?? selectedJob?.jobId ?? selectedJob?._id) === keyId);
+                                const isBookmarked = savedJobs.some(savedJob =>
+                                    (savedJob.id || savedJob.job_id) === keyId
+                                );
 
                                 return (
                                     <Box
@@ -160,7 +203,8 @@ export default function JobListSection({ onJobSelect, selectedJob, onClearFilter
                                             job={job}
                                             variant="list"
                                             showPopup={false}
-                                            onBookmark={(job) => handleJobAction('bookmark', job)}
+                                            isBookmarked={isBookmarked}
+                                            onBookmark={(job, meta) => handleJobAction('bookmark', job, meta)}
                                             onClick={() => onJobSelect?.(job)}
                                         />
                                     </Box>
@@ -187,17 +231,22 @@ export default function JobListSection({ onJobSelect, selectedJob, onClearFilter
                             current={currentPage}
                             total={pagination?.total ?? 0}
                             pageSize={pageSize}
-                            onChange={
-                                (newPage, newPageSize) => {
-                                    setCurrentPage(newPage)
-                                    setPageSize(newPageSize)
-                                }
-                            }
+                            showSizeChanger={false}
+                            onChange={(newPage) => {
+                                setCurrentPage(newPage)
+                            }}
+                        // Old code with pageSize changer:
+                        // onChange={
+                        //     (newPage, newPageSize) => {
+                        //         setCurrentPage(newPage)
+                        //         setPageSize(newPageSize)
+                        //     }
+                        // }
                         />
                     </div>
 
-                    {/* TOPCV */}
-                    {statusTopCV === 'loading' ? (
+                    {/* TOPCV - Commented out, using merged jobs instead */}
+                    {/* {statusTopCV === 'loading' ? (
                         <div className="flex items-center justify-center">
                             <Spin indicator={<LoadingOutlined spin />} size="large" />
                         </div>
@@ -227,7 +276,7 @@ export default function JobListSection({ onJobSelect, selectedJob, onClearFilter
                                             job={job}
                                             variant="list"
                                             showPopup={false}
-                                            onBookmark={(job) => handleJobAction('bookmark', job)}
+                                            onBookmark={(job, meta) => handleJobAction('bookmark', job, meta)}
                                             onClick={() => onJobSelect?.(job)}
                                         />
                                     </Box>
@@ -261,7 +310,7 @@ export default function JobListSection({ onJobSelect, selectedJob, onClearFilter
                                 }
                             }
                         />
-                    </div>
+                    </div> */}
                 </Box>
             )}
         </>

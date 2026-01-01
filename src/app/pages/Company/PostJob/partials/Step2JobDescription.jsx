@@ -1,27 +1,7 @@
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
-import { Button } from "@/components/ui/button";
-import { Bold, Italic, List, Link as LinkIcon } from "lucide-react";
 import { useTranslation } from "react-i18next";
-
-function RichTextToolbar() {
-  return (
-    <div className="flex items-center gap-1 p-2 border-t border-border bg-muted/30">
-      <Button type="button" variant="ghost" size="sm" className="h-8 w-8 p-0 hover:bg-muted">
-        <Bold className="h-4 w-4 text-muted-foreground" />
-      </Button>
-      <Button type="button" variant="ghost" size="sm" className="h-8 w-8 p-0 hover:bg-muted">
-        <Italic className="h-4 w-4 text-muted-foreground" />
-      </Button>
-      <Button type="button" variant="ghost" size="sm" className="h-8 w-8 p-0 hover:bg-muted">
-        <List className="h-4 w-4 text-muted-foreground" />
-      </Button>
-      <Button type="button" variant="ghost" size="sm" className="h-8 w-8 p-0 hover:bg-muted">
-        <LinkIcon className="h-4 w-4 text-muted-foreground" />
-      </Button>
-    </div>
-  );
-}
+import { useEffect, useRef } from "react";
 
 export default function Step2JobDescription({
   jobDescription,
@@ -34,10 +14,50 @@ export default function Step2JobDescription({
   setNiceToHaves,
 }) {
   const { t } = useTranslation();
-  const maxDescription = 1000;
-  const maxResponsibilities = 1000;
-  const maxWhoYouAre = 1000;
-  const maxNiceToHaves = 1000;
+  const maxDescription = 10000;
+  const maxResponsibilities = 10000;
+  const maxWhoYouAre = 10000;
+  const maxNiceToHaves = 10000;
+
+  const descriptionRef = useRef(null);
+  const responsibilitiesRef = useRef(null);
+  const whoYouAreRef = useRef(null);
+  const niceToHavesRef = useRef(null);
+
+  // Auto-resize textarea function
+  const autoResize = (textarea) => {
+    if (!textarea) return;
+
+    textarea.style.height = "auto";
+    const scrollHeight = textarea.scrollHeight;
+    const lineHeight = parseInt(window.getComputedStyle(textarea).lineHeight);
+    const maxHeight = lineHeight * 15; // 15 lines max
+
+    if (scrollHeight > maxHeight) {
+      textarea.style.height = maxHeight + "px";
+      textarea.style.overflowY = "auto";
+    } else {
+      textarea.style.height = scrollHeight + "px";
+      textarea.style.overflowY = "hidden";
+    }
+  };
+
+  // Auto-resize on content change
+  useEffect(() => {
+    autoResize(descriptionRef.current);
+  }, [jobDescription]);
+
+  useEffect(() => {
+    autoResize(responsibilitiesRef.current);
+  }, [responsibilities]);
+
+  useEffect(() => {
+    autoResize(whoYouAreRef.current);
+  }, [whoYouAre]);
+
+  useEffect(() => {
+    autoResize(niceToHavesRef.current);
+  }, [niceToHaves]);
 
   return (
     <div className="space-y-8">
@@ -58,15 +78,22 @@ export default function Step2JobDescription({
         <div className="md:col-span-2">
           <div className="border border-border rounded-lg overflow-hidden bg-white">
             <Textarea
+              ref={descriptionRef}
               id="jobDescriptions"
               placeholder={t("postJob.jobDescriptionPlaceholder")}
               value={jobDescription}
-              onChange={(e) => setJobDescription(e.target.value.slice(0, maxDescription))}
+              onChange={(e) => {
+                setJobDescription(e.target.value.slice(0, maxDescription));
+                autoResize(e.target);
+              }}
               className="min-h-[120px] border-0 resize-none focus-visible:ring-0 rounded-none"
+              style={{ overflowY: "hidden" }}
             />
             <div className="px-3 py-2 text-xs text-muted-foreground text-right bg-muted/30 flex justify-end gap-2">
               {t("postJob.maxCharacters", { max: maxDescription })}
-              <span className="font-medium">{jobDescription.length} / {maxDescription}</span>
+              <span className="font-medium">
+                {jobDescription.length} / {maxDescription}
+              </span>
             </div>
           </div>
         </div>
@@ -83,15 +110,22 @@ export default function Step2JobDescription({
         <div className="md:col-span-2">
           <div className="border border-border rounded-lg overflow-hidden bg-white">
             <Textarea
+              ref={responsibilitiesRef}
               id="responsibilities"
               placeholder={t("postJob.responsibilitiesPlaceholder")}
               value={responsibilities}
-              onChange={(e) => setResponsibilities(e.target.value.slice(0, maxResponsibilities))}
+              onChange={(e) => {
+                setResponsibilities(e.target.value.slice(0, maxResponsibilities));
+                autoResize(e.target);
+              }}
               className="min-h-[120px] border-0 resize-none focus-visible:ring-0 rounded-none"
+              style={{ overflowY: "hidden" }}
             />
             <div className="px-3 py-2 text-xs text-muted-foreground text-right bg-muted/30 flex justify-end gap-2">
               {t("postJob.maxCharacters", { max: maxResponsibilities })}
-              <span className="font-medium">{responsibilities.length} / {maxResponsibilities}</span>
+              <span className="font-medium">
+                {responsibilities.length} / {maxResponsibilities}
+              </span>
             </div>
           </div>
         </div>
@@ -108,15 +142,22 @@ export default function Step2JobDescription({
         <div className="md:col-span-2">
           <div className="border border-border rounded-lg overflow-hidden bg-white">
             <Textarea
+              ref={whoYouAreRef}
               id="whoYouAre"
               placeholder={t("postJob.whoYouArePlaceholder")}
               value={whoYouAre}
-              onChange={(e) => setWhoYouAre(e.target.value.slice(0, maxWhoYouAre))}
+              onChange={(e) => {
+                setWhoYouAre(e.target.value.slice(0, maxWhoYouAre));
+                autoResize(e.target);
+              }}
               className="min-h-[120px] border-0 resize-none focus-visible:ring-0 rounded-none"
+              style={{ overflowY: "hidden" }}
             />
             <div className="px-3 py-2 text-xs text-muted-foreground text-right bg-muted/30 flex justify-end gap-2">
               {t("postJob.maxCharacters", { max: maxWhoYouAre })}
-              <span className="font-medium">{whoYouAre.length} / {maxWhoYouAre}</span>
+              <span className="font-medium">
+                {whoYouAre.length} / {maxWhoYouAre}
+              </span>
             </div>
           </div>
         </div>
@@ -133,15 +174,22 @@ export default function Step2JobDescription({
         <div className="md:col-span-2">
           <div className="border border-border rounded-lg overflow-hidden bg-white">
             <Textarea
+              ref={niceToHavesRef}
               id="niceToHaves"
               placeholder={t("postJob.niceToHavesPlaceholder")}
               value={niceToHaves}
-              onChange={(e) => setNiceToHaves(e.target.value.slice(0, maxNiceToHaves))}
+              onChange={(e) => {
+                setNiceToHaves(e.target.value.slice(0, maxNiceToHaves));
+                autoResize(e.target);
+              }}
               className="min-h-[120px] border-0 resize-none focus-visible:ring-0 rounded-none"
+              style={{ overflowY: "hidden" }}
             />
             <div className="px-3 py-2 text-xs text-muted-foreground text-right bg-muted/30 flex justify-end gap-2">
               {t("postJob.maxCharacters", { max: maxNiceToHaves })}
-              <span className="font-medium">{niceToHaves.length} / {maxNiceToHaves}</span>
+              <span className="font-medium">
+                {niceToHaves.length} / {maxNiceToHaves}
+              </span>
             </div>
           </div>
         </div>

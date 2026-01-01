@@ -1,31 +1,11 @@
 // src/app/pages/Company/PostJob/PostJob.jsx
+
 import { useEffect, useState, useRef } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useTranslation } from "react-i18next";
 import { Button } from "@/components/ui/button";
 import { motion } from "framer-motion";
-
-import {
-  FileText,
-  Briefcase,
-  Gift,
-  ArrowLeft,
-  Plus,
-  X,
-  Bold,
-  Italic,
-  List,
-  ListOrdered,
-  Link as LinkIcon,
-  Heart,
-  Plane,
-  Video,
-  Home,
-  Coffee,
-  Zap,
-  ChevronDown,
-} from "lucide-react";
-
+import { FileText, Briefcase, Gift, ArrowLeft, Heart, Plane, Video, Home, Coffee, Zap } from "lucide-react";
 import Step1JobInfo from "./partials/Step1JobInfo";
 import Step2JobDescription from "./partials/Step2JobDescription";
 import Step3PerksBenefit from "./partials/Step3PerksBenefit";
@@ -38,32 +18,25 @@ import { useNavigate } from "react-router-dom";
 import { CustomAlert, FuzzyText } from "../../../components";
 import { getCompanyBranches } from "../../../modules/services/companyBranchesService";
 import { useCustomAlert } from "../../../hooks/useCustomAlert";
-import { delay, set } from "lodash";
 
 export default function PostJob({ isEditing = false, job = null, jobId = null }) {
   const { t } = useTranslation();
   const dispatch = useDispatch();
   const { alertConfig, hideAlert, showSuccess, showError } = useCustomAlert();
-
   const categories = useSelector((state) => state.categories?.categories ?? []);
   const apiEmploymentTypes = useSelector((state) => state.employmentTypes?.employmentTypes ?? []);
   const apiSkills = useSelector((state) => state.skills?.skills ?? []);
   const levels = useSelector((state) => state.levels?.levels ?? []);
   const apiCompanyBranches = useSelector((state) => state.companyBranches?.branches ?? []);
-
   const currentUser = useSelector((state) => state.auth.user);
   const authStatus = useSelector((state) => state.auth.status);
   const companyId = currentUser?.company?.id;
 
   useEffect(() => {
-    if (companyId && categories.length === 0)
-      dispatch(getCategories({hasPagination: false}));
-    if (companyId && apiEmploymentTypes.length === 0)
-      dispatch(getEmploymentTypes({hasPagination: false}));
-    if (companyId && apiSkills.length === 0)
-      dispatch(getSkills({hasPagination: false}));
-    if (companyId && levels.length === 0)
-      dispatch(getLevels({hasPagination: false}));  
+    if (companyId && categories.length === 0) dispatch(getCategories({ hasPagination: false }));
+    if (companyId && apiEmploymentTypes.length === 0) dispatch(getEmploymentTypes({ hasPagination: false }));
+    if (companyId && apiSkills.length === 0) dispatch(getSkills({ hasPagination: false }));
+    if (companyId && levels.length === 0) dispatch(getLevels({ hasPagination: false }));
     if (companyId && apiCompanyBranches.length === 0) {
       dispatch(getCompanyBranches({ companyId: companyId }));
     }
@@ -76,8 +49,8 @@ export default function PostJob({ isEditing = false, job = null, jobId = null })
   const [salaryCurrency, setSalaryCurrency] = useState("VND");
   const [skills, setSkills] = useState([]);
   const [newSkill, setNewSkill] = useState("");
-  const [selectedCategory, setSelectedCategory] = useState("");
-  const [selectedLevel, setSelectedLevel] = useState("");
+  const [selectedCategories, setSelectedCategories] = useState([]);
+  const [selectedLevels, setSelectedLevels] = useState([]);
   const [jobDescription, setJobDescription] = useState("");
   const [responsibilities, setResponsibilities] = useState("");
   const [whoYouAre, setWhoYouAre] = useState("");
@@ -90,7 +63,7 @@ export default function PostJob({ isEditing = false, job = null, jobId = null })
   const [skillIds, setSkillIds] = useState([]);
   const [skillsSelect, setSkillsSelect] = useState([]);
   const [categoryIds, setCategoryIds] = useState([]);
-  const [levelId, setLevelId] = useState(null);
+  const [levelIds, setLevelIds] = useState([]);
 
   // Ref to track if form has been populated (for edit mode)
   const hasPopulatedRef = useRef(false);
@@ -112,50 +85,38 @@ export default function PostJob({ isEditing = false, job = null, jobId = null })
       levels.length > 0 &&
       apiCompanyBranches.length > 0
     ) {
-
       hasPopulatedRef.current = true;
-
       if (job.title) setJobTitle(job.title);
       if (job.description) setJobDescription(job.description);
-
       if (job.responsibilities) {
-        const resp = Array.isArray(job.responsibilities)
-          ? job.responsibilities.join('\n')
-          : job.responsibilities;
+        const resp = Array.isArray(job.responsibilities) ? job.responsibilities.join("\n") : job.responsibilities;
         setResponsibilities(resp);
       }
-
-
       if (job.requirement) {
-        let req = '';
+        let req = "";
         if (Array.isArray(job.requirement)) {
-          req = job.requirement.join('\n');
-        } else if (typeof job.requirement === 'string') {
-          req = job.requirement.replace(/<br\s*\/?>/gi, '\n').trim();
+          req = job.requirement.join("\n");
+        } else if (typeof job.requirement === "string") {
+          req = job.requirement.replace(/<br\s*\/?>/gi, "\n").trim();
         }
         if (req) setWhoYouAre(req);
       }
-
-      // Set nice_to_haves (can be array or string with <br />)
       if (job.nice_to_haves) {
-        let nth = '';
+        let nth = "";
         if (Array.isArray(job.nice_to_haves)) {
-          nth = job.nice_to_haves.join('\n');
-        } else if (typeof job.nice_to_haves === 'string') {
-          nth = job.nice_to_haves.replace(/<br\s*\/?>/gi, '\n').trim();
+          nth = job.nice_to_haves.join("\n");
+        } else if (typeof job.nice_to_haves === "string") {
+          nth = job.nice_to_haves.replace(/<br\s*\/?>/gi, "\n").trim();
         }
         if (nth) setNiceToHaves(nth);
       }
-
       const salaryFrom = job.salary_from ?? job.salary?.from;
       const salaryTo = job.salary_to ?? job.salary?.to;
-      const salaryCurr = job.salary_currency || job.salary?.currency || 'USD';
+      const salaryCurr = job.salary_currency || job.salary?.currency || "USD";
       if (salaryFrom !== undefined && salaryTo !== undefined) {
         setSalaryRange([salaryFrom, salaryTo]);
       }
       if (salaryCurr) setSalaryCurrency(salaryCurr);
-
-      // Set benefits
       if (job.benefit && Array.isArray(job.benefit)) {
         const formattedBenefits = job.benefit.map((b, index) => ({
           id: b.id || `benefit-${index}`,
@@ -166,16 +127,15 @@ export default function PostJob({ isEditing = false, job = null, jobId = null })
         }));
         setBenefits(formattedBenefits);
       }
-
-      // Set quantity and deadline (raw data uses job_deadline)
       if (job.quantity) setQuantity(String(job.quantity));
       if (job.job_deadline) setJobDeadline(job.job_deadline);
       else if (job.deadline) setJobDeadline(job.deadline);
-
       if (job.company_branches_id) {
-        setCompanyBranchId(Array.isArray(job.company_branches_id) ? job.company_branches_id : [job.company_branches_id]);
+        setCompanyBranchId(
+          Array.isArray(job.company_branches_id) ? job.company_branches_id : [job.company_branches_id]
+        );
       } else if (job.company_branches && Array.isArray(job.company_branches) && job.company_branches.length > 0) {
-        const branchIds = job.company_branches.map(b => b.id).filter(Boolean);
+        const branchIds = job.company_branches.map((b) => b.id).filter(Boolean);
         if (branchIds.length > 0) setCompanyBranchId(branchIds);
         else setCompanyBranchId([]);
       } else {
@@ -184,78 +144,74 @@ export default function PostJob({ isEditing = false, job = null, jobId = null })
 
       const employmentTypesData = job.employment_types || job.workingTime || [];
       if (Array.isArray(employmentTypesData) && employmentTypesData.length > 0 && apiEmploymentTypes.length > 0) {
-        const empTypeNames = employmentTypesData.map(et => {
-          if (typeof et === 'object' && et.name) return et.name;
-          if (typeof et === 'string') {
-            const found = apiEmploymentTypes.find(e => e.name.toLowerCase() === et.toLowerCase());
+        const empTypeNames = employmentTypesData.map((et) => {
+          if (typeof et === "object" && et.name) return et.name;
+          if (typeof et === "string") {
+            const found = apiEmploymentTypes.find((e) => e.name.toLowerCase() === et.toLowerCase());
             return found ? found.name : et;
           }
           return et;
         });
         setEmploymentTypes(empTypeNames);
-
-        const empTypeIds = employmentTypesData.map(et => {
-          if (typeof et === 'object' && et.id) return et.id;
-          const etName = typeof et === 'string' ? et : (et.name || '');
-          const found = apiEmploymentTypes.find(e => e.name.toLowerCase() === etName.toLowerCase());
-          return found?.id;
-        }).filter(Boolean);
+        const empTypeIds = employmentTypesData
+          .map((et) => {
+            if (typeof et === "object" && et.id) return et.id;
+            const etName = typeof et === "string" ? et : et.name || "";
+            const found = apiEmploymentTypes.find((e) => e.name.toLowerCase() === etName.toLowerCase());
+            return found?.id;
+          })
+          .filter(Boolean);
         setEmploymentTypeIds(empTypeIds);
       }
 
       const jobSkills = job.skills || job.required_skills || [];
       if (Array.isArray(jobSkills) && jobSkills.length > 0) {
-        const skillNames = jobSkills.map(skill =>
-          typeof skill === 'string' ? skill : (skill.name || skill)
-        );
+        const skillNames = jobSkills.map((skill) => (typeof skill === "string" ? skill : skill.name || skill));
         setSkills(skillNames);
-        setSkillsSelect(jobSkills.map(skill => {
-          if (typeof skill === 'object' && skill.id) return {id: skill.id, name: skill.name || ''};
-        }));
-
-        const skillIdList = jobSkills.map(skill => {
-          if (typeof skill === 'object' && skill.id) return skill.id;
-          const found = apiSkills.find(s => s.name === (typeof skill === 'string' ? skill : skill.name));
-          return found?.id;
-        }).filter(Boolean);
+        setSkillsSelect(
+          jobSkills.map((skill) => {
+            if (typeof skill === "object" && skill.id) return { id: skill.id, name: skill.name || "" };
+          })
+        );
+        const skillIdList = jobSkills
+          .map((skill) => {
+            if (typeof skill === "object" && skill.id) return skill.id;
+            const found = apiSkills.find((s) => s.name === (typeof skill === "string" ? skill : skill.name));
+            return found?.id;
+          })
+          .filter(Boolean);
         setSkillIds(skillIdList);
       }
 
+      // Categories - Multiple
       if (job.categories && Array.isArray(job.categories) && job.categories.length > 0) {
-        const categoryName = typeof job.categories[0] === 'string'
-          ? job.categories[0]
-          : (job.categories[0].name || job.categories[0]);
-        setSelectedCategory(categoryName);
-
-        const cat = job.categories[0];
-        const categoryId = (typeof cat === 'object' && cat.id)
-          ? cat.id
-          : categories.find(c => c.name === categoryName)?.id;
-        if (categoryId) setCategoryIds([categoryId]);
+        const categoryNames = job.categories.map((cat) => (typeof cat === "string" ? cat : cat.name || cat));
+        setSelectedCategories(categoryNames);
+        const catIds = job.categories
+          .map((cat) => {
+            if (typeof cat === "object" && cat.id) return cat.id;
+            const categoryName = typeof cat === "string" ? cat : cat.name;
+            return categories.find((c) => c.name === categoryName)?.id;
+          })
+          .filter(Boolean);
+        setCategoryIds(catIds);
       }
 
+      // Levels - Multiple
       if (job.levels && Array.isArray(job.levels) && job.levels.length > 0) {
-        const levelName = typeof job.levels[0] === 'string'
-          ? job.levels[0]
-          : (job.levels[0].name || job.levels[0]);
-        setSelectedLevel(levelName);
-
-        const lvl = job.levels[0];
-        const levelIdValue = (typeof lvl === 'object' && lvl.id)
-          ? lvl.id
-          : levels.find(l => l.name === levelName)?.id;
-        if (levelIdValue) setLevelId(levelIdValue);
+        const levelNames = job.levels.map((lvl) => (typeof lvl === "string" ? lvl : lvl.name || lvl));
+        setSelectedLevels(levelNames);
+        const lvlIds = job.levels
+          .map((lvl) => {
+            if (typeof lvl === "object" && lvl.id) return lvl.id;
+            const levelName = typeof lvl === "string" ? lvl : lvl.name;
+            return levels.find((l) => l.name === levelName)?.id;
+          })
+          .filter(Boolean);
+        setLevelIds(lvlIds);
       }
     }
-  }, [
-    isEditing,
-    job,
-    categories,
-    apiEmploymentTypes,
-    apiSkills,
-    levels,
-    apiCompanyBranches,
-  ]);
+  }, [isEditing, job, categories, apiEmploymentTypes, apiSkills, levels, apiCompanyBranches]);
 
   const steps = [
     { number: 1, title: t("postJob.jobInformation"), icon: FileText },
@@ -263,13 +219,13 @@ export default function PostJob({ isEditing = false, job = null, jobId = null })
     { number: 3, title: t("postJob.perksBenefit"), icon: Gift },
   ];
 
-  const employmentOptions = apiEmploymentTypes.length > 0
-    ? apiEmploymentTypes.map(et => et.name)
-    : ["Full-Time", "Part-Time", "Remote", "Internship", "Contract"];
+  const employmentOptions =
+    apiEmploymentTypes.length > 0
+      ? apiEmploymentTypes.map((et) => et.name)
+      : ["Full-Time", "Part-Time", "Remote", "Internship", "Contract"];
 
   const toggleEmploymentType = (type) => {
     setEmploymentTypes((prev) => (prev.includes(type) ? prev.filter((t) => t !== type) : [...prev, type]));
-
     const et = apiEmploymentTypes.find((e) => e.name.toLowerCase() === type.toLowerCase());
     if (et) {
       setEmploymentTypeIds((prev) => (prev.includes(et.id) ? prev.filter((id) => id !== et.id) : [...prev, et.id]));
@@ -298,27 +254,52 @@ export default function PostJob({ isEditing = false, job = null, jobId = null })
   };
 
   const handleCategorySelect = (categoryName) => {
-    setSelectedCategory(categoryName);
-    const cat = categories.find((c) => c.name.toLowerCase() === categoryName.toLowerCase());
-    setCategoryIds(cat ? [cat.id] : []);
+    setSelectedCategories((prev) => {
+      const newCategories = prev.includes(categoryName)
+        ? prev.filter((c) => c !== categoryName)
+        : [...prev, categoryName];
+
+      // Update category IDs
+      const newCategoryIds = newCategories
+        .map((name) => {
+          const cat = categories.find((c) => c.name.toLowerCase() === name.toLowerCase());
+          return cat?.id;
+        })
+        .filter(Boolean);
+      setCategoryIds(newCategoryIds);
+
+      return newCategories;
+    });
   };
 
   const handleLevelSelect = (levelName) => {
-    setSelectedLevel(levelName);
-    const lvl = levels.find((l) => l.name.toLowerCase() === levelName.toLowerCase());
-    setLevelId(lvl ? lvl.id : null);
+    setSelectedLevels((prev) => {
+      const newLevels = prev.includes(levelName) ? prev.filter((l) => l !== levelName) : [...prev, levelName];
+
+      // Update level IDs
+      const newLevelIds = newLevels
+        .map((name) => {
+          const lvl = levels.find((l) => l.name.toLowerCase() === name.toLowerCase());
+          return lvl?.id;
+        })
+        .filter(Boolean);
+      setLevelIds(newLevelIds);
+
+      return newLevels;
+    });
   };
 
   const addSkillFromApi = (skillName) => {
-    if (!skills.map(s => s.toLowerCase()).includes(skillName.toLowerCase())) {
-
-      const skillObj = apiSkills.find((s) => s.name.toLowerCase() === skillName.toLowerCase()) || {id: null, name: skillName};
+    if (!skills.map((s) => s.toLowerCase()).includes(skillName.toLowerCase())) {
+      const skillObj = apiSkills.find((s) => s.name.toLowerCase() === skillName.toLowerCase()) || {
+        id: null,
+        name: skillName,
+      };
       if (skillObj.id) {
         setSkillIds((prev) => [...prev, skillObj.id]);
       }
-
       setSkills((prev) => [...prev, skillObj.name]);
-      setSkillsSelect((prev) => [...prev, {id: skillObj.id, name: skillObj.name}]);
+      setSkillsSelect((prev) => [...prev, { id: skillObj.id, name: skillObj.name }]);
     }
   };
 
@@ -353,6 +334,24 @@ export default function PostJob({ isEditing = false, job = null, jobId = null })
       return;
     }
 
+    // Validation
+    if (categoryIds.length === 0) {
+      showError("Please select at least one category");
+      return;
+    }
+    if (levelIds.length === 0) {
+      showError("Please select at least one level");
+      return;
+    }
+    if (employmentTypeIds.length === 0) {
+      showError("Please select at least one employment type");
+      return;
+    }
+    if (skillsSelect.length === 0) {
+      showError("Please add at least one skill");
+      return;
+    }
+
     const payload = {
       company_id: companyId,
       title: jobTitle,
@@ -366,7 +365,7 @@ export default function PostJob({ isEditing = false, job = null, jobId = null })
       salary_currency: salaryCurrency,
       salary_text: `${salaryRange[0]} - ${salaryRange[1]} ${salaryCurrency}`,
       category_ids: categoryIds,
-      level_ids: levelId ? [levelId] : [],
+      level_ids: levelIds,
       required_skill_ids: skillIds,
       required_skills: skillsSelect,
       employment_type_ids: employmentTypeIds,
@@ -377,12 +376,13 @@ export default function PostJob({ isEditing = false, job = null, jobId = null })
       status: "Approved",
     };
 
+    console.log("Payload before submit:", payload);
 
     try {
       await dispatch(createJob(payload)).unwrap();
       showSuccess("Job posted successfully!");
-      if (skillsSelect.some(s => s.id === null)) {
-        dispatch(getSkills({hasPagination: false}));
+      if (skillsSelect.some((s) => s.id === null)) {
+        dispatch(getSkills({ hasPagination: false }));
       }
       nav("/job-listing", { replace: true });
     } catch (err) {
@@ -410,35 +410,57 @@ export default function PostJob({ isEditing = false, job = null, jobId = null })
       return;
     }
 
+    // Validation
+    if (categoryIds.length === 0) {
+      showError("Please select at least one category");
+      return;
+    }
+    if (levelIds.length === 0) {
+      showError("Please select at least one level");
+      return;
+    }
+    if (employmentTypeIds.length === 0) {
+      showError("Please select at least one employment type");
+      return;
+    }
+    if (skillsSelect.length === 0) {
+      showError("Please add at least one skill");
+      return;
+    }
+
     const payload = {
       company_id: companyId,
       company_branches_id: Array.isArray(companyBranchId) ? companyBranchId[0] : companyBranchId,
-      company_branches_ids: Array.isArray(companyBranchId) ? companyBranchId : (companyBranchId ? [companyBranchId] : null),
+      company_branches_ids: Array.isArray(companyBranchId)
+        ? companyBranchId
+        : companyBranchId
+        ? [companyBranchId]
+        : null,
       title: jobTitle,
       description: jobDescription,
-      responsibilities: responsibilities ? responsibilities.split('\n').filter(line => line.trim()) : [],
-      requirement: whoYouAre ? whoYouAre.split('\n').filter(line => line.trim()) : [],
-      nice_to_haves: niceToHaves ? niceToHaves.split('\n').filter(line => line.trim()) : [],
+      responsibilities: responsibilities ? responsibilities.split("\n").filter((line) => line.trim()) : [],
+      requirement: whoYouAre ? whoYouAre.split("\n").filter((line) => line.trim()) : [],
+      nice_to_haves: niceToHaves ? niceToHaves.split("\n").filter((line) => line.trim()) : [],
       benefit: benefits.map((b) => ({ icon: b.icon, title: b.title, description: b.description })),
       salary_from: salaryRange[0],
       salary_to: salaryRange[1],
       salary_currency: salaryCurrency,
       salary_text: `${salaryRange[0]} - ${salaryRange[1]} ${salaryCurrency}`,
       category_ids: categoryIds,
-      level_ids: levelId ? [levelId] : [],
+      level_ids: levelIds,
       required_skill_ids: skillIds,
       required_skills: skillsSelect,
       employment_type_ids: employmentTypeIds,
       quantity: quantity ? parseInt(quantity) : null,
       job_deadline: jobDeadline || null,
-      // Keep existing status if editing
-      status: (job?.status && job.status !== "Closed") ? job.status : "Pending",
+      status: job?.status && job.status !== "Closed" ? job.status : "Pending",
     };
+
     try {
       await dispatch(updateJob({ jobId: targetJobId, jobData: payload })).unwrap();
       showSuccess("Job updated successfully!");
-      if (skillsSelect.some(s => s.id === null)) {
-        dispatch(getSkills({hasPagination: false}));
+      if (skillsSelect.some((s) => s.id === null)) {
+        dispatch(getSkills({ hasPagination: false }));
       }
       nav("/job-listing", { replace: true });
     } catch (err) {
@@ -476,7 +498,6 @@ export default function PostJob({ isEditing = false, job = null, jobId = null })
         </Button>
         <h4 className="font-bold text-foreground">{t("postJob.postAJob")}</h4>
       </div>
-
       <div className="flex gap-4">
         {steps.map((step) => {
           const Icon = step.icon;
@@ -485,23 +506,25 @@ export default function PostJob({ isEditing = false, job = null, jobId = null })
           return (
             <div
               key={step.number}
-              className={`flex-1 flex items-center gap-3 p-4 rounded-lg transition-colors cursor-pointer ${isActive
-                ? "bg-primary/10 border-2 border-primary"
-                : isCompleted
+              className={`flex-1 flex items-center gap-3 p-4 rounded-lg transition-colors cursor-pointer ${
+                isActive
+                  ? "bg-primary/10 border-2 border-primary"
+                  : isCompleted
                   ? "bg-primary/5 border-2 border-primary/30"
                   : "bg-input border-2 border-border"
-                }`}
+              }`}
               onClick={() => {
                 setCurrentStep(step.number);
               }}
             >
               <div
-                className={`flex items-center justify-center w-12 h-12 rounded-full transition-colors ${isActive
-                  ? "bg-primary text-white"
-                  : isCompleted
+                className={`flex items-center justify-center w-12 h-12 rounded-full transition-colors ${
+                  isActive
+                    ? "bg-primary text-white"
+                    : isCompleted
                     ? "bg-primary/20 text-primary"
                     : "bg-input text-muted-foreground border border-border"
-                  }`}
+                }`}
               >
                 <Icon className="h-6 w-6" />
               </div>
@@ -517,7 +540,6 @@ export default function PostJob({ isEditing = false, job = null, jobId = null })
           );
         })}
       </div>
-
       <div className="bg-card rounded-lg px-6">
         {currentStep === 1 && (
           <Step1JobInfo
@@ -530,14 +552,14 @@ export default function PostJob({ isEditing = false, job = null, jobId = null })
             setSalaryRange={setSalaryRange}
             salaryCurrency={salaryCurrency}
             setSalaryCurrency={setSalaryCurrency}
-            selectedCategory={selectedCategory}
+            selectedCategories={selectedCategories}
             handleCategorySelect={handleCategorySelect}
             categories={categories}
             companyBranches={apiCompanyBranches}
             companyBranchId={companyBranchId}
             setCompanyBranchId={setCompanyBranchId}
             levels={levels}
-            selectedLevel={selectedLevel}
+            selectedLevels={selectedLevels}
             handleLevelSelect={handleLevelSelect}
             skills={skills}
             newSkill={newSkill}
@@ -552,7 +574,6 @@ export default function PostJob({ isEditing = false, job = null, jobId = null })
             setJobDeadline={setJobDeadline}
           />
         )}
-
         {currentStep === 2 && (
           <Step2JobDescription
             jobDescription={jobDescription}
@@ -565,7 +586,6 @@ export default function PostJob({ isEditing = false, job = null, jobId = null })
             setNiceToHaves={setNiceToHaves}
           />
         )}
-
         {currentStep === 3 && (
           <Step3PerksBenefit
             benefits={benefits}
@@ -575,7 +595,6 @@ export default function PostJob({ isEditing = false, job = null, jobId = null })
             getBenefitIcon={getBenefitIcon}
           />
         )}
-
         <div className="flex justify-between mt-8">
           {currentStep > 1 && (
             <Button variant="outline" size="lg" onClick={() => setCurrentStep(currentStep - 1)} className="px-8">
@@ -601,10 +620,7 @@ export default function PostJob({ isEditing = false, job = null, jobId = null })
           )}
         </div>
       </div>
-      <CustomAlert
-        {...alertConfig}
-        onClose={hideAlert}
-      />
+      <CustomAlert {...alertConfig} onClose={hideAlert} />
     </div>
   );
 }
