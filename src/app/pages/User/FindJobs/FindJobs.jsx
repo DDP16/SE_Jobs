@@ -59,6 +59,11 @@ export default function FindJobs() {
         closeFilter,
     } = useSearch();
 
+    // Reset selected job when search/filter changes
+    useEffect(() => {
+        setSelectedJob(null);
+    }, [queryParams]);
+
     // Helper function to check if job is from TopCV
     const isTopCVJob = (job) => {
         if (!job) return false;

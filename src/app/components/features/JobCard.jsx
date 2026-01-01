@@ -16,6 +16,7 @@ import {
 } from '@mui/material';
 import { BookmarkBorder, Bookmark } from '@mui/icons-material';
 import { useNavigate } from 'react-router-dom';
+import { useSelector } from 'react-redux';
 import Badge from '../common/Badge';
 import Button from '../common/Button';
 
@@ -77,7 +78,7 @@ const normalizeNumber = (value) => {
 const formatSalary = (amount, shouldFormatVnd = false) => {
     const normalized = normalizeNumber(amount);
     if (normalized === null || Number.isNaN(normalized)) return '';
-    
+
     if (shouldFormatVnd) {
         // 1 triệu = 1,000,000 VND
         const millions = normalized / 1_000_000;
@@ -86,7 +87,7 @@ const formatSalary = (amount, shouldFormatVnd = false) => {
             return `${display} triệu`;
         }
     }
-    
+
     // Default: format with comma separator (e.g., 1,000,000)
     return normalized.toLocaleString('en-US');
 };
@@ -142,6 +143,8 @@ export default function JobCard({
     const navigate = useNavigate();
     const theme = useTheme();
     const isSmall = useMediaQuery(theme.breakpoints.down('md'));
+    const currentUser = useSelector(state => state.auth?.user);
+    const isAuthenticated = useSelector(state => state.auth?.isAuthenticated);
 
     const [isHovered, setIsHovered] = useState(false);
     const [hoverTimeout, setHoverTimeout] = useState(null);
@@ -208,13 +211,13 @@ export default function JobCard({
 
     const normalizedJob = useMemo(() => {
         const locationFromBranch = getLocationFromBranch();
-        
+
         return {
             title: job.title || "Job Title",
             company: job.company,
             location: locationFromBranch || (Array.isArray(job.locations) && job.locations[0]) || job.shortCity,
-            type: job.type || (Array.isArray(job.employment_types) 
-                ? job.employment_types.map(et => et.name || et).join(', ') 
+            type: job.type || (Array.isArray(job.employment_types)
+                ? job.employment_types.map(et => et.name || et).join(', ')
                 : null),
             salary_text: job.salary_text || job.salary?.text,
             salary_from: job.salary_from ?? job.salary?.from,
@@ -224,8 +227,8 @@ export default function JobCard({
             url: normalizeUrl(job.url, job.website_url),
             updatedAt: job.updatedAt || job.updated_at,
             publish: job.publish || job.created_at,
-            experience: job.experience || (Array.isArray(job.levels) 
-                ? job.levels.map(l => l.name || l).join(', ') 
+            experience: job.experience || (Array.isArray(job.levels)
+                ? job.levels.map(l => l.name || l).join(', ')
                 : null),
             locations: getLocationsArray(locationFromBranch),
             description: job.description,
@@ -297,73 +300,73 @@ export default function JobCard({
     }, [bookmarked]);
 
     // Theme colors based on job source - calculate early since displaySalary depends on it
-    const isTopCV = useMemo(() => 
-        jobUrl && typeof jobUrl === 'string' && jobUrl.includes('topcv.vn'), 
+    const isTopCV = useMemo(() =>
+        jobUrl && typeof jobUrl === 'string' && jobUrl.includes('topcv.vn'),
         [jobUrl]
     );
 
- const formatNumber = (num) => {
-    return num.toLocaleString('en-US');
-};
+    const formatNumber = (num) => {
+        return num.toLocaleString('en-US');
+    };
 
-const formatVND = (amount) => {
-    const num = Number(amount);
-    if (isNaN(num) || num === 0) return null;
-    
-    if (num >= 1000000) {
-        const millions = num / 1000000;
-        return `${formatNumber(millions)} Triệu`;
-    }
-    return formatNumber(num);
-};
+    const formatVND = (amount) => {
+        const num = Number(amount);
+        if (isNaN(num) || num === 0) return null;
 
-const formatSalaryValue = (value, isVND) => {
-    if (!isValidValue(value)) return null;
-    const num = Number(value);
-    if (isNaN(num) || num === 0) return null;
-    return isVND ? formatVND(num) : formatNumber(num);
-};
-
-const displaySalary = useMemo(() => {
-    // TopCV data - return as is
-    if (isTopCV && isValidValue(salary_text)) {
-        return salary_text;
-    }
-
-    const currency = (salary_currency || '').trim();
-    const isVND = /vnd|₫/i.test(currency) || /vnd|₫/i.test(salary_text || '');
-    const currencySuffix = isVND ? '' : ` ${currency || 'VND'}`;
-
-    // Try parsing salary_text first
-    if (isValidValue(salary_text)) {
-        const parsed = tryParseSalaryText(salary_text);
-        if (parsed) {
-            const from = formatSalaryValue(parsed.from, isVND);
-            const to = formatSalaryValue(parsed.to, isVND);
-            
-            // Both are 0 or invalid
-            if (!from && !to) return "Thỏa thuận";
-            
-            if (from && to) return `${from} - ${to}${currencySuffix}`;
-            if (from) return `Từ ${from}${currencySuffix}`;
-            if (to) return `Lên đến ${to}${currencySuffix}`;
+        if (num >= 1000000) {
+            const millions = num / 1000000;
+            return `${formatNumber(millions)} Triệu`;
         }
-        return salary_text;
-    }
-    
-    // Use salary_from and salary_to
-    const from = formatSalaryValue(salary_from, isVND);
-    const to = formatSalaryValue(salary_to, isVND);
-    
-    // Both are 0 or invalid
-    if (!from && !to) return "Thỏa thuận";
-    
-    if (from && to) return `${from} - ${to}${currencySuffix}`;
-    if (from) return `Từ ${from}${currencySuffix}`;
-    if (to) return `Lên đến ${to}${currencySuffix}`;
-    
-    return "Thỏa thuận";
-}, [salary_text, salary_from, salary_to, salary_currency, isTopCV]);
+        return formatNumber(num);
+    };
+
+    const formatSalaryValue = (value, isVND) => {
+        if (!isValidValue(value)) return null;
+        const num = Number(value);
+        if (isNaN(num) || num === 0) return null;
+        return isVND ? formatVND(num) : formatNumber(num);
+    };
+
+    const displaySalary = useMemo(() => {
+        // TopCV data - return as is
+        if (isTopCV && isValidValue(salary_text)) {
+            return salary_text;
+        }
+
+        const currency = (salary_currency || '').trim();
+        const isVND = /vnd|₫/i.test(currency) || /vnd|₫/i.test(salary_text || '');
+        const currencySuffix = isVND ? '' : ` ${currency || 'VND'}`;
+
+        // Try parsing salary_text first
+        if (isValidValue(salary_text)) {
+            const parsed = tryParseSalaryText(salary_text);
+            if (parsed) {
+                const from = formatSalaryValue(parsed.from, isVND);
+                const to = formatSalaryValue(parsed.to, isVND);
+
+                // Both are 0 or invalid
+                if (!from && !to) return "Thỏa thuận";
+
+                if (from && to) return `${from} - ${to}${currencySuffix}`;
+                if (from) return `Từ ${from}${currencySuffix}`;
+                if (to) return `Lên đến ${to}${currencySuffix}`;
+            }
+            return salary_text;
+        }
+
+        // Use salary_from and salary_to
+        const from = formatSalaryValue(salary_from, isVND);
+        const to = formatSalaryValue(salary_to, isVND);
+
+        // Both are 0 or invalid
+        if (!from && !to) return "Thỏa thuận";
+
+        if (from && to) return `${from} - ${to}${currencySuffix}`;
+        if (from) return `Từ ${from}${currencySuffix}`;
+        if (to) return `Lên đến ${to}${currencySuffix}`;
+
+        return "Thỏa thuận";
+    }, [salary_text, salary_from, salary_to, salary_currency, isTopCV]);
 
 
     const primaryColor = isTopCV ? '#00B14F' : '#1976d2';
@@ -426,17 +429,24 @@ const displaySalary = useMemo(() => {
 
     const handleBookmarkClick = useCallback((e) => {
         e?.stopPropagation();
-        
+
+        // Check if user is authenticated
+        if (!isAuthenticated || !currentUser) {
+            alert('Vui lòng đăng nhập vào hệ thống để lưu công việc');
+            return;
+        }
+
+
         if (typeof onBookmark !== 'function') return;
-        
+
         // Optimistic update
         const nextState = !localBookmarked;
         setLocalBookmarked(nextState);
-        
+
         // Call backend
         const jobId = getJobId(job);
         const action = nextState ? 'save' : 'unsave';
-        
+
         try {
             onBookmark(job, { action, jobId });
         } catch (err) {
@@ -444,7 +454,7 @@ const displaySalary = useMemo(() => {
             // Revert on error
             setLocalBookmarked(!nextState);
         }
-    }, [localBookmarked, job, onBookmark]);
+    }, [localBookmarked, job, onBookmark, isAuthenticated, currentUser, navigate]);
 
     const hoverProps = showPopup && !isSmall ? {
         onMouseEnter: handleHoverStart,
@@ -614,12 +624,12 @@ const displaySalary = useMemo(() => {
 
 
                         </Box>
-                            {!isTopCV && variant !== 'list' && (
-                                <BookmarkButton
-                                    isBookmarked={localBookmarked}
-                                    onClick={handleBookmarkClick}
-                                />
-                            )}
+                        {!isTopCV && variant !== 'list' && (
+                            <BookmarkButton
+                                isBookmarked={localBookmarked}
+                                onClick={handleBookmarkClick}
+                            />
+                        )}
                     </Box>
 
 
