@@ -10,10 +10,8 @@ import {
   DropdownMenuTrigger,
 } from "../../../../components/ui";
 import { ChevronDown, X, Search, Calendar } from "lucide-react";
-import { useState, useMemo, useEffect, use } from "react";
+import { useState, useMemo, useEffect } from "react";
 import { useTranslation } from "react-i18next";
-import { BorderColor } from "@mui/icons-material";
-import { set } from "lodash";
 
 export default function Step1JobInfo({
   jobTitle,
@@ -25,9 +23,9 @@ export default function Step1JobInfo({
   setSalaryRange,
   salaryCurrency,
   setSalaryCurrency,
-  selectedCategory,
+  selectedCategories,
   handleCategorySelect,
-  selectedLevel,
+  selectedLevels,
   handleLevelSelect,
   categories,
   companyBranches,
@@ -35,9 +33,9 @@ export default function Step1JobInfo({
   setCompanyBranchId,
   skills,
   levels,
-  newSkill,
-  setNewSkill,
-  addSkill,
+  // newSkill,
+  // setNewSkill,
+  // addSkill,
   removeSkill,
   apiSkills,
   onSkillSelect,
@@ -65,27 +63,31 @@ export default function Step1JobInfo({
     let max = 500000000;
     let icon = "VND";
     if (salaryCurrency === "EUR") {
-      max = 20000; icon = "€";
+      max = 20000;
+      icon = "€";
     } else if (salaryCurrency === "GBP") {
-      max = 15000; icon = "£";
+      max = 15000;
+      icon = "£";
     } else if (salaryCurrency === "USD") {
-      max = 20000; icon = "$";
+      max = 20000;
+      icon = "$";
     }
     setMaxSalary(max);
     setIconCurrency(icon);
-
     if (salaryRange[0] > max) {
       setSalaryRange([0, max]);
       setTempSalaryRange([0, max]);
     } else if (salaryRange[1] > max) {
       setSalaryRange([salaryRange[0], max]);
       setTempSalaryRange([salaryRange[0], max]);
-    } 
+    }
   }, [salaryCurrency]);
 
   const filteredSkills = useMemo(() => {
     if (!searchQuery.trim()) return [];
-    return apiSkills.filter((skill) => skill.name.toLowerCase().includes(searchQuery.replace(/\s+/g, ' ').trim().toLowerCase()));
+    return apiSkills.filter((skill) =>
+      skill.name.toLowerCase().includes(searchQuery.replace(/\s+/g, " ").trim().toLowerCase())
+    );
   }, [searchQuery, apiSkills]);
 
   const handleSkillSelect = (skillName) => {
@@ -104,30 +106,37 @@ export default function Step1JobInfo({
       setTempSalaryRange([tempSalaryRange[0], newMax]);
     }
   };
-
-  const handleSalaryKeyDown = (e, index) => {
+  // const handleSalaryKeyDown = (e, index) => {
+  //   if (e.key === "Enter") {
+  //     e.target.blur();
+  //   }
+  // };
+  const handleSalaryKeyDown = (e) => {
     if (e.key === "Enter") {
       e.target.blur();
     }
   };
 
   const handleSkillsKeyDown = (e) => {
-    if (e.key === "Enter" && searchQuery.replace(/\s+/g, ' ').trim()) {
-      handleSkillSelect(searchQuery.replace(/\s+/g, ' ').trim());
+    if (e.key === "Enter" && searchQuery.replace(/\s+/g, " ").trim()) {
+      handleSkillSelect(searchQuery.replace(/\s+/g, " ").trim());
     }
   };
 
-  // Map employment options to translation keys if needed
-  // For now, assuming labels like "Full-time" exist as-is in your i18n under postJob
   const getEmploymentLabel = (option) => {
     const key = `postJob.${option.toLowerCase().replace(/-/g, "")}`;
-    return t(key, option); // fallback to original if key missing
+    return t(key, option);
   };
 
-  const options = companyBranches?.map((branch) => ({
-    value: branch.id,
-    label: branch.name
-  })) || [];
+  const handleCategoriesChange = (categoryName) => {
+    handleCategorySelect(categoryName);
+  };
+
+  const options =
+    companyBranches?.map((branch) => ({
+      value: branch.id,
+      label: branch.name,
+    })) || [];
 
   return (
     <div className="space-y-8">
@@ -187,16 +196,19 @@ export default function Step1JobInfo({
             <Label className="text-foreground font-semibold text-lg">{t("postJob.companyBranch")}</Label>
             <p className="text-normal font-regular text-muted-foreground mt-1">{t("postJob.companyBranchDesc")}</p>
           </div>
-          <Space className="md:col-span-3 h-10" style={{ width: '100%' }} vertical>
-            <Select          
+          <Space className="md:col-span-3" style={{ width: "100%" }} vertical>
+            <Select
               allowClear
               mode="multiple"
-              style={{ width: '100%', alignItems: 'center' }}
+              style={{ width: "100%" }}
               placeholder={t("postJob.companyBranchPlaceholder")}
-              value={Array.isArray(companyBranchId) ? companyBranchId : (companyBranchId ? [companyBranchId] : [])}
-              onChange={(value) => { setCompanyBranchId(value) }}
+              value={Array.isArray(companyBranchId) ? companyBranchId : companyBranchId ? [companyBranchId] : []}
+              onChange={(value) => {
+                setCompanyBranchId(value);
+              }}
               options={options}
-              className="h-10"
+              maxTagCount="responsive"
+              dropdownStyle={{ maxHeight: 400, overflow: "auto" }}
             />
           </Space>
         </div>
@@ -254,14 +266,16 @@ export default function Step1JobInfo({
               <option value="VND">VND</option>
             </select>
           </div>
-          {/* Slider visualization (non-translatable UI element) */}
+          {/* Slider visualization */}
           <div className="relative h-6 pt-1 select-none">
             <div className="absolute top-1/2 -translate-y-1/2 w-full h-2 rounded-full bg-primary/20"></div>
             <div
               className="absolute top-1/2 -translate-y-1/2 h-2 rounded-full bg-primary transition-all pointer-events-none"
               style={{
                 left: `${(salaryRange[0] / maxSalary) * 100}%`,
-                width: `${((Math.min(salaryRange[1], maxSalary) - Math.min(salaryRange[0], maxSalary)) / maxSalary) * 100}%`,
+                width: `${
+                  ((Math.min(salaryRange[1], maxSalary) - Math.min(salaryRange[0], maxSalary)) / maxSalary) * 100
+                }%`,
               }}
             />
             <div
@@ -330,8 +344,8 @@ export default function Step1JobInfo({
 
       {/* Categories & Levels */}
       <div className="grid grid-cols-1 md:grid-cols-2 border-b border-border border-gray-300 pb-6 gap-10">
-        {/* Categories */}
-        <div className="grid grid-cols-1 md:grid-cols-5 gap-4 items-center">
+        {/* Categories - Multiple Selection */}
+        <div className="grid grid-cols-1 md:grid-cols-5 gap-4 items-start">
           <div className="md:col-span-2">
             <Label className="text-foreground font-semibold text-lg">{t("postJob.category")}</Label>
             <p className="text-normal font-regular text-muted-foreground mt-1">{t("postJob.categoryDesc")}</p>
@@ -341,10 +355,12 @@ export default function Step1JobInfo({
               <DropdownMenuTrigger asChild>
                 <Button
                   variant="outline"
-                  className="justify-between bg-white border-border hover:bg-white rounded-lg w-full"
+                  className="justify-between bg-white border-border hover:bg-white rounded-lg w-full h-auto min-h-10 py-2"
                 >
-                  {selectedCategory || t("postJob.selectCategory")}
-                  <ChevronDown className="ml-2 h-4 w-4 opacity-50" />
+                  <span className="truncate">
+                    {selectedCategories.length > 0 ? selectedCategories.join(", ") : t("postJob.selectCategory")}
+                  </span>
+                  <ChevronDown className="ml-2 h-4 w-4 opacity-50 flex-shrink-0" />
                 </Button>
               </DropdownMenuTrigger>
               <DropdownMenuContent
@@ -353,34 +369,56 @@ export default function Step1JobInfo({
                 className="bg-white rounded-lg overflow-y-auto max-h-[25vh] scrollbar-hide"
               >
                 {categories.map((cat) => (
-                  <DropdownMenuItem key={cat.id} onClick={() => handleCategorySelect(cat.name)}>
+                  <DropdownMenuItem
+                    key={cat.id}
+                    onClick={() => handleCategoriesChange(cat.name)}
+                    className="flex items-center gap-2"
+                  >
+                    <Checkbox
+                      checked={selectedCategories.includes(cat.name)}
+                      onCheckedChange={() => handleCategoriesChange(cat.name)}
+                      className="border-border data-[state=checked]:bg-primary"
+                    />
                     {cat.name}
                   </DropdownMenuItem>
                 ))}
               </DropdownMenuContent>
             </DropdownMenu>
+            {selectedCategories.length > 0 && (
+              <div className="flex flex-wrap gap-2 mt-2">
+                {selectedCategories.map((cat) => (
+                  <div
+                    key={cat}
+                    className="flex items-center gap-1 px-2 py-1 rounded-md bg-primary/10 text-primary border border-primary/20 text-sm"
+                  >
+                    <span>{cat}</span>
+                    <button onClick={() => handleCategoriesChange(cat)} className="hover:opacity-70 transition-opacity">
+                      <X className="h-3 w-3" />
+                    </button>
+                  </div>
+                ))}
+              </div>
+            )}
           </div>
         </div>
 
-        {/* Levels */}
-        <div className="grid grid-cols-1 md:grid-cols-5 gap-4 items-center">
+        {/* Levels - Multiple Selection */}
+        <div className="grid grid-cols-1 md:grid-cols-5 gap-4 items-start">
           <div className="md:col-span-2">
-            <Label className="text-foreground font-semibold text-lg">
-              {t("postJob.level")}
-            </Label>
-            <p className="text-normal font-regular text-muted-foreground mt-1">
-              {t("postJob.levelDesc")}
-            </p>
+            <Label className="text-foreground font-semibold text-lg">{t("postJob.level")}</Label>
+            <p className="text-normal font-regular text-muted-foreground mt-1">{t("postJob.levelDesc")}</p>
           </div>
           <div className="md:col-span-3">
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
                 <Button
                   variant="outline"
-                  className="justify-between bg-white border-border hover:bg-white rounded-lg w-full"
+                  className="justify-between bg-white border-border hover:bg-white rounded-lg w-full h-auto min-h-10 py-2"
                 >
-                  {selectedLevel || t("postJob.selectLevel")}
-                  <ChevronDown className="ml-2 h-4 w-4 opacity-50" />
+                  <span className="truncate">
+                    {selectedLevels.length > 0 ? selectedLevels.join(", ") : t("postJob.selectLevel")}
+                  </span>
+                  <ChevronDown className="ml-2 h-4 w-4 opacity-50 flex-shrink-0" />
                 </Button>
               </DropdownMenuTrigger>
               <DropdownMenuContent
@@ -389,12 +427,36 @@ export default function Step1JobInfo({
                 className="bg-white rounded-lg overflow-y-auto max-h-[25vh] scrollbar-hide"
               >
                 {levels.map((level) => (
-                  <DropdownMenuItem key={level.id} onClick={() => handleLevelSelect(level.name)}>
+                  <DropdownMenuItem
+                    key={level.id}
+                    onClick={() => handleLevelSelect(level.name)}
+                    className="flex items-center gap-2"
+                  >
+                    <Checkbox
+                      checked={selectedLevels.includes(level.name)}
+                      onCheckedChange={() => handleLevelSelect(level.name)}
+                      className="border-border data-[state=checked]:bg-primary"
+                    />
                     {level.name}
                   </DropdownMenuItem>
                 ))}
               </DropdownMenuContent>
             </DropdownMenu>
+            {selectedLevels.length > 0 && (
+              <div className="flex flex-wrap gap-2 mt-2">
+                {selectedLevels.map((lvl) => (
+                  <div
+                    key={lvl}
+                    className="flex items-center gap-1 px-2 py-1 rounded-md bg-primary/10 text-primary border border-primary/20 text-sm"
+                  >
+                    <span>{lvl}</span>
+                    <button onClick={() => handleLevelSelect(lvl)} className="hover:opacity-70 transition-opacity">
+                      <X className="h-3 w-3" />
+                    </button>
+                  </div>
+                ))}
+              </div>
+            )}
           </div>
         </div>
       </div>
@@ -433,11 +495,10 @@ export default function Step1JobInfo({
             {searchQuery && filteredSkills.length === 0 && (
               <div className="absolute z-10 mt-1 w-full bg-white border border-border rounded-md px-4 py-2 text-muted-foreground text-sm">
                 <span>{t("postJob.noSkillsFound")}</span>
-                <span>{" " +t("postJob.enterToAddSkill", { skill: searchQuery })}</span>
+                <span>{" " + t("postJob.enterToAddSkill", { skill: searchQuery })}</span>
               </div>
             )}
           </div>
-
           <div className="flex flex-wrap gap-2">
             {skills.map((skill) => (
               <div
@@ -473,7 +534,6 @@ export default function Step1JobInfo({
             />
           </div>
         </div>
-
         {/* Deadline Date */}
         <div className="grid grid-cols-1 md:grid-cols-5 gap-4 items-center">
           <div className="md:col-span-2">
