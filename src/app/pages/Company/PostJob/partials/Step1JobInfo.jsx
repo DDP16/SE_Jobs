@@ -49,14 +49,26 @@ export default function Step1JobInfo({
   const [tempSalaryRange, setTempSalaryRange] = useState(salaryRange);
   const [maxSalary, setMaxSalary] = useState(500000000);
   const [iconCurrency, setIconCurrency] = useState("VND");
+  const [isNegotiable, setIsNegotiable] = useState(false);
 
   useEffect(() => {
-    setSalaryRange([0, maxSalary]);
-    setTempSalaryRange([0, maxSalary]);
+    if (!salaryRange || (salaryRange[0] === undefined && salaryRange[1] === undefined)) {
+      setSalaryRange([0, maxSalary]);
+      setTempSalaryRange([0, maxSalary]);
+    } else {
+      if (salaryRange[0] === 0 && salaryRange[1] === 0) {
+        setIsNegotiable(true);
+      }
+    }
   }, []);
 
   useEffect(() => {
     setTempSalaryRange(salaryRange);
+    if (salaryRange && salaryRange[0] === 0 && salaryRange[1] === 0) {
+      setIsNegotiable(true);
+    } else if (salaryRange && (salaryRange[0] !== 0 || salaryRange[1] !== 0)) {
+      setIsNegotiable(false);
+    }
   }, [salaryRange]);
 
   useEffect(() => {
@@ -96,14 +108,20 @@ export default function Step1JobInfo({
   };
 
   const handleSalaryBlur = (index) => {
+    if (isNegotiable) return;
+
     if (index === 0) {
-      const newMin = Math.max(0, Math.min(tempSalaryRange[0], tempSalaryRange[1]));
-      setSalaryRange([newMin, tempSalaryRange[1]]);
-      setTempSalaryRange([newMin, tempSalaryRange[1]]);
+      const minVal = tempSalaryRange[0] ?? 0;
+      const maxVal = tempSalaryRange[1] ?? maxSalary;
+      const newMin = Math.max(0, Math.min(minVal, maxVal));
+      setSalaryRange([newMin, maxVal]);
+      setTempSalaryRange([newMin, maxVal]);
     } else {
-      const newMax = Math.max(tempSalaryRange[1], tempSalaryRange[0]);
-      setSalaryRange([tempSalaryRange[0], newMax]);
-      setTempSalaryRange([tempSalaryRange[0], newMax]);
+      const minVal = tempSalaryRange[0] ?? 0;
+      const maxVal = tempSalaryRange[1] ?? maxSalary;
+      const newMax = Math.max(maxVal, minVal);
+      setSalaryRange([minVal, newMax]);
+      setTempSalaryRange([minVal, newMax]);
     }
   };
   // const handleSalaryKeyDown = (e, index) => {
@@ -227,14 +245,16 @@ export default function Step1JobInfo({
                 <span className="absolute left-3 top-13/25 -translate-y-1/2 text-muted-foreground">{iconCurrency}</span>
                 <Input
                   type="number"
-                  value={tempSalaryRange[0]}
+                  value={isNegotiable ? 0 : (tempSalaryRange[0] ?? '')}
                   onChange={(e) => {
+                    setIsNegotiable(false);
                     const val = parseInt(e.target.value) || 0;
-                    setTempSalaryRange([val, tempSalaryRange[1]]);
+                    setTempSalaryRange([val, tempSalaryRange[1] ?? maxSalary]);
                   }}
                   onBlur={() => handleSalaryBlur(0)}
                   onKeyDown={(e) => handleSalaryKeyDown(e, 0)}
-                  className={`${iconCurrency === "VND" ? "pl-12" : "pl-7"} bg-white border-border`}
+                  disabled={isNegotiable}
+                  className={`${iconCurrency === "VND" ? "pl-12" : "pl-7"} bg-white border-border ${isNegotiable ? 'opacity-50 cursor-not-allowed' : ''}`}
                 />
               </div>
             </div>
@@ -244,101 +264,126 @@ export default function Step1JobInfo({
                 <span className="absolute left-3 top-13/25 -translate-y-1/2 text-muted-foreground">{iconCurrency}</span>
                 <Input
                   type="number"
-                  value={tempSalaryRange[1]}
+                  value={isNegotiable ? 0 : (tempSalaryRange[1] ?? '')}
                   onChange={(e) => {
+                    setIsNegotiable(false);
                     const val = parseInt(e.target.value) || 0;
-                    setTempSalaryRange([tempSalaryRange[0], val]);
+                    setTempSalaryRange([tempSalaryRange[0] ?? 0, val]);
                   }}
                   onBlur={() => handleSalaryBlur(1)}
                   onKeyDown={(e) => handleSalaryKeyDown(e, 1)}
-                  className={`${iconCurrency === "VND" ? "pl-12" : "pl-7"} bg-white border-border`}
+                  disabled={isNegotiable}
+                  className={`${iconCurrency === "VND" ? "pl-12" : "pl-7"} bg-white border-border ${isNegotiable ? 'opacity-50 cursor-not-allowed' : ''}`}
                 />
               </div>
             </div>
             <select
               value={salaryCurrency}
               onChange={(e) => setSalaryCurrency(e.target.value)}
-              className="px-6 border border-border rounded-md bg-white h-10"
+              disabled={isNegotiable}
+              className={`px-6 border border-border rounded-md bg-white h-10 ${isNegotiable ? 'opacity-50 cursor-not-allowed' : ''}`}
             >
               <option value="USD">USD</option>
               <option value="EUR">EUR</option>
               <option value="GBP">GBP</option>
               <option value="VND">VND</option>
             </select>
+            <Button
+              type="button"
+              variant={isNegotiable ? "default" : "outline"}
+              size="sm"
+              onClick={() => {
+                const newNegotiable = !isNegotiable;
+                setIsNegotiable(newNegotiable);
+                if (newNegotiable) {
+                  setSalaryRange([0, 0]);
+                  setTempSalaryRange([0, 0]);
+                } else {
+                  setSalaryRange([0, maxSalary]);
+                  setTempSalaryRange([0, maxSalary]);
+                }
+              }}
+              className={`h-10 px-4 text-sm whitespace-nowrap ${isNegotiable ? 'text-white' : ''}`}
+            >
+              Thỏa thuận
+            </Button>
           </div>
           {/* Slider visualization */}
-          <div className="relative h-6 pt-1 select-none">
-            <div className="absolute top-1/2 -translate-y-1/2 w-full h-2 rounded-full bg-primary/20"></div>
-            <div
-              className="absolute top-1/2 -translate-y-1/2 h-2 rounded-full bg-primary transition-all pointer-events-none"
-              style={{
-                left: `${(salaryRange[0] / maxSalary) * 100}%`,
-                width: `${
-                  ((Math.min(salaryRange[1], maxSalary) - Math.min(salaryRange[0], maxSalary)) / maxSalary) * 100
-                }%`,
-              }}
-            />
-            <div
-              className="absolute w-5 h-5 rounded-full bg-primary shadow-lg cursor-grab active:cursor-grabbing hover:scale-110 transition-transform z-10"
-              style={{
-                left: `${(salaryRange[0] / maxSalary) * 100}%`,
-                top: "50%",
-                transform: `translate(-50%, -50%)`,
-              }}
-              onMouseDown={(e) => {
-                e.preventDefault();
-                const slider = e.currentTarget.parentElement;
-                const rect = slider.getBoundingClientRect();
-                const handleMove = (moveEvent) => {
-                  const x = Math.max(0, Math.min(rect.width, moveEvent.clientX - rect.left));
-                  const percentage = x / rect.width;
-                  const newValue = Math.round(percentage * maxSalary);
-                  const clampedValue = Math.min(newValue, salaryRange[1] - 100);
-                  setSalaryRange([Math.max(0, clampedValue), salaryRange[1]]);
-                  setTempSalaryRange([Math.max(0, clampedValue), tempSalaryRange[1]]);
-                };
-                const handleUp = () => {
-                  document.removeEventListener("mousemove", handleMove);
-                  document.removeEventListener("mouseup", handleUp);
-                  document.body.style.userSelect = "";
-                };
-                document.body.style.userSelect = "none";
-                document.addEventListener("mousemove", handleMove);
-                document.addEventListener("mouseup", handleUp);
-              }}
-              onMouseUp={(e) => handleSalaryBlur(0)}
-            />
-            <div
-              className="absolute w-5 h-5 rounded-full bg-primary shadow-lg cursor-grab active:cursor-grabbing hover:scale-110 transition-transform z-10"
-              style={{
-                left: `${(Math.min(salaryRange[1], maxSalary) / maxSalary) * 100}%`,
-                top: "50%",
-                transform: `translate(-50%, -50%)`,
-              }}
-              onMouseDown={(e) => {
-                e.preventDefault();
-                const slider = e.currentTarget.parentElement;
-                const rect = slider.getBoundingClientRect();
-                const handleMove = (moveEvent) => {
-                  const x = Math.max(0, Math.min(rect.width, moveEvent.clientX - rect.left));
-                  const percentage = x / rect.width;
-                  const newValue = Math.round(percentage * maxSalary);
-                  const clampedValue = Math.max(newValue, salaryRange[0] + 100);
-                  setSalaryRange([salaryRange[0], Math.min(maxSalary, clampedValue)]);
-                  setTempSalaryRange([tempSalaryRange[0], Math.min(maxSalary, clampedValue)]);
-                };
-                const handleUp = () => {
-                  document.removeEventListener("mousemove", handleMove);
-                  document.removeEventListener("mouseup", handleUp);
-                  document.body.style.userSelect = "";
-                };
-                document.body.style.userSelect = "none";
-                document.addEventListener("mousemove", handleMove);
-                document.addEventListener("mouseup", handleUp);
-              }}
-              onMouseUp={(e) => handleSalaryBlur(1)}
-            />
-          </div>
+          {!isNegotiable && (
+            <div className="relative h-6 pt-1 select-none">
+              <div className="absolute top-1/2 -translate-y-1/2 w-full h-2 rounded-full bg-primary/20"></div>
+              <div
+                className="absolute top-1/2 -translate-y-1/2 h-2 rounded-full bg-primary transition-all pointer-events-none"
+                style={{
+                  left: `${((salaryRange[0] ?? 0) / maxSalary) * 100}%`,
+                  width: `${((Math.min(salaryRange[1] ?? maxSalary, maxSalary) - Math.min(salaryRange[0] ?? 0, maxSalary)) / maxSalary) * 100
+                    }%`,
+                }}
+              />
+              <div
+                className="absolute w-5 h-5 rounded-full bg-primary shadow-lg cursor-grab active:cursor-grabbing hover:scale-110 transition-transform z-10"
+                style={{
+                  left: `${((salaryRange[0] ?? 0) / maxSalary) * 100}%`,
+                  top: "50%",
+                  transform: `translate(-50%, -50%)`,
+                }}
+                onMouseDown={(e) => {
+                  e.preventDefault();
+                  const slider = e.currentTarget.parentElement;
+                  const rect = slider.getBoundingClientRect();
+                  const handleMove = (moveEvent) => {
+                    const x = Math.max(0, Math.min(rect.width, moveEvent.clientX - rect.left));
+                    const percentage = x / rect.width;
+                    const newValue = Math.round(percentage * maxSalary);
+                    const currentMax = salaryRange[1] ?? maxSalary;
+                    const clampedValue = Math.min(newValue, currentMax - 100);
+                    setSalaryRange([Math.max(0, clampedValue), currentMax]);
+                    setTempSalaryRange([Math.max(0, clampedValue), currentMax]);
+                  };
+                  const handleUp = () => {
+                    document.removeEventListener("mousemove", handleMove);
+                    document.removeEventListener("mouseup", handleUp);
+                    document.body.style.userSelect = "";
+                  };
+                  document.body.style.userSelect = "none";
+                  document.addEventListener("mousemove", handleMove);
+                  document.addEventListener("mouseup", handleUp);
+                }}
+                onMouseUp={(e) => handleSalaryBlur(0)}
+              />
+              <div
+                className="absolute w-5 h-5 rounded-full bg-primary shadow-lg cursor-grab active:cursor-grabbing hover:scale-110 transition-transform z-10"
+                style={{
+                  left: `${(Math.min(salaryRange[1] ?? maxSalary, maxSalary) / maxSalary) * 100}%`,
+                  top: "50%",
+                  transform: `translate(-50%, -50%)`,
+                }}
+                onMouseDown={(e) => {
+                  e.preventDefault();
+                  const slider = e.currentTarget.parentElement;
+                  const rect = slider.getBoundingClientRect();
+                  const handleMove = (moveEvent) => {
+                    const x = Math.max(0, Math.min(rect.width, moveEvent.clientX - rect.left));
+                    const percentage = x / rect.width;
+                    const newValue = Math.round(percentage * maxSalary);
+                    const currentMin = salaryRange[0] ?? 0;
+                    const clampedValue = Math.max(newValue, currentMin + 100);
+                    setSalaryRange([currentMin, Math.min(maxSalary, clampedValue)]);
+                    setTempSalaryRange([currentMin, Math.min(maxSalary, clampedValue)]);
+                  };
+                  const handleUp = () => {
+                    document.removeEventListener("mousemove", handleMove);
+                    document.removeEventListener("mouseup", handleUp);
+                    document.body.style.userSelect = "";
+                  };
+                  document.body.style.userSelect = "none";
+                  document.addEventListener("mousemove", handleMove);
+                  document.addEventListener("mouseup", handleUp);
+                }}
+                onMouseUp={(e) => handleSalaryBlur(1)}
+              />
+            </div>
+          )}
         </div>
       </div>
 

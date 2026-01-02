@@ -33,7 +33,7 @@ export default function JobHeader({ job = {}, layout = layoutType.full, textButt
     if (job.location) return job.location;
     if (job.company_branches?.location) return job.company_branches.location;
     if (job.company?.address) return job.company.address;
-    return "Location";
+    return "";
   };
 
   const jobLocation = getJobLocation();
@@ -48,7 +48,7 @@ export default function JobHeader({ job = {}, layout = layoutType.full, textButt
     if (Array.isArray(job.employment_types) && job.employment_types.length > 0) {
       return job.employment_types.map(et => et.name || et).join(', ');
     }
-    return "Job Type";
+    return "";
   };
 
   const jobType = getJobType();
@@ -79,7 +79,9 @@ export default function JobHeader({ job = {}, layout = layoutType.full, textButt
                 </h4>
               )}
               <p className="text-muted-foreground">
-                {jobCompany} • {jobLocation} • {jobType}
+                {jobCompany}
+                {jobLocation !== "" && ` • ${jobLocation}`}
+                {jobType !== "" && ` • ${jobType}`}
               </p>
             </div>
           </div>
