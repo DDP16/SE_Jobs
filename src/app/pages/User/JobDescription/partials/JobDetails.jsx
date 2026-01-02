@@ -1,5 +1,5 @@
 import { motion } from "framer-motion";
-import { CircleCheck } from "lucide-react";
+import { CircleCheck, MapPin } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { useSelector } from "react-redux";
 
@@ -67,6 +67,56 @@ export default function JobDetails({ job }) {
   // Handle nice to haves - ready for future data
   const niceToHaves = parseStringToArray(job.nice_to_haves || job.niceToHaves);
 
+  // Handle work locations
+  const getWorkLocations = () => {
+    const locations = [];
+
+    // From company_branches array
+    if (Array.isArray(job.company_branches) && job.company_branches.length > 0) {
+      job.company_branches.forEach(branch => {
+        if (branch.address && branch.address.trim()) {
+          locations.push(branch.address.trim());
+        }
+      });
+    } else if (job.company_branches && !Array.isArray(job.company_branches) && job.company_branches.address) {
+      // Handle case where company_branches is a single object (backward compatibility)
+      locations.push(job.company_branches.address.trim());
+    }
+
+    // From workLocation array
+    if (Array.isArray(job.workLocation) && job.workLocation.length > 0) {
+      job.workLocation.forEach(loc => {
+        if (typeof loc === 'string' && loc.trim()) {
+          locations.push(loc.trim());
+        } else if (loc && (loc.name || loc.address)) {
+          const locParts = [loc.address, loc.name].filter(Boolean);
+          if (locParts.length > 0) {
+            locations.push(locParts.join(', '));
+          }
+        }
+      });
+    }
+
+    // From locations array
+    if (Array.isArray(job.locations) && job.locations.length > 0) {
+      job.locations.forEach(loc => {
+        if (typeof loc === 'string' && loc.trim()) {
+          locations.push(loc.trim());
+        }
+      });
+    }
+
+    // From single location string
+    if (job.location && typeof job.location === 'string' && job.location.trim()) {
+      locations.push(job.location.trim());
+    }
+
+    // Remove duplicates
+    return [...new Set(locations)];
+  };
+
+  const workLocations = getWorkLocations();
+
   return (
     <motion.div
       variants={containerVariants}
@@ -81,6 +131,21 @@ export default function JobDetails({ job }) {
           {job?.description || t("job.no_description")}
         </p>
       </motion.section>
+
+      {/* Work Locations */}
+      {workLocations.length > 0 && (
+        <motion.section variants={itemVariants}>
+          <h4 className="text-2xl font-bold text-foreground mb-4">Vị trí văn phòng</h4>
+          <ul className="space-y-2">
+            {workLocations.map((location, index) => (
+              <li key={index} className="flex gap-3 text-muted-foreground">
+                <MapPin className="w-5 h-5 text-accent-green shrink-0 mt-0.5" />
+                <span>{location}</span>
+              </li>
+            ))}
+          </ul>
+        </motion.section>
+      )}
 
       {/* Responsibilities - will show when API provides data */}
       {responsibilities.length > 0 && (
