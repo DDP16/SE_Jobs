@@ -82,7 +82,7 @@ export default function ProfileSidebar({ user }) {
                     transition={{ duration: 0.4, delay: 0.3 }}
                 >
                     <Typography variant="h6" sx={{ fontWeight: 600, color: theme.palette.text.primary }}>
-                        {currentUser?.last_name || ''}
+                        {currentUser?.first_name || ''}
                     </Typography>
                 </motion.div>
             </Box>
