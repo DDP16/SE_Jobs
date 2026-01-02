@@ -69,50 +69,64 @@ export default function JobDetails({ job }) {
 
   // Handle work locations
   const getWorkLocations = () => {
-    const locations = [];
+    const entries = [];
+    const addEntry = (description, title) => {
+      if (typeof description === 'string' && description.trim()) {
+        entries.push({ description: description.trim(), title });
+      }
+    };
 
-    // From company_branches array
-    if (Array.isArray(job.company_branches) && job.company_branches.length > 0) {
-      job.company_branches.forEach(branch => {
-        if (branch.address && branch.address.trim()) {
-          locations.push(branch.address.trim());
-        }
-      });
-    } else if (job.company_branches && !Array.isArray(job.company_branches) && job.company_branches.address) {
-      // Handle case where company_branches is a single object (backward compatibility)
-      locations.push(job.company_branches.address.trim());
-    }
+    const formatBranchLocation = (branch) => {
+      const parts = [
+        branch?.address,
+        branch?.ward?.name,
+        branch?.province?.name,
+        branch?.country?.name,
+      ]
+        .map(part => (typeof part === 'string' ? part.trim() : ''))
+        .filter(Boolean);
+      return parts.length ? parts.join(', ') : null;
+    };
 
-    // From workLocation array
-    if (Array.isArray(job.workLocation) && job.workLocation.length > 0) {
-      job.workLocation.forEach(loc => {
-        if (typeof loc === 'string' && loc.trim()) {
-          locations.push(loc.trim());
-        } else if (loc && (loc.name || loc.address)) {
-          const locParts = [loc.address, loc.name].filter(Boolean);
-          if (locParts.length > 0) {
-            locations.push(locParts.join(', '));
-          }
-        }
-      });
-    }
+    const branches = Array.isArray(job.company_branches)
+      ? job.company_branches
+      : job.company_branches
+        ? [job.company_branches]
+        : [];
 
-    // From locations array
-    if (Array.isArray(job.locations) && job.locations.length > 0) {
-      job.locations.forEach(loc => {
-        if (typeof loc === 'string' && loc.trim()) {
-          locations.push(loc.trim());
-        }
-      });
-    }
+    branches.forEach((branch, index) => {
+      const formatted = formatBranchLocation(branch);
+      if (formatted) {
+        addEntry(formatted, branch?.name || `Branch ${index + 1}`);
+      }
+    });
 
-    // From single location string
-    if (job.location && typeof job.location === 'string' && job.location.trim()) {
-      locations.push(job.location.trim());
-    }
+    const workLocations = Array.isArray(job.workLocation) ? job.workLocation : [];
+    workLocations.forEach(loc => {
+      if (typeof loc === 'string') {
+        addEntry(loc);
+        return;
+      }
+      if (loc && (loc.name || loc.address)) {
+        const locParts = [loc.address, loc.name]
+          .map(part => (typeof part === 'string' ? part.trim() : ''))
+          .filter(Boolean);
+        if (locParts.length) addEntry(locParts.join(', '), loc.name);
+      }
+    });
 
-    // Remove duplicates
-    return [...new Set(locations)];
+    const extraLocations = Array.isArray(job.locations) ? job.locations : [];
+    extraLocations.forEach(loc => addEntry(loc));
+
+    addEntry(job.location);
+
+    const seen = new Set();
+    return entries.filter(entry => {
+      const key = entry.description.toLowerCase();
+      if (seen.has(key)) return false;
+      seen.add(key);
+      return true;
+    });
   };
 
   const workLocations = getWorkLocations();
@@ -132,20 +146,6 @@ export default function JobDetails({ job }) {
         </p>
       </motion.section>
 
-      {/* Work Locations */}
-      {workLocations.length > 0 && (
-        <motion.section variants={itemVariants}>
-          <h4 className="text-2xl font-bold text-foreground mb-4">Vị trí văn phòng</h4>
-          <ul className="space-y-2">
-            {workLocations.map((location, index) => (
-              <li key={index} className="flex gap-3 text-muted-foreground">
-                <MapPin className="w-5 h-5 text-accent-green shrink-0 mt-0.5" />
-                <span>{location}</span>
-              </li>
-            ))}
-          </ul>
-        </motion.section>
-      )}
 
       {/* Responsibilities - will show when API provides data */}
       {responsibilities.length > 0 && (
@@ -186,6 +186,24 @@ export default function JobDetails({ job }) {
               <li key={index} className="flex gap-3 text-muted-foreground">
                 <CircleCheck className="w-5 h-5 text-accent-green shrink-0 mt-0.5" />
                 <span>{item}</span>
+              </li>
+            ))}
+          </ul>
+        </motion.section>
+      )}
+
+      {/* Work Locations */}
+      {workLocations.length > 0 && (
+        <motion.section variants={itemVariants}>
+          <h4 className="text-2xl font-bold text-foreground mb-4">{t("job.work_locations")}</h4>
+          <ul className="space-y-3">
+            {workLocations.map((location, index) => (
+              <li key={index} className="flex gap-3 text-muted-foreground">
+                <MapPin className="w-5 h-5 text-accent-green shrink-0 mt-0.5" />
+                <div className="space-y-0.5">
+                  {location.title && <p className="font-semibold text-foreground">{location.title}</p>}
+                  <p className="text-muted-foreground">{location.description}</p>
+                </div>
               </li>
             ))}
           </ul>
