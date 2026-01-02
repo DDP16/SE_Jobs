@@ -17,7 +17,6 @@ import {
 import { BookmarkBorder, Bookmark } from '@mui/icons-material';
 import { useNavigate } from 'react-router-dom';
 import { useSelector } from 'react-redux';
-import Badge from '../common/Badge';
 import Button from '../common/Button';
 
 // Helper functions
@@ -233,10 +232,8 @@ export default function JobCard({
             locations: getLocationsArray(locationFromBranch),
             description: job.description,
             responsibilities: job.responsibilities || [],
-            requirements: job.requirement ? job.requirement.split(/(<br\s*\/?>|\n)/) : [],
             requirement: job.requirement || [],
-            nice_to_haves: job.nice_to_haves ? job.nice_to_haves.split(/(<br\s*\/?>|\n)/) : [],
-            niceToHaves: job.niceToHaves || [],
+            nice_to_haves: job.nice_to_haves || [],
             working_time: job.working_time || (Array.isArray(job.workingTime) ? job.workingTime.join(', ') : null),
             logo: job.logo,
             isFeatured: job.isFeatured,
@@ -261,10 +258,8 @@ export default function JobCard({
         salary_currency,
         description,
         responsibilities,
-        requirements,
         requirement,
         nice_to_haves,
-        niceToHaves,
         working_time,
         job_deadline,
         url: jobUrl,
@@ -902,14 +897,14 @@ export default function JobCard({
                             </>
                         )}
 
-                        {(requirements?.length > 0 || requirement?.length > 0) && (
+                        {(requirement?.length > 0) && (
                             <>
                                 <Divider sx={{ my: 1.5 }} />
                                 <Typography variant="subtitle2" sx={{ fontWeight: 600, mb: 1 }}>
                                     Yêu cầu
                                 </Typography>
                                 <Box component="ul" sx={{ pl: 2, mb: 2 }}>
-                                    {(requirements || requirement || []).slice(0, 5).map((item, index) => (
+                                    {(requirement || []).slice(0, 5).map((item, index) => (
                                         <Typography
                                             key={index}
                                             component="li"
@@ -923,14 +918,14 @@ export default function JobCard({
                             </>
                         )}
 
-                        {(nice_to_haves?.length > 0 || niceToHaves?.length > 0) && (
+                        {(nice_to_haves?.length > 0) && (
                             <>
                                 <Divider sx={{ my: 1.5 }} />
                                 <Typography variant="subtitle2" sx={{ fontWeight: 600, mb: 1 }}>
                                     Nice to have
                                 </Typography>
                                 <Box component="ul" sx={{ pl: 2, mb: 2 }}>
-                                    {(nice_to_haves || niceToHaves || []).slice(0, 3).map((item, index) => (
+                                    {(nice_to_haves || []).slice(0, 3).map((item, index) => (
                                         <Typography
                                             key={index}
                                             component="li"

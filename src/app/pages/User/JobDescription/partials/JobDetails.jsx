@@ -65,7 +65,7 @@ export default function JobDetails({ job }) {
   const requirements = parseStringToArray(job.requirement);
 
   // Handle nice to haves - ready for future data
-  const niceToHaves = parseStringToArray(job.nice_to_haves || job.niceToHaves);
+  const niceToHaves = parseStringToArray(job.nice_to_haves);
 
   // Handle work locations
   const getWorkLocations = () => {
