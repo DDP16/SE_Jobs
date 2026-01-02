@@ -48,6 +48,14 @@ export const useProfileHandlers = ({
             : currentUser?.student_info || null;
     };
 
+    // Ensure nullable fields are converted to safe defaults before sending to API
+    const sanitizeStudentInfo = (studentInfo = {}) => ({
+        ...studentInfo,
+        location: studentInfo?.location ?? '',
+        skills: Array.isArray(studentInfo?.skills) ? studentInfo.skills : [],
+        open_for_opportunities: studentInfo?.open_for_opportunities ?? false,
+    });
+
     // CV Handlers
     const handleCVFileChange = async (file, cvId = null) => {
         try {
@@ -237,7 +245,7 @@ export const useProfileHandlers = ({
                 return;
             }
 
-            const studentInfo = getStudentInfo() || {};
+            const studentInfo = sanitizeStudentInfo(getStudentInfo() || {});
             const userData = {
                 userId: currentUser.user_id,
                 userData: {
@@ -245,9 +253,9 @@ export const useProfileHandlers = ({
                     last_name: formData.fullName?.split(' ').slice(1).join(' ') || '',
                     student_info: {
                         ...studentInfo,
-                        phone: formData.phone,
-                        date_of_birth: formData.dateOfBirth,
-                        location: formData.address,
+                        phone: formData.phone ?? '',
+                        date_of_birth: formData.dateOfBirth ?? '',
+                        location: formData.address ?? '',
                     },
                 },
             };
@@ -268,7 +276,7 @@ export const useProfileHandlers = ({
                 return;
             }
 
-            const studentInfo = getStudentInfo() || {};
+            const studentInfo = sanitizeStudentInfo(getStudentInfo() || {});
             const aboutText = formData.about || formData.content || '';
             const userData = {
                 userId: currentUser.user_id,
@@ -292,6 +300,14 @@ export const useProfileHandlers = ({
     // Experience Handlers
     const handleSaveExperience = async (formData) => {
         try {
+            const studentInfo = getStudentInfo();
+            const studentId = studentInfo?.id || studentInfo?.student_id;
+            if (!studentId) {
+                alert('Vui lòng đăng nhập lại.');
+                return;
+            }
+
+            const position = (formData.jobTitle || formData.role || '').trim();
             const startMonth = String(formData.startMonth || '').padStart(2, '0');
             const startDate = `${formData.startYear}-${startMonth}-01`;
             let endDate = null;
@@ -301,9 +317,11 @@ export const useProfileHandlers = ({
             }
 
             const experienceData = {
-                title: formData.jobTitle || formData.role,
-                company: formData.company,
-                location: formData.location || '',
+                position: position, 
+                title: position, 
+                student_id: studentId,
+                company: formData.company?.trim() || '',
+                location: formData.location?.trim() || '',
                 start_date: startDate,
                 end_date: endDate,
                 is_current: formData.isCurrentlyWorking || false,
@@ -383,7 +401,7 @@ export const useProfileHandlers = ({
         }
 
         try {
-            const studentInfo = getStudentInfo() || {};
+            const studentInfo = sanitizeStudentInfo(getStudentInfo() || {});
             const userData = {
                 userId: currentUser.user_id,
                 userData: {
@@ -522,7 +540,7 @@ export const useProfileHandlers = ({
                 alert('Không tìm thấy người dùng. Vui lòng đăng nhập lại.');
                 return;
             }
-            const currentStudentInfo = getStudentInfo() || {};
+            const currentStudentInfo = sanitizeStudentInfo(getStudentInfo() || {});
             const userData = {
                 userId: currentUser.user_id,
                 userData: {
