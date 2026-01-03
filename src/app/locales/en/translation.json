@@ -695,8 +695,7 @@
       "location": "Location"
     },
     "grid": {
-      "companiesFound": "{{count}} {{count, plural, one {company} other {companies}}} found",
-      "noCompaniesFound": "No companies found",
+      "companiesFound": "{{count}} companies found",
       "tryAdjustingFilters": "Try adjusting your filters or search criteria",
       "sort": {
         "newest": "Newest",
