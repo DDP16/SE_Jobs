@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useMemo, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
@@ -10,19 +10,17 @@ import {
     Badge,
     Button,
     Paper,
-    Stack,
-    useTheme
+    Stack
 } from '@mui/material';
 import {
     WorkOutline as WorkOutlineIcon,
     InfoOutlined as InfoIcon
 } from '@mui/icons-material';
 import { useNavigate } from 'react-router-dom';
-import { ProfileSidebar, JobCard } from '../../../../components';
+import { JobCardThird } from '../../../../components';
 import { mockJobs } from '../../../../../mocks/mockData';
-import { useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import { getSavedJobs } from '../../../../modules';
+import { getSavedJobs, addSavedJob, removeSavedJob } from '../../../../modules';
 
 // Tab panel component
 function TabPanel({ children, value, index, ...other }) {
@@ -38,6 +36,40 @@ function TabPanel({ children, value, index, ...other }) {
         </div>
     );
 }
+
+// Map saved jobs data from API format to JobCardThird format
+const mapSavedJobData = (savedJobItem) => {
+    if (!savedJobItem?.jobs) return null;
+
+    const job = savedJobItem.jobs;
+    const company = job.companies || {};
+
+    return {
+        id: job.id,
+        job_id: job.id,
+        title: job.title,
+        description: job.description,
+        salary_from: job.salary_from,
+        salary_to: job.salary_to,
+        salary_currency: job.salary_currency,
+        created_at: job.created_at,
+        createdAt: job.created_at,
+        updated_at: job.updated_at,
+        updatedAt: job.updated_at,
+        company: {
+            id: company.id,
+            name: company.name,
+            logo: company.logo,
+            email: company.email,
+            website_url: company.website_url
+        },
+        logo: company.logo,
+        company_id: job.company_id,
+        status: job.status,
+        isSaved: true,
+        ...job
+    };
+};
 
 // Empty state component
 function EmptyState({ message, onExplore }) {
@@ -113,36 +145,39 @@ function EmptyState({ message, onExplore }) {
 
 export default function MyJobs() {
     const { t } = useTranslation();
-    const theme = useTheme();
     const navigate = useNavigate();
     const dispatch = useDispatch();
     const savedJobs = useSelector(state => state.savedJobs?.savedJobs ?? []);
+
     useEffect(() => {
         dispatch(getSavedJobs());
     }, [dispatch]);
 
     const [activeTab, setActiveTab] = useState(0);
+    const [appliedJobs] = useState([]);
+    const [recentViewedJobs] = useState([mockJobs[0]]);
+    const [invitedJobs] = useState([]);
 
-    // Mock data - replace with actual API calls
-    const [appliedJobs] = useState([]); // Mock: []
-    const [recentViewedJobs] = useState([mockJobs[0]]); // Mock: [mockJobs[0]]
-    const [invitedJobs] = useState([]); // Mock: []
+    const mappedSavedJobs = useMemo(() => {
+        if (!Array.isArray(savedJobs)) return [];
+        return savedJobs
+            .map(mapSavedJobData)
+            .filter(Boolean);
+    }, [savedJobs]);
 
-    // Calculate job counts from arrays
     const jobCounts = {
         applied: appliedJobs.length,
-        saved: savedJobs.length,
+        saved: mappedSavedJobs.length,
         recentView: recentViewedJobs.length,
         invited: invitedJobs.length,
     };
 
-    // Get jobs for current tab
     const getCurrentTabJobs = () => {
         switch (activeTab) {
             case 0:
                 return appliedJobs;
             case 1:
-                return savedJobs;
+                return mappedSavedJobs;
             case 2:
                 return recentViewedJobs;
             case 3:
@@ -160,23 +195,21 @@ export default function MyJobs() {
         navigate('/jobs');
     };
 
-    const handleJobClick = (job) => {
-        navigate(`/job?id=${job.id}`);
+    const handleBookmark = (job, meta) => {
+        const { action, jobId } = meta || {};
+        if (!jobId) return;
+
+        if (action === 'unsave') {
+            // Find the saved job ID from savedJobs array
+            const savedJobItem = savedJobs.find(item => item.jobs?.id === jobId);
+            if (savedJobItem?.id) {
+                dispatch(removeSavedJob(jobId));
+            }
+        } else {
+            dispatch(addSavedJob(jobId));
+        }
     };
 
-    const handleBookmark = (job) => {
-        // TODO: Implement bookmark functionality
-    };
-
-    const handleShare = (job) => {
-        // TODO: Implement share functionality
-    };
-
-    const handleApply = (job) => {
-        // TODO: Implement apply functionality
-    };
-
-    // Get empty state messages for each tab
     const getEmptyMessage = (tabIndex) => {
         const messages = {
             0: t("myJobs.emptyStates.applied"),
@@ -187,7 +220,6 @@ export default function MyJobs() {
         return messages[tabIndex] || t("myJobs.emptyStates.noData");
     };
 
-    // Render job list or empty state
     const renderTabContent = (tabIndex) => {
         const jobs = getCurrentTabJobs();
 
@@ -213,16 +245,11 @@ export default function MyJobs() {
                                 transition={{ duration: 0.3, delay: index * 0.1 }}
                                 whileHover={{ y: -2, transition: { duration: 0.2 } }}
                             >
-                                <JobCard
+                                <JobCardThird
                                     job={job}
                                     variant="list"
-                                    showDescription={true}
-                                    showApplyButton={tabIndex === 0 ? false : true}
-                                    showActions={true}
-                                    isBookmarked={tabIndex === 1}
+                                    isBookmarked={tabIndex === 1 || job.isSaved}
                                     onBookmark={handleBookmark}
-                                    onShare={handleShare}
-                                    onApply={handleApply}
                                 />
                             </motion.div>
                         ))}
@@ -231,7 +258,7 @@ export default function MyJobs() {
             </Box>
         );
     };
-  
+
     return (
         <Box sx={{ bgcolor: 'background.default', minHeight: '100vh' }}>
             <Container maxWidth="xl">
@@ -396,11 +423,11 @@ export default function MyJobs() {
                                         overflow: 'hidden',
                                     }}
                                 >
-                                <InfoIcon sx={{ fontSize: 18, color: 'text.secondary' }} />
-                                <Typography variant="body2" sx={{ color: 'text.secondary' }}>
-                                    {t("myJobs.infoMessage")}
-                                </Typography>
-                            </Box>
+                                    <InfoIcon sx={{ fontSize: 18, color: 'text.secondary' }} />
+                                    <Typography variant="body2" sx={{ color: 'text.secondary' }}>
+                                        {t("myJobs.infoMessage")}
+                                    </Typography>
+                                </Box>
                             )}
                         </AnimatePresence>
 

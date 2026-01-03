@@ -32,6 +32,7 @@ export { default as AwardsModal } from './common/AwardsModal';
 export { default as SearchBar } from './features/SearchBar';
 export { default as JobCard } from './features/JobCard';
 export { default as JobCardSecond } from './features/JobCardSecond';
+export { default as JobCardThird } from './features/JobCardThird';
 export { default as CompanyCard } from './features/CompanyCard';
 export { default as FilterDialog } from './features/FilterDialog';
 export { default as FilterToolbar } from './features/FilterToolbar';
