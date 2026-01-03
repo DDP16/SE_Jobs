@@ -157,6 +157,8 @@ export default function JobCard({
     const openDelay = 300;
     const closeDelay = 300;
 
+    console.log('job', job);
+
     const calculatePopupPosition = useCallback(() => {
         if (!cardRef.current) {
             return { top: '50%', left: '50%', transform: 'translate(-50%, -50%)' };
@@ -190,23 +192,61 @@ export default function JobCard({
     }, []);
 
 
-    // Extract location from company branches
-    const getLocationFromBranch = useCallback(() => {
-        if (!job.company_branches) return null;
-        const { ward, province } = job.company_branches;
-        const parts = [province?.name, ward?.name].filter(Boolean);
-        return parts.length > 0 ? parts.join(', ') : null;
+    // Extract unique provinces from company branches
+    const getUniqueProvinces = useCallback(() => {
+        if (!job.company_branches) return [];
+
+        // Handle array of branches
+        const branches = Array.isArray(job.company_branches)
+            ? job.company_branches
+            : [job.company_branches];
+
+        if (branches.length === 0) return [];
+
+        // Extract unique provinces
+        const provinces = branches
+            .map(branch => branch?.province?.name)
+            .filter(Boolean);
+
+        // Remove duplicates
+        const uniqueProvinces = [...new Set(provinces)];
+        return uniqueProvinces;
     }, [job.company_branches]);
+
+    // Extract location from company branches (for single location display)
+    const getLocationFromBranch = useCallback(() => {
+        const uniqueProvinces = getUniqueProvinces();
+        if (uniqueProvinces.length === 0) return null;
+
+        // Join unique provinces with comma
+        return uniqueProvinces.join(', ');
+    }, [getUniqueProvinces]);
+
+    // Extract locations array from all branches (grouped by unique provinces)
+    const getLocationsFromBranches = useCallback(() => {
+        const uniqueProvinces = getUniqueProvinces();
+        if (uniqueProvinces.length === 0) return [];
+
+        // Return array of unique provinces
+        return uniqueProvinces;
+    }, [getUniqueProvinces]);
 
     // Extract locations array
     const getLocationsArray = useCallback((locationFromBranch) => {
+        // First, try to get locations from branches
+        const branchLocations = getLocationsFromBranches();
+        if (branchLocations.length > 0) return branchLocations;
+
+        // Fallback to locationFromBranch (single location)
         if (locationFromBranch) return [locationFromBranch];
+
+        // Fallback to other location fields
         if (Array.isArray(job.locations) && job.locations.length > 0) return job.locations;
         if (Array.isArray(job.workLocation) && job.workLocation.length > 0) return job.workLocation;
         if (job.location) return [job.location];
         if (job.shortCity) return [job.shortCity];
         return [];
-    }, [job.locations, job.workLocation, job.location, job.shortCity]);
+    }, [job.locations, job.workLocation, job.location, job.shortCity, getLocationsFromBranches]);
 
     const normalizedJob = useMemo(() => {
         const locationFromBranch = getLocationFromBranch();
