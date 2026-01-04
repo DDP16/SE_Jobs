@@ -270,13 +270,13 @@ export default function JobsPage() {
                 </TableCell>
                 <TableCell className="text-center">
                   <Badge variant="secondary" className="bg-purple-50 text-purple-700">
-                    {job.levels[0]?.name}
+                    {job.levels?.map(lvl => lvl.name).join(', ')}
                   </Badge>
                 </TableCell>
                 <TableCell className="text-gray-600">
                   <div className="flex items-center gap-1">
                     <MapPin className="w-3 h-3" />
-                    {job.workLocation[0]?.name}
+                    {job.workLocation?.map(loc => loc.name).join(', ')}
                   </div>
                 </TableCell>
                 <TableCell className="text-gray-600">
