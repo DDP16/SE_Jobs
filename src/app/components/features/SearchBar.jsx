@@ -6,7 +6,7 @@ import {
     Divider,
     Autocomplete
 } from '@mui/material';
-import { Search, LocationOn } from '@mui/icons-material';
+import { Search, LocationOn, Clear } from '@mui/icons-material';
 import Input from '../common/Input';
 import Button from '../common/Button';
 
@@ -96,6 +96,9 @@ export default function SearchBar({
 }) {
     const [keyword, setKeyword] = useState(initialKeyword || '');
     const [location, setLocation] = useState(initialLocation || DEFAULT_LOCATION);
+    const [isHighlighted, setIsHighlighted] = useState(false);
+    const keywordInputRef = React.useRef(null);
+    const searchBarRef = React.useRef(null);
 
     // If parent updates initial values (e.g. URL changed), sync local state
     useEffect(() => {
@@ -122,8 +125,34 @@ export default function SearchBar({
     const handleKeyPress = (event) => {
         if (event.key === 'Enter') {
             handleSearch();
+            setIsHighlighted(false);
         }
     };
+
+    const handleClearKeyword = () => {
+        setKeyword('');
+        setIsHighlighted(true);
+        setTimeout(() => {
+            if (keywordInputRef.current) {
+                keywordInputRef.current.focus();
+            }
+        }, 0);
+    };
+
+    useEffect(() => {
+        const handleClickOutside = (event) => {
+            if (searchBarRef.current && !searchBarRef.current.contains(event.target)) {
+                setIsHighlighted(false);
+            }
+        };
+
+        if (isHighlighted) {
+            document.addEventListener('mousedown', handleClickOutside);
+            return () => {
+                document.removeEventListener('mousedown', handleClickOutside);
+            };
+        }
+    }, [isHighlighted]);
 
     const options = React.useMemo(() => {
         return [
@@ -136,87 +165,153 @@ export default function SearchBar({
     }, []);
 
     return (
-        <Paper
-            elevation={0}
-            sx={{
-                bgcolor: 'transparent',
-                borderRadius: 3,
-                display: "flex",
-                flexDirection: { xs: "column", md: "row" },
-                gap: { xs: 1, md: 1 },
-                alignItems: "stretch",
-                flexWrap: "wrap",
-                maxWidth: "90%",
-                width: "100%",
-            }}
-        >
-            {showLocation && (
+        <>
+            {/* Backdrop overlay with blur effect */}
+            {isHighlighted && (
+                <Box
+                    sx={{
+                        position: 'fixed',
+                        top: 0,
+                        left: 0,
+                        right: 0,
+                        bottom: 0,
+                        backgroundColor: 'rgba(0, 0, 0, 0.3)',
+                        backdropFilter: 'blur(4px)',
+                        WebkitBackdropFilter: 'blur(4px)',
+                        zIndex: 1300,
+                        animation: 'fadeIn 0.2s ease-in',
+                        '@keyframes fadeIn': {
+                            from: {
+                                opacity: 0,
+                            },
+                            to: {
+                                opacity: 1,
+                            },
+                        },
+                    }}
+                />
+            )}
+            <Paper
+                ref={searchBarRef}
+                elevation={0}
+                sx={{
+                    bgcolor: 'transparent',
+                    borderRadius: 3,
+                    display: "flex",
+                    flexDirection: { xs: "column", md: "row" },
+                    gap: { xs: 1, md: 1 },
+                    alignItems: "stretch",
+                    flexWrap: "wrap",
+                    maxWidth: "90%",
+                    width: "100%",
+                    position: 'relative',
+                    zIndex: isHighlighted ? 1301 : 'auto',
+                    transition: 'all 0.2s ease-in-out',
+                }}
+            >
+                {showLocation && (
+                    <Box
+                        sx={{
+                            flex: 1,
+                            minWidth: { xs: "100%", md: "25%", lg: "20%" },
+                            width: { xs: "100%", md: "auto" },
+                        }}
+                    >
+                        <Autocomplete
+                            options={options}
+                            value={location || DEFAULT_LOCATION}
+                            onChange={(event, newValue) => {
+                                setLocation(newValue || DEFAULT_LOCATION);
+                            }}
+                            clearIcon={location === DEFAULT_LOCATION ? null : undefined}
+                            isOptionEqualToValue={(option, value) => option.value === value.value}
+                            getOptionLabel={(option) => option?.label || ''}
+                            renderInput={(params) => (
+                                <Input
+                                    {...params}
+                                    placeholder={locationPlaceholder}
+                                    onKeyPress={handleKeyPress}
+                                    InputProps={{
+                                        ...params.InputProps,
+                                        startAdornment: (
+                                            <InputAdornment position="start">
+                                                <LocationOn color="action" />
+                                            </InputAdornment>
+                                        ),
+                                    }}
+                                />
+                            )}
+                        />
+                    </Box>
+                )}
+
                 <Box
                     sx={{
                         flex: 1,
-                        minWidth: { xs: "100%", md: "25%", lg: "20%" },
+                        minWidth: { xs: "100%", md: "55%", lg: "60%" },
+                        width: { xs: "100%", md: "auto" },
+                        position: 'relative',
+                        zIndex: isHighlighted ? 1302 : 'auto',
+                        transform: isHighlighted ? 'scale(1.02)' : 'scale(1)',
+                        transition: 'transform 0.2s ease-in-out',
+                    }}
+                >
+                    <Input
+                        inputRef={keywordInputRef}
+                        placeholder={placeholder}
+                        value={keyword}
+                        onChange={(e) => setKeyword(e.target.value)}
+                        onKeyPress={handleKeyPress}
+                        sx={{
+                            ...(isHighlighted && {
+                                '& .MuiOutlinedInput-root': {
+                                    boxShadow: '0 4px 20px rgba(0, 0, 0, 0.15)',
+                                    borderColor: 'primary.main',
+                                    '&:hover': {
+                                        borderColor: 'primary.main',
+                                    },
+                                    '&.Mui-focused': {
+                                        borderColor: 'primary.main',
+                                    },
+                                },
+                            }),
+                        }}
+                        startAdornment={
+                            <InputAdornment position="start">
+                                <Search color="action" />
+                            </InputAdornment>
+                        }
+                        endAdornment={
+                            keyword && (
+                                <InputAdornment position="end">
+                                    <Clear
+                                        sx={{
+                                            cursor: 'pointer',
+                                            color: 'action.active',
+                                            '&:hover': {
+                                                color: 'action.hover',
+                                            },
+                                        }}
+                                        onClick={handleClearKeyword}
+                                    />
+                                </InputAdornment>
+                            )
+                        }
+                    />
+                </Box>
+
+                <Button
+                    variant="contained"
+                    onClick={handleSearch}
+                    sx={{
+                        minWidth: { xs: "100%", md: 120 },
                         width: { xs: "100%", md: "auto" },
                     }}
                 >
-                    <Autocomplete
-                        options={options}
-                        value={location || DEFAULT_LOCATION}
-                        onChange={(event, newValue) => {
-                            setLocation(newValue || DEFAULT_LOCATION);
-                        }}
-                        clearIcon={location === DEFAULT_LOCATION ? null : undefined}
-                        isOptionEqualToValue={(option, value) => option.value === value.value}
-                        getOptionLabel={(option) => option?.label || ''}
-                        renderInput={(params) => (
-                            <Input
-                                {...params}
-                                placeholder={locationPlaceholder}
-                                onKeyPress={handleKeyPress}
-                                InputProps={{
-                                    ...params.InputProps,
-                                    startAdornment: (
-                                        <InputAdornment position="start">
-                                            <LocationOn color="action" />
-                                        </InputAdornment>
-                                    ),
-                                }}
-                            />
-                        )}
-                    />
-                </Box>
-            )}
-
-            <Box
-                sx={{
-                    flex: 1,
-                    minWidth: { xs: "100%", md: "55%", lg: "60%" },
-                    width: { xs: "100%", md: "auto" },
-                }}
-            >
-                <Input
-                    placeholder={placeholder}
-                    value={keyword}
-                    onChange={(e) => setKeyword(e.target.value)}
-                    onKeyPress={handleKeyPress}
-                    startAdornment={
-                        <InputAdornment position="start">
-                            <Search color="action" />
-                        </InputAdornment>
-                    }
-                />
-            </Box>
-
-            <Button
-                variant="contained"
-                onClick={handleSearch}
-                sx={{
-                    minWidth: { xs: "100%", md: 120 },
-                    width: { xs: "100%", md: "auto" },
-                }}
-            >
-                Search
-            </Button>
-        </Paper>
+                    Search
+                </Button>
+            </Paper>
+        </>
     );
 
     // accept initial values from parent (e.g., from URL query) and sync when they change
