@@ -157,7 +157,6 @@ export default function JobCard({
     const openDelay = 300;
     const closeDelay = 300;
 
-    console.log('job', job);
 
     const calculatePopupPosition = useCallback(() => {
         if (!cardRef.current) {
