@@ -86,19 +86,27 @@ export default function Header() {
     try {
       const result = await dispatch(logout());
       if (logout.fulfilled.match(result)) {
-        console.log("Logout successful: ", result.payload);
         showSuccess("Logout successful!");
         navigate('/');
       } else {
-        console.error("Logout failed: ", result);
         showError("Logout failed: " + (result.payload || "Unknown error"));
       }
     } catch (error) {
-      console.error("Error during logout:", error);
       showError("An error occurred during logout. Please try again.");
     }
   };
 
+  const handleCreateCV = () => {
+    window.open('https://www.topcv.vn/mau-cv', '_blank');
+  };
+
+  const handleContactUs = () => {
+    navigate('/contact-us');
+  };
+
+  const handleForEmployers = () => {
+    navigate('/company/signup');
+  };
   // Check if a path is active
   const isActive = (path) => {
     if (path === '/') {
@@ -121,7 +129,7 @@ export default function Header() {
       }}
     >
       <Toolbar sx={{
-        minHeight: { xs: '40px', md: '50px' },  
+        minHeight: { xs: '40px', md: '50px' },
         px: { xs: 2, md: 3 },
         justifyContent: 'space-between'
       }}>
@@ -157,17 +165,17 @@ export default function Header() {
                       ml: 0.5
                     }}
                   >
-                      <Avatar
-                        sx={{
-                          width: 32,
-                          height: 32,
-                          bgcolor: 'primary.main',
-                          fontSize: '0.9rem',
-                          fontWeight: 600
-                        }}
-                      >
-                        {(userName && typeof userName === 'string' && userName.length > 0) ? userName.charAt(0).toUpperCase() : ''}
-                      </Avatar>
+                    <Avatar
+                      sx={{
+                        width: 32,
+                        height: 32,
+                        bgcolor: 'primary.main',
+                        fontSize: '0.9rem',
+                        fontWeight: 600
+                      }}
+                    >
+                      {(userName && typeof userName === 'string' && userName.length > 0) ? userName.charAt(0).toUpperCase() : ''}
+                    </Avatar>
                   </IconButton>
                 </>
               ) : (
@@ -243,6 +251,24 @@ export default function Header() {
               }}
             >
               {t('companies')}
+            </Button>
+            <Button
+              color="inherit"
+              component={Link}
+              to="https://www.topcv.vn/mau-cv"
+              target="_blank"
+              title="TopCV"
+              sx={{
+                color: isActive('/contact-us') ? 'primary.main' : 'inherit',
+                fontWeight: isActive('/contact-us') ? 800 : 600,
+                borderBottom: isActive('/contact-us') ? '2px solid' : 'none',
+                borderColor: 'primary.main',
+                borderRadius: 0,
+                pb: isActive('/contact-us') ? 0.2 : 0,
+                fontSize: { xs: '0.85rem', md: '0.9rem' }
+              }}
+            >
+              {t('createCV')}
             </Button>
             <Button
               color="inherit"
@@ -387,11 +413,15 @@ export default function Header() {
             {t('companies')}
           </MenuItem>
 
-          <MenuItem onClick={handleMobileMenuClose} sx={{ justifyContent: 'flex-start' }}>
+          <MenuItem onClick={handleContactUs} sx={{ justifyContent: 'flex-start' }}>
             {t('contactUs')}
           </MenuItem>
 
-          <MenuItem onClick={handleMobileMenuClose} sx={{ justifyContent: 'flex-start' }}>
+          <MenuItem onClick={handleCreateCV} sx={{ justifyContent: 'flex-start' }}>
+            {t('createCV')}
+          </MenuItem>
+
+          <MenuItem onClick={handleForEmployers} sx={{ justifyContent: 'flex-start' }}>
             {t('forEmployers')}
           </MenuItem>
 
