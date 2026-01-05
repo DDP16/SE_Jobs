@@ -27,58 +27,100 @@ export default function SignUp() {
   const [confirmPasswordError, setConfirmPasswordError] = useState("");
   const [firstnameError, setFirstnameError] = useState("");
   const [lastnameError, setLastnameError] = useState("");
-  const { alertConfig, hideAlert, showSuccess, showError, showWarning} = useCustomAlert();
+  const { alertConfig, hideAlert, showSuccess, showError, showWarning } = useCustomAlert();
+
+  const validateFirstnameField = (firstnameValue) => {
+    if (!firstnameValue) {
+      setFirstnameError("First name is required.");
+      return false;
+    } else {
+      setFirstnameError("");
+      return true;
+    }
+  };
+
+  const validateLastnameField = (lastnameValue) => {
+    if (!lastnameValue) {
+      setLastnameError("Last name is required.");
+      return false;
+    } else {
+      setLastnameError("");
+      return true;
+    }
+  };
+
+  const validateEmailField = (emailValue) => {
+    if (!emailValue) {
+      setEmailError("Email is required.");
+      return false;
+    } else if (!validateEmail(emailValue)) {
+      setEmailError("Please enter a valid email address.");
+      return false;
+    } else {
+      setEmailError("");
+      return true;
+    }
+  };
+
+  const validatePasswordField = (passwordValue) => {
+    const resultValidatePassword = validatePassword(passwordValue);
+    if (!passwordValue || resultValidatePassword.length > 0) {
+      setPasswordError(resultValidatePassword.join("\n"));
+      return false;
+    } else {
+      setPasswordError("");
+      return true;
+    }
+  };
+
+  const validateConfirmPasswordField = (confirmPasswordValue) => {
+    if (password !== confirmPasswordValue) {
+      setConfirmPasswordError("Passwords do not match.");
+      return false;
+    } else {
+      setConfirmPasswordError("");
+      return true;
+    }
+  };
+
+  const handleFirstnameBlur = () => {
+    validateFirstnameField(firstname);
+  };
+
+  const handleLastnameBlur = () => {
+    validateLastnameField(lastname);
+  };
+
+  const handleEmailBlur = () => {
+    validateEmailField(email);
+  };
+
+  const handlePasswordBlur = () => {
+    validatePasswordField(password);
+    // Re-validate confirm password if it has been filled
+    if (confirmPassword) {
+      validateConfirmPasswordField(confirmPassword);
+    }
+  };
+
+  const handleConfirmPasswordBlur = () => {
+    validateConfirmPasswordField(confirmPassword);
+  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    let valid = true;
+    const isFirstnameValid = validateFirstnameField(firstname);
+    const isLastnameValid = validateLastnameField(lastname);
+    const isEmailValid = validateEmailField(email);
+    const isPasswordValid = validatePasswordField(password);
+    const isConfirmPasswordValid = validateConfirmPasswordField(confirmPassword);
 
-    if (!email) {
-      setEmailError("Email is required.");
-      valid = false;
-    } else if (!validateEmail(email)) {
-      setEmailError("Please enter a valid email address.");
-      valid = false;
-    } else {
-      setEmailError("");
-    }
-
-    const resultValidatePassword = validatePassword(password);
-
-    if (!password || resultValidatePassword.length > 0) {
-      setPasswordError(resultValidatePassword.join("\n"));
-      valid = false;
-    } else {
-      setPasswordError("");
-    }
-
-    if (password !== confirmPassword) {
-      setConfirmPasswordError("Passwords do not match.");
-      valid = false;
-    } else {
-      setConfirmPasswordError("");
-    }
-
-    if (!firstname) {
-      setFirstnameError("First name is required.");
-      valid = false;
-    } else {
-      setFirstnameError("");
-    }
-
-    if (!lastname) {
-      setLastnameError("Last name is required.");
-      valid = false;
-    } else {
-      setLastnameError("");
-    }
-
-    if (valid) {
+    if (isFirstnameValid && isLastnameValid && isEmailValid && isPasswordValid && isConfirmPasswordValid) {
       try {
         const result = await dispatch(register({ email, password, confirm_password: confirmPassword, first_name: firstname, last_name: lastname }));
         if (register.fulfilled.match(result)) {
           showSuccess("Registration successful! Please sign in.");
-          delay(() => {nav("/signin");}, 1000);
+          delay(() => { nav("/signin"); }, 1000);
         } else {
           console.error("Registration failed: ", result);
           showError("Registration failed: " + (result.payload || "Unknown error"));
@@ -133,6 +175,7 @@ export default function SignUp() {
                 placeholder={t("auth.enter_first_name")}
                 value={firstname}
                 onChange={(e) => setFirstname(e.target.value)}
+                onBlur={handleFirstnameBlur}
                 className="w-full h-11 rounded-xl border-gray-300 focus:border-blue-500 focus:ring-blue-500"
               />
               {firstnameError && (
@@ -149,6 +192,7 @@ export default function SignUp() {
                 placeholder={t("auth.enter_last_name")}
                 value={lastname}
                 onChange={(e) => setLastname(e.target.value)}
+                onBlur={handleLastnameBlur}
                 className="w-full h-11 rounded-xl border-gray-300 focus:border-blue-500 focus:ring-blue-500"
               />
               {lastnameError && (
@@ -166,6 +210,7 @@ export default function SignUp() {
               placeholder={t("auth.enter_email")}
               value={email}
               onChange={(e) => setEmail(e.target.value)}
+              onBlur={handleEmailBlur}
               className="w-full h-11 rounded-xl border-gray-300 focus:border-blue-500 focus:ring-blue-500"
             />
             {emailError && (
@@ -184,6 +229,7 @@ export default function SignUp() {
                 placeholder={t("auth.enter_password")}
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
+                onBlur={handlePasswordBlur}
                 className="w-full h-11 rounded-xl border-gray-300 focus:border-blue-500 focus:ring-blue-500 pr-12"
               />
               <button
@@ -194,6 +240,7 @@ export default function SignUp() {
                 {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
               </button>
             </div>
+            <p className="text-xs text-gray-500 mt-1">Mật khẩu nên có ký tự viết hoa, viết thường, số và ký tự đặc biệt</p>
             {passwordError && (
               passwordError.split('\n').map((err, idx) => (
                 <p key={idx} className="text-xs text-red-500 mt-1">{err}</p>
@@ -213,6 +260,7 @@ export default function SignUp() {
                 value={confirmPassword}
                 errorText=""
                 onChange={(e) => setConfirmPassword(e.target.value)}
+                onBlur={handleConfirmPasswordBlur}
                 className="w-full h-11 rounded-xl border-gray-300 focus:border-blue-500 focus:ring-blue-500 pr-12"
               />
               <button
@@ -236,9 +284,9 @@ export default function SignUp() {
           </Button>
         </form>
       </motion.div>
-      <CustomAlert 
-        {...alertConfig} 
-        onClose={hideAlert} 
+      <CustomAlert
+        {...alertConfig}
+        onClose={hideAlert}
       />
     </div>
   );
