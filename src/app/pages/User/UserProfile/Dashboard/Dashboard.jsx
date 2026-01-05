@@ -50,7 +50,7 @@ export default function ProfileDashboard() {
     const recentApplications = mockRecentApplications;
 
     return (
-        <Box sx={{ bgcolor: 'background.default', minHeight: '100vh'}}>
+        <Box sx={{ bgcolor: 'background.default', minHeight: '100vh' }}>
             <Container maxWidth="xl">
                 <Box sx={{ display: 'flex', gap: 4, alignItems: 'flex-start' }}>
 
@@ -90,20 +90,17 @@ export default function ProfileDashboard() {
                                                 />
                                             )
                                             : (
-                                                <Avatar
-                                                    sx={{
-                                                        width: 80,
-                                                        height: 80,
-                                                        bgcolor: 'background.default',
-                                                        fontSize: '2rem',
-                                                        fontWeight: 600,
-                                                    }}
-                                                >
-                                                    {getInitials((currentUser.last_name || '') + ' ' + (currentUser.first_name || ''))}
-                                                </Avatar>
+                                                <div className="flex flex-col items-center gap-4 shrink-0">
+                                                    <div className="bg-primary rounded-full w-24 h-24 flex items-center justify-center">
+                                                        <span className="text-white text-2xl font-bold">
+                                                            {getInitials((currentUser.last_name || '') + ' ' + (currentUser.first_name || ''))}
+                                                        </span>
+                                                    </div>
+                                                </div>
+
                                             )
                                         }
-                                        <IconButton
+                                        {/* <IconButton
                                             size="small"
                                             sx={{
                                                 position: 'absolute',
@@ -120,14 +117,14 @@ export default function ProfileDashboard() {
                                             }}
                                         >
                                             <EditIcon sx={{ fontSize: 14 }} />
-                                        </IconButton>
+                                        </IconButton> */}
                                     </Box>
 
                                     <Box sx={{ flex: 1 }}>
                                         <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', mb: 2 }}>
                                             <Box>
                                                 <Typography variant="h5" sx={{ fontWeight: 600, mb: 0.5 }}>
-                                                    {currentUser.last_name}
+                                                    {currentUser.last_name} {currentUser.first_name}
                                                 </Typography>
                                                 <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
                                                     <EmailIcon sx={{ fontSize: 18, color: 'text.secondary' }} />
@@ -224,9 +221,9 @@ export default function ProfileDashboard() {
                                             }}
                                         >
                                             <Box sx={{ flex: 1 }}>
-                                                    <Typography variant="caption" color="text.secondary">
-                                                        {t('dashboard.dateApplied')}
-                                                    </Typography>
+                                                <Typography variant="caption" color="text.secondary">
+                                                    {t('dashboard.dateApplied')}
+                                                </Typography>
                                                 <Typography variant="body2" sx={{ fontWeight: 600 }}>
                                                     {application.dateApplied}
                                                 </Typography>

@@ -13,6 +13,7 @@ import {
     validateEducationForm,
     validateProjectForm,
     validateCertificateForm,
+    mapGenderToBackend,
 } from './utils';
 
 export const useProfileHandlers = ({
@@ -245,6 +246,23 @@ export const useProfileHandlers = ({
                 return;
             }
 
+            // Map gender from Vietnamese to English
+            const mappedGender = formData.gender ? mapGenderToBackend(formData.gender) : undefined;
+
+            // Process phone_number: send undefined if empty, otherwise send trimmed string
+            const phoneNumber = formData.phone?.trim() || undefined;
+
+            // Process date_of_birth: send undefined if empty, otherwise send the date string
+            const dateOfBirth = formData.dateOfBirth?.trim() || undefined;
+
+            // Process desired_positions: send array, undefined if empty
+            const desiredPositions = Array.isArray(formData.title) && formData.title.length > 0
+                ? formData.title.map(t => t.trim()).filter(t => t !== '')
+                : undefined;
+
+            // Process location: send undefined if empty, otherwise send trimmed string
+            const location = formData.province?.trim() || undefined;
+
             const studentInfo = sanitizeStudentInfo(getStudentInfo() || {});
             const userData = {
                 userId: currentUser.user_id,
@@ -253,9 +271,11 @@ export const useProfileHandlers = ({
                     last_name: formData.fullName?.split(' ').slice(1).join(' ') || '',
                     student_info: {
                         ...studentInfo,
-                        phone: formData.phone ?? '',
-                        date_of_birth: formData.dateOfBirth ?? '',
-                        location: formData.address ?? '',
+                        phone_number: phoneNumber,
+                        date_of_birth: dateOfBirth,
+                        gender: mappedGender,
+                        desired_positions: desiredPositions,
+                        location: location,
                     },
                 },
             };
@@ -317,8 +337,8 @@ export const useProfileHandlers = ({
             }
 
             const experienceData = {
-                position: position, 
-                title: position, 
+                position: position,
+                title: position,
                 student_id: studentId,
                 company: formData.company?.trim() || '',
                 location: formData.location?.trim() || '',
