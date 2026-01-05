@@ -96,91 +96,197 @@ export default function CompanySignUp() {
   const [companyNameError, setCompanyNameError] = useState("");
   const [websiteUrlError, setWebsiteUrlError] = useState("");
 
+  // Validation functions
+  const validateFirstNameField = (firstNameValue) => {
+    if (!firstNameValue.trim()) {
+      setFirstNameError("Tên không được để trống");
+      return false;
+    } else {
+      setFirstNameError("");
+      return true;
+    }
+  };
+
+  const validateLastNameField = (lastNameValue) => {
+    if (!lastNameValue.trim()) {
+      setLastNameError("Họ không được để trống");
+      return false;
+    } else {
+      setLastNameError("");
+      return true;
+    }
+  };
+
+  const validateLoginEmailField = (emailValue) => {
+    if (!emailValue) {
+      setLoginEmailError("Email đăng nhập không được để trống");
+      return false;
+    } else if (!validateEmail(emailValue)) {
+      setLoginEmailError("Vui lòng nhập địa chỉ email hợp lệ");
+      return false;
+    } else {
+      setLoginEmailError("");
+      return true;
+    }
+  };
+
+  const validateCompanyEmailField = (emailValue) => {
+    if (!emailValue) {
+      setCompanyEmailError("Email doanh nghiệp không được để trống");
+      return false;
+    } else if (!validateEmail(emailValue)) {
+      setCompanyEmailError("Vui lòng nhập địa chỉ email doanh nghiệp hợp lệ");
+      return false;
+    } else {
+      setCompanyEmailError("");
+      return true;
+    }
+  };
+
+  const validatePasswordField = (passwordValue) => {
+    if (!passwordValue) {
+      setPasswordError("Mật khẩu không được để trống");
+      return false;
+    } else {
+      const passwordErrors = validatePassword(passwordValue);
+      if (passwordErrors.length > 0) {
+        setPasswordError(passwordErrors.join("\n"));
+        return false;
+      } else {
+        setPasswordError("");
+        return true;
+      }
+    }
+  };
+
+  const validateConfirmPasswordField = (confirmPasswordValue) => {
+    if (!confirmPasswordValue) {
+      setConfirmPasswordError("Nhập lại mật khẩu không được để trống");
+      return false;
+    } else if (password !== confirmPasswordValue) {
+      setConfirmPasswordError("Mật khẩu không khớp");
+      return false;
+    } else {
+      setConfirmPasswordError("");
+      return true;
+    }
+  };
+
+  const validatePhoneField = (phoneValue) => {
+    if (!phoneValue) {
+      setPhoneError("Số điện thoại không được để trống");
+      return false;
+    } else if (!/^[0-9]{10,11}$/.test(phoneValue)) {
+      setPhoneError("Số điện thoại không hợp lệ (10-11 chữ số)");
+      return false;
+    } else {
+      setPhoneError("");
+      return true;
+    }
+  };
+
+  const validateCompanyNameField = (companyNameValue) => {
+    if (!companyNameValue.trim()) {
+      setCompanyNameError("Tên công ty không được để trống");
+      return false;
+    } else {
+      setCompanyNameError("");
+      return true;
+    }
+  };
+
+  const validateBranchField = (branchIndex, fieldName, value) => {
+    const newBranchesError = [...branchesError];
+    if (!newBranchesError[branchIndex]) {
+      newBranchesError[branchIndex] = {};
+    }
+
+    if (!value) {
+      const errorMessages = {
+        name: 'Tên chi nhánh không được để trống',
+        address: 'Địa chỉ không được để trống',
+        country_id: 'Chọn quốc gia',
+        province_id: 'Chọn tỉnh/thành',
+        ward_id: 'Chọn phường/xã'
+      };
+      newBranchesError[branchIndex][fieldName] = errorMessages[fieldName];
+    } else {
+      delete newBranchesError[branchIndex][fieldName];
+    }
+
+    setBranchesError(newBranchesError);
+  };
+
+  // Blur handlers
+  const handleFirstNameBlur = () => {
+    validateFirstNameField(firstName);
+  };
+
+  const handleLastNameBlur = () => {
+    validateLastNameField(lastName);
+  };
+
+  const handleLoginEmailBlur = () => {
+    validateLoginEmailField(loginEmail);
+  };
+
+  const handleCompanyEmailBlur = () => {
+    validateCompanyEmailField(companyEmail);
+  };
+
+  const handlePasswordBlur = () => {
+    validatePasswordField(password);
+    // Re-validate confirm password if it has been filled
+    if (confirmPassword) {
+      validateConfirmPasswordField(confirmPassword);
+    }
+  };
+
+  const handleConfirmPasswordBlur = () => {
+    validateConfirmPasswordField(confirmPassword);
+  };
+
+  const handlePhoneBlur = () => {
+    validatePhoneField(phone);
+  };
+
+  const handleCompanyNameBlur = () => {
+    validateCompanyNameField(companyName);
+  };
+
+  const handleBranchNameBlur = (idx) => {
+    validateBranchField(idx, 'name', companyBranches[idx]?.name);
+  };
+
+  const handleBranchAddressBlur = (idx) => {
+    validateBranchField(idx, 'address', companyBranches[idx]?.address);
+  };
+
+  const handleBranchCountryBlur = (idx) => {
+    validateBranchField(idx, 'country_id', companyBranches[idx]?.country_id);
+  };
+
+  const handleBranchProvinceBlur = (idx) => {
+    validateBranchField(idx, 'province_id', companyBranches[idx]?.province_id);
+  };
+
+  const handleBranchWardBlur = (idx) => {
+    validateBranchField(idx, 'ward_id', companyBranches[idx]?.ward_id);
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    // Reset all errors
-    setLoginEmailError("");
-    setCompanyEmailError("");
-    setPasswordError("");
-    setConfirmPasswordError("");
-    setLastNameError("");
-    setFirstNameError("");
-    setPhoneError("");
-    setCompanyNameError("");
-    setWebsiteUrlError("");
+    const isFirstNameValid = validateFirstNameField(firstName);
+    const isLastNameValid = validateLastNameField(lastName);
+    const isLoginEmailValid = validateLoginEmailField(loginEmail);
+    const isCompanyEmailValid = validateCompanyEmailField(companyEmail);
+    const isPasswordValid = validatePasswordField(password);
+    const isConfirmPasswordValid = validateConfirmPasswordField(confirmPassword);
+    const isPhoneValid = validatePhoneField(phone);
+    const isCompanyNameValid = validateCompanyNameField(companyName);
 
-    let valid = true;
-
-    // Validate email
-    if (!loginEmail) {
-      setLoginEmailError("Email đăng nhập không được để trống");
-      valid = false;
-    } else if (!validateEmail(loginEmail)) {
-      setLoginEmailError("Vui lòng nhập địa chỉ email hợp lệ");
-      valid = false;
-    }
-    if (!companyEmail) {
-      setCompanyEmailError("Email doanh nghiệp không được để trống");
-      valid = false;
-    } else if (!validateEmail(companyEmail)) {
-      setCompanyEmailError("Vui lòng nhập địa chỉ email doanh nghiệp hợp lệ");
-      valid = false;
-    }
-
-    // Validate password
-    if (!password) {
-      setPasswordError("Mật khẩu không được để trống");
-      valid = false;
-    } else {
-      const passwordErrors = validatePassword(password);
-      if (passwordErrors.length > 0) {
-        setPasswordError(passwordErrors.join("\n"));
-        valid = false;
-      }
-    }
-
-    // Validate confirm password
-    if (!confirmPassword) {
-      setConfirmPasswordError("Nhập lại mật khẩu không được để trống");
-      valid = false;
-    } else if (password !== confirmPassword) {
-      setConfirmPasswordError("Mật khẩu không khớp");
-      valid = false;
-    }
-
-    // Validate name fields
-    if (!lastName.trim()) {
-      setLastNameError("Họ không được để trống");
-      valid = false;
-    }
-    if (!firstName.trim()) {
-      setFirstNameError("Tên không được để trống");
-      valid = false;
-    }
-
-    // Validate phone
-    if (!phone) {
-      setPhoneError("Số điện thoại không được để trống");
-      valid = false;
-    } else if (!/^[0-9]{10,11}$/.test(phone)) {
-      setPhoneError("Số điện thoại không hợp lệ (10-11 chữ số)");
-      valid = false;
-    }
-
-    // Validate company name
-    if (!companyName.trim()) {
-      setCompanyNameError("Tên công ty không được để trống");
-      valid = false;
-    }
-
-    // Validate terms agreement
-    if (!agreeTerms) {
-      showWarning("Vui lòng đồng ý với Điều khoản dịch vụ và Chính sách bảo mật");
-      valid = false;
-    }
-
-    // Validate branches (simple: all required fields must be filled)
+    // Validate branches
     let branchesValid = true;
     const newBranchesError = companyBranches.map((b) => {
       const err = {};
@@ -193,7 +299,15 @@ export default function CompanySignUp() {
       return err;
     });
     setBranchesError(newBranchesError);
-    if (!branchesValid) valid = false;
+
+    // Validate terms agreement
+    if (!agreeTerms) {
+      showWarning("Vui lòng đồng ý với Điều khoản dịch vụ và Chính sách bảo mật");
+    }
+
+    const valid = isFirstNameValid && isLastNameValid && isLoginEmailValid &&
+      isCompanyEmailValid && isPasswordValid && isConfirmPasswordValid &&
+      isPhoneValid && isCompanyNameValid && branchesValid && agreeTerms;
 
     if (valid) {
       try {
@@ -285,6 +399,7 @@ export default function CompanySignUp() {
                         placeholder="Họ"
                         value={lastName}
                         onChange={e => setLastName(e.target.value)}
+                        onBlur={handleLastNameBlur}
                         className={`w-full h-12 rounded-lg border px-3 pl-10 focus:border-blue-500 focus:ring-blue-500 ${lastNameError ? 'border-red-500' : 'border-gray-300'}`}
                       />
                     </div>
@@ -303,6 +418,7 @@ export default function CompanySignUp() {
                         placeholder="Tên"
                         value={firstName}
                         onChange={e => setFirstName(e.target.value)}
+                        onBlur={handleFirstNameBlur}
                         className={`w-full h-12 rounded-lg border px-3 pl-10 focus:border-blue-500 focus:ring-blue-500 ${firstNameError ? 'border-red-500' : 'border-gray-300'}`}
                       />
                     </div>
@@ -325,6 +441,7 @@ export default function CompanySignUp() {
                       placeholder="Email đăng nhập"
                       value={loginEmail}
                       onChange={(e) => setLoginEmail(e.target.value)}
+                      onBlur={handleLoginEmailBlur}
                       className={`w-full h-12 rounded-lg border px-3 pl-10 focus:border-blue-500 focus:ring-blue-500 ${loginEmailError ? 'border-red-500' : 'border-gray-300'}`}
                     />
                     {loginEmailError && (
@@ -349,6 +466,7 @@ export default function CompanySignUp() {
                       placeholder="Mật khẩu"
                       value={password}
                       onChange={(e) => setPassword(e.target.value)}
+                      onBlur={handlePasswordBlur}
                       className={`w-full h-12 rounded-lg border px-3 pl-10 pr-12 focus:border-blue-500 focus:ring-blue-500 ${passwordError ? 'border-red-500' : 'border-gray-300'}`}
                     />
                     {passwordError && (
@@ -381,6 +499,7 @@ export default function CompanySignUp() {
                       placeholder="Nhập lại mật khẩu"
                       value={confirmPassword}
                       onChange={(e) => setConfirmPassword(e.target.value)}
+                      onBlur={handleConfirmPasswordBlur}
                       className={`w-full h-12 rounded-lg border px-3 pl-10 pr-12 focus:border-blue-500 focus:ring-blue-500 ${confirmPasswordError ? 'border-red-500' : 'border-gray-300'}`}
                     />
                     {confirmPasswordError && (
@@ -448,6 +567,7 @@ export default function CompanySignUp() {
                       placeholder="Tên công ty"
                       value={companyName}
                       onChange={(e) => setCompanyName(e.target.value)}
+                      onBlur={handleCompanyNameBlur}
                       className={`w-full h-12 rounded-lg border px-3 pl-10 focus:border-blue-500 focus:ring-blue-500 ${companyNameError ? 'border-red-500' : 'border-gray-300'}`}
                     />
                     {companyNameError && (
@@ -571,6 +691,7 @@ export default function CompanySignUp() {
                         placeholder="Số điện thoại"
                         value={phone}
                         onChange={(e) => setPhone(e.target.value)}
+                        onBlur={handlePhoneBlur}
                         className={`w-full h-12 rounded-lg border px-3 pl-10 focus:border-blue-500 focus:ring-blue-500 ${phoneError ? 'border-red-500' : 'border-gray-300'}`}
                       />
                       {phoneError && (
@@ -595,6 +716,7 @@ export default function CompanySignUp() {
                         placeholder="Email doanh nghiệp"
                         value={companyEmail}
                         onChange={(e) => setCompanyEmail(e.target.value)}
+                        onBlur={handleCompanyEmailBlur}
                         className={`w-full h-12 rounded-lg border px-3 pl-10 focus:border-blue-500 focus:ring-blue-500 ${companyEmailError ? 'border-red-500' : 'border-gray-300'}`}
                       />
                       {companyEmailError && (
@@ -622,6 +744,7 @@ export default function CompanySignUp() {
                             onChange={e => {
                               const arr = [...companyBranches]; arr[idx].name = e.target.value; setCompanyBranches(arr);
                             }}
+                            onBlur={() => handleBranchNameBlur(idx)}
                             className={`w-full h-12 rounded-lg border px-3 focus:border-blue-500 focus:ring-blue-500 ${branchesError[idx]?.name ? 'border-red-500' : 'border-gray-300'}`}
                           />
                           {branchesError[idx]?.name && (
@@ -637,6 +760,7 @@ export default function CompanySignUp() {
                             onChange={e => {
                               const arr = [...companyBranches]; arr[idx].address = e.target.value; setCompanyBranches(arr);
                             }}
+                            onBlur={() => handleBranchAddressBlur(idx)}
                             className={`w-full h-12 rounded-lg border px-3 focus:border-blue-500 focus:ring-blue-500 ${branchesError[idx]?.address ? 'border-red-500' : 'border-gray-300'}`}
                           />
                           {branchesError[idx]?.address && (
@@ -662,6 +786,7 @@ export default function CompanySignUp() {
                                 dispatch(getProvinces(e.target.value));
                               }
                             }}
+                            onBlur={() => handleBranchCountryBlur(idx)}
                           >
                             <option value="">Chọn quốc gia</option>
                             {countries.map((country) => (
@@ -691,6 +816,15 @@ export default function CompanySignUp() {
                               const newShowDropdowns = [...showProvinceDropdowns];
                               newShowDropdowns[idx] = true;
                               setShowProvinceDropdowns(newShowDropdowns);
+                            }}
+                            onBlur={() => {
+                              // Delay to allow dropdown click to register
+                              setTimeout(() => {
+                                const newShowDropdowns = [...showProvinceDropdowns];
+                                newShowDropdowns[idx] = false;
+                                setShowProvinceDropdowns(newShowDropdowns);
+                                handleBranchProvinceBlur(idx);
+                              }, 200);
                             }}
                             className={`w-full h-12 rounded-lg border px-3 focus:border-blue-500 focus:ring-blue-500 ${branchesError[idx]?.province_id ? 'border-red-500' : 'border-gray-300'}`}
                           />
@@ -763,6 +897,15 @@ export default function CompanySignUp() {
                                 newShowDropdowns[idx] = true;
                                 setShowWardDropdowns(newShowDropdowns);
                               }
+                            }}
+                            onBlur={() => {
+                              // Delay to allow dropdown click to register
+                              setTimeout(() => {
+                                const newShowDropdowns = [...showWardDropdowns];
+                                newShowDropdowns[idx] = false;
+                                setShowWardDropdowns(newShowDropdowns);
+                                handleBranchWardBlur(idx);
+                              }, 200);
                             }}
                             disabled={!branch.province_id}
                             className={`w-full h-12 rounded-lg border px-3 focus:border-blue-500 focus:ring-blue-500 ${branchesError[idx]?.ward_id ? 'border-red-500' : 'border-gray-300'} ${!branch.province_id ? 'bg-gray-100' : ''}`}

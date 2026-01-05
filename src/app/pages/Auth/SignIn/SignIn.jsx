@@ -26,30 +26,44 @@ export default function SignIn() {
 
   const { alertConfig, hideAlert, showSuccess, showError } = useCustomAlert();
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    let valid = true;
-
-    if (!email) {
+  const validateEmailField = (emailValue) => {
+    if (!emailValue) {
       setEmailError("Email is required.");
-      valid = false;
-    } else if (!validateEmail(email)) {
+      return false;
+    } else if (!validateEmail(emailValue)) {
       setEmailError("Please enter a valid email address.");
-      valid = false;
+      return false;
     } else {
       setEmailError("");
+      return true;
     }
+  };
 
-    const resultValidatePassword = validatePassword(password);
-
-    if (!password || resultValidatePassword.length > 0) {
+  const validatePasswordField = (passwordValue) => {
+    const resultValidatePassword = validatePassword(passwordValue);
+    if (!passwordValue || resultValidatePassword.length > 0) {
       setPasswordError(resultValidatePassword.join("\n"));
-      valid = false;
+      return false;
     } else {
       setPasswordError("");
+      return true;
     }
+  };
 
-    if (valid) {
+  const handleEmailBlur = () => {
+    validateEmailField(email);
+  };
+
+  const handlePasswordBlur = () => {
+    validatePasswordField(password);
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    const isEmailValid = validateEmailField(email);
+    const isPasswordValid = validatePasswordField(password);
+
+    if (isEmailValid && isPasswordValid) {
       try {
         const result = await dispatch(loginWithEmail({ email, password }));
         if (loginWithEmail.fulfilled.match(result)) {
@@ -117,6 +131,7 @@ export default function SignIn() {
               placeholder={t("auth.enter_email")}
               value={email}
               onChange={(e) => setEmail(e.target.value)}
+              onBlur={handleEmailBlur}
               className="w-full h-11 rounded-xl border-gray-300 focus:border-blue-500 focus:ring-blue-500"
             />
             {emailError && <p className="text-xs text-red-500 mt-1">{emailError}</p>}
@@ -133,6 +148,7 @@ export default function SignIn() {
                 placeholder={t("auth.enter_password")}
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
+                onBlur={handlePasswordBlur}
                 className="w-full h-11 rounded-xl border-gray-300 focus:border-blue-500 focus:ring-blue-500 pr-12"
               />
               <button
