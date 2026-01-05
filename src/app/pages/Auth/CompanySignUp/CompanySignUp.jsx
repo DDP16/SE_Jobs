@@ -335,7 +335,6 @@ export default function CompanySignUp() {
           }
         };
 
-        // console.log("Registration Payload:", payload);
         const result = await dispatch(register(payload));
         if (register.fulfilled.match(result)) {
           showSuccess("Đăng ký thành công! Vui lòng đăng nhập.");

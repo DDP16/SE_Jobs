@@ -269,6 +269,32 @@ export const calculateCompletionPercentage = (user, about, experiences, educatio
   return Math.round((completed / sections.length) * 100);
 };
 
+// ==================== GENDER MAPPING FUNCTIONS ====================
+
+/**
+ * Map gender from English (backend) to Vietnamese (UI)
+ */
+export const mapGenderFromBackend = (gender) => {
+    const genderMap = {
+        'Male': 'Nam',
+        'Female': 'Nữ',
+        'Other': 'Khác'
+    };
+    return genderMap[gender] || gender || 'Nam';
+};
+
+/**
+ * Map gender from Vietnamese (UI) to English (backend)
+ */
+export const mapGenderToBackend = (gender) => {
+    const genderMap = {
+        'Nam': 'Male',
+        'Nữ': 'Female',
+        'Khác': 'Other'
+    };
+    return genderMap[gender] || gender;
+};
+
 // ==================== VALIDATION FUNCTIONS ====================
 
 /**

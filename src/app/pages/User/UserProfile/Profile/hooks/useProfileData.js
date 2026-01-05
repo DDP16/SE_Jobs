@@ -5,7 +5,8 @@ import {
     transformEducationFromAPI,
     transformProjectFromAPI,
     transformCertificateFromAPI,
-    calculateCompletionPercentage
+    calculateCompletionPercentage,
+    mapGenderFromBackend
 } from './utils';
 import { getCvsByStudentId } from '../../../../../modules/services/cvService';
 
@@ -21,6 +22,7 @@ export const useProfileData = () => {
         phone: '012345679899',
         dateOfBirth: '',
         gender: '',
+        desiredPositions: [],
         currentAddress: '',
         personalLinks: '',
         openForOpportunities: false,
@@ -47,11 +49,17 @@ export const useProfileData = () => {
         if (studentInfo) {
             setUser(prev => ({
                 ...prev,
-                name: `${currentUser.first_name || ''} ${currentUser.last_name || ''}`.trim() || 'User',
+                name: `${currentUser.last_name || ''} ${currentUser.first_name || ''}`.trim() || 'User',
                 email: currentUser.email || '',
                 location: studentInfo?.location || '',
-                phone: studentInfo?.phone || '012345678',
+                phone: studentInfo?.phone_number || studentInfo?.phone || '012345678',
                 dateOfBirth: studentInfo?.date_of_birth || '',
+                gender: mapGenderFromBackend(studentInfo?.gender),
+                desiredPositions: Array.isArray(studentInfo?.desired_positions)
+                    ? studentInfo.desired_positions
+                    : studentInfo?.desired_positions
+                        ? [studentInfo.desired_positions]
+                        : [],
                 openForOpportunities: studentInfo?.open_for_opportunities === true,
             }));
 

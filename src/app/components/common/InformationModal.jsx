@@ -5,25 +5,60 @@ import {
     Label,
 } from "@/components/ui";
 import { Dialog, DialogContent } from "@mui/material";
-import {
-    X,
-    Camera,
-    Trash2,
-    Calendar,
-} from "lucide-react";
+import { X, Plus, Calendar, Trash2 } from "lucide-react";
 import { FormControl, Select, MenuItem } from "@mui/material";
+import { useSelector, useDispatch } from "react-redux";
+import { getProvinces } from "../../modules/services/addressService";
+import { mapGenderFromBackend } from "../../pages/User/UserProfile/Profile/hooks/utils";
 
 export default function InformationModal({ open, onOpenChange, initialData, onSave }) {
+    const dispatch = useDispatch();
+    const provincesRaw = useSelector((state) => state.address?.provinces?.data || state.address?.provinces || []);
+    const provinces = Array.isArray(provincesRaw) ? provincesRaw : [];
+
+    // Fetch provinces if not already loaded
+    useEffect(() => {
+        if (open && provinces.length === 0) {
+            dispatch(getProvinces());
+        }
+    }, [open, dispatch, provinces.length]);
+
+    // Helper function to normalize desired positions to array
+    const normalizeDesiredPositions = (data) => {
+        if (!data) return [""];
+        // Check for camelCase (from user object)
+        if (Array.isArray(data?.desiredPositions)) {
+            return data.desiredPositions.length > 0 ? data.desiredPositions : [""];
+        }
+        // Check for snake_case (from backend/student_info)
+        if (Array.isArray(data?.desired_positions)) {
+            return data.desired_positions.length > 0 ? data.desired_positions : [""];
+        }
+        // Check for title (backward compatibility)
+        if (Array.isArray(data?.title)) {
+            return data.title.length > 0 ? data.title : [""];
+        }
+        // Check for string values
+        if (data?.desiredPositions && typeof data.desiredPositions === 'string') {
+            return [data.desiredPositions];
+        }
+        if (data?.desired_positions && typeof data.desired_positions === 'string') {
+            return [data.desired_positions];
+        }
+        if (data?.title && typeof data.title === 'string') {
+            return [data.title];
+        }
+        return [""];
+    };
+
     const [formData, setFormData] = useState({
         fullName: initialData?.name || initialData?.fullName || "",
-        title: initialData?.title || "",
+        title: normalizeDesiredPositions(initialData),
         email: initialData?.email || "",
-        phone: initialData?.phone || "",
-        dateOfBirth: initialData?.dateOfBirth || "",
-        gender: initialData?.gender || "Nam",
-        province: initialData?.province || initialData?.currentProvince || "",
-        address: initialData?.address || initialData?.currentAddress || "",
-        personalLink: initialData?.personalLink || initialData?.personalLinks || "",
+        phone: initialData?.phone || initialData?.phone_number || "",
+        dateOfBirth: initialData?.dateOfBirth || initialData?.date_of_birth || "",
+        gender: mapGenderFromBackend(initialData?.gender),
+        province: initialData?.province || initialData?.location || "",
     });
 
     // Update form data when initialData changes
@@ -31,14 +66,12 @@ export default function InformationModal({ open, onOpenChange, initialData, onSa
         if (initialData) {
             setFormData({
                 fullName: initialData?.name || initialData?.fullName || "",
-                title: initialData?.title || "",
+                title: normalizeDesiredPositions(initialData),
                 email: initialData?.email || "",
-                phone: initialData?.phone || "",
-                dateOfBirth: initialData?.dateOfBirth || "",
-                gender: initialData?.gender || "Nam",
-                province: initialData?.province || initialData?.currentProvince || "",
-                address: initialData?.address || initialData?.currentAddress || "",
-                personalLink: initialData?.personalLink || initialData?.personalLinks || "",
+                phone: initialData?.phone || initialData?.phone_number || "",
+                dateOfBirth: initialData?.dateOfBirth || initialData?.date_of_birth || "",
+                gender: mapGenderFromBackend(initialData?.gender),
+                province: initialData?.province || initialData?.location || "",
             });
         }
     }, [initialData]);
@@ -47,18 +80,42 @@ export default function InformationModal({ open, onOpenChange, initialData, onSa
         setFormData((prev) => ({ ...prev, [field]: value }));
     };
 
+    const handleTitleChange = (index, value) => {
+        setFormData((prev) => {
+            const newTitles = [...prev.title];
+            newTitles[index] = value;
+            return { ...prev, title: newTitles };
+        });
+    };
+
+    const handleAddTitle = () => {
+        setFormData((prev) => ({
+            ...prev,
+            title: [...prev.title, ""],
+        }));
+    };
+
+    const handleRemoveTitle = (index) => {
+        setFormData((prev) => {
+            const newTitles = prev.title.filter((_, i) => i !== index);
+            return { ...prev, title: newTitles.length > 0 ? newTitles : [""] };
+        });
+    };
+
     const handleSave = () => {
         // Sanitize form fields before sending to API
+        const sanitizedTitles = Array.isArray(formData.title)
+            ? formData.title.map(t => t.trim()).filter(t => t !== '')
+            : [(formData.title || '').trim()].filter(t => t !== '');
+
         const sanitized = {
             fullName: (formData.fullName || '').trim(),
-            title: (formData.title || '').trim(),
+            title: sanitizedTitles.length > 0 ? sanitizedTitles : [],
             email: (formData.email || '').trim(),
             phone: (formData.phone || '').trim(),
             dateOfBirth: formData.dateOfBirth || '',
             gender: (formData.gender || '').trim(),
             province: (formData.province || '').trim(),
-            address: (formData.address || '').trim(),
-            personalLink: (formData.personalLink || '').trim(),
         };
 
         if (onSave) {
@@ -120,29 +177,13 @@ export default function InformationModal({ open, onOpenChange, initialData, onSa
                 <div className="p-6">
                     <div className="flex gap-6">
                         {/* Left Side - Avatar Section */}
-                        <div className="flex flex-col items-center gap-4 shrink-0">
+                        {/* <div className="flex flex-col items-center gap-4 shrink-0">
                             <div className="bg-primary rounded-full w-24 h-24 flex items-center justify-center">
                                 <span className="text-white text-2xl font-bold">
                                     {getInitials(formData.fullName)}
                                 </span>
                             </div>
-                            <div className="flex flex-col gap-2 w-full">
-                                <button
-                                    onClick={handleEditAvatar}
-                                    className="flex items-center justify-center gap-2 text-primary hover:text-primary/80 transition-colors text-sm font-medium"
-                                >
-                                    <Camera className="h-4 w-4" />
-                                    Sửa
-                                </button>
-                                <button
-                                    onClick={handleDeleteAvatar}
-                                    className="flex items-center justify-center gap-2 text-foreground hover:text-muted-foreground transition-colors text-sm font-medium"
-                                >
-                                    <Trash2 className="h-4 w-4" />
-                                    Xoá
-                                </button>
-                            </div>
-                        </div>
+                        </div> */}
 
                         {/* Right Side - Form Fields */}
                         <div className="flex-1 space-y-4">
@@ -160,22 +201,47 @@ export default function InformationModal({ open, onOpenChange, initialData, onSa
                                             onChange={(e) => handleChange("fullName", e.target.value)}
                                             placeholder="Nhập họ và tên"
                                             className="h-12"
+                                            readOnly
                                         />
                                     </div>
 
-                                    {/* Title/Position */}
+                                    {/* Province/City */}
                                     <div className="space-y-2">
-                                        <Label htmlFor="title" className="text-sm font-medium text-foreground">
-                                            Chức danh <span className="text-primary"></span>
+                                        <Label htmlFor="province" className="text-sm font-medium text-foreground">
+                                            Tỉnh/Thành phố hiện tại <span className="text-primary">*</span>
                                         </Label>
-                                        <Input
-                                            id="title"
-                                            value={formData.title}
-                                            onChange={(e) => handleChange("title", e.target.value)}
-                                            placeholder="—"
-                                            className="h-12"
-                                        />
+                                        <FormControl fullWidth>
+                                            <Select
+                                                id="province"
+                                                value={formData.province}
+                                                onChange={(e) => handleChange("province", e.target.value)}
+                                                displayEmpty
+                                                sx={{
+                                                    height: "48px",
+                                                    "& .MuiOutlinedInput-notchedOutline": {
+                                                        borderColor: "var(--color-neutrals-40)",
+                                                    },
+                                                    "&:hover .MuiOutlinedInput-notchedOutline": {
+                                                        borderColor: "var(--color-primary)",
+                                                    },
+                                                    "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
+                                                        borderColor: "var(--color-primary)",
+                                                    },
+                                                    "& .MuiSelect-icon": {
+                                                        color: "var(--color-neutrals-40)",
+                                                    },
+                                                }}
+                                            >
+                                                <MenuItem value="" disabled>
+                                                    Chọn tỉnh/thành phố
+                                                </MenuItem>
+                                                {provinces.map((province) => (
+                                                    <MenuItem key={province.id} value={province.name}>{province.name}</MenuItem>
+                                                ))}
+                                            </Select>
+                                        </FormControl>
                                     </div>
+
                                 </div>
 
                                 {/* Row 2 */}
@@ -192,6 +258,7 @@ export default function InformationModal({ open, onOpenChange, initialData, onSa
                                             onChange={(e) => handleChange("email", e.target.value)}
                                             placeholder="Nhập địa chỉ email"
                                             className="h-12"
+                                            readOnly
                                         />
                                     </div>
 
@@ -264,72 +331,43 @@ export default function InformationModal({ open, onOpenChange, initialData, onSa
                                     </div>
                                 </div>
 
-                                {/* Row 4 */}
-                                <div className="grid grid-cols-2 gap-4">
-                                    {/* Province/City */}
-                                    <div className="space-y-2">
-                                        <Label htmlFor="province" className="text-sm font-medium text-foreground">
-                                            Tỉnh/Thành phố hiện tại <span className="text-primary">*</span>
-                                        </Label>
-                                        <FormControl fullWidth>
-                                            <Select
-                                                id="province"
-                                                value={formData.province}
-                                                onChange={(e) => handleChange("province", e.target.value)}
-                                                displayEmpty
-                                                sx={{
-                                                    height: "48px",
-                                                    "& .MuiOutlinedInput-notchedOutline": {
-                                                        borderColor: "var(--color-neutrals-40)",
-                                                    },
-                                                    "&:hover .MuiOutlinedInput-notchedOutline": {
-                                                        borderColor: "var(--color-primary)",
-                                                    },
-                                                    "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
-                                                        borderColor: "var(--color-primary)",
-                                                    },
-                                                    "& .MuiSelect-icon": {
-                                                        color: "var(--color-neutrals-40)",
-                                                    },
-                                                }}
-                                            >
-                                                <MenuItem value="" disabled>
-                                                    Chọn tỉnh/thành phố
-                                                </MenuItem>
-                                                <MenuItem value="hanoi">Hà Nội</MenuItem>
-                                                <MenuItem value="hcm">Hồ Chí Minh</MenuItem>
-                                                <MenuItem value="danang">Đà Nẵng</MenuItem>
-                                            </Select>
-                                        </FormControl>
-                                    </div>
-
-                                    {/* Address */}
-                                    <div className="space-y-2">
-                                        <Label htmlFor="address" className="text-sm font-medium text-foreground">
-                                            Địa chỉ (Tên đường, quận/huyện,...)
-                                        </Label>
-                                        <Input
-                                            id="address"
-                                            value={formData.address}
-                                            onChange={(e) => handleChange("address", e.target.value)}
-                                            placeholder="Nhập địa chỉ"
-                                            className="h-12"
-                                        />
-                                    </div>
-                                </div>
-
-                                {/* Row 5 - Single Column */}
+                                {/* Row 4 - Desired Positions */}
                                 <div className="space-y-2">
-                                    <Label htmlFor="personalLink" className="text-sm font-medium text-foreground">
-                                        Link cá nhân (Linkedin, porfolio,...)
-                                    </Label>
-                                    <Input
-                                        id="personalLink"
-                                        value={formData.personalLink}
-                                        onChange={(e) => handleChange("personalLink", e.target.value)}
-                                        placeholder="Nhập link cá nhân"
-                                        className="h-12"
-                                    />
+                                    <div className="space-y-2">
+                                        <Label htmlFor="title" className="text-sm font-medium text-foreground">
+                                            Vị trí công việc mong muốn <span className="text-primary"></span>
+                                        </Label>
+                                        <div className="space-y-2">
+                                            {formData.title.map((title, index) => (
+                                                <div key={index} className="flex gap-2">
+                                                    <Input
+                                                        id={`title-${index}`}
+                                                        value={title}
+                                                        onChange={(e) => handleTitleChange(index, e.target.value)}
+                                                        placeholder="Nhập vị trí công việc"
+                                                        className="h-12 flex-1"
+                                                    />
+                                                    {formData.title.length > 1 && (
+                                                        <button
+                                                            type="button"
+                                                            onClick={() => handleRemoveTitle(index)}
+                                                            className="px-3 h-12 rounded-md border border-neutrals-40 hover:bg-neutrals-10 transition-colors flex items-center justify-center"
+                                                        >
+                                                            <Trash2 className="h-4 w-4 text-neutrals-60" />
+                                                        </button>
+                                                    )}
+                                                </div>
+                                            ))}
+                                            <button
+                                                type="button"
+                                                onClick={handleAddTitle}
+                                                className="flex items-center gap-2 text-primary hover:text-primary/80 transition-colors text-sm font-medium py-2"
+                                            >
+                                                <Plus className="h-4 w-4" />
+                                                Thêm vị trí công việc
+                                            </button>
+                                        </div>
+                                    </div>
                                 </div>
                             </form>
                         </div>

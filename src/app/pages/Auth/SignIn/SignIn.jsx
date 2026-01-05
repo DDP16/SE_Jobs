@@ -67,7 +67,6 @@ export default function SignIn() {
       try {
         const result = await dispatch(loginWithEmail({ email, password }));
         if (loginWithEmail.fulfilled.match(result)) {
-          console.log("Login successful: ", result.payload);
           showSuccess("Login successful!");
           nav("/", { replace: true });
         } else {

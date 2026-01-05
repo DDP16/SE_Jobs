@@ -2,10 +2,11 @@ import React from 'react';
 import { Avatar, IconButton, Typography, Box } from '@mui/material';
 import { Edit as EditIcon, Email as EmailIcon, Phone as PhoneIcon, Person as PersonIcon, LocationOn as LocationOnIcon, Link as LinkIcon } from '@mui/icons-material';
 import { useTranslation } from 'react-i18next';
+import { mapGenderFromBackend } from '../hooks/utils';
 
 export default function ProfileHeader({ user, onEdit }) {
   const { t } = useTranslation();
-  
+
   const getInitials = (name) => {
     return name?.split(' ').map(word => word[0]).join('').toUpperCase().slice(0, 2) || 'U';
   };
@@ -25,12 +26,16 @@ export default function ProfileHeader({ user, onEdit }) {
           <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', mb: 2 }}>
             <Box>
               <Typography variant="h5" sx={{ fontWeight: 600, mb: 0.5 }}>{user.name}</Typography>
-              <Typography variant="body2" color="text.secondary">{t("profile.update_title")}</Typography>
+              <Typography variant="body2" color="text.secondary">
+                {user.desiredPositions && user.desiredPositions.length > 0
+                  ? user.desiredPositions.join(', ')
+                  : t("profile.update_title")}
+              </Typography>
             </Box>
-            <IconButton 
-              onClick={onEdit} 
-              sx={{ 
-                border: '1px solid', 
+            <IconButton
+              onClick={onEdit}
+              sx={{
+                border: '1px solid',
                 borderColor: 'divider',
                 color: 'primary.main',
                 '&:hover': { bgcolor: 'primary.lighter' }
@@ -49,22 +54,22 @@ export default function ProfileHeader({ user, onEdit }) {
               <PhoneIcon sx={{ fontSize: 18, color: 'text.disabled' }} />
               <Typography variant="body2" color="text.secondary">{user.phone}</Typography>
             </Box>
-            {/* <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+            <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
               <PersonIcon sx={{ fontSize: 18, color: 'text.disabled' }} />
-              <Typography variant="body2" color="text.secondary">Ngày sinh</Typography>
+              <Typography variant="body2" color="text.secondary">{user.dateOfBirth}</Typography>
             </Box>
             <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
               <PersonIcon sx={{ fontSize: 18, color: 'text.disabled' }} />
-              <Typography variant="body2" color="text.secondary">Giới tính</Typography>
-            </Box> */}
+              <Typography variant="body2" color="text.secondary">{mapGenderFromBackend(user.gender)}</Typography>
+            </Box>
             <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
               <LocationOnIcon sx={{ fontSize: 18, color: 'text.disabled' }} />
               <Typography variant="body2" color="text.secondary">{user.location}</Typography>
             </Box>
-            <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+            {/* <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
               <LinkIcon sx={{ fontSize: 18, color: 'text.disabled' }} />
               <Typography variant="body2" color="text.secondary">{t("profile.personal_link")}</Typography>
-            </Box>
+            </Box> */}
           </Box>
         </Box>
       </Box>
