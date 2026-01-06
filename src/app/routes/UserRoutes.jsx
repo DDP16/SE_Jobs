@@ -15,7 +15,7 @@ import {
   SignUp,
   UserProfileSettings
 } from "../pages";
-import { Outlet, Route, Routes } from "react-router-dom";
+import { Navigate, Outlet, Route, Routes } from "react-router-dom";
 import PrivateRoute from "./PrivateRoute";
 import PageNotFound from "../layouts/PageNotFound";
 import UserProfileLayout from "../pages/User/UserProfile/UserProfileLayout";
