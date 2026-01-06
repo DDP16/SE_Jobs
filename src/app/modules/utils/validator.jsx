@@ -27,19 +27,10 @@ export const validateEmail = (email) => {
 export const validatePassword = (password) => {
   const errors = [];
   if (typeof password !== 'string' || password.length < 8) {
-    errors.push('Mật khẩu phải có ít nhất 8 ký tự.');
+    errors.push('validation.passwordMinLength');
   }
-  if (!/[A-Z]/.test(password)) {
-    errors.push('Mật khẩu phải có ít nhất một ký tự viết hoa.');
-  }
-  if (!/[a-z]/.test(password)) {
-    errors.push('Mật khẩu phải có ít nhất một ký tự viết thường.');
-  }
-  if (!/\d/.test(password)) {
-    errors.push('Mật khẩu phải có ít nhất một số.');
-  }
-  if (!/[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]/.test(password)) {
-    errors.push('Mật khẩu phải có ít nhất một ký tự đặc biệt.');
+  if (!/[A-Za-z]/.test(password) || !/\d/.test(password)) {
+    errors.push('validation.passwordMustContain');
   }
   return errors;
 };
