@@ -53,6 +53,7 @@ export default function UserRoutes() {
         <Route path="contact-us" element={<ContactUs />} />
 
         <Route path="profile" element={<PrivateRoute><UserProfileLayoutWrapper /></PrivateRoute>}>
+          <Route index element={<Navigate to="dashboard" replace />} />
           <Route path="dashboard" element={<ProfileDashboard />} />
           <Route path="user-profile" element={<Profile />} />
           <Route path="my-jobs" element={<MyJobs />} />

@@ -64,7 +64,7 @@ export default function ApplicationModal({ open, onVisibleChange }) {
   };
 
   const handleNavigateToProfile = () => {
-    navigate('/profile');
+    navigate('/profile/user-profile');
     handleClose();
   };
 
