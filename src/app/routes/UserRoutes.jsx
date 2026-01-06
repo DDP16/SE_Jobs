@@ -19,6 +19,7 @@ import { Outlet, Route, Routes } from "react-router-dom";
 import PrivateRoute from "./PrivateRoute";
 import PageNotFound from "../layouts/PageNotFound";
 import UserProfileLayout from "../pages/User/UserProfile/UserProfileLayout";
+import ComingSoon from "../layouts/ComingSoon";
 
 function MainLayoutWrapper() {
   return (
@@ -61,7 +62,7 @@ export default function UserRoutes() {
           <Route path="notifications" element={<ProfileDashboard />} />
           <Route path="settings" element={<UserProfileSettings />} />
         </Route>
-
+        <Route path="coming-soon" element={<ComingSoon />} />
         <Route path="*" element={<PageNotFound />} />
       </Route>
     </Routes>

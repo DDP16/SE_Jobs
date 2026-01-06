@@ -6,6 +6,10 @@ import { useTranslation } from 'react-i18next';
 export default function ProfileCompletionCard({
   completionPercentage
 }) {
+
+  const handleViewCV = () => {
+    window.location.href = "/coming-soon";
+  }
   const { t } = useTranslation();
   const theme = useTheme();
   return (
@@ -70,9 +74,9 @@ export default function ProfileCompletionCard({
           <Box component="li" sx={{ mb: 1, fontSize: '0.95rem', color: 'text.primary' }}>
             {t("profile.tip_1")}
           </Box>
-          <Box component="li" sx={{ fontSize: '0.95rem', color: 'text.primary' }}>
+          {/* <Box component="li" sx={{ fontSize: '0.95rem', color: 'text.primary' }}>
             {t("profile.tip_2")}
-          </Box>
+          </Box> */}
         </Box>
 
         {/* View CV Button */}
@@ -81,6 +85,7 @@ export default function ProfileCompletionCard({
           color="primary"
           fullWidth
           sx={{ fontWeight: 700, py: 1.75, mt: 1, fontSize: '0.95rem', borderRadius: 2 }}
+          onClick={() => handleViewCV()}
         >
           {t("profile.view_download_cv")}
         </Button>
