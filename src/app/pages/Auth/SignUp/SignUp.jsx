@@ -63,9 +63,16 @@ export default function SignUp() {
   };
 
   const validatePasswordField = (passwordValue) => {
-    const resultValidatePassword = validatePassword(passwordValue);
-    if (!passwordValue || resultValidatePassword.length > 0) {
-      setPasswordError(resultValidatePassword.join("\n"));
+    const valid = validatePassword(passwordValue);
+    const error = valid.map((err) => {
+      if (err === 'validation.passwordMinLength') {
+        return t('validation.passwordMinLength', { min: 8 });
+      } else {
+        return t(err);
+      }
+    }).join("\n");
+    if (!passwordValue || valid.length > 0) {
+      setPasswordError(error);
       return false;
     } else {
       setPasswordError("");

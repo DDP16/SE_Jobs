@@ -40,9 +40,16 @@ export default function SignIn() {
   };
 
   const validatePasswordField = (passwordValue) => {
-    const resultValidatePassword = validatePassword(passwordValue);
-    if (!passwordValue || resultValidatePassword.length > 0) {
-      setPasswordError(resultValidatePassword.join("\n"));
+    const valid = validatePassword(passwordValue);
+    const error = valid.map((err) => {
+      if (err === 'validation.passwordMinLength') {
+        return t('validation.passwordMinLength', { min: 8 });
+      } else {
+        return t(err);
+      }
+    }).join("\n");
+    if (!passwordValue || valid.length > 0) {
+      setPasswordError(error);
       return false;
     } else {
       setPasswordError("");
@@ -159,7 +166,7 @@ export default function SignIn() {
               </button>
             </div>
             <div className="flex items-center justify-end">
-              {passwordError && <span className="text-xs text-red-500 mr-auto">{passwordError}</span>}
+              {passwordError && <span className="text-xs text-red-500 mr-auto whitespace-pre-line">{passwordError}</span>}
               <Link to="/forgot-password" replace={true} className="text-sm text-blue-600 hover:underline">
                 {t("auth.forgot_password")}
               </Link>
