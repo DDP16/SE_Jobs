@@ -1,6 +1,6 @@
 import { motion } from "framer-motion";
 import { Share2 } from "lucide-react";
-import { ApplicationModal } from "@/components";
+import { ApplicationModal } from "../../../../components";
 import { layoutType, srcAsset } from "../../../../lib";
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
@@ -10,7 +10,13 @@ import { Button } from "@/components/ui";
 export default function JobHeader({ job = {}, layout = layoutType.full, textButton, onClickButton }) {
   const { t } = useTranslation();
   const navigate = useNavigate();
-  const [isModalOpen, setIsModalOpen] = useState(false);
+
+  const isValidUrl = (url) => {
+    if (!url || typeof url !== 'string') return false;
+    const trimmed = url.trim();
+    if (trimmed === '' || trimmed === 'string') return false;
+    return trimmed.startsWith('http://') || trimmed.startsWith('https://');
+  };
 
   // Helper function to get job ID from various fields
   const getJobIdValue = (job) => {
@@ -19,6 +25,7 @@ export default function JobHeader({ job = {}, layout = layoutType.full, textButt
   };
 
   const jobId = getJobIdValue(job);
+  const jobUrl = job.url || "";
   const isPreview = layout === layoutType.preview;
 
   // Transform API data format to component format if needed
@@ -86,30 +93,40 @@ export default function JobHeader({ job = {}, layout = layoutType.full, textButt
             </div>
           </div>
           <div className="flex gap-3">
-            {!isPreview && (
-              <Button variant="outline" size="icon" className="rounded-md">
-                <Share2 className="w-5 h-5" />
+            {isPreview ? (
+              <Button
+                className="bg-primary hover:bg-primary/90 text-white font-semibold px-6 rounded-lg cursor-pointer"
+                onClick={() => {
+                  if (isValidUrl(jobUrl) && jobUrl.includes('topcv.vn')) {
+                    navigate(`/topcv-job?id=${jobId}`);
+                  } else {
+                    navigate(`/job?id=${jobId}`);
+                  }
+                }}
+              >
+                {t("jobListing.table.viewDetails")}
               </Button>
-            )}
-            <Button
-              className="bg-primary hover:bg-primary/90 text-white font-semibold px-6 rounded-lg cursor-pointer"
-              onClick={() => {
-                if (onClickButton) {
-                  onClickButton();
-                } else if (isPreview && jobId) {
-                  navigate(`/job?id=${jobId}`);
-                } else {
-                  setIsModalOpen(true);
-                }
-              }}
-            >
-              {textButton || (isPreview ? t("jobListing.table.viewDetails") : t("apply"))}
-            </Button>
+            ) : (
+              <>
+                <Button variant="outline" size="icon" className="rounded-md">
+                  <Share2 className="w-5 h-5" />
+                </Button>
+                
+                <Button
+                  className="bg-primary hover:bg-primary/90 text-white font-semibold px-6 rounded-lg cursor-pointer"
+                  onClick={() => {
+                    if (onClickButton) {
+                      onClickButton();
+                    }
+                  }}
+                >
+                  {t("apply")}
+                </Button>
+              </>
+            )}            
           </div>
         </div>
       </motion.div>
-
-      {!isPreview && <ApplicationModal open={isModalOpen} onOpenChange={setIsModalOpen} />}
     </>
   );
 }

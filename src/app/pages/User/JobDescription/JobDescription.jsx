@@ -1,15 +1,17 @@
 import JobHeader from "./partials/JobHeader";
 import JobDetails from "./partials/JobDetails";
 import JobSidebar from "./partials/JobSidebar";
-import { PerksSection } from "../../../components";
+import { ApplicationModal, PerksSection } from "../../../components";
 import CompanySection from "./partials/CompanySection";
 import SimilarJobs from "./partials/SimilarJobs";
 import { layoutType } from "../../../lib";
-import { useSearchParams } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
 import { getJobById } from "../../../modules/services/jobsService";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { CircularProgress, Box, Skeleton, Container } from "@mui/material";
+import { Modal } from "antd";
+import { AUTHENTICATED } from "../../../../settings/localVar";
 
 export default function JobDescription({
   job,
@@ -69,10 +71,14 @@ export default function JobDescription({
   const [searchParams] = useSearchParams();
   const jobId = searchParams.get("id");
   const dispatch = useDispatch();
+  const navigate = useNavigate();
 
   const jobFromStore = useSelector(state => state.jobs.job);
   const jobStatus = useSelector(state => state.jobs.status);
   const jobError = useSelector(state => state.jobs.error);
+
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const isLoggedIn = localStorage.getItem(AUTHENTICATED) === 'true';
 
   useEffect(() => {
     if (!jobId && job) return;
@@ -90,9 +96,9 @@ export default function JobDescription({
   }
 
   // Show loading state
-  if (jobStatus === "loading" && !job) {
+  if (jobStatus === "loading") {
     return (
-      <div className="min-h-screen bg-white mx-auto space-y-12 pb-12">
+      <div className="min-h-screen w-full bg-white mx-auto space-y-12 pb-12">
         <div className={`pt-10 pb-5 ${layout !== layoutType.preview ? "px-10 lg:px-25" : ""} bg-background-lightBlue`}>
           {/* Header Skeleton */}
           <Container maxWidth="lg">
@@ -169,7 +175,7 @@ export default function JobDescription({
   // Show not found state
   if (!job) {
     return (
-      <div className="min-h-screen bg-white mx-auto flex items-center justify-center">
+      <div className="min-h-screen w-full bg-white mx-auto flex items-center justify-center">
         <Box
           sx={{
             textAlign: 'center',
@@ -205,7 +211,14 @@ export default function JobDescription({
   return (
     <div className={`min-h-screen w-full bg-white mx-auto ${layout !== layoutType.preview ? "space-y-12 pb-12" : "space-y-6 pb-6"}`}>
       <div className={`${layout !== layoutType.preview ? "px-10 xl:px-50 py-8" : "sticky top-0 z-10"} bg-background-lightBlue`}>
-        {finalConfig.showJobHeader && <JobHeader job={job} layout={layout} />}
+        {
+          finalConfig.showJobHeader && 
+          <JobHeader 
+            job={job}
+            layout={layout}
+            onClickButton={() => setIsModalOpen(true)}
+          />
+        }
       </div>
 
       <div className={`grid grid-cols-1 ${layout !== layoutType.preview ? "px-10 lg:px-25 lg:grid-cols-3 md:grid-cols-2 gap-8" : "px-10 lg:grid-cols-1 gap-y-8"}`}>
@@ -232,6 +245,44 @@ export default function JobDescription({
           <SimilarJobs job={job} />
         </div>
       }
+
+      {!isLoggedIn ? (
+        <Modal
+          title="Apply for Job"
+          open={isModalOpen}
+          onCancel={() => setIsModalOpen(false)}
+          centered
+          width={{
+            xs: '70%',
+            sm: '60%',
+            md: '50%',
+            lg: '40%',
+            xl: '30%',
+          }}
+          footer={
+            <div className="flex justify-end gap-2">
+              <button
+                onClick={() => setIsModalOpen(false)}
+                className="px-4 py-1 bg-white rounded-lg border hover:scale-105 transition-all cursor-pointer"
+              >
+                Close
+              </button>
+              <button
+                onClick={() => {
+                  navigate('/signin');
+                }}
+                className="px-4 py-1 bg-blue-600 text-white rounded-lg hover:scale-105 transition-all cursor-pointer"
+              >
+                Sign In
+              </button>
+            </div>
+          }
+        >
+          <p>Please log in to apply for this job.</p>
+        </Modal>
+      ) : (
+        <ApplicationModal open={isModalOpen} onVisibleChange={setIsModalOpen} />
+      )}   
     </div>
   );
 }

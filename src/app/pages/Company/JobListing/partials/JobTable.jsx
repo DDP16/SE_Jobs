@@ -1,14 +1,12 @@
 import { Modal, Spin, Table } from "antd";
 import { ExclamationCircleFilled, LoadingOutlined } from '@ant-design/icons';
-import { Badge } from "@/components/ui";
-import { Button, DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "../../../../components/ui";
+import { Button, DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger, Badge } from "../../../../components/ui";
 import { Edit, Eye, MoreVertical, Trash2, Diamond, Flame, Zap } from "lucide-react";
 import { useDispatch, useSelector } from "react-redux";
 import { useTranslation } from "react-i18next";
 import { useNavigate } from "react-router-dom";
-import { getJobs, getJobsByCompanyId } from "../../../../modules";
+import { getJobs, updateJob } from "../../../../modules";
 import { useEffect, useState } from "react";
-import { updateJob } from "../../../../modules/services/jobsService";
 
 export default function JobTable() {
     const { t } = useTranslation();

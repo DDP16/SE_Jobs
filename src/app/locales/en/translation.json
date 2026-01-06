@@ -34,6 +34,8 @@
   "capacity": "capacity",
   "comingSoon": "Coming Soon!",
   "comingSoonDescription": "We're working hard to bring you this feature. Stay tuned!",
+  "job_details": "Job Details",
+  "applicants": "Applicants",
   "auth": {
     "sign_in": "Sign in",
     "sign_up": "Sign up",
@@ -553,12 +555,19 @@
       "jobRole": "Job Role",
       "action": "Action",
       "seeApplication": "See Application",
+      "editStage": "Edit Stage",
       "noApplicants": "No applicants",
       "stages": {
-        "interview": "Interview",
+        "applied": "Applied",
+        "viewed": "Viewed",
         "shortlisted": "Shortlisted",
+        "interview": "Interview",
+        "interviewScheduled": "Interview Scheduled",
+        "offered": "Offered",
         "declined": "Declined",
         "hired": "Hired",
+        "rejected": "Rejected",
+        "cancelled": "Cancelled",
         "interviewed": "Interviewed"
       }
     }
@@ -697,6 +706,7 @@
     },
     "grid": {
       "companiesFound": "{{count}} companies found",
+      "noCompaniesFound": "No companies found.",
       "tryAdjustingFilters": "Try adjusting your filters or search criteria",
       "sort": {
         "newest": "Newest",
@@ -785,5 +795,27 @@
     "phoneCopyFailed": "Failed to copy phone number",
     "phoneCopyFailedDesc": "An error occurred while copying the phone number to your clipboard.",
     "zaloText": "Or contact us via"
+  },
+  "validation": {
+    "required": "This field is required.",
+    "invalidEmail": "Please enter a valid email address.",
+    "minLength": "This field must be at least {{min}} characters long.",
+    "maxLength": "This field must be at most {{max}} characters long.",
+    "passwordMinLength": "Password must be at least {{min}} characters long.",
+    "passwordMismatch": "Passwords do not match.",
+    "passwordMustContain": "Password must contain at least one letter and one number.",
+    "invalidUrl": "Please enter a valid URL."
+  },
+  "application": {
+    "confirmApply": "Confirm Application",
+    "areYouSureApply": "Are you sure you want to apply for this position?",
+    "pleaseCheckInfo": "Please check your information before confirming.",
+    "close": "Close",
+    "viewInformation": "View Information",
+    "apply": "Apply",
+    "inCompleteInfo": "Incomplete Information",
+    "yourInfoIncomplete": "Your profile information is incomplete.",
+    "pleaseUpdateInfo": "Please update your profile to proceed with the application.",
+    "editInfo": "Edit Information"
   }
 }

@@ -69,6 +69,12 @@ export const JobType = Object.freeze({
   FREELANCE: "Freelance"
 });
 
+export const infoApplyStatus = Object.freeze({
+  EMPTY: "Empty",
+  LACK: "Lack",
+  COMPLETE: "Complete"
+});
+
 // Helper functions to get all values
 export const getRoles = () => Object.values(Role);
 export const getStatuses = () => Object.values(Status);
@@ -76,6 +82,7 @@ export const getJobStatuses = () => Object.values(JobStatus);
 export const getApplicationStatuses = () => Object.values(ApplicationStatus);
 export const getNotificationTypes = () => Object.values(NotificationType);
 export const getJobTypes = () => Object.values(JobType);
+export const getInfoApplyStatuses = () => Object.values(infoApplyStatus);
 
 // Helper functions to check enum values
 export const isValidRole = (role) => Object.values(Role).includes(role);
@@ -84,3 +91,4 @@ export const isValidJobStatus = (status) => Object.values(JobStatus).includes(st
 export const isValidApplicationStatus = (status) => Object.values(ApplicationStatus).includes(status);
 export const isValidNotificationType = (type) => Object.values(NotificationType).includes(type);
 export const isValidJobType = (type) => Object.values(JobType).includes(type);
+export const isValidInfoApplyStatus = (status) => Object.values(infoApplyStatus).includes(status);

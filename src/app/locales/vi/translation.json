@@ -34,6 +34,8 @@
   "capacity": "vị trí",
   "comingSoon": "Sắp ra mắt!",
   "comingSoonDescription": "Chúng tôi đang nỗ lực để mang đến tính năng này. Hãy chờ đón nhé!",
+  "job_details": "Chi tiết công việc",
+  "applicants": "Ứng viên",
   "auth": {
     "sign_in": "Đăng nhập",
     "sign_up": "Đăng ký",
@@ -553,12 +555,19 @@
       "jobRole": "Vị trí công việc",
       "action": "Hành động",
       "seeApplication": "Xem đơn ứng tuyển",
+      "editStage": "Chỉnh sửa giai đoạn",
       "noApplicants": "Không có ứng viên",
       "stages": {
-        "interview": "Phỏng vấn",
+        "applied": "Đã ứng tuyển",
+        "viewed": "Đã xem",
         "shortlisted": "Đã lọc",
+        "interview": "Phỏng vấn",
+        "interviewScheduled": "Đã lên lịch phỏng vấn",
+        "offered": "Đã đề nghị",
         "declined": "Đã từ chối",
         "hired": "Đã tuyển",
+        "rejected": "Đã từ chối",
+        "cancelled": "Đã hủy",
         "interviewed": "Đã phỏng vấn"
       }
     }
@@ -786,5 +795,27 @@
     "phoneCopyFailed": "Không thể sao chép số điện thoại",
     "phoneCopyFailedDesc": "Đã xảy ra lỗi khi sao chép số điện thoại vào clipboard của bạn.",
     "zaloText": "Hoặc liên hệ qua"
+  },
+  "validation": {
+    "required": "Trường này là bắt buộc.",
+    "invalidEmail": "Vui lòng nhập địa chỉ email hợp lệ.",
+    "minLength": "Vui lòng nhập ít nhất {{count}} ký tự.",
+    "maxLength": "Vui lòng nhập không quá {{count}} ký tự.",
+    "passwordMinLength": "Mật khẩu phải có ít nhất {{min}} ký tự.",
+    "passwordMismatch": "Mật khẩu không khớp.",
+    "passwordMustContain": "Mật khẩu phải chứa ít nhất một chữ cái và một số",
+    "invalidUrl": "Vui lòng nhập URL hợp lệ."
+  },
+  "application": {
+    "confirmApply": "Xác nhận ứng tuyển",
+    "areYouSureApply": "Bạn có chắc chắn muốn ứng tuyển vào vị trí này?",
+    "pleaseCheckInfo": "Vui lòng kiểm tra lại thông tin của bạn trước khi xác nhận.",
+    "close": "Đóng",
+    "viewInformation": "Xem thông tin",
+    "apply": "Ứng tuyển",
+    "inCompleteInfo": "Thông tin chưa đầy đủ",
+    "yourInfoIncomplete": "Thông tin hồ sơ của bạn chưa đầy đủ.",
+    "pleaseUpdateInfo": "Vui lòng cập nhật hồ sơ của bạn để tiếp tục ứng tuyển.",
+    "editInfo": "Chỉnh sửa thông tin"
   }
 }

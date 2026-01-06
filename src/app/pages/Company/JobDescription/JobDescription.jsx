@@ -1,22 +1,23 @@
 import JobHeader from "./partials/JobHeader";
-import JobDetails from "./partials/JobDetails";
-import JobSidebar from "./partials/JobSidebar";
-import { PerksSection } from "../../../components";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
 import { getJobById } from "../../../modules/services/jobsService";
-import { useEffect } from "react";
-import { CircularProgress, Box, Skeleton, Container } from "@mui/material";
+import { useEffect, useState } from "react";
+import { CircularProgress, Box, Skeleton, Container, Tab } from "@mui/material";
 import { useTranslation } from "react-i18next";
+import TabDetails from "./partials/TabDetails";
+import TabApplicants from "./partials/TabApplicants";
 
 export default function JobDescription({
   job,
+  tabShow = "details"
 }) {
   const { t } = useTranslation();
   const [searchParams] = useSearchParams();
   const jobId = searchParams.get("id");
   const dispatch = useDispatch();
   const nav = useNavigate();
+  const [tabActive, setTabActive] = useState(tabShow);
 
   const jobFromStore = useSelector(state => state.jobs.job);
   const jobStatus = useSelector(state => state.jobs.status);
@@ -31,6 +32,11 @@ export default function JobDescription({
 
     dispatch(getJobById(jobId));
   }, [jobId, dispatch]);
+
+  const handleChangeTab = (tab) => {
+    if (tabActive === tab) return;
+    setTabActive(tab);
+  };
 
   // Use job prop if provided, otherwise use job from Redux store
   if (!job && jobFromStore) {
@@ -151,23 +157,38 @@ export default function JobDescription({
   }
 
   return (
-    <div className={`min-h-screen w-full bg-white mx-auto space-y-12 pb-12`}>
-      <div className={`px-10 2xl:px-50 py-8 bg-background-lightBlue`}>
-        <JobHeader job={job} textButton={t("edit")} onClickButton={() => {nav(`/edit-job/${jobId}`)}} />
+    <div className={`min-h-screen w-full bg-white mx-auto`}>
+      <div>
+        <div className={`px-5 lg:px-10 pt-8 pb-4 bg-background-lightBlue`}>
+          <JobHeader job={job} textButton={t("edit")} onClickButton={() => {nav(`/edit-job/${jobId}`)}} />
+        </div>
+        <div className={`flex space-x-2 bg-background-lightBlue px-5 lg:px-10 transition-all`}>
+          <button 
+            className={
+              `${tabActive === "details" ? "bg-white" : "bg-neutrals-10 cursor-pointer"}
+              px-5 py-2 rounded-t-lg border-t-2 border-x-2 border-gray-200 transition-all duration-200 ease-in-out`
+            }
+            onClick={() => handleChangeTab("details")}
+          >
+            {t("job_details")}
+          </button>
+          <button 
+            className={
+              `${tabActive === "applicants" ? "bg-white" : "bg-neutrals-10 cursor-pointer"}
+              px-5 py-2 rounded-t-lg border-t-2 border-x-2 border-gray-200 transition-all duration-200 ease-in-out`
+            }
+            onClick={() => handleChangeTab("applicants")}
+          >
+            {t("applicants")}
+          </button>
+        </div>
       </div>
 
-      <div className={`grid grid-cols-1 px-10 lg:px-25 lg:grid-cols-3 md:grid-cols-2 gap-8`}>
-        <div className="lg:col-span-2">
-          <JobDetails job={job} />
-        </div>
-        <div className={`sticky top-15 z-10 self-start`}>
-          <JobSidebar job={job} />
-        </div>
-      </div>
-
-      <div className="px-10 lg:px-25">
-        <PerksSection job={job} />
-      </div>
+      {tabActive === "details" ? (
+        <TabDetails job={job} />
+      ) : (
+        <TabApplicants job={job} />
+      )}
     </div>
   );
 }
