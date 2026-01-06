@@ -1,44 +1,11 @@
 import { motion } from "framer-motion";
-import { Share2 } from "lucide-react";
-import { ApplicationModal } from "@/components";
-import { layoutType, srcAsset } from "../../../../lib";
-import { useState } from "react";
-import { useTranslation } from "react-i18next";
-import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui";
+import { ArrowLeft } from "lucide-react";
 
-export default function JobHeader({ job = {}, layout = layoutType.full, textButton, onClickButton }) {
-  const { t } = useTranslation();
-  const navigate = useNavigate();
-  const [isModalOpen, setIsModalOpen] = useState(false);
-
-  // Helper function to get job ID from various fields
-  const getJobIdValue = (job) => {
-    if (!job) return null;
-    return job.id || job.job_id || job.jobId || job._id || job.external_id;
-  };
-
-  const jobId = getJobIdValue(job);
-  const isPreview = layout === layoutType.preview;
-
-  // Transform API data format to component format if needed
+export default function JobHeader({ job = {}, textButton, onClickButton }) {
   const jobTitle = job.title || "Job Title";
   const jobCompany = job.company?.name || job.company || "Company Name";
 
-  // Handle location - can be from workLocation array, location string, or company_branches
-  const getJobLocation = () => {
-    if (Array.isArray(job.workLocation) && job.workLocation.length > 0) {
-      return job.workLocation.map(loc => typeof loc === 'string' ? loc : (loc.name || loc.address || loc)).join(', ');
-    }
-    if (job.location) return job.location;
-    if (job.company_branches?.location) return job.company_branches.location;
-    if (job.company?.address) return job.company.address;
-    return "Location";
-  };
-
-  const jobLocation = getJobLocation();
-
-  // Handle job type - can be from workingTime array, working_time, type, or employment_types
   const getJobType = () => {
     if (Array.isArray(job.workingTime) && job.workingTime.length > 0) {
       return job.workingTime.map(wt => typeof wt === 'string' ? wt : (wt.name || wt)).join(', ');
@@ -54,12 +21,27 @@ export default function JobHeader({ job = {}, layout = layoutType.full, textButt
   const jobType = getJobType();
 
   return (
-    <>
+    <motion.div
+      className="flex space-x-5"
+    >
+      <motion.div 
+        className="flex-1 flex justify-center items-center relative z-10"
+        initial={{ opacity: 0, x: 100 }}
+        animate={{ opacity: 1, x: 0 }}
+        transition={{ duration: 0.5, delay: 0.5 }}
+      >
+        <button
+          className="p-3 bg-white shadow-sm border border-gray-200 rounded-full cursor-pointer hover:p-4 hover:shadow-lg active:p-3 active:shadow-sm transition-all"
+          onClick={() => window.history.back()}
+        >
+          <ArrowLeft className="w-6 h-6" />
+        </button>
+      </motion.div>
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5 }}
-        className="bg-white p-6 shadow-sm border border-gray-200 rounded-xl"
+        className="bg-white px-8 py-5 shadow-sm border border-gray-200 rounded-xl flex-16 z-10"
       >
         <div className="flex items-center justify-between gap-3">
           <div className="flex gap-6">
@@ -69,45 +51,30 @@ export default function JobHeader({ job = {}, layout = layoutType.full, textButt
               className="w-14 h-14 object-contain"
             />
             <div>
-              {layout === layoutType.preview ? (
-                <h5 className="text-3xl font-bold text-foreground mb-2">
-                  {jobTitle}
-                </h5>
-              ) : (
-                <h4 className="text-3xl font-bold text-foreground mb-2">
-                  {jobTitle}
-                </h4>
-              )}
+              <h4 className="text-3xl font-bold text-foreground mb-2">
+                {jobTitle}
+              </h4>
               <p className="text-muted-foreground">
-                {jobCompany} • {jobLocation} • {jobType}
+                {jobCompany} • {jobType}
               </p>
             </div>
           </div>
           <div className="flex gap-3">
-            {!isPreview && (
-              <Button variant="outline" size="icon" className="rounded-md">
-                <Share2 className="w-5 h-5" />
-              </Button>
-            )}
             <Button
               className="bg-primary hover:bg-primary/90 text-white font-semibold px-6 rounded-lg cursor-pointer"
               onClick={() => {
                 if (onClickButton) {
                   onClickButton();
-                } else if (isPreview && jobId) {
-                  navigate(`/job?id=${jobId}`);
                 } else {
-                  setIsModalOpen(true);
+                  return;
                 }
               }}
             >
-              {textButton || (isPreview ? t("jobListing.table.viewDetails") : t("apply"))}
+              {textButton}
             </Button>
           </div>
         </div>
       </motion.div>
-
-      {!isPreview && <ApplicationModal open={isModalOpen} onOpenChange={setIsModalOpen} />}
-    </>
+    </motion.div>
   );
 }

@@ -13,7 +13,7 @@ export {
 
 export { loginWithEmail, register, getMe, logout, resetPassword, changePassword } from './services/authService';
 export { getProvinces, getWards } from './services/addressService';
-export { getJobs, getJobById, getJobsByCompanyId, getMergedJobs } from './services/jobsService';
+export { getJobs, getJobById, getJobsByCompanyId, getMergedJobs, updateJob } from './services/jobsService';
 export { getCompanies, getCompany, createCompany, updateCompany, deleteCompany } from './services/companyService';
 export { getTopCVJobs } from './services/topCVService';
 export { getUserById, updateUser } from './services/userService';

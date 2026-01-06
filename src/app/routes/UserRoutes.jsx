@@ -15,7 +15,7 @@ import {
   SignUp,
   UserProfileSettings
 } from "../pages";
-import { Outlet, Route, Routes } from "react-router-dom";
+import { Navigate, Outlet, Route, Routes } from "react-router-dom";
 import PrivateRoute from "./PrivateRoute";
 import PageNotFound from "../layouts/PageNotFound";
 import UserProfileLayout from "../pages/User/UserProfile/UserProfileLayout";
@@ -54,6 +54,7 @@ export default function UserRoutes() {
         <Route path="contact-us" element={<ContactUs />} />
 
         <Route path="profile" element={<PrivateRoute><UserProfileLayoutWrapper /></PrivateRoute>}>
+          <Route index element={<Navigate to="dashboard" replace />} />
           <Route path="dashboard" element={<ProfileDashboard />} />
           <Route path="user-profile" element={<Profile />} />
           <Route path="my-jobs" element={<MyJobs />} />

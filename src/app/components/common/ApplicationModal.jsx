@@ -1,59 +1,168 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import {
   Input,
   Textarea,
   Button,
   Label,
 } from "@/components/ui";
-import { Dialog, DialogContent, DialogTitle } from "@mui/material";
+import { Modal } from "antd";
 import {
   X,
   Paperclip,
+  AlertCircle,
+  CheckCircle,
+  Check,
 } from "lucide-react";
+import { useSelector } from "react-redux";
+import { useNavigate } from "react-router-dom";
+import { infoApplyStatus } from "../../lib/enums";
+import { useTranslation } from "react-i18next";
 
-export default function ApplicationModal({ open, onOpenChange }) {
+export default function ApplicationModal({ open, onVisibleChange }) {
+  const { t } = useTranslation();
   const [charCount, setCharCount] = useState(0);
+  const [infoStatus, setInfoStatus] = useState(infoApplyStatus.EMPTY);
+  const currentUser = useSelector(state => state.auth.user);
+  const navigate = useNavigate();
   const maxChars = 500;
+
+  useEffect(() => {
+    console.log("Current User in Modal:", currentUser);
+    if (!currentUser) {
+      setInfoStatus(infoApplyStatus.EMPTY);
+      return;
+    }
+    const { first_name: firstname, email, student_info: info } = currentUser;
+    if (firstname && email && info) {
+      console.log("Student Info:", info[0]);
+      if (info[0].cv[0]) {
+        setInfoStatus(infoApplyStatus.COMPLETE);
+        return;
+      }
+      const {
+        about,
+        date_of_birth: dob,
+        gender,
+        phone_number: phoneNumber,
+        location
+      } = info;
+      if (about && dob && gender && phoneNumber && location) {
+        setInfoStatus(infoApplyStatus.COMPLETE);
+        return;
+      }
+      setInfoStatus(infoApplyStatus.LACK);
+      return;
+    }
+  }, [currentUser]);
 
   const handleTextChange = (e) => {
     setCharCount(e.target.value.length);
   };
 
-  return (
-    <Dialog 
-      open={open} 
-      onClose={() => onOpenChange(false)}
-      scroll="body"
-      maxWidth="sm"
-      fullWidth={true}
-    >
-      <DialogContent sx={{ padding: 0 }}>
-        <div className="sticky top-0 bg-background z-10 p-6 pb-0">
-          <div className="border-b-2 pb-4 border-neutrals-20">
-          <button
-            onClick={() => onOpenChange(false)}
-            className="absolute right-6 top-6 rounded-sm opacity-70 ring-offset-background transition-opacity hover:opacity-100 focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2"
-          >
-            <X className="h-5 w-5" />
-            <span className="sr-only">Close</span>
-          </button>
-          <div className="flex items-center gap-4 pr-8">
-            <div className="bg-primary rounded-xl w-14 h-14 flex items-center justify-center shrink-0">
-              <span className="text-white text-xl font-bold">N</span>
-            </div>
-            <div>
-              <h4 className="font-bold text-foreground mb-1">
-                Social Media Assistant
-              </h4>
-              <p className="text-sm text-muted-foreground">
-                Nomad • Paris, France • Full-Time
-              </p>
-            </div>
-          </div>
-          </div>
-        </div>
+  const handleClose = () => {
+    onVisibleChange(false);
+  };
 
-        <div className="p-6 space-y-5">
+  const handleNavigateToProfile = () => {
+    navigate('/profile/user-profile');
+    handleClose();
+  };
+
+  const handleApply = () => {
+    // TODO: Implement apply logic
+    console.log('Apply for job');
+    handleClose();
+  };
+
+  // Modal for LACK status
+  if (infoStatus === infoApplyStatus.LACK) {
+    return (
+      <Modal
+        title={
+          <div className="flex items-center gap-2">
+            <AlertCircle className="w-8 h-8 text-orange-500" />
+            <span className="text-xl font-semibold">{t("application.inCompleteInfo")}</span>
+          </div>
+        }
+        open={open}
+        onCancel={handleClose}
+        centered
+        footer={
+          <div className="flex justify-end gap-2">
+            <button
+              onClick={handleClose}
+              className="px-4 py-2 bg-white rounded-lg border hover:bg-gray-50 transition-all cursor-pointer"
+            >
+              {t("application.close")}
+            </button>
+            <button
+              onClick={handleNavigateToProfile}
+              className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-all cursor-pointer"
+            >
+              {t("application.editInfo")}
+            </button>
+          </div>
+        }
+      >
+        <p className="text-lg">{t("application.yourInfoIncomplete")}</p>
+        <p className="italic">{t("application.pleaseUpdateInfo")}</p>
+      </Modal>
+    );
+  }
+
+  // Modal for COMPLETE status
+  if (infoStatus === infoApplyStatus.COMPLETE) {
+    return (
+      <Modal
+        title={
+          <div className="flex items-center gap-2">
+            <Check className="w-8 h-8 text-green-500" />
+            <span className="text-xl font-semibold">{t("application.confirmApply")}</span>
+          </div>
+        }
+        open={open}
+        onCancel={handleClose}
+        centered
+        footer={
+          <div className="flex justify-end gap-2">
+            <button
+              onClick={handleClose}
+              className="px-4 py-2 bg-white rounded-lg border hover:bg-gray-50 transition-all cursor-pointer"
+            >
+              {t("application.close")}
+            </button>
+            <button
+              onClick={handleNavigateToProfile}
+              className="px-4 py-2 bg-gray-600 text-white rounded-lg hover:bg-gray-700 transition-all cursor-pointer"
+            >
+              {t("application.viewInformation")}
+            </button>
+            <button
+              onClick={handleApply}
+              className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-all cursor-pointer"
+            >
+              {t("application.apply")}
+            </button>
+          </div>
+        }
+      >
+        <p className="text-lg">{t("application.areYouSureApply")}</p>
+        <p className="italic">{t("application.pleaseCheckInfo")}</p>
+      </Modal>
+    );
+  }
+
+  return (
+    <Modal
+      title="Submit your application"
+      open={open}
+      onCancel={handleClose}
+      footer={null}
+      width={600}
+      zIndex={1200}
+      style={{ top: 40, paddingBottom: 40 }}
+    >
+        <div className="space-y-5">
           <div className="space-y-2">
             <h4 className="text-2xl font-bold text-foreground">
               Submit your application
@@ -158,7 +267,7 @@ export default function ApplicationModal({ open, onOpenChange }) {
                   Maximum 500 characters
                 </p>
                 <span className="text-xs text-muted-foreground">
-                    {charCount} / {maxChars}
+                  {charCount} / {maxChars}
                 </span>
               </div>
             </div>
@@ -171,7 +280,7 @@ export default function ApplicationModal({ open, onOpenChange }) {
               <button
                 type="button"
                 className="w-full h-12 border-2 border-dashed border-primary rounded-lg flex items-center
-                justify-center gap-2 text-primary font-medium hover:bg-primary/5 transition-colors"
+                  justify-center gap-2 text-primary font-medium hover:bg-primary/5 transition-colors"
               >
                 <Paperclip className="w-5 h-5" />
                 Attach Resume/CV
@@ -201,7 +310,6 @@ export default function ApplicationModal({ open, onOpenChange }) {
             </p>
           </form>
         </div>
-      </DialogContent>
-    </Dialog>
+      </Modal>
   );
 }

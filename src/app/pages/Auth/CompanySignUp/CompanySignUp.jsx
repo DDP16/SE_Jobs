@@ -144,18 +144,20 @@ export default function CompanySignUp() {
   };
 
   const validatePasswordField = (passwordValue) => {
-    if (!passwordValue) {
-      setPasswordError("Mật khẩu không được để trống");
+    const valid = validatePassword(passwordValue);
+    const error = valid.map((err) => {
+      if (err === 'validation.passwordMinLength') {
+        return t('validation.passwordMinLength', { min: 8 });
+      } else {
+        return t(err);
+      }
+    }).join("\n");
+    if (!passwordValue || valid.length > 0) {
+      setPasswordError(error);
       return false;
     } else {
-      const passwordErrors = validatePassword(passwordValue);
-      if (passwordErrors.length > 0) {
-        setPasswordError(passwordErrors.join("\n"));
-        return false;
-      } else {
-        setPasswordError("");
-        return true;
-      }
+      setPasswordError("");
+      return true;
     }
   };
 
