@@ -36,7 +36,7 @@ export default function ApplicationModal({ open, onVisibleChange }) {
     if (firstname && email && info) {
       console.log("Student Info:", info[0]);
       if (info[0].cv[0]) {
-        setInfoStatus(infoApplyStatus.EMPTY);
+        setInfoStatus(infoApplyStatus.COMPLETE);
         return;
       }
       const {
