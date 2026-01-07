@@ -85,7 +85,10 @@ export default function HotJobTopCVSection() {
                     <h3 className="text-3xl md:text-4xl font-bold text-gray-900">
                         {t("homeSections.hotJobSection.title")} <span className="text-green-600">{t("homeSections.hotJobSection.topCV")}</span>
                     </h3>
-                    <button className="hidden md:flex items-center gap-2 text-blue-600 hover:text-blue-700 font-medium transition-colors">
+                    <button 
+                        className="hidden md:flex items-center gap-2 text-blue-600 hover:text-blue-700 font-medium transition-colors"
+                        onClick={() => window.open('https://job-portal.topcv.vn/uit', '_blank')}
+                    >
                         {t("homeSections.hotJobSection.showAllJobs")}
                         <ArrowForward className="w-5 h-5" />
                     </button>

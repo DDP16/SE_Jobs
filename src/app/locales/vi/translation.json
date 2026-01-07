@@ -198,7 +198,8 @@
     "required_skills": "Kỹ năng yêu cầu",
     "no_skills_listed": "Không có kỹ năng nào được liệt kê.",
     "similar_jobs": "Việc làm tương tự",
-    "show_all_jobs": "Xem tất cả việc làm"
+    "show_all_jobs": "Xem tất cả việc làm",
+    "no_similar_jobs": "Không tìm thấy việc làm tương tự"
   },
   "company": {
     "perks_benefits": {

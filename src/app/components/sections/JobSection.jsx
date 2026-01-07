@@ -167,7 +167,10 @@ export default function JobSection() {
                     <h3 className="text-3xl md:text-4xl font-bold text-gray-900">
                         {t("homeSections.jobSection.title")} <span className="text-blue-600">{t("homeSections.jobSection.jobsOpen")}</span>
                     </h3>
-                    <button className="hidden md:flex items-center gap-2 text-blue-600 hover:text-blue-700 font-medium transition-colors">
+                    <button 
+                        onClick={() => navigate('/jobs')}
+                        className="hidden md:flex items-center gap-2 text-blue-600 hover:text-blue-700 font-medium transition-colors"
+                    >
                         {t("homeSections.jobSection.showAllJobs")}
                         <ArrowForward className="w-5 h-5" />
                     </button>
