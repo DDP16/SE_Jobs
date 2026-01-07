@@ -231,9 +231,7 @@ const jobsSlice = createSlice({
             })
             .addCase(getMergedJobs.fulfilled, (state, action) => {
                 state.status = "succeeded";
-                // Backend returns: { success: true, data: { jobs: [...], topcv: [...] }, pagination: {...} }
                 const responseData = action.payload.data || {};
-                // Merge jobs and topcv into a single jobs array
                 state.jobs = [
                     ...(responseData.jobs || []),
                     ...(responseData.topcv || [])

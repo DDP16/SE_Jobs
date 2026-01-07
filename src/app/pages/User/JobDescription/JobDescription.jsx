@@ -235,11 +235,6 @@ export default function JobDescription({
           <PerksSection job={job} />
         </div>
       }
-      {/* {finalConfig.showCompanySection &&
-        <div className="px-10 lg:px-25">
-          <CompanySection job={job} />
-        </div>
-      } */}
       {finalConfig.showSimilarJobs &&
         <div className="px-10 lg:px-25">
           <SimilarJobs job={job} />
