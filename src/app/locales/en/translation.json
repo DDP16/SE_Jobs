@@ -198,7 +198,8 @@
     "required_skills": "Required Skills",
     "no_skills_listed": "No skills listed.",
     "similar_jobs": "Similar Jobs",
-    "show_all_jobs": "Show all jobs"
+    "show_all_jobs": "Show all jobs",
+    "no_similar_jobs": "No similar jobs found"
   },
   "company": {
     "perks_benefits": {
