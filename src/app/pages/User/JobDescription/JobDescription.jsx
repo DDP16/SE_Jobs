@@ -212,8 +212,8 @@ export default function JobDescription({
     <div className={`min-h-screen w-full bg-white mx-auto ${layout !== layoutType.preview ? "space-y-12 pb-12" : "space-y-6 pb-6"}`}>
       <div className={`${layout !== layoutType.preview ? "px-10 xl:px-50 py-8" : "sticky top-0 z-10"} bg-background-lightBlue`}>
         {
-          finalConfig.showJobHeader && 
-          <JobHeader 
+          finalConfig.showJobHeader &&
+          <JobHeader
             job={job}
             layout={layout}
             onClickButton={() => setIsModalOpen(true)}
@@ -276,8 +276,8 @@ export default function JobDescription({
           <p>Please log in to apply for this job.</p>
         </Modal>
       ) : (
-        <ApplicationModal open={isModalOpen} onVisibleChange={setIsModalOpen} />
-      )}   
+        <ApplicationModal open={isModalOpen} onVisibleChange={setIsModalOpen} jobId={job?.id} />
+      )}
     </div>
   );
 }
