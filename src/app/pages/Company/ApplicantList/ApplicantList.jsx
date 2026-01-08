@@ -1,9 +1,11 @@
 import React, { useState, useMemo } from "react";
 import { useTranslation } from "react-i18next";
 import { Search, Filter, MoreHorizontal, Star } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 
 const ApplicantsTable = () => {
   const { t } = useTranslation();
+  const navigate = useNavigate();
   const [view, setView] = useState("table");
   const [search, setSearch] = useState("");
 
@@ -31,7 +33,7 @@ const ApplicantsTable = () => {
       id: 4,
       name: "Rodolfo Goode",
       score: 3.75,
-      stage: "Declined",
+      stage: "Rejected",
       date: "11 July, 2021",
       role: "NET Dev",
       avatar: "👨‍💻",
@@ -59,7 +61,7 @@ const ApplicantsTable = () => {
       id: 8,
       name: "Eleanor Pena",
       score: 3.9,
-      stage: "Declined",
+      stage: "Rejected",
       date: "5 July, 2021",
       role: "Designer",
       avatar: "👩‍🦰",
@@ -84,28 +86,26 @@ const ApplicantsTable = () => {
     },
   ];
 
-  const stages = ["Interview", "Shortlisted", "Declined", "Hired", "Interviewed"];
+  const stages = ["Interview", "Shortlisted", "Rejected", "Hired", "Interviewed"];
 
-  const getStageStyle = (stage) => {
-    const styles = {
-      Interview: "bg-orange-100 text-orange-600 border-orange-200",
-      Shortlisted: "bg-blue-100 text-blue-600 border-blue-200",
-      Declined: "bg-red-100 text-red-600 border-red-200",
-      Hired: "bg-green-100 text-green-600 border-green-200",
-      Interviewed: "bg-purple-100 text-purple-600 border-purple-200",
-    };
-    return styles[stage] || "bg-gray-100 text-gray-600";
+  const STATUS_CONFIG = {
+    Applied: { bgColor: 'bg-blue-50', textColor: 'text-blue-700', borderColor: 'border-blue-200', },
+    Viewed: { bgColor: 'bg-yellow-50', textColor: 'text-yellow-700', borderColor: 'border-yellow-200', },
+    Shortlisted: { bgColor: 'bg-indigo-50', textColor: 'text-indigo-700', borderColor: 'border-indigo-200', },
+    Interview_Scheduled: { bgColor: 'bg-cyan-50', textColor: 'text-cyan-700', borderColor: 'border-cyan-200', },
+    Offered: { bgColor: 'bg-yellow-50', textColor: 'text-yellow-700', borderColor: 'border-yellow-200', },
+    Hired: { bgColor: 'bg-emerald-50', textColor: 'text-emerald-700', borderColor: 'border-emerald-200', },
+    Rejected: { bgColor: 'bg-red-50', textColor: 'text-red-700', borderColor: 'border-red-200', },
+    Cancelled: { bgColor: 'bg-gray-50', textColor: 'text-gray-700', borderColor: 'border-gray-200', },
+    
+    Interview: { bgColor: 'bg-orange-100', textColor: 'text-orange-600', borderColor: 'border-orange-200', },
+    Interviewed: { bgColor: 'bg-purple-100', textColor: 'text-purple-600', borderColor: 'border-purple-200', },
   };
 
-  const getStageLabel = (stage) => {
-    const stageMap = {
-      Interview: t("applicantList.table.stages.interview"),
-      Shortlisted: t("applicantList.table.stages.shortlisted"),
-      Declined: t("applicantList.table.stages.declined"),
-      Hired: t("applicantList.table.stages.hired"),
-      Interviewed: t("applicantList.table.stages.interviewed"),
-    };
-    return stageMap[stage] || stage;
+  const getStageStyle = (stage) => {
+    const config = STATUS_CONFIG[stage] || STATUS_CONFIG.Applied;
+    const styles = `${config.bgColor} ${config.textColor} ${config.borderColor}`;
+    return styles || "bg-gray-100 text-gray-600";
   };
 
   const filteredApplicants = useMemo(() => {
@@ -124,9 +124,9 @@ const ApplicantsTable = () => {
       {/* Header */}
       <div className="mb-6">
         <div className="flex items-center justify-between mb-4">
-          <h1 className="text-2xl font-semibold text-gray-900">
+          <h3 className="text-2xl font-semibold text-gray-900">
             {t("applicantList.title")}: <span className="font-bold">{filteredApplicants.length}</span>
-          </h1>
+          </h3>
         </div>
 
         {/* Search Bar */}
@@ -191,7 +191,7 @@ const ApplicantsTable = () => {
 
                   <td className="px-4 py-4">
                     <div className="flex items-center gap-3">
-                      <div className="w-10 h-10 rounded-full bg-gradient-to-br from-blue-400 to-purple-400 flex items-center justify-center text-xl">
+                      <div className="w-10 h-10 rounded-full bg-linear-to-br from-blue-400 to-purple-400 flex items-center justify-center text-xl">
                         {a.avatar}
                       </div>
                       <span className="font-medium text-gray-900">{a.name}</span>
@@ -205,7 +205,7 @@ const ApplicantsTable = () => {
 
                   <td className="px-4 py-4">
                     <span className={`px-3 py-1 rounded-full text-xs font-medium border ${getStageStyle(a.stage)}`}>
-                      {getStageLabel(a.stage)}
+                      {t(`applicantList.table.stages.${a.stage}`)}
                     </span>
                   </td>
 
@@ -213,7 +213,10 @@ const ApplicantsTable = () => {
                   <td className="px-4 py-4 text-gray-700">{a.role}</td>
 
                   <td className="px-4 py-4 flex items-center gap-2">
-                    <button className="px-4 py-1.5 bg-blue-600 text-white rounded-lg text-sm hover:bg-blue-700">
+                    <button 
+                      className="px-4 py-1.5 bg-blue-600 text-white rounded-lg text-sm hover:bg-blue-700"
+                      onClick={() => navigate(`/applicants/${a.id}`)}
+                    >
                       {t("applicantList.table.seeApplication")}
                     </button>
                     <button className="p-1.5 hover:bg-gray-100 rounded">
@@ -232,13 +235,13 @@ const ApplicantsTable = () => {
         <div className="grid grid-cols-5 gap-4">
           {grouped.map((g) => (
             <div key={g.stage} className="bg-white rounded-lg shadow p-4">
-              <h2 className="font-semibold text-gray-800 mb-3">{getStageLabel(g.stage)}</h2>
+              <h4 className="font-semibold text-gray-800 mb-3">{t(`applicantList.table.stages.${g.stage}`)}</h4>
 
               <div className="space-y-3">
                 {g.list.map((a) => (
                   <div key={a.id} className="p-3 border rounded-lg hover:bg-gray-50 cursor-pointer">
                     <div className="flex items-center gap-3 mb-1">
-                      <div className="w-8 h-8 rounded-full bg-gradient-to-br from-blue-400 to-purple-400 flex items-center justify-center text-lg">
+                      <div className="w-8 h-8 rounded-full bg-linear-to-br from-blue-400 to-purple-400 flex items-center justify-center text-lg">
                         {a.avatar}
                       </div>
                       <span className="font-medium text-gray-900 text-sm">{a.name}</span>

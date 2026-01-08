@@ -46,11 +46,14 @@ export const JobStatus = Object.freeze({
 
 // Application Status
 export const ApplicationStatus = Object.freeze({
-  SUBMITTED: "Submitted",
+  APPLIED: "Applied",
   VIEWED: "Viewed",
-  INTERVIEW: "Interview",
-  ACCEPTED: "Accepted",
-  REJECTED: "Rejected"
+  INTERVIEW_SCHEDULED: "Interview_Scheduled",
+  HIRED: "Hired",
+  REJECTED: "Rejected",
+  SHORTLISTED: "Shortlisted",
+  OFFERED: "Offered",
+  CANCELLED: "Cancelled"
 });
 
 // Notification Types

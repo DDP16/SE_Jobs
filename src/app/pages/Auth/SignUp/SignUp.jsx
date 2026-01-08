@@ -285,7 +285,7 @@ export default function SignUp() {
 
           <Button
             type="submit"
-            className="w-1/2 bg-blue-600 hover:bg-blue-700 text-white rounded-xl h-12 text-base font-semibold"
+            className="w-1/2 bg-blue-600 hover:bg-blue-700 text-white rounded-xl h-12 text-base font-semibold cursor-pointer"
           >
             {t("auth.sign_up")}
           </Button>

@@ -6,88 +6,88 @@ import { useTranslation } from "react-i18next";
 import { useNavigate } from "react-router-dom";
 import { useState } from "react";
 
+const mockApplicants = [
+    {
+        id: 1,
+        full_name: "Nguyễn Văn A",
+        email: "nguyenvana@example.com",
+        status: "Hired",
+        created_at: "2025-12-15T10:30:00",
+    },
+    {
+        id: 2,
+        full_name: "Trần Thị B",
+        email: "tranthib@example.com",
+        status: "Interview_Scheduled",
+        created_at: "2025-12-20T14:20:00",
+    },
+    {
+        id: 3,
+        full_name: "Lê Văn C",
+        email: "levanc@example.com",
+        status: "Offered",
+        created_at: "2026-01-02T09:15:00",
+    },
+    {
+        id: 4,
+        full_name: "Phạm Thị D",
+        email: "phamthid@example.com",
+        status: "Rejected",
+        created_at: "2026-01-03T16:45:00",
+    },
+    {
+        id: 5,
+        full_name: "Hoàng Văn E",
+        email: "hoangvane@example.com",
+        status: "Shortlisted",
+        created_at: "2026-01-05T11:00:00",
+    },
+];
+
 const STATUS_CONFIG = {
-    applied: {
+    Applied: {
         bgColor: 'bg-blue-50',
         textColor: 'text-blue-700',
         borderColor: 'border-blue-200',
     },
-    viewed: {
+    Viewed: {
         bgColor: 'bg-yellow-50',
         textColor: 'text-yellow-700',
         borderColor: 'border-yellow-200',
     },
-    shortlisted: {
+    Shortlisted: {
         bgColor: 'bg-indigo-50',
         textColor: 'text-indigo-700',
         borderColor: 'border-indigo-200',
     },
-    interviewScheduled: {
+    Interview_Scheduled: {
         bgColor: 'bg-cyan-50',
         textColor: 'text-cyan-700',
         borderColor: 'border-cyan-200',
     },
-    offered: {
+    Offered: {
         bgColor: 'bg-yellow-50',
         textColor: 'text-yellow-700',
         borderColor: 'border-yellow-200',
     },
-    hired: {
+    Hired: {
         bgColor: 'bg-emerald-50',
         textColor: 'text-emerald-700',
         borderColor: 'border-emerald-200',
     },
-    rejected: {
+    Rejected: {
         bgColor: 'bg-red-50',
         textColor: 'text-red-700',
         borderColor: 'border-red-200',
     },
-    cancelled: {
+    Cancelled: {
         bgColor: 'bg-gray-50',
         textColor: 'text-gray-700',
         borderColor: 'border-gray-200',
     },
 };
 
-const mockApplicants = [
-    {
-        id: 1,
-        fullName: "Nguyễn Văn A",
-        score: 85,
-        status: "hired",
-        createdAt: "2025-12-15T10:30:00",
-    },
-    {
-        id: 2,
-        fullName: "Trần Thị B",
-        score: 78,
-        status: "interviewScheduled",
-        createdAt: "2025-12-20T14:20:00",
-    },
-    {
-        id: 3,
-        fullName: "Lê Văn C",
-        score: 92,
-        status: "offered",
-        createdAt: "2026-01-02T09:15:00",
-    },
-    {
-        id: 4,
-        fullName: "Phạm Thị D",
-        score: 65,
-        status: "rejected",
-        createdAt: "2026-01-03T16:45:00",
-    },
-    {
-        id: 5,
-        fullName: "Hoàng Văn E",
-        score: 88,
-        status: "shortlisted",
-        createdAt: "2026-01-05T11:00:00",
-    },
-];
-
-export default function ApplicantsTable() {
+export default function ApplicantsTable({ applicants }) {
     const { t } = useTranslation();
     const nav = useNavigate();
     const [currentPage, setCurrentPage] = useState(1);
@@ -97,14 +97,19 @@ export default function ApplicantsTable() {
     const getColumns = () => [
         {
             title: t('applicantList.table.fullName'),
-            dataIndex: 'fullName',
-            key: 'fullName',
+            dataIndex: 'full_name',
+            key: 'full_name',
+            onHeaderCell: () => ({
+                style: { textAlign: 'center' },
+            }),
         },
         {
-            title: t('applicantList.table.score'),
-            dataIndex: 'score',
-            key: 'score',
-            render: (score) => score,
+            title: t('applicantList.table.email'),
+            dataIndex: 'email',
+            key: 'email',
+            onHeaderCell: () => ({
+                style: { textAlign: 'center' },
+            }),
         },
         {
             title: t('applicantList.table.hiringStage'),
@@ -112,7 +117,7 @@ export default function ApplicantsTable() {
             key: 'status',
             align: 'center',
             render: (status) => {
-                const config = STATUS_CONFIG[status] || STATUS_CONFIG.applied;
+                const config = STATUS_CONFIG[status] || STATUS_CONFIG.Applied;
                 return (
                     <Badge
                         className={
@@ -127,8 +132,9 @@ export default function ApplicantsTable() {
         },
         {
             title: t('applicantList.table.appliedDate'),
-            dataIndex: 'createdAt',
-            key: 'createdAt',
+            dataIndex: 'created_at',
+            key: 'created_at',
+            align: 'center',
             render: (createdAt) => {
                 const date = new Date(createdAt);
                 return date.toLocaleDateString('en-GB');
@@ -171,8 +177,10 @@ export default function ApplicantsTable() {
                 <div className="relative flex flex-col">
                     <Table
                         columns={getColumns()}
-                        dataSource={mockApplicants}
+                        dataSource={applicants || mockApplicants}
                         rowKey="id"
+                        bordered
+                        size="small"
                         // pagination={{
                         //     current: currentPage,
                         //     pageSize: pageSize,
@@ -182,7 +190,7 @@ export default function ApplicantsTable() {
                         //         setPageSize(newPageSize);
                         //     },
                         // }}
-                        scroll={{ y: '60vh', x: 'max-content' }}
+                        // scroll={{ y: '60vh', x: 'max-content' }}
                         className="flex-1"
                     />
                 </div>

@@ -140,6 +140,7 @@ const initialState = {
     applications: [],
     applicationsByJobId: [],
     pagination: null,
+    paginationByJobId: null,
     status: "idle",
     error: null,
 };
@@ -170,7 +171,7 @@ const applicationsSlice = createSlice({
             .addCase(getCompanyApplicationsByJobId.fulfilled, (state, action) => {
                 state.status = "succeeded";
                 state.applicationsByJobId = action.payload.data || [];
-                state.pagination = action.payload.pagination || null;
+                state.paginationByJobId = action.payload.pagination || null;
             })
             .addCase(getCompanyApplicationsByJobId.rejected, (state, action) => {
                 state.status = "failed";

@@ -551,6 +551,7 @@
     "table": {
       "fullName": "Full Name",
       "score": "Score",
+      "email": "Email",
       "hiringStage": "Hiring Stage",
       "appliedDate": "Applied Date",
       "jobRole": "Job Role",
@@ -559,17 +560,17 @@
       "editStage": "Edit Stage",
       "noApplicants": "No applicants",
       "stages": {
-        "applied": "Applied",
-        "viewed": "Viewed",
-        "shortlisted": "Shortlisted",
-        "interview": "Interview",
-        "interviewScheduled": "Interview Scheduled",
-        "offered": "Offered",
-        "declined": "Declined",
-        "hired": "Hired",
-        "rejected": "Rejected",
-        "cancelled": "Cancelled",
-        "interviewed": "Interviewed"
+        "Applied": "Applied",
+        "Viewed": "Viewed",
+        "Shortlisted": "Shortlisted",
+        "Interview": "Interview",
+        "Interview_Scheduled": "Interview Scheduled",
+        "Offered": "Offered",
+        "Declined": "Declined",
+        "Hired": "Hired",
+        "Rejected": "Rejected",
+        "Cancelled": "Cancelled",
+        "Interviewed": "Interviewed"
       }
     }
   },

@@ -18,6 +18,7 @@ import certificatesReducer from "./app/modules/services/certificateService";
 import experiencesReducer from "./app/modules/services/experiencesService";
 import cvsReducer from "./app/modules/services/cvService";
 import savedJobsReducer from "./app/modules/services/savedJobsService";
+import applicationsReducer from "./app/modules/services/applicationsService";
 
 export default configureStore({
   reducer: {
@@ -40,5 +41,6 @@ export default configureStore({
     experiences: experiencesReducer,
     cvs: cvsReducer,
     savedJobs: savedJobsReducer,
+    applications: applicationsReducer,
   },
 });

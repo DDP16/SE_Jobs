@@ -982,7 +982,7 @@ export default function CompanySignUp() {
               type="submit"
               disabled={!agreeTerms}
               className={`w-full rounded-lg h-12 text-base font-semibold ${agreeTerms
-                ? 'bg-blue-600 hover:bg-blue-700 text-white'
+                ? 'bg-blue-600 hover:bg-blue-700 text-white cursor-pointer'
                 : 'bg-gray-300 text-gray-500 cursor-not-allowed'
                 }`}
             >

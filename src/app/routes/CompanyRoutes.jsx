@@ -11,10 +11,10 @@ import {
     EditJob,
     JobListing,
     CompanyBranches,
-    JobDescriptionCompany,
+    JobDescriptionCompany as JobDescription,
     ContactUs,
+    ApplicantList,
 } from "../pages";
-import ApplicantsTable from "../pages/Company/ApplicantList/ApplicantList";
 import { useDispatch, useSelector } from "react-redux";
 import { getCompany } from "../modules";
 import { use, useEffect } from "react";
@@ -33,10 +33,10 @@ export default function CompanyRoutes() {
         }
     }, [dispatch, companyId, company]);
 
-    useEffect(() => {
-        console.log("User ", user);
-        console.log("Company ", company);
-    }, []);
+    // useEffect(() => {
+    //     console.log("User ", user);
+    //     console.log("Company ", company);
+    // }, []);
 
     return (
         <Routes>
@@ -47,16 +47,15 @@ export default function CompanyRoutes() {
             }>
                 <Route index element={<Dashboard />} />
                 <Route path="company" element={<CompanyProfile />} />
-                {/* <Route path="company/:id" element={<CompanyProfile />} /> */}
-                {/* <Route path="applicants/:id" element={<ApplicantDetails />} />
-                <Route path="applicants" element={<ApplicantsTable />} /> */}
-                <Route path="applicants/:id" element={<ComingSoon />} />
-                <Route path="applicants" element={<ComingSoon />} />
+                <Route path="applicants/:id" element={<ApplicantDetails />} />
+                <Route path="applicants" element={<ApplicantList />} />
+                {/* <Route path="applicants/:id" element={<ComingSoon />} />
+                <Route path="applicants" element={<ComingSoon />} /> */}
                 <Route path="settings" element={<CompanySetting />} />
                 <Route path="post-job" element={<PostJob />} />
                 <Route path="edit-job/:jobId" element={<EditJob />} />
                 <Route path="job-listing" element={<JobListing />} />
-                <Route path="job" element={<JobDescriptionCompany />} />
+                <Route path="job" element={<JobDescription />} />
                 <Route path="branches" element={<CompanyBranches />} />
                 <Route path="help-center" element={<ContactUs />} />
                 <Route path="*" element={<PageNotFound />} />

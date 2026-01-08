@@ -7,6 +7,7 @@ import { CircularProgress, Box, Skeleton, Container, Tab } from "@mui/material";
 import { useTranslation } from "react-i18next";
 import TabDetails from "./partials/TabDetails";
 import TabApplicants from "./partials/TabApplicants";
+import { getCompanyApplicationsByJobId } from "../../../modules/services/applicationsService";
 
 export default function JobDescription({
   job,
@@ -31,6 +32,7 @@ export default function JobDescription({
     }
 
     dispatch(getJobById(jobId));
+    dispatch(getCompanyApplicationsByJobId(jobId));
   }, [jobId, dispatch]);
 
   const handleChangeTab = (tab) => {
@@ -187,7 +189,7 @@ export default function JobDescription({
       {tabActive === "details" ? (
         <TabDetails job={job} />
       ) : (
-        <TabApplicants job={job} />
+        <TabApplicants />
       )}
     </div>
   );

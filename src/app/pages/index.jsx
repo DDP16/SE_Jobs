@@ -16,6 +16,7 @@ export { default as ContactUs } from "./ContactUs";
 export { default as CompanyDashboard } from "./Company/DashBoard";
 export { default as CompanyProfile } from "./Company/CompanyProfile";
 export { default as ApplicantDetails } from "./Company/ApplicantDetails";
+export { default as ApplicantList } from "./Company/ApplicantList";
 export { default as CompanySignUp } from "./Auth/CompanySignUp";
 export { default as CompanySetting } from "./Company/CompanySetting";
 export { default as PostJob } from "./Company/PostJob";

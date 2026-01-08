@@ -1,7 +1,12 @@
 import { motion } from "framer-motion";
 import ApplicantsTable from "./ApplicantsTable";
+import { useSelector } from "react-redux";
+import { useTranslation } from "react-i18next";
 
-export default function TabApplicants({ job }) {
+export default function TabApplicants() {
+    const { t } = useTranslation();
+    const { applicationsByJobId: applicationData, paginationByJobId: pagination } = useSelector(state => state.applications);
+
     const containerVariants = {
         hidden: { opacity: 0 },
         visible: {
@@ -25,9 +30,11 @@ export default function TabApplicants({ job }) {
             className="space-y-5 py-5 px-5 lg:px-10"
         >
             <motion.section variants={itemVariants}>
-                <h4 className="text-2xl font-bold text-foreground mb-4">Total Applicants:</h4>
+                <h4 className="text-2xl font-bold text-foreground mb-4">
+                    {t("applicantList.title")}: {pagination ? pagination.total : 0}
+                </h4>
             </motion.section>
-            <ApplicantsTable />
+            <ApplicantsTable applicants={applicationData} />
         </motion.div>
     );
 }

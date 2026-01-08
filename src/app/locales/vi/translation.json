@@ -550,7 +550,8 @@
     "tableView": "Xem bảng",
     "table": {
       "fullName": "Họ và tên",
-      "score": "Điểm",
+      "score": "Điểm số",
+      "email": "Email",
       "hiringStage": "Giai đoạn tuyển dụng",
       "appliedDate": "Ngày ứng tuyển",
       "jobRole": "Vị trí công việc",
@@ -559,17 +560,17 @@
       "editStage": "Chỉnh sửa giai đoạn",
       "noApplicants": "Không có ứng viên",
       "stages": {
-        "applied": "Đã ứng tuyển",
-        "viewed": "Đã xem",
-        "shortlisted": "Đã lọc",
-        "interview": "Phỏng vấn",
-        "interviewScheduled": "Đã lên lịch phỏng vấn",
-        "offered": "Đã đề nghị",
-        "declined": "Đã từ chối",
-        "hired": "Đã tuyển",
-        "rejected": "Đã từ chối",
-        "cancelled": "Đã hủy",
-        "interviewed": "Đã phỏng vấn"
+        "Applied": "Đã ứng tuyển",
+        "Viewed": "Đã xem",
+        "Shortlisted": "Đã lọc",
+        "Interview": "Phỏng vấn",
+        "Interview_Scheduled": "Đã lên lịch phỏng vấn",
+        "Offered": "Đã đề nghị",
+        "Declined": "Đã từ chối",
+        "Hired": "Đã tuyển",
+        "Rejected": "Đã từ chối",
+        "Cancelled": "Đã hủy",
+        "Interviewed": "Đã phỏng vấn"
       }
     }
   },
