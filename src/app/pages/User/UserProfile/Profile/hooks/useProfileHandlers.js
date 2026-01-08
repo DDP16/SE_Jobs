@@ -50,12 +50,50 @@ export const useProfileHandlers = ({
     };
 
     // Ensure nullable fields are converted to safe defaults before sending to API
-    const sanitizeStudentInfo = (studentInfo = {}) => ({
-        ...studentInfo,
-        location: studentInfo?.location ?? '',
-        skills: Array.isArray(studentInfo?.skills) ? studentInfo.skills : [],
-        open_for_opportunities: studentInfo?.open_for_opportunities ?? false,
-    });
+    // Only send fields that have valid values to avoid backend validation errors
+    const sanitizeStudentInfo = (studentInfo = {}) => {
+        const sanitized = {};
+
+        if (studentInfo?.phone_number) {
+            sanitized.phone_number = studentInfo.phone_number;
+        }
+
+        if (studentInfo?.date_of_birth) {
+            sanitized.date_of_birth = studentInfo.date_of_birth;
+        }
+
+        if (studentInfo?.gender && ['Male', 'Female', 'Other'].includes(studentInfo.gender)) {
+            sanitized.gender = studentInfo.gender;
+        }
+        if (studentInfo?.location) {
+            sanitized.location = studentInfo.location;
+        }
+
+        if (Array.isArray(studentInfo?.skills) && studentInfo.skills.length > 0) {
+            sanitized.skills = studentInfo.skills;
+        }
+
+        if (typeof studentInfo?.open_for_opportunities === 'boolean') {
+            sanitized.open_for_opportunities = studentInfo.open_for_opportunities;
+        }
+
+        if (studentInfo?.about !== undefined && studentInfo?.about !== null) {
+            sanitized.about = studentInfo.about;
+        }
+
+        if (Array.isArray(studentInfo?.desired_positions) && studentInfo.desired_positions.length > 0) {
+            sanitized.desired_positions = studentInfo.desired_positions;
+        }
+
+        const fieldsToInclude = ['id', 'student_id', 'user_id', 'experiences', 'educations', 'projects', 'certifications', 'cv'];
+        fieldsToInclude.forEach(field => {
+            if (studentInfo?.[field] !== undefined && studentInfo[field] !== null) {
+                sanitized[field] = studentInfo[field];
+            }
+        });
+
+        return sanitized;
+    };
 
     // CV Handlers
     const handleCVFileChange = async (file, cvId = null) => {
