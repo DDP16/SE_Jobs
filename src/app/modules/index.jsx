@@ -11,7 +11,7 @@ export {
   validateLanguagesList,
 } from "./utils/validator";
 
-export { loginWithEmail, register, getMe, logout, resetPassword, changePassword } from './services/authService';
+export { loginWithEmail, register, getMe, logout, requestPasswordReset, resetPassword, changePassword } from './services/authService';
 export { getProvinces, getWards } from './services/addressService';
 export { getJobs, getJobById, getJobsByCompanyId, getMergedJobs, updateJob } from './services/jobsService';
 export { getCompanies, getCompany, createCompany, updateCompany, deleteCompany } from './services/companyService';

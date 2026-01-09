@@ -24,6 +24,7 @@
   "email": "Email Address",
   "password": "Password",
   "confirm_password": "Confirm Password",
+  "new_password": "New Password",
   "first_name": "First Name",
   "last_name": "Last Name",
   "save": "Save",
@@ -37,6 +38,8 @@
   "job_details": "Job Details",
   "applicants": "Applicants",
   "actions": "Actions",
+  "cancel": "Cancel",
+  "search": "Search",
   "auth": {
     "sign_in": "Sign in",
     "sign_up": "Sign up",
@@ -47,7 +50,17 @@
     "enter_first_name": "Enter your First Name",
     "enter_last_name": "Enter your Last Name",
     "confirm_password": "Confirm your Password",
-    "forgot_password": "Forgot Password"
+    "forgot_password": "Forgot Password",
+    "find_account": "Find Your Account",
+    "find_account_des": "Please enter your email address to search for your account.",
+    "reset_password": "Reset Your Password",
+    "reset_password_des": "Enter the 6-digit verification code we sent to your email and create a new password for your account.",
+    "we_sent_code": "We sent your code to:",
+    "recover_code": "Recovery Code",
+    "enter_recover_code": "Enter recovery code",
+    "resend_code": "Resend Code",
+    "resend": "Resend",
+    "change_password": "Change Password"
   },
   "userActivities": {
     "title": "Your Activities"
@@ -807,6 +820,7 @@
     "passwordMinLength": "Password must be at least {{min}} characters long.",
     "passwordMismatch": "Passwords do not match.",
     "passwordMustContain": "Password must contain at least one letter and one number.",
+    "passwordRequired": "Password should include uppercase letters, lowercase letters and numbers",
     "invalidUrl": "Please enter a valid URL."
   },
   "application": {

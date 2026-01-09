@@ -24,6 +24,7 @@
   "email": "Địa chỉ Email",
   "password": "Mật khẩu",
   "confirm_password": "Xác nhận mật khẩu",
+  "new_password": "Mật khẩu mới",
   "first_name": "Tên",
   "last_name": "Họ",
   "save": "Lưu",
@@ -37,6 +38,8 @@
   "job_details": "Chi tiết công việc",
   "applicants": "Ứng viên",
   "actions": "Hành động",
+  "cancel": "Huỷ",
+  "search": "Tìm kiếm",
   "auth": {
     "sign_in": "Đăng nhập",
     "sign_up": "Đăng ký",
@@ -47,7 +50,17 @@
     "enter_first_name": "Nhập tên của bạn",
     "enter_last_name": "Nhập họ của bạn",
     "confirm_password": "Xác nhận mật khẩu của bạn",
-    "forgot_password": "Quên mật khẩu"
+    "forgot_password": "Quên mật khẩu",
+    "find_account": "Tìm tài khoản của bạn",
+    "find_account_des": "Vui lòng nhập địa chỉ email của bạn để tìm kiếm tài khoản.",
+    "reset_password": "Đặt lại mật khẩu",
+    "reset_password_des": "Nhập mã xác minh 6 chữ số mà chúng tôi đã gửi đến email của bạn và tạo mật khẩu mới cho tài khoản của bạn.",
+    "we_sent_code": "Chúng tôi đã gửi mã của bạn đến:",
+    "recover_code": "Mã khôi phục",
+    "enter_recover_code": "Nhập mã khôi phục",
+    "resend_code": "Gửi lại mã",
+    "resend": "Gửi lại",
+    "change_password": "Đổi mật khẩu"
   },
   "userActivities": {
     "title": "Hoạt động của bạn"
@@ -807,6 +820,7 @@
     "passwordMinLength": "Mật khẩu phải có ít nhất {{min}} ký tự.",
     "passwordMismatch": "Mật khẩu không khớp.",
     "passwordMustContain": "Mật khẩu phải chứa ít nhất một chữ cái và một số",
+    "passwordRequired": "Mật khẩu nên có ký tự viết hoa, viết thường và số",
     "invalidUrl": "Vui lòng nhập URL hợp lệ."
   },
   "application": {
