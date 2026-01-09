@@ -30,3 +30,4 @@ export { getExperiencesByStudentId, getExperienceById, createExperience, updateE
 export { getEducationByStudentId, getEducation, createEducation, updateEducation, deleteEducation } from "./services/educationsService";
 export { getCvs, getCvsByStudentId, getCvById, createCv, updateCv, deleteCv } from "./services/cvService";
 export { getSavedJobs, addSavedJob, removeSavedJob } from "./services/savedJobsService";
+export { getApplications, createApplication } from "./services/applicationsService";

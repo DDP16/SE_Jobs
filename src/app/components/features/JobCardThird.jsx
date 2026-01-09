@@ -10,7 +10,7 @@ import {
     Stack,
     useTheme
 } from '@mui/material';
-import { BookmarkBorder, Bookmark } from '@mui/icons-material';
+import { BookmarkBorder, Bookmark, CalendarTodayOutlined, DescriptionOutlined } from '@mui/icons-material';
 import { useNavigate } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 
@@ -43,8 +43,6 @@ const isValidValue = (value) => {
     }
     return true;
 };
-
-// Removed openExternalUrl - TopCV jobs now navigate to internal TopCVDescription page
 
 const getTimeAgo = (dateString) => {
     if (!dateString) return null;
@@ -87,6 +85,26 @@ const tryParseSalaryText = (text) => {
     return { from, to, currencyHint };
 };
 
+const formatNumber = (num) => num.toLocaleString('en-US');
+
+const formatVND = (amount) => {
+    const num = Number(amount);
+    if (isNaN(num) || num === 0) return null;
+
+    if (num >= 1000000) {
+        const millions = num / 1000000;
+        return `${formatNumber(millions)} Triệu`;
+    }
+    return formatNumber(num);
+};
+
+const formatSalaryValue = (value, isVND) => {
+    if (!isValidValue(value)) return null;
+    const num = Number(value);
+    if (isNaN(num) || num === 0) return null;
+    return isVND ? formatVND(num) : formatNumber(num);
+};
+
 // ============================================================================
 // Bookmark Button Component
 // ============================================================================
@@ -113,12 +131,25 @@ export default function JobCard({
     onBookmark,
     onClick,
     isBookmarked,
-    variant = 'grid'
+    variant = 'grid',
+    cardType = 'normal' // 'normal' or 'save'
 }) {
     const navigate = useNavigate();
     const theme = useTheme();
     const currentUser = useSelector(state => state.auth?.user);
     const isAuthenticated = useSelector(state => state.auth?.isAuthenticated);
+
+    // Format date for save type
+    const formatDate = (dateString) => {
+        if (!dateString) return null;
+        try {
+            const datePart = dateString.split('T')[0];
+            const [year, month, day] = datePart.split('-');
+            return `${day}/${month}/${year}`;
+        } catch {
+            return null;
+        }
+    };
 
     // Extract unique provinces from company branches
     const getUniqueProvinces = useCallback(() => {
@@ -224,14 +255,6 @@ export default function JobCard({
         salary_from,
         salary_to,
         salary_currency,
-        description,
-        responsibilities,
-        requirements,
-        requirement,
-        nice_to_haves,
-        niceToHaves,
-        working_time,
-        job_deadline,
         url: jobUrl,
         logo,
         isFeatured,
@@ -270,30 +293,7 @@ export default function JobCard({
         [jobUrl]
     );
 
-    const formatNumber = (num) => {
-        return num.toLocaleString('en-US');
-    };
-
-    const formatVND = (amount) => {
-        const num = Number(amount);
-        if (isNaN(num) || num === 0) return null;
-
-        if (num >= 1000000) {
-            const millions = num / 1000000;
-            return `${formatNumber(millions)} Triệu`;
-        }
-        return formatNumber(num);
-    };
-
-    const formatSalaryValue = (value, isVND) => {
-        if (!isValidValue(value)) return null;
-        const num = Number(value);
-        if (isNaN(num) || num === 0) return null;
-        return isVND ? formatVND(num) : formatNumber(num);
-    };
-
     const displaySalary = useMemo(() => {
-        // TopCV data - return as is
         if (isTopCV && isValidValue(salary_text)) {
             return salary_text;
         }
@@ -302,16 +302,13 @@ export default function JobCard({
         const isVND = /vnd|₫/i.test(currency) || /vnd|₫/i.test(salary_text || '');
         const currencySuffix = isVND ? '' : ` ${currency || 'VND'}`;
 
-        // Try parsing salary_text first
         if (isValidValue(salary_text)) {
             const parsed = tryParseSalaryText(salary_text);
             if (parsed) {
                 const from = formatSalaryValue(parsed.from, isVND);
                 const to = formatSalaryValue(parsed.to, isVND);
 
-                // Both are 0 or invalid
                 if (!from && !to) return "Thỏa thuận";
-
                 if (from && to) return `${from} - ${to}${currencySuffix}`;
                 if (from) return `Từ ${from}${currencySuffix}`;
                 if (to) return `Lên đến ${to}${currencySuffix}`;
@@ -319,13 +316,10 @@ export default function JobCard({
             return salary_text;
         }
 
-        // Use salary_from and salary_to
         const from = formatSalaryValue(salary_from, isVND);
         const to = formatSalaryValue(salary_to, isVND);
 
-        // Both are 0 or invalid
         if (!from && !to) return "Thỏa thuận";
-
         if (from && to) return `${from} - ${to}${currencySuffix}`;
         if (from) return `Từ ${from}${currencySuffix}`;
         if (to) return `Lên đến ${to}${currencySuffix}`;
@@ -353,17 +347,20 @@ export default function JobCard({
         if (onClick && typeof onClick === 'function') {
             onClick(job);
         } else {
-            const jobId = getJobId(job);
+            const targetJob = cardType === 'save' ? (job.job || job) : job;
+            const jobId = getJobId(targetJob);
             if (jobId) {
-                // Check if it's a TopCV job and navigate to TopCV description page
-                if (isValidUrl(jobUrl) && jobUrl.includes('topcv.vn')) {
+                const targetJobUrl = cardType === 'save' 
+                    ? (job.job?.website_url || job.job?.url)
+                    : jobUrl;
+                if (isValidUrl(targetJobUrl) && targetJobUrl.includes('topcv.vn')) {
                     navigate(`/topcv-job?id=${jobId}`);
                 } else {
                     navigate(`/job?id=${jobId}`);
                 }
             }
         }
-    }, [jobUrl, onClick, job, navigate]);
+    }, [jobUrl, onClick, job, navigate, cardType]);
 
     const handleCardClick = useCallback((e) => {
         if (e.target.closest('button') || e.target.closest('a') || e.target.closest('[role="button"]')) return;
@@ -397,6 +394,265 @@ export default function JobCard({
             setLocalBookmarked(!nextState);
         }
     }, [localBookmarked, job, onBookmark, isAuthenticated, currentUser]);
+
+    if (cardType === 'save') {
+        const nestedJob = job.job || job;
+        const nestedCompany = job.company;
+        
+        const applicationStatus = job.status || 'Applied';
+        const submittedDate = formatDate(job.created_at || job.updated_at);
+        const resumeUrl = job.resume_url;
+        
+        const jobTitle = nestedJob?.title || "Job Title";
+        const jobCompanyName = typeof nestedCompany === 'string'
+            ? nestedCompany
+            : nestedCompany?.name || "Company Name";
+        const jobCompanyLogo = nestedCompany?.logo || nestedJob?.logo;
+        const jobCompanyLogoInitial = "SE";
+
+        const jobSalaryText = nestedJob?.salary_text;
+        const jobSalaryFrom = nestedJob?.salary_from;
+        const jobSalaryTo = nestedJob?.salary_to;
+        const jobSalaryCurrency = nestedJob?.salary_currency;
+
+        const calculateSalaryDisplay = () => {
+            const currency = (jobSalaryCurrency || '').trim();
+            const isVND = /vnd|₫/i.test(currency) || /vnd|₫/i.test(jobSalaryText || '');
+            const currencySuffix = isVND ? '' : ` ${currency || 'VND'}`;
+
+            // If both raw values exist and are 0, treat as negotiable
+            const hasRawFrom = jobSalaryFrom !== null && jobSalaryFrom !== undefined;
+            const hasRawTo = jobSalaryTo !== null && jobSalaryTo !== undefined;
+            const rawFromNum = hasRawFrom ? Number(jobSalaryFrom) : null;
+            const rawToNum = hasRawTo ? Number(jobSalaryTo) : null;
+            if (hasRawFrom && hasRawTo && rawFromNum === 0 && rawToNum === 0) {
+                return "Thỏa thuận";
+            }
+
+            const from = formatSalaryValue(jobSalaryFrom, isVND);
+            const to = formatSalaryValue(jobSalaryTo, isVND);
+
+            if (from || to) {
+                if (from && to) return `${from} - ${to}${currencySuffix}`;
+                if (from) return `Từ ${from}${currencySuffix}`;
+                if (to) return `Lên đến ${to}${currencySuffix}`;
+            }
+
+            if (isValidValue(jobSalaryText)) {
+                const parsed = tryParseSalaryText(jobSalaryText);
+                if (parsed) {
+                    // If parsed shows both sides as 0, treat as negotiable
+                    if (parsed.from === 0 && parsed.to === 0) {
+                        return "Thỏa thuận";
+                    }
+
+                    const fromParsed = formatSalaryValue(parsed.from, isVND);
+                    const toParsed = formatSalaryValue(parsed.to, isVND);
+
+                    if (fromParsed || toParsed) {
+                        if (fromParsed && toParsed) return `${fromParsed} - ${toParsed}${currencySuffix}`;
+                        if (fromParsed) return `Từ ${fromParsed}${currencySuffix}`;
+                        if (toParsed) return `Lên đến ${toParsed}${currencySuffix}`;
+                    }
+                }
+
+                // Fallback: if text literally represents 0 - 0
+                const normalizedText = String(jobSalaryText).replace(/\s+/g, '');
+                if (/^0-0$/.test(normalizedText)) {
+                    return "Thỏa thuận";
+                }
+                return jobSalaryText;
+            }
+
+            return "Thỏa thuận";
+        };
+
+        const jobSalaryDisplay = calculateSalaryDisplay();
+
+        return (
+            <Box sx={{ position: 'relative' }} className="h-full">
+                <Card
+                    onClick={handleCardClick}
+                    sx={{
+                        height: '100%',
+                        width: '100%',
+                        display: 'flex',
+                        flexDirection: 'column',
+                        position: 'relative',
+                        minHeight: '120px',
+                        minWidth: '280px',
+                        maxWidth: '100%',
+                        cursor: onClick ? 'pointer' : 'default',
+                        border: '1px solid',
+                        borderColor: 'divider',
+                        boxShadow: '0 1px 3px rgba(0,0,0,0.08)',
+                        '&:hover': {
+                            boxShadow: '0 4px 12px rgba(0,0,0,0.12)',
+                            borderColor: '#1976d2',
+                            transition: 'all 0.2s ease-in-out',
+                        }
+                    }}
+                >
+                    <CardContent sx={{
+                        flexGrow: 1,
+                        p: 2,
+                        display: 'flex',
+                        justifyContent: 'space-between',
+                        flexDirection: 'column',
+                        '&:last-child': {
+                            paddingBottom: 2
+                        }
+                    }}>
+                            <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 1.25, gap: 1 }}>
+                            <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, minWidth: 0 }}>
+                                <Box sx={{ display: 'inline-flex', alignItems: 'center', gap: 0.75, height: 18 }}>
+                                    <CalendarTodayOutlined sx={{ fontSize: '0.875rem', color: 'text.disabled', alignSelf: 'center' }} />
+                                    <Typography variant="caption" sx={{ color: 'text.disabled', fontSize: '0.75rem', flexShrink: 0, lineHeight: 1, display: 'inline-flex', alignItems: 'center' }}>
+                                        {submittedDate || 'N/A'}
+                                    </Typography>
+                                </Box>
+                                {resumeUrl && (
+                                    <Box sx={{ display: 'inline-flex', alignItems: 'center', gap: 0.75, height: 18 }}>
+                                        <DescriptionOutlined sx={{ fontSize: '0.875rem', color: '#1976d2', alignSelf: 'center' }} />
+                                        <Typography
+                                            component="a"
+                                            href={resumeUrl}
+                                            target="_blank"
+                                            rel="noopener noreferrer"
+                                            onClick={(e) => e.stopPropagation()}
+                                            sx={{
+                                                fontSize: '0.75rem',
+                                                color: '#1976d2',
+                                                textDecoration: 'none',
+                                                lineHeight: 1,
+                                                display: 'inline-flex',
+                                                alignItems: 'center',
+                                                '&:hover': {
+                                                    textDecoration: 'underline'
+                                                }
+                                            }}
+                                        >
+                                            {/* {resumeUrl.split('/').pop()} */}
+                                            CV 
+                                        </Typography>
+                                    </Box>
+                                )}
+                            </Box>
+                            <Chip
+                                label={applicationStatus}
+                                size="small"
+                                sx={{
+                                    bgcolor: applicationStatus === 'Applied' ? '#4CAF50' : 
+                                             applicationStatus === 'Reviewed' ? '#2196F3' : 
+                                             applicationStatus === 'Rejected' ? '#F44336' : '#9E9E9E',
+                                    color: 'white',
+                                    fontWeight: 600,
+                                    fontSize: '0.75rem',
+                                    height: '24px',
+                                    borderRadius: '6px',
+                                    flexShrink: 0,
+                                    '& .MuiChip-label': {
+                                        px: 1.5
+                                    }
+                                }}
+                            />
+                        </Box>
+
+                        <Box sx={{ display: 'flex', alignItems: 'center', gap: 2, mb: 1.25 }}>
+                            <Avatar
+                                src={isValidUrl(jobCompanyLogo) ? jobCompanyLogo : undefined}
+                                variant="square"
+                                onError={(e) => {
+                                    e.target.style.display = 'none';
+                                }}
+                                sx={{
+                                    bgcolor: isValidUrl(jobCompanyLogo) ? '#ffffff' : '#1976d2',
+                                    width: 72,
+                                    height: 72,
+                                    fontSize: '1.25rem',
+                                    fontWeight: 'bold',
+                                    borderRadius: 1.5,
+                                    flexShrink: 0,
+                                    border: '1px solid',
+                                    borderColor: 'divider',
+                                    boxShadow: '0 1px 3px rgba(0,0,0,0.08)',
+                                    '& img': {
+                                        objectFit: 'contain',
+                                    }
+                                }}
+                            >
+                                {jobCompanyLogoInitial}
+                            </Avatar>
+
+                            <Box sx={{ flexGrow: 1, minWidth: 0, flex: 1 }}>
+                                <Typography
+                                    variant="h6"
+                                    sx={{
+                                        fontWeight: 600,
+                                        fontSize: '1.05rem',
+                                        lineHeight: 1.32,
+                                        cursor: 'pointer',
+                                        color: 'text.primary',
+                                        transition: 'color 0.2s ease-in-out',
+                                        display: '-webkit-box',
+                                        WebkitLineClamp: 2,
+                                        WebkitBoxOrient: 'vertical',
+                                        overflow: 'hidden',
+                                        textOverflow: 'ellipsis',
+                                        mb: 0.5,
+                                        '&:hover': {
+                                            color: '#1976d2'
+                                        }
+                                    }}
+                                >
+                                    {jobTitle}
+                                </Typography>
+
+                                <Typography
+                                    variant="body2"
+                                    sx={{
+                                        fontSize: '0.8rem',
+                                        lineHeight: 1.35,
+                                        color: 'text.secondary',
+                                        textTransform: 'uppercase',
+                                        letterSpacing: '0.5px',
+                                        fontWeight: 400,
+                                        display: '-webkit-box',
+                                        WebkitLineClamp: 1,
+                                        WebkitBoxOrient: 'vertical',
+                                        overflow: 'hidden',
+                                        textOverflow: 'ellipsis',
+                                        mb: 0
+                                    }}
+                                >
+                                    {jobCompanyName}
+                                </Typography>
+                            </Box>
+                        </Box>
+
+                        <Stack direction="row" sx={{ flexWrap: 'wrap', rowGap: 1, columnGap: 2, mb: 1 }}>
+                            <Chip
+                                label={jobSalaryDisplay}
+                                size="small"
+                                sx={{
+                                    bgcolor: '#1976d2',
+                                    color: 'white',
+                                    fontSize: '0.875rem',
+                                    fontWeight: 600,
+                                    height: '32px',
+                                    borderRadius: '4px',
+                                    '& .MuiChip-label': {
+                                        px: 2,
+                                        py: 0.5
+                                    }
+                                }}
+                            />
+                        </Stack>
+                    </CardContent>
+                </Card>
+            </Box>
+        );
+    }
 
     return (
         <Box sx={{ position: 'relative' }} className="h-full">
