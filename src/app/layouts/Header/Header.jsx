@@ -261,6 +261,7 @@ export default function Header() {
                 pb: 0,
                 fontSize: { xs: '0.85rem', md: '0.9rem' }
               }}
+              title="TopCV"
             >
               {t('createCV')}
             </Button>
