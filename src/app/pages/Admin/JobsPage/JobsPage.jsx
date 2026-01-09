@@ -34,123 +34,6 @@ import { useDispatch, useSelector } from 'react-redux';
 import { getJobs } from '../../../modules';
 import { Pagination } from 'antd';
 
-const mockJobs = [
-  { 
-    id: 1,
-    title: 'Senior Software Engineer',
-    company: 'Google',
-    companyId: 1,
-    category: 'Information Technology',
-    level: 'Senior',
-    employmentType: 'Full-time',
-    location: 'Mountain View, CA',
-    salaryFrom: 120000,
-    salaryTo: 180000,
-    salaryCurrency: 'USD',
-    applications: 45,
-    isDiamond: true,
-    isHot: true,
-    isJobFlashActive: false,
-    postedDate: '2024-03-01',
-    status: 'Active'
-  },
-  { 
-    id: 2,
-    title: 'Product Manager',
-    company: 'Microsoft',
-    companyId: 2,
-    category: 'Marketing',
-    level: 'Mid-level',
-    employmentType: 'Full-time',
-    location: 'New York, NY',
-    salaryFrom: 90000,
-    salaryTo: 140000,
-    salaryCurrency: 'USD',
-    applications: 32,
-    isDiamond: false,
-    isHot: true,
-    isJobFlashActive: true,
-    postedDate: '2024-03-05',
-    status: 'Active'
-  },
-  { 
-    id: 3,
-    title: 'UX Designer',
-    company: 'Apple',
-    companyId: 4,
-    category: 'Design',
-    level: 'Junior',
-    employmentType: 'Full-time',
-    location: 'Cupertino, CA',
-    salaryFrom: 70000,
-    salaryTo: 100000,
-    salaryCurrency: 'USD',
-    applications: 28,
-    isDiamond: false,
-    isHot: false,
-    isJobFlashActive: true,
-    postedDate: '2024-03-10',
-    status: 'Active'
-  },
-  { 
-    id: 4,
-    title: 'Data Scientist Intern',
-    company: 'Amazon',
-    companyId: 3,
-    category: 'Information Technology',
-    level: 'Intern',
-    employmentType: 'Internship',
-    location: 'Seattle, WA',
-    salaryFrom: 30000,
-    salaryTo: 50000,
-    salaryCurrency: 'USD',
-    applications: 67,
-    isDiamond: false,
-    isHot: true,
-    isJobFlashActive: false,
-    postedDate: '2024-03-12',
-    status: 'Active'
-  },
-  { 
-    id: 5,
-    title: 'DevOps Engineer',
-    company: 'Meta',
-    companyId: 5,
-    category: 'Information Technology',
-    level: 'Mid-level',
-    employmentType: 'Full-time',
-    location: 'Remote',
-    salaryFrom: 100000,
-    salaryTo: 150000,
-    salaryCurrency: 'USD',
-    applications: 41,
-    isDiamond: true,
-    isHot: false,
-    isJobFlashActive: false,
-    postedDate: '2024-03-08',
-    status: 'Active'
-  },
-  { 
-    id: 6,
-    title: 'Sales Manager',
-    company: 'Tesla',
-    companyId: 6,
-    category: 'Sales',
-    level: 'Manager',
-    employmentType: 'Full-time',
-    location: 'Austin, TX',
-    salaryFrom: 80000,
-    salaryTo: 120000,
-    salaryCurrency: 'USD',
-    applications: 23,
-    isDiamond: false,
-    isHot: false,
-    isJobFlashActive: false,
-    postedDate: '2024-02-28',
-    status: 'Closed'
-  },
-];
-
 const categories = ['Information Technology', 'Marketing', 'Finance', 'Education', 'Engineering', 'Design', 'Sales', 'Healthcare'];
 const levels = ['Intern', 'Fresher', 'Junior', 'Mid-level', 'Senior', 'Manager', 'Director', 'Executive'];
 const employmentTypes = ['Full-time', 'Part-time', 'Contract', 'Internship', 'Freelance', 'Remote', 'Temporary'];
@@ -173,14 +56,6 @@ export default function JobsPage() {
   useEffect(() => {
     dispatch(getJobs({ page: currentPage, limit: pageSize }));
   }, [currentPage, pageSize]);
-
-  const filteredJobs = jobs.filter((job) => {
-    const matchesSearch = job.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      job.company.name.toLowerCase().includes(searchQuery.toLowerCase());
-    const matchesCategory = categoryFilter === 'all' || job.categories?.some(cat => cat.name === categoryFilter);
-    const matchesLevel = levelFilter === 'all' || job.levels?.some(lvl => lvl.name === levelFilter);
-    return matchesSearch && matchesCategory && matchesLevel;
-  });
 
   return (
     <div className="space-y-6">
@@ -250,7 +125,7 @@ export default function JobsPage() {
             </TableRow>
           </TableHeader>
           <TableBody>
-            {filteredJobs.map((job) => (
+            {jobs.map((job) => (
               <TableRow key={job.id}>
                 <TableCell>
                   <div className="flex items-center gap-2">
