@@ -1,115 +1,122 @@
-import React, { useState, useMemo } from "react";
+import { useState, useMemo, useEffect } from "react";
 import { useTranslation } from "react-i18next";
-import { Search, Filter, MoreHorizontal, Star } from "lucide-react";
+import { Search, Filter, MoreHorizontal, MoreVertical, Eye, Edit } from "lucide-react";
 import { useNavigate } from "react-router-dom";
+import { Spin, Table } from "antd";
+import { LoadingOutlined } from '@ant-design/icons';
+import { useDispatch, useSelector } from "react-redux";
+import { getCompanyApplications } from "../../../modules/services/applicationsService";
+import { Badge, Button, DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "../../../components/ui";
+import { Avatar } from "@mui/material";
 
-const ApplicantsTable = () => {
+const mockApplicants = [
+  { id: 1, name: "Jake Gyll", score: 0.0, stage: "Interview", date: "13 July, 2021", role: "Designer", avatar: "👨" },
+  {
+    id: 2,
+    name: "Guy Hawkins",
+    score: 0.0,
+    stage: "Interview",
+    date: "13 July, 2021",
+    role: "JavaScript Dev",
+    avatar: "👨‍💼",
+  },
+  {
+    id: 3,
+    name: "Cyndy Lillibridge",
+    score: 4.5,
+    stage: "Shortlisted",
+    date: "12 July, 2021",
+    role: "Golang Dev",
+    avatar: "👩",
+  },
+  {
+    id: 4,
+    name: "Rodolfo Goode",
+    score: 3.75,
+    stage: "Rejected",
+    date: "11 July, 2021",
+    role: "NET Dev",
+    avatar: "👨‍💻",
+  },
+  {
+    id: 5,
+    name: "Leif Floyd",
+    score: 4.8,
+    stage: "Hired",
+    date: "11 July, 2021",
+    role: "Graphic Design",
+    avatar: "👨‍🎨",
+  },
+  { id: 6, name: "Jenny Wilson", score: 4.6, stage: "Hired", date: "9 July, 2021", role: "Designer", avatar: "👩‍💼" },
+  {
+    id: 7,
+    name: "Jerome Bell",
+    score: 4.0,
+    stage: "Interviewed",
+    date: "5 July, 2021",
+    role: "Designer",
+    avatar: "👨‍🦱",
+  },
+  {
+    id: 8,
+    name: "Eleanor Pena",
+    score: 3.9,
+    stage: "Rejected",
+    date: "5 July, 2021",
+    role: "Designer",
+    avatar: "👩‍🦰",
+  },
+  {
+    id: 9,
+    name: "Darrell Steward",
+    score: 4.2,
+    stage: "Shortlisted",
+    date: "3 July, 2021",
+    role: "Designer",
+    avatar: "👨‍🔧",
+  },
+  {
+    id: 10,
+    name: "Floyd Miles",
+    score: 4.1,
+    stage: "Interviewed",
+    date: "1 July, 2021",
+    role: "Designer",
+    avatar: "👨‍🎓",
+  },
+];
+const stages = ["Interview", "Shortlisted", "Rejected", "Hired", "Interviewed"];
+
+const STATUS_CONFIG = {
+  Applied: { bgColor: 'bg-blue-50', textColor: 'text-blue-700', borderColor: 'border-blue-200', },
+  Viewed: { bgColor: 'bg-yellow-50', textColor: 'text-yellow-700', borderColor: 'border-yellow-200', },
+  Shortlisted: { bgColor: 'bg-indigo-50', textColor: 'text-indigo-700', borderColor: 'border-indigo-200', },
+  Interview_Scheduled: { bgColor: 'bg-cyan-50', textColor: 'text-cyan-700', borderColor: 'border-cyan-200', },
+  Offered: { bgColor: 'bg-yellow-50', textColor: 'text-yellow-700', borderColor: 'border-yellow-200', },
+  Hired: { bgColor: 'bg-emerald-50', textColor: 'text-emerald-700', borderColor: 'border-emerald-200', },
+  Rejected: { bgColor: 'bg-red-50', textColor: 'text-red-700', borderColor: 'border-red-200', },
+  Cancelled: { bgColor: 'bg-gray-50', textColor: 'text-gray-700', borderColor: 'border-gray-200', },
+
+  Interview: { bgColor: 'bg-orange-100', textColor: 'text-orange-600', borderColor: 'border-orange-200', },
+  Interviewed: { bgColor: 'bg-purple-100', textColor: 'text-purple-600', borderColor: 'border-purple-200', },
+};
+
+export default function ApplicantsTable() {
   const { t } = useTranslation();
   const navigate = useNavigate();
+  const dispatch = useDispatch();
   const [view, setView] = useState("table");
   const [search, setSearch] = useState("");
+  const {applications, pagination, status} = useSelector(state => state.applications);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [pageSize, setPageSize] = useState(10);
 
-  const applicants = [
-    { id: 1, name: "Jake Gyll", score: 0.0, stage: "Interview", date: "13 July, 2021", role: "Designer", avatar: "👨" },
-    {
-      id: 2,
-      name: "Guy Hawkins",
-      score: 0.0,
-      stage: "Interview",
-      date: "13 July, 2021",
-      role: "JavaScript Dev",
-      avatar: "👨‍💼",
-    },
-    {
-      id: 3,
-      name: "Cyndy Lillibridge",
-      score: 4.5,
-      stage: "Shortlisted",
-      date: "12 July, 2021",
-      role: "Golang Dev",
-      avatar: "👩",
-    },
-    {
-      id: 4,
-      name: "Rodolfo Goode",
-      score: 3.75,
-      stage: "Rejected",
-      date: "11 July, 2021",
-      role: "NET Dev",
-      avatar: "👨‍💻",
-    },
-    {
-      id: 5,
-      name: "Leif Floyd",
-      score: 4.8,
-      stage: "Hired",
-      date: "11 July, 2021",
-      role: "Graphic Design",
-      avatar: "👨‍🎨",
-    },
-    { id: 6, name: "Jenny Wilson", score: 4.6, stage: "Hired", date: "9 July, 2021", role: "Designer", avatar: "👩‍💼" },
-    {
-      id: 7,
-      name: "Jerome Bell",
-      score: 4.0,
-      stage: "Interviewed",
-      date: "5 July, 2021",
-      role: "Designer",
-      avatar: "👨‍🦱",
-    },
-    {
-      id: 8,
-      name: "Eleanor Pena",
-      score: 3.9,
-      stage: "Rejected",
-      date: "5 July, 2021",
-      role: "Designer",
-      avatar: "👩‍🦰",
-    },
-    {
-      id: 9,
-      name: "Darrell Steward",
-      score: 4.2,
-      stage: "Shortlisted",
-      date: "3 July, 2021",
-      role: "Designer",
-      avatar: "👨‍🔧",
-    },
-    {
-      id: 10,
-      name: "Floyd Miles",
-      score: 4.1,
-      stage: "Interviewed",
-      date: "1 July, 2021",
-      role: "Designer",
-      avatar: "👨‍🎓",
-    },
-  ];
-
-  const stages = ["Interview", "Shortlisted", "Rejected", "Hired", "Interviewed"];
-
-  const STATUS_CONFIG = {
-    Applied: { bgColor: 'bg-blue-50', textColor: 'text-blue-700', borderColor: 'border-blue-200', },
-    Viewed: { bgColor: 'bg-yellow-50', textColor: 'text-yellow-700', borderColor: 'border-yellow-200', },
-    Shortlisted: { bgColor: 'bg-indigo-50', textColor: 'text-indigo-700', borderColor: 'border-indigo-200', },
-    Interview_Scheduled: { bgColor: 'bg-cyan-50', textColor: 'text-cyan-700', borderColor: 'border-cyan-200', },
-    Offered: { bgColor: 'bg-yellow-50', textColor: 'text-yellow-700', borderColor: 'border-yellow-200', },
-    Hired: { bgColor: 'bg-emerald-50', textColor: 'text-emerald-700', borderColor: 'border-emerald-200', },
-    Rejected: { bgColor: 'bg-red-50', textColor: 'text-red-700', borderColor: 'border-red-200', },
-    Cancelled: { bgColor: 'bg-gray-50', textColor: 'text-gray-700', borderColor: 'border-gray-200', },
-    
-    Interview: { bgColor: 'bg-orange-100', textColor: 'text-orange-600', borderColor: 'border-orange-200', },
-    Interviewed: { bgColor: 'bg-purple-100', textColor: 'text-purple-600', borderColor: 'border-purple-200', },
-  };
-
-  const getStageStyle = (stage) => {
-    const config = STATUS_CONFIG[stage] || STATUS_CONFIG.Applied;
-    const styles = `${config.bgColor} ${config.textColor} ${config.borderColor}`;
-    return styles || "bg-gray-100 text-gray-600";
-  };
+  useEffect(() => {
+    dispatch(getCompanyApplications());
+  }, []);
 
   const filteredApplicants = useMemo(() => {
-    return applicants.filter((a) => a.name.toLowerCase().includes(search.toLowerCase()));
+    return mockApplicants.filter((a) => a.name.toLowerCase().includes(search.toLowerCase()));
   }, [search]);
 
   const grouped = useMemo(() => {
@@ -119,18 +126,120 @@ const ApplicantsTable = () => {
     }));
   }, [filteredApplicants]);
 
+  const getColumns = () => [
+    {
+      title: t('applicantList.table.fullName'),
+      dataIndex: 'full_name',
+      key: 'full_name',
+      onHeaderCell: () => ({
+        style: { textAlign: 'center' },
+      }),
+      render: (_, applicant) => {
+        const altName = applicant.full_name.split(' ').map(n => n[0]).join('');
+        return (
+          <div className="flex items-center gap-2">
+            <Avatar
+              src={applicant.avatar}
+              sx={{ width: 40, height: 40, bgcolor: 'primary.main', fontSize: '1rem' }}
+            >
+              {altName}
+            </Avatar>
+            <span className="font-medium text-gray-900">{applicant.full_name}</span>
+          </div>
+        );
+      }
+    },
+    {
+      title: t('applicantList.table.email'),
+      dataIndex: 'email',
+      key: 'email',
+      onHeaderCell: () => ({
+        style: { textAlign: 'center' },
+      }),
+    },
+    {
+      title: t('applicantList.table.jobRole'),
+      dataIndex: 'job',
+      key: 'job',
+      align: 'center',
+      render: (job) => job?.title || 'N/A',
+    },
+    {
+      title: t('applicantList.table.hiringStage'),
+      dataIndex: 'status',
+      key: 'status',
+      align: 'center',
+      render: (status) => {
+        const config = STATUS_CONFIG[status] || STATUS_CONFIG.Applied;
+        return (
+          <Badge
+            className={
+              `${config.bgColor} ${config.textColor} border ${config.borderColor} hover:${config.bgColor}
+                            w-25 items-center justify-center py-1 font-medium text-sm`
+            }
+          >
+            {t(`applicantList.table.stages.${status}`)}
+          </Badge>
+        );
+      },
+    },
+    {
+      title: t('applicantList.table.appliedDate'),
+      dataIndex: 'created_at',
+      key: 'created_at',
+      align: 'center',
+      render: (createdAt) => {
+        const date = new Date(createdAt);
+        return date.toLocaleDateString('en-GB');
+      },
+    },
+    {
+      title: t('actions'),
+      key: 'action',
+      align: 'center',
+      fixed: 'end',
+      render: (_, applicant) => (
+        <div className="flex items-center justify-center gap-2">
+          <button
+            className="px-4 py-1.5 bg-blue-600 text-white rounded-lg text-sm hover:bg-blue-700 cursor-pointer"
+            onClick={() => navigate(`/applicants/${applicant.id}`)}
+          >
+            {t("applicantList.table.seeApplication")}
+          </button>
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button variant="ghost" size="icon">
+                <MoreVertical className="w-4 h-4" />
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent className="bg-white" align="center" side="left">
+              <DropdownMenuItem onClick={() => { }}>
+                <Eye className="w-4 h-4 mr-2" />
+                {t('applicantList.table.seeApplication')}
+              </DropdownMenuItem>
+              <DropdownMenuItem onClick={() => { }}>
+                <Edit className="w-4 h-4 mr-2" />
+                {t('applicantList.table.editStage')}
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
+        </div>
+      ),
+    },
+  ];
+
   return (
-    <div className="flex-1 bg-gray-50 p-6">
+    <div className="flex-1 bg-gray-50 p-6 flex flex-col gap-4">
       {/* Header */}
-      <div className="mb-6">
-        <div className="flex items-center justify-between mb-4">
-          <h3 className="text-2xl font-semibold text-gray-900">
-            {t("applicantList.title")}: <span className="font-bold">{filteredApplicants.length}</span>
-          </h3>
+      <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-8 shrink-0">
+        <div className="flex items-center justify-between">
+          <h4 className="text-2xl font-semibold text-gray-900">
+            {t("applicantList.title")}: <span className="font-bold">{pagination?.total ?? 0}</span>
+          </h4>
         </div>
 
         {/* Search Bar */}
-        <div className="flex items-center gap-3 mb-4">
+        <div className="flex-1 flex items-center justify-end gap-3">
           <div className="flex-1 relative">
             <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
             <input
@@ -149,9 +258,8 @@ const ApplicantsTable = () => {
 
           <button
             onClick={() => setView("pipeline")}
-            className={`px-4 py-2 rounded-lg ${
-              view === "pipeline" ? "bg-blue-50 text-blue-600" : "bg-white text-gray-700"
-            }`}
+            className={`px-4 py-2 rounded-lg ${view === "pipeline" ? "bg-blue-50 text-blue-600" : "bg-white text-gray-700"
+              }`}
           >
             {t("applicantList.pipelineView")}
           </button>
@@ -165,69 +273,33 @@ const ApplicantsTable = () => {
         </div>
       </div>
 
-      {/* Table View */}
       {view === "table" && (
-        <div className="bg-white rounded-lg shadow overflow-hidden">
-          <table className="w-full">
-            <thead className="bg-gray-50 border-b border-gray-200">
-              <tr>
-                <th className="w-12 px-4 py-3">
-                  <input type="checkbox" />
-                </th>
-                <th className="px-4 py-3 text-sm font-medium text-gray-700 text-left">{t("applicantList.table.fullName")} ⇅</th>
-                <th className="px-4 py-3 text-sm font-medium text-gray-700 text-left">{t("applicantList.table.score")} ⇅</th>
-                <th className="px-4 py-3 text-sm font-medium text-gray-700 text-left">{t("applicantList.table.hiringStage")} ⇅</th>
-                <th className="px-4 py-3 text-sm font-medium text-gray-700 text-left">{t("applicantList.table.appliedDate")} ⇅</th>
-                <th className="px-4 py-3 text-sm font-medium text-gray-700 text-left">{t("applicantList.table.jobRole")} ⇅</th>
-                <th className="px-4 py-3 text-sm font-medium text-gray-700 text-left">{t("applicantList.table.action")} ⇅</th>
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-gray-200">
-              {filteredApplicants.map((a) => (
-                <tr key={a.id} className="hover:bg-gray-50">
-                  <td className="px-4 py-4">
-                    <input type="checkbox" />
-                  </td>
-
-                  <td className="px-4 py-4">
-                    <div className="flex items-center gap-3">
-                      <div className="w-10 h-10 rounded-full bg-linear-to-br from-blue-400 to-purple-400 flex items-center justify-center text-xl">
-                        {a.avatar}
-                      </div>
-                      <span className="font-medium text-gray-900">{a.name}</span>
-                    </div>
-                  </td>
-
-                  <td className="px-4 py-4 flex items-center gap-1">
-                    <Star className="w-4 h-4 fill-orange-400 text-orange-400" />
-                    <span className="font-medium text-gray-900">{a.score.toFixed(1)}</span>
-                  </td>
-
-                  <td className="px-4 py-4">
-                    <span className={`px-3 py-1 rounded-full text-xs font-medium border ${getStageStyle(a.stage)}`}>
-                      {t(`applicantList.table.stages.${a.stage}`)}
-                    </span>
-                  </td>
-
-                  <td className="px-4 py-4 text-gray-700">{a.date}</td>
-                  <td className="px-4 py-4 text-gray-700">{a.role}</td>
-
-                  <td className="px-4 py-4 flex items-center gap-2">
-                    <button 
-                      className="px-4 py-1.5 bg-blue-600 text-white rounded-lg text-sm hover:bg-blue-700"
-                      onClick={() => navigate(`/applicants/${a.id}`)}
-                    >
-                      {t("applicantList.table.seeApplication")}
-                    </button>
-                    <button className="p-1.5 hover:bg-gray-100 rounded">
-                      <MoreHorizontal className="w-5 h-5 text-gray-600" />
-                    </button>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
+        status === 'loading' ? (
+          <div className="flex-1 flex items-center justify-center">
+            <Spin indicator={<LoadingOutlined spin />} size="large" />
+          </div>
+        ) : (
+          <div className="relative flex flex-col">
+            <Table
+              columns={getColumns()}
+              dataSource={applications || mockApplicants}
+              rowKey="id"
+              bordered
+              size="middle"
+              pagination={{
+                  current: currentPage,
+                  pageSize: pageSize,
+                  total: pagination?.total ?? 0,
+                  onChange: (newPage, newPageSize) => {
+                      setCurrentPage(newPage);
+                      setPageSize(newPageSize);
+                  },
+              }}
+              scroll={{ y: '70vh', x: 'max-content' }}
+              className="custom-ant-table-2 flex-1"
+            />
+          </div>
+        )
       )}
 
       {/* Pipeline View */}
@@ -259,5 +331,3 @@ const ApplicantsTable = () => {
     </div>
   );
 };
-
-export default ApplicantsTable;

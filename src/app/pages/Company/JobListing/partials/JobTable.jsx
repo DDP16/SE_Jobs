@@ -204,6 +204,7 @@ export default function JobTable() {
                         columns={getColumns()}
                         dataSource={currentData}
                         rowKey="id"
+                        bordered
                         pagination={{
                             current: currentPage,
                             pageSize: pageSize,

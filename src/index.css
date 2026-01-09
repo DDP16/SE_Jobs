@@ -580,3 +580,21 @@ body {
 .custom-ant-table .ant-table-container {
   @apply flex flex-col flex-1;
 }
+
+.custom-ant-table-2 .ant-table-body {
+  @apply min-h-[70vh] max-h-[70vh] overflow-y-auto;
+}
+
+/* Pagination cố định dưới đáy */
+.custom-ant-table-2 .ant-pagination {
+  @apply absolute -bottom-[7vh] right-0;
+}
+
+/* Giúp table luôn fill vertical space */
+.custom-ant-table-2 .ant-table {
+  @apply flex flex-col flex-1;
+}
+
+.custom-ant-table-2 .ant-table-container {
+  @apply flex flex-col flex-1;
+}
