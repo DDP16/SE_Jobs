@@ -21,6 +21,7 @@ import { JobCardThird } from '../../../../components';
 import { mockJobs } from '../../../../../mocks/mockData';
 import { useSelector, useDispatch } from 'react-redux';
 import { getSavedJobs, addSavedJob, removeSavedJob } from '../../../../modules';
+import { getApplications } from '../../../../modules';
 
 // Tab panel component
 function TabPanel({ children, value, index, ...other }) {
@@ -148,13 +149,14 @@ export default function MyJobs() {
     const navigate = useNavigate();
     const dispatch = useDispatch();
     const savedJobs = useSelector(state => state.savedJobs?.savedJobs ?? []);
+    const appliedJobs = useSelector(state => state.applications?.applications ?? []);
 
     useEffect(() => {
         dispatch(getSavedJobs());
+        dispatch(getApplications());
     }, [dispatch]);
 
     const [activeTab, setActiveTab] = useState(0);
-    const [appliedJobs] = useState([]);
     const [recentViewedJobs] = useState([mockJobs[0]]);
     const [invitedJobs] = useState([]);
 
@@ -250,6 +252,7 @@ export default function MyJobs() {
                                     variant="list"
                                     isBookmarked={tabIndex === 1 || job.isSaved}
                                     onBookmark={handleBookmark}
+                                    cardType={tabIndex === 0 ? 'save' : 'normal'}
                                 />
                             </motion.div>
                         ))}
@@ -413,9 +416,10 @@ export default function MyJobs() {
                                     exit={{ opacity: 0, height: 0 }}
                                     transition={{ duration: 0.3 }}
                                     sx={{
-                                        display: 'flex',
+                                        display: 'inline-flex',
                                         alignItems: 'center',
-                                        gap: 1,
+                                        gap: 0.75,
+                                        height: 18,
                                         p: 1.5,
                                         mb: 1.5,
                                         bgcolor: 'grey.50',
@@ -423,8 +427,8 @@ export default function MyJobs() {
                                         overflow: 'hidden',
                                     }}
                                 >
-                                    <InfoIcon sx={{ fontSize: 18, color: 'text.secondary' }} />
-                                    <Typography variant="body2" sx={{ color: 'text.secondary' }}>
+                                    <InfoIcon sx={{ fontSize: 14, color: 'text.secondary', alignSelf: 'center' }} />
+                                    <Typography variant="body2" sx={{ color: 'text.secondary', fontSize: '0.75rem', lineHeight: 1, display: 'inline-flex', alignItems: 'center' }}>
                                         {t("myJobs.infoMessage")}
                                     </Typography>
                                 </Box>
