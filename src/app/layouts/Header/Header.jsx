@@ -254,17 +254,11 @@ export default function Header() {
             </Button>
             <Button
               color="inherit"
-              component={Link}
-              to="https://www.topcv.vn/mau-cv"
-              target="_blank"
-              title="TopCV"
+              onClick={handleCreateCV}
               sx={{
-                color: isActive('/contact-us') ? 'primary.main' : 'inherit',
-                fontWeight: isActive('/contact-us') ? 800 : 600,
-                borderBottom: isActive('/contact-us') ? '2px solid' : 'none',
-                borderColor: 'primary.main',
+                fontWeight: 600,
                 borderRadius: 0,
-                pb: isActive('/contact-us') ? 0.2 : 0,
+                pb: 0,
                 fontSize: { xs: '0.85rem', md: '0.9rem' }
               }}
             >
