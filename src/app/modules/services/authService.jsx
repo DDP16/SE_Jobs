@@ -63,54 +63,6 @@ export const loginWithEmail = createAsyncThunk(
   }
 );
 
-// export const register = createAsyncThunk(
-//   "auth/register",
-//   async ({ email, password, first_name, last_name }, { rejectWithValue }) => {
-//     const reqData = {
-//       email,
-//       password,
-//       first_name,
-//       last_name,
-//       confirm_password: password,
-//     };
-
-//     try {
-//       const result = await new Promise((resolve, reject) => {
-//         post(
-//           "/api/auth/register",
-//           reqData,
-//           async (res) => {
-//             try {
-//               const data = await res.json();
-//               console.log("Register response:", res);
-//               if (res.ok) {
-//                 resolve(data);
-//               } else {
-//                 reject(data.message || "Registration failed");
-//               }
-//             } catch (error) {
-//               console.error("Registration processing error:", error);
-//               reject(error.message || "Registration processing error");
-//             }
-//           },
-//           async (res) => {
-//             try {
-//               const data = await res.json();
-//               reject(data.message || "Registration failed");
-//             } catch (error) {
-//               console.error("Error parsing error response:", error);
-//               reject("Registration failed");
-//             }
-//           }
-//         );
-//       });
-//       return result;
-//     } catch (error) {
-//       return rejectWithValue(error);
-//     }
-//   }
-// );
-
 export const register = createAsyncThunk(
   "auth/register",
   async (
@@ -262,15 +214,54 @@ export const logout = createAsyncThunk(
   }
 );
 
-export const resetPassword = createAsyncThunk(
-  "auth/resetPassword",
-  async ({ token, new_password }, { rejectWithValue }) => {
-    const reqData = { token, new_password };
+export const requestPasswordReset = createAsyncThunk(
+  "auth/requestPasswordReset",
+  async ({ email }, { rejectWithValue }) => {
+    const reqData = { email };
 
     try {
       const result = await new Promise((resolve, reject) => {
         post(
-          "/api/auth/reset-password",
+          "/api/auth/password/forgot",
+          reqData,
+          async (res) => {
+            try {
+              const data = await res.json();
+              if (res.ok) {
+                resolve(data);
+              } else {
+                reject(data.message || "Request password reset failed");
+              }
+            } catch (error) {
+              reject(error.message || "Request password reset processing error");
+            }
+          },
+          async (res) => {
+            try {
+              const data = await res.json();
+              reject(data.message || "Request password reset failed");
+            } catch (error) {
+              reject("Request password reset failed");
+            }
+          }
+        );
+      });
+      return result;
+    } catch (error) {
+      return rejectWithValue(error);
+    }
+  }
+);
+
+export const resetPassword = createAsyncThunk(
+  "auth/resetPassword",
+  async ({ email, otp, new_password }, { rejectWithValue }) => {
+    const reqData = { email, otp, new_password };
+
+    try {
+      const result = await new Promise((resolve, reject) => {
+        post(
+          "/api/auth/password/reset",
           reqData,
           async (res) => {
             try {
@@ -437,6 +428,18 @@ const authSlice = createSlice({
         state.error = action.payload;
       })
       // Reset Password
+      .addCase(requestPasswordReset.pending, (state) => {
+        state.status = "loading";
+        state.error = null;
+      })
+      .addCase(requestPasswordReset.fulfilled, (state, action) => {
+        state.status = "succeeded";
+        state.error = null;
+      })
+      .addCase(requestPasswordReset.rejected, (state, action) => {
+        state.status = "failed";
+        state.error = action.payload;
+      })
       .addCase(resetPassword.pending, (state) => {
         state.status = "loading";
         state.error = null;

@@ -75,6 +75,7 @@ export default function SignIn() {
         const result = await dispatch(loginWithEmail({ email, password }));
         if (loginWithEmail.fulfilled.match(result)) {
           showSuccess("Login successful!");
+          await new Promise(resolve => setTimeout(resolve, 1000));
           nav("/", { replace: true });
         } else {
           console.error("Login failed: ", result);
@@ -167,7 +168,7 @@ export default function SignIn() {
             </div>
             <div className="flex items-center justify-end">
               {passwordError && <span className="text-xs text-red-500 mr-auto whitespace-pre-line">{passwordError}</span>}
-              <Link to="/forgot-password" replace={true} className="text-sm text-blue-600 hover:underline">
+              <Link to="/identify" replace={true} className="text-sm text-blue-600 hover:underline">
                 {t("auth.forgot_password")}
               </Link>
             </div>

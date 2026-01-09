@@ -104,7 +104,6 @@ export default function SignUp() {
 
   const handlePasswordBlur = () => {
     validatePasswordField(password);
-    // Re-validate confirm password if it has been filled
     if (confirmPassword) {
       validateConfirmPasswordField(confirmPassword);
     }
@@ -247,11 +246,12 @@ export default function SignUp() {
                 {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
               </button>
             </div>
-            <p className="text-xs text-gray-500 mt-1">Mật khẩu nên có ký tự viết hoa, viết thường, số và ký tự đặc biệt</p>
-            {passwordError && (
+            {passwordError ? (
               passwordError.split('\n').map((err, idx) => (
                 <p key={idx} className="text-xs text-red-500 mt-1">{err}</p>
               ))
+            ) : (
+              <p className="text-xs text-gray-500 mt-1">{t("validation.passwordRequired")}</p>
             )}
           </div>
 

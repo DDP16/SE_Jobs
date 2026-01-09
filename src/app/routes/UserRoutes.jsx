@@ -13,7 +13,9 @@ import {
   ProfileDashboard,
   SignIn,
   SignUp,
-  UserProfileSettings
+  UserProfileSettings,
+  Identify,
+  RecoverPassword
 } from "../pages";
 import { Navigate, Outlet, Route, Routes } from "react-router-dom";
 import PrivateRoute from "./PrivateRoute";
@@ -43,6 +45,8 @@ export default function UserRoutes() {
       <Route path="/signin" element={<SignIn />} />
       <Route path="/signup" element={<SignUp />} />
       <Route path="/company/signup" element={<CompanySignUp />} />
+      <Route path="/identify" element={<Identify />} />
+      <Route path="/recovery" element={<RecoverPassword />} />
 
       <Route path="/" element={<MainLayoutWrapper />}>
         <Route index element={<Home />} />
