@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { Plus, Search, Filter, MoreVertical, Eye, Edit, Trash2, FileText } from 'lucide-react';
 import {
@@ -21,28 +21,28 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui";
-
-const mockStudents = [
-  { id: 1, name: 'John Doe', email: 'john.doe@university.edu', major: 'Computer Science', year: 'Senior', gpa: 3.8, cvCount: 3, status: 'Active' },
-  { id: 2, name: 'Jane Smith', email: 'jane.smith@university.edu', major: 'Business Administration', year: 'Junior', gpa: 3.6, cvCount: 2, status: 'Active' },
-  { id: 3, name: 'David Martinez', email: 'david.martinez@university.edu', major: 'Engineering', year: 'Senior', gpa: 3.9, cvCount: 4, status: 'Active' },
-  { id: 4, name: 'Sarah Johnson', email: 'sarah.johnson@university.edu', major: 'Marketing', year: 'Sophomore', gpa: 3.5, cvCount: 1, status: 'Active' },
-  { id: 5, name: 'Michael Chen', email: 'michael.chen@university.edu', major: 'Computer Science', year: 'Senior', gpa: 3.7, cvCount: 2, status: 'Active' },
-  { id: 6, name: 'Emily Brown', email: 'emily.brown@university.edu', major: 'Design', year: 'Junior', gpa: 3.8, cvCount: 3, status: 'Active' },
-  { id: 7, name: 'Alex Wilson', email: 'alex.wilson@university.edu', major: 'Finance', year: 'Senior', gpa: 3.6, cvCount: 2, status: 'Inactive' },
-  { id: 8, name: 'Lisa Anderson', email: 'lisa.anderson@university.edu', major: 'Computer Science', year: 'Junior', gpa: 3.9, cvCount: 5, status: 'Active' },
-];
+import { useDispatch, useSelector } from 'react-redux';
+import { getStudents } from '../../../modules';
+import { Avatar } from '@mui/material';
+import { Pagination } from 'antd';
 
 export default function StudentsPage() {
+  const dispatch = useDispatch();
   const [searchQuery, setSearchQuery] = useState('');
   const [majorFilter, setMajorFilter] = useState('all');
+  const [currentPage, setCurrentPage] = useState(1);
+  const [pageSize, setPageSize] = useState(10);
 
-  const filteredStudents = mockStudents.filter((student) => {
-    const matchesSearch = student.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      student.email.toLowerCase().includes(searchQuery.toLowerCase());
-    const matchesMajor = majorFilter === 'all' || student.major === majorFilter;
-    return matchesSearch && matchesMajor;
-  });
+  const students = useSelector((state) => state.students.students);
+  const pagination = useSelector((state) => state.students.pagination);
+
+  useEffect(() => {
+    dispatch(getStudents({ page: currentPage, limit: pageSize }));
+  }, [currentPage, pageSize]);
+
+  useEffect(() => {
+    console.log("Students from store:", students);
+  }, [students]);
 
   return (
     <div className="space-y-6">
@@ -93,42 +93,36 @@ export default function StudentsPage() {
               <TableRow>
                 <TableHead>Student</TableHead>
                 <TableHead>Email</TableHead>
-                <TableHead>Major</TableHead>
-                <TableHead>Year</TableHead>
-                <TableHead className="text-center">GPA</TableHead>
-                <TableHead className="text-center">CVs</TableHead>
+                <TableHead className="text-center">Phone</TableHead>
+                <TableHead className="text-center">Gender</TableHead>
+                <TableHead className="text-center">Location</TableHead>
                 <TableHead className="text-center">Status</TableHead>
                 <TableHead className="text-right">Actions</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
-              {filteredStudents.map((student) => (
+              {students.map((student) => (
                 <TableRow key={student.id}>
                   <TableCell>
                     <div className="flex items-center gap-2">
-                      <div className="w-8 h-8 rounded-full bg-linear-to-br from-blue-500 to-purple-500 flex items-center justify-center text-white text-sm">
-                        {student.name.split(' ').map(n => n[0]).join('')}
-                      </div>
-                      <span>{student.name}</span>
+                      <Avatar
+                        alt={`${student.users.first_name} ${student.users.last_name}`}
+                        sx={{ width: 32, height: 32, fontSize: '0.875rem' }}
+                        src={student.users.avatar}
+                        className='bg-linear-to-br from-blue-500 to-purple-500'
+                      >
+                        {student.users.first_name[0]}{student.users.last_name[0]}
+                      </Avatar>
+                      <span>{student.users.first_name} {student.users.last_name}</span>
                     </div>
                   </TableCell>
-                  <TableCell className="text-gray-600">{student.email}</TableCell>
-                  <TableCell>{student.major}</TableCell>
-                  <TableCell>{student.year}</TableCell>
+                  <TableCell className="text-gray-600">{student.users.email}</TableCell>
+                  <TableCell className="text-gray-600 text-center">{student.phone_number || 'N/A'}</TableCell>
+                  <TableCell className="text-gray-600 text-center">{student.gender || 'N/A'}</TableCell>
+                  <TableCell className="text-gray-600 text-center">{student.location || 'N/A'}</TableCell>
                   <TableCell className="text-center">
-                    <Badge variant="secondary" className="bg-blue-50 text-blue-700">
-                      {student.gpa}
-                    </Badge>
-                  </TableCell>
-                  <TableCell className="text-center">
-                    <div className="flex items-center gap-1">
-                      <FileText className="w-4 h-4 text-gray-400" />
-                      <span className="text-gray-600">{student.cvCount}</span>
-                    </div>
-                  </TableCell>
-                  <TableCell className="text-center">
-                    <Badge className={`${student.status === 'Active' ? 'bg-green-400 text-white border-2 border-accent-green/50' : 'bg-gray-100'} px-4 py-1`}>
-                      {student.status}
+                    <Badge className={`${student.users.is_active ? 'bg-green-400 text-white border-2 border-accent-green/50' : 'bg-gray-100'} px-4 py-1`}>
+                      {student.users.is_active ? 'Active' : 'Inactive'}
                     </Badge>
                   </TableCell>
                   <TableCell className="text-right">
@@ -162,6 +156,18 @@ export default function StudentsPage() {
           </Table>
         </div>
       </div>
+
+      <Pagination align="end" 
+        current={currentPage}
+        total={pagination?.total ?? 0}
+        pageSize={pageSize}
+        onChange={
+          (newPage, newPageSize) => {
+            setCurrentPage(newPage)
+            setPageSize(newPageSize)
+          }
+        }
+      />
     </div>
   );
 }

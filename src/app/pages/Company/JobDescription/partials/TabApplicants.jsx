@@ -34,7 +34,7 @@ export default function TabApplicants() {
                     {t("applicantList.title")}: {pagination ? pagination.total : 0}
                 </h4>
             </motion.section>
-            <ApplicantsTable applicants={applicationData} />
+            <ApplicantsTable applicants={applicationData} pagination={pagination} />
         </motion.div>
     );
 }

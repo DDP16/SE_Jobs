@@ -31,6 +31,7 @@ import { Pagination } from 'antd';
 import { useDispatch, useSelector } from 'react-redux';
 import { getUsers } from '../../../modules/services/userService';
 import { create } from 'lodash';
+import { Avatar } from '@mui/material';
 
 const mockUsers = [
   { id: 1, name: 'John Doe', email: 'john.doe@university.edu', role: 'Student', status: 'Active', createdAt: '2024-01-15' },
@@ -136,14 +137,19 @@ export default function UsersPage() {
               </TableRow>
             </TableHeader>
             <TableBody>
-              {filteredUsers.map((user) => (
+              {users.map((user) => (
                 <TableRow key={user.id}>
                   <TableCell>
                     <div className="flex items-center gap-2">
-                      <div className="w-8 h-8 rounded-full bg-linear-to-br from-blue-500 to-purple-500 flex items-center justify-center text-white text-sm">
-                        {user.name.split(' ').map(n => n[0]).join('')}
-                      </div>
-                      <span>{user.name}</span>
+                      <Avatar
+                        alt={`${user.first_name} ${user.last_name}`}
+                        sx={{ width: 32, height: 32, fontSize: '0.875rem' }}
+                        src={user.avatar}
+                        className='bg-linear-to-br from-blue-500 to-purple-500'
+                      >
+                        {user.first_name[0]}{user.last_name[0]}
+                      </Avatar>
+                      <span>{user.first_name} {user.last_name}</span>
                     </div>
                   </TableCell>
                   <TableCell className="text-gray-600">{user.email}</TableCell>

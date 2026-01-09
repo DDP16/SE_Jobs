@@ -32,7 +32,7 @@ export default function JobDescription({
     }
 
     dispatch(getJobById(jobId));
-    dispatch(getCompanyApplicationsByJobId(jobId));
+    dispatch(getCompanyApplicationsByJobId({ jobId }));
   }, [jobId, dispatch]);
 
   const handleChangeTab = (tab) => {

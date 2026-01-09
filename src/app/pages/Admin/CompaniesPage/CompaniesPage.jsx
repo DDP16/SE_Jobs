@@ -25,97 +25,6 @@ import { Pagination } from 'antd';
 import { useDispatch, useSelector } from 'react-redux';
 import { getCompanies } from '../../../modules';
 
-const mockCompanies = [
-  { 
-    id: 1, 
-    name: 'Google', 
-    email: 'hr@google.com', 
-    phone: '+1 (650) 253-0000',
-    employeeCount: '50,000+', 
-    branches: 15,
-    activeJobs: 24,
-    types: ['Technology', 'Software'],
-    status: 'Active' 
-  },
-  { 
-    id: 2, 
-    name: 'Microsoft', 
-    email: 'careers@microsoft.com', 
-    phone: '+1 (425) 882-8080',
-    employeeCount: '10,000+', 
-    branches: 12,
-    activeJobs: 18,
-    types: ['Technology', 'Enterprise Software'],
-    status: 'Active' 
-  },
-  { 
-    id: 3, 
-    name: 'Amazon', 
-    email: 'jobs@amazon.com', 
-    phone: '+1 (206) 266-1000',
-    employeeCount: '100,000+', 
-    branches: 20,
-    activeJobs: 16,
-    types: ['E-commerce', 'Cloud Computing'],
-    status: 'Active' 
-  },
-  { 
-    id: 4, 
-    name: 'Apple', 
-    email: 'recruitment@apple.com', 
-    phone: '+1 (408) 996-1010',
-    employeeCount: '50,000+', 
-    branches: 8,
-    activeJobs: 12,
-    types: ['Technology', 'Consumer Electronics'],
-    status: 'Active' 
-  },
-  { 
-    id: 5, 
-    name: 'Meta', 
-    email: 'careers@meta.com', 
-    phone: '+1 (650) 543-4800',
-    employeeCount: '10,000+', 
-    branches: 6,
-    activeJobs: 10,
-    types: ['Technology', 'Social Media'],
-    status: 'Active' 
-  },
-  { 
-    id: 6, 
-    name: 'Tesla', 
-    email: 'hr@tesla.com', 
-    phone: '+1 (888) 518-3752',
-    employeeCount: '10,000+', 
-    branches: 10,
-    activeJobs: 8,
-    types: ['Automotive', 'Clean Energy'],
-    status: 'Active' 
-  },
-  { 
-    id: 7, 
-    name: 'Netflix', 
-    email: 'jobs@netflix.com', 
-    phone: '+1 (408) 540-3700',
-    employeeCount: '5,000+', 
-    branches: 4,
-    activeJobs: 6,
-    types: ['Entertainment', 'Streaming'],
-    status: 'Inactive' 
-  },
-  { 
-    id: 8, 
-    name: 'Adobe', 
-    email: 'careers@adobe.com', 
-    phone: '+1 (408) 536-6000',
-    employeeCount: '10,000+', 
-    branches: 7,
-    activeJobs: 14,
-    types: ['Technology', 'Creative Software'],
-    status: 'Active' 
-  },
-];
-
 export default function CompaniesPage() {
   const dispatch = useDispatch();
   const [searchQuery, setSearchQuery] = useState('');
@@ -129,13 +38,6 @@ export default function CompaniesPage() {
   useEffect(() => {
     dispatch(getCompanies({ page: currentPage, limit: pageSize }));
   }, [currentPage, pageSize]);
-
-  const filteredCompanies = companies.filter((company) => {
-    const matchesSearch = company.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      company.email.toLowerCase().includes(searchQuery.toLowerCase());
-    const matchesType = typeFilter === 'all' || company.types.some(type => type === typeFilter);
-    return matchesSearch && matchesType;
-  });
 
   return (
     <div className="space-y-6">
@@ -194,7 +96,7 @@ export default function CompaniesPage() {
               </TableRow>
             </TableHeader>
             <TableBody>
-              {filteredCompanies.map((company) => (
+              {companies.map((company) => (
                 <TableRow key={company.id}>
                   <TableCell>
                     <div className="flex items-center gap-2">

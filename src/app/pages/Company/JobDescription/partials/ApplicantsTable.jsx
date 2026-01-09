@@ -5,6 +5,7 @@ import { Spin, Table } from "antd";
 import { useTranslation } from "react-i18next";
 import { useNavigate } from "react-router-dom";
 import { useState } from "react";
+import { Avatar } from "@mui/material";
 
 const mockApplicants = [
     {
@@ -87,7 +88,7 @@ const STATUS_CONFIG = {
     },
 };
 
-export default function ApplicantsTable({ applicants }) {
+export default function ApplicantsTable({ applicants, pagination }) {
     const { t } = useTranslation();
     const nav = useNavigate();
     const [currentPage, setCurrentPage] = useState(1);
@@ -102,6 +103,20 @@ export default function ApplicantsTable({ applicants }) {
             onHeaderCell: () => ({
                 style: { textAlign: 'center' },
             }),
+            render: (_, applicant) => {
+                const altName = applicant.full_name.split(' ').map(n => n[0]).join('');
+                return (
+                    <div className="flex items-center gap-2">
+                        <Avatar
+                            src={applicant.avatar}
+                            sx={{ width: 40, height: 40, bgcolor: 'primary.main', fontSize: '1rem' }}
+                        >
+                            {altName}
+                        </Avatar>
+                        <span className="font-medium text-gray-900">{applicant.full_name}</span>
+                    </div>
+                );
+            }
         },
         {
             title: t('applicantList.table.email'),
@@ -153,11 +168,11 @@ export default function ApplicantsTable({ applicants }) {
                         </Button>
                     </DropdownMenuTrigger>
                     <DropdownMenuContent className="bg-white" align="center" side="left">
-                        <DropdownMenuItem onClick={() => {}}>
+                        <DropdownMenuItem onClick={() => { }}>
                             <Eye className="w-4 h-4 mr-2" />
                             {t('applicantList.table.seeApplication')}
                         </DropdownMenuItem>
-                        <DropdownMenuItem onClick={() => {}}>
+                        <DropdownMenuItem onClick={() => { }}>
                             <Edit className="w-4 h-4 mr-2" />
                             {t('applicantList.table.editStage')}
                         </DropdownMenuItem>
@@ -181,16 +196,16 @@ export default function ApplicantsTable({ applicants }) {
                         rowKey="id"
                         bordered
                         size="small"
-                        // pagination={{
-                        //     current: currentPage,
-                        //     pageSize: pageSize,
-                        //     total: pagination?.total ?? 0,
-                        //     onChange: (newPage, newPageSize) => {
-                        //         setCurrentPage(newPage);
-                        //         setPageSize(newPageSize);
-                        //     },
-                        // }}
-                        // scroll={{ y: '60vh', x: 'max-content' }}
+                        pagination={{
+                            current: currentPage,
+                            pageSize: pageSize,
+                            total: pagination?.total ?? 0,
+                            onChange: (newPage, newPageSize) => {
+                                setCurrentPage(newPage);
+                                setPageSize(newPageSize);
+                            },
+                        }}
+                        scroll={{ y: '60vh', x: 'max-content' }}
                         className="flex-1"
                     />
                 </div>
