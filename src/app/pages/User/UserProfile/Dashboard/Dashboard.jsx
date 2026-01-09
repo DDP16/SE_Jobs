@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
@@ -24,9 +24,9 @@ import {
     Phone as PhoneIcon
 } from '@mui/icons-material';
 import { ProfileSidebar, JobCard } from '../../../../components';
-import { mockRecentApplications, mockDashboardStats } from '../../../../../mocks/mockData';
 import { UserActivities } from './partials';
-import { useSelector } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
+import { getApplications, getSavedJobs } from '../../../../modules';
 
 // Helper function to get initials from name
 const getInitials = (name) => {
@@ -44,10 +44,73 @@ export default function ProfileDashboard() {
     const theme = useTheme();
     const { t } = useTranslation();
     const navigate = useNavigate();
+    const dispatch = useDispatch();
 
-    // Use mock data
-    const stats = mockDashboardStats;
-    const recentApplications = mockRecentApplications;
+    // Get data from Redux store
+    const applications = useSelector(state => state.applications?.applications ?? []);
+    const savedJobs = useSelector(state => state.savedJobs?.savedJobs ?? []);
+
+    // Fetch data on mount
+    useEffect(() => {
+        dispatch(getApplications());
+        dispatch(getSavedJobs());
+    }, [dispatch]);
+
+    // Calculate stats from real data
+    const stats = useMemo(() => ({
+        totalJobs: applications.length,
+        savedJobs: savedJobs.length,
+        invitations: 0, // TODO: Implement invitations when API is available
+        interviewed: applications.filter(app => app.status === 'Interview' || app.status === 'Interviewed').length,
+        unsuitable: applications.filter(app => app.status === 'Rejected' || app.status === 'Declined').length,
+        interviewedPercent: applications.length > 0 
+            ? Math.round((applications.filter(app => app.status === 'Interview' || app.status === 'Interviewed').length / applications.length) * 100)
+            : 0
+    }), [applications, savedJobs]);
+
+    // Map application data to job card format (similar to MyJobs)
+    const recentApplications = useMemo(() => {
+        if (!applications || applications.length === 0) return [];
+        
+        return applications.slice(0, 3).map(app => {
+            // Prefer API structure: app.job and app.company
+            const job = app.job || app.jobs || app;
+            if (!job) return null;
+            
+            const company = app.company || job.company || job.companies || {};
+
+            return {
+                id: job.id || app.job_id,
+                job_id: job.id || app.job_id,
+                title: job.title || '',
+                description: job.description || '',
+                salary_from: job.salary_from,
+                salary_to: job.salary_to,
+                salary_currency: job.salary_currency,
+                salary_text: job.salary_text,
+                created_at: job.created_at || app.created_at,
+                createdAt: job.created_at || app.created_at,
+                updated_at: job.updated_at || app.updated_at,
+                updatedAt: job.updated_at || app.updated_at,
+                company: {
+                    id: company.id,
+                    name: company.name,
+                    logo: company.logo,
+                    email: company.email,
+                    website_url: company.website_url
+                },
+                logo: company.logo,
+                company_id: job.company_id || company.id,
+                status: job.status,
+                dateApplied: new Date(app.created_at).toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' }),
+                applicationStatus: app.status || 'Pending',
+                statusColor: 
+                    app.status === 'Approved' || app.status === 'Interview' ? 'primary' :
+                    app.status === 'Rejected' || app.status === 'Declined' ? 'error' : 'warning',
+                ...job
+            };
+        }).filter(Boolean);
+    }, [applications]);
 
     return (
         <Box sx={{ bgcolor: 'background.default', minHeight: '100vh' }}>
@@ -203,6 +266,7 @@ export default function ProfileDashboard() {
                                         <JobCard
                                             job={application}
                                             variant="list"
+                                            showFeatured={false}
                                             showDescription={false}
                                             showApplyButton={false}
                                             showActions={false}
@@ -229,7 +293,7 @@ export default function ProfileDashboard() {
                                                 </Typography>
                                             </Box>
                                             <Chip
-                                                label={application.status}
+                                                label={application.applicationStatus}
                                                 color={application.statusColor}
                                                 variant="outlined"
                                                 size="small"

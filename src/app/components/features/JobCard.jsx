@@ -137,7 +137,8 @@ export default function JobCard({
     onClick,
     isBookmarked,
     showPopup = true,
-    variant = 'grid'
+    variant = 'grid',
+    showFeatured = true
 }) {
     const navigate = useNavigate();
     const theme = useTheme();
@@ -555,7 +556,7 @@ export default function JobCard({
                                         }}
                                     />
                                 )}
-                                {isJobFeatured && (
+                                {isJobFeatured && showFeatured && (
                                     <Chip
                                         label="New"
                                         size="small"
