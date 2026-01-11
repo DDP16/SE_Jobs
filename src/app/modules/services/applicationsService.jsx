@@ -183,7 +183,7 @@ const applicationsSlice = createSlice({
             })
             .addCase(getCompanyApplicationDetail.fulfilled, (state, action) => {
                 state.status = "succeeded";
-                state.application = action.payload || null;
+                state.application = action.payload.data || null;
             })
             .addCase(getCompanyApplicationDetail.rejected, (state, action) => {
                 state.status = "failed";
