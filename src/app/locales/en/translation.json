@@ -773,6 +773,10 @@
       "companies": "Companies",
       "viewAllCompanies": "View All Companies"
     },
+    "recommendJobSection": {
+        "title": "Jobs",
+        "subtitle":" Recommended for you"
+    },
     "ctaSection": {
       "postJob": {
         "title": "Post a Job",

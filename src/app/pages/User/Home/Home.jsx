@@ -1,6 +1,6 @@
 import React, { useCallback } from "react";
 import { useNavigate } from "react-router-dom";
-import { HeroSection, CompanySection, CategorySection, JobSection, CTASection, HotJobTopCVSection } from "../../../components";
+import { HeroSection, CompanySection, CategorySection, JobSection, CTASection, HotJobTopCVSection, RecommendJobSection } from "../../../components";
 import useSearch from "../../../hooks/useSearch";
 
 export default function Home() {
@@ -15,6 +15,7 @@ export default function Home() {
       <CategorySection />
       {/* <CompanySection /> */}
       {/* <CTASection /> */}
+      <RecommendJobSection />
     </>
   );
 }

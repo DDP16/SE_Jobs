@@ -35,3 +35,6 @@ export {
   updateCompanyApplication, getApplications, getApplicationDetail, createApplication, updateApplication 
 } from "./services/applicationsService";
 export { getStudents, getStudent } from "./services/studentService";
+export {
+  getRecommendedJobs, getRecommendedJobsWithTopCV, getRecommendedJobsWithCustomWeights
+} from "./services/recommendationService";
