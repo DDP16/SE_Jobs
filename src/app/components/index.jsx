@@ -43,6 +43,7 @@ export { default as HeroSection } from './sections/HeroSection';
 export { default as CompanySection } from './sections/CompanySection';
 export { default as CategorySection } from './sections/CategorySection';
 export { default as JobSection } from './sections/JobSection';
+export { default as RecommendJobSection } from './sections/RecommendJobSection';
 export { default as CTASection } from './sections/CTASection';
 export { default as JobListSection } from './sections/JobListSection';
 export { default as HotJobTopCVSection } from './sections/HotJobTopCVSection';
