@@ -20,13 +20,11 @@ import { useNavigate } from "react-router-dom";
 
 const navigation = [
   { name: "Dashboard", icon: Home, badge: null, path: "/" },
-  // { name: "Messages", icon: MessageSquare, badge: 1 },
   { name: "Company Profile", icon: Building2, badge: null, path: "/company" },
   { name: "Company Branches", icon: Building2, badge: null, path: "/branches" },
   { name: "All Applicants", icon: Users, badge: null, path: "/applicants" },
   { name: "Job Listing", icon: FileText, badge: null, path: "/job-listing" },
   // { name: "My Schedule", icon: Calendar, badge: null },
-  // { name: "Employee", icon: User, badge: null },
 ];
 
 export default function CompanySidebar() {

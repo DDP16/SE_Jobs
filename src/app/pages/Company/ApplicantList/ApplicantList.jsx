@@ -8,6 +8,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { getCompanyApplications } from "../../../modules/services/applicationsService";
 import { Badge, Button, DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "../../../components/ui";
 import { Avatar } from "@mui/material";
+import { ApplicationStatus } from "../../../lib/enums";
 
 const mockApplicants = [
   { id: 1, name: "Jake Gyll", score: 0.0, stage: "Interview", date: "13 July, 2021", role: "Designer", avatar: "👨" },
@@ -88,7 +89,7 @@ const mockApplicants = [
 const stages = ["Interview", "Shortlisted", "Rejected", "Hired", "Interviewed"];
 
 const STATUS_CONFIG = {
-  Applied: { bgColor: 'bg-blue-50', textColor: 'text-blue-700', borderColor: 'border-blue-200', },
+  Applied: { bgColor: 'bg-blue-600', textColor: 'text-white', borderColor: 'border-blue-200', },
   Viewed: { bgColor: 'bg-yellow-50', textColor: 'text-yellow-700', borderColor: 'border-yellow-200', },
   Shortlisted: { bgColor: 'bg-indigo-50', textColor: 'text-indigo-700', borderColor: 'border-indigo-200', },
   Interview_Scheduled: { bgColor: 'bg-cyan-50', textColor: 'text-cyan-700', borderColor: 'border-cyan-200', },
@@ -126,6 +127,10 @@ export default function ApplicantsTable() {
     }));
   }, [filteredApplicants]);
 
+  const handleSeeApplication = (applicant) => {
+    navigate(`/applicants/${applicant.id}`, { state: { status: applicant.status } });
+  }
+
   const getColumns = () => [
     {
       title: t('applicantList.table.fullName'),
@@ -137,7 +142,10 @@ export default function ApplicantsTable() {
       render: (_, applicant) => {
         const altName = applicant.full_name.split(' ').map(n => n[0]).join('');
         return (
-          <div className="flex items-center gap-2">
+          <div className={`flex items-center gap-2 ${applicant.status === ApplicationStatus.APPLIED ? 'pl-2' : ''}`}>
+            {applicant.status === ApplicationStatus.APPLIED && (
+              <span className="absolute left-0 h-2/3 w-1 rounded-r transition-colors bg-primary"/>
+            )}
             <Avatar
               src={applicant.avatar}
               sx={{ width: 40, height: 40, bgcolor: 'primary.main', fontSize: '1rem' }}
@@ -197,12 +205,11 @@ export default function ApplicantsTable() {
       title: t('actions'),
       key: 'action',
       align: 'center',
-      fixed: 'end',
       render: (_, applicant) => (
         <div className="flex items-center justify-center gap-2">
           <button
             className="px-4 py-1.5 bg-blue-600 text-white rounded-lg text-sm hover:bg-blue-700 cursor-pointer"
-            onClick={() => navigate(`/applicants/${applicant.id}`)}
+            onClick={() => handleSeeApplication(applicant)}
           >
             {t("applicantList.table.seeApplication")}
           </button>
@@ -213,7 +220,7 @@ export default function ApplicantsTable() {
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent className="bg-white" align="center" side="left">
-              <DropdownMenuItem onClick={() => { }}>
+              <DropdownMenuItem onClick={() => handleSeeApplication(applicant)}>
                 <Eye className="w-4 h-4 mr-2" />
                 {t('applicantList.table.seeApplication')}
               </DropdownMenuItem>
@@ -281,6 +288,9 @@ export default function ApplicantsTable() {
         ) : (
           <div className="relative flex flex-col">
             <Table
+              rowClassName={(record) => {
+                return record.status === 'Applied' ? 'bg-blue-50 font-semibold' : '';
+              }}
               columns={getColumns()}
               dataSource={applications || mockApplicants}
               rowKey="id"
