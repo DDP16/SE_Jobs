@@ -20,6 +20,7 @@ import cvsReducer from "./app/modules/services/cvService";
 import savedJobsReducer from "./app/modules/services/savedJobsService";
 import applicationsReducer from "./app/modules/services/applicationsService";
 import studentsReducer from "./app/modules/services/studentService";
+import recommendationReducer from "./app/modules/services/recommendationService";
 
 export default configureStore({
   reducer: {
@@ -44,5 +45,6 @@ export default configureStore({
     savedJobs: savedJobsReducer,
     applications: applicationsReducer,
     students: studentsReducer,
+    recommendations: recommendationReducer,
   },
 });

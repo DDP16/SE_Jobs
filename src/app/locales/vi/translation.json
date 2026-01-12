@@ -821,6 +821,10 @@
       "companies": "Công ty",
       "viewAllCompanies": "Xem tất cả công ty"
     },
+    "recommendJobSection": {
+        "title": "Việc làm",
+        "subtitle":"Đề xuất cho bạn"
+    },
     "ctaSection": {
       "postJob": {
         "title": "Đăng tin tuyển dụng",
