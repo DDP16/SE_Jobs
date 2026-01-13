@@ -1,13 +1,24 @@
 import { motion } from "framer-motion";
 import { Badge } from "../ui";
+import { useNavigate } from "react-router-dom";
+import { useCallback } from "react";
 
 export default function JobCardSecond({ job, index }) {
+    const navigate = useNavigate();
+
+    const handleCardClick = useCallback(() => {
+        if (job?.id) {
+            navigate(`/job?id=${job.id}`);
+        }
+    }, [job?.id, navigate]);
+
     return (
         <motion.div
             key={index}
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.3, delay: 0.7 + index * 0.05 }}
+            onClick={handleCardClick}
             className="bg-white rounded-2xl p-5 shadow-sm hover:shadow-lg hover:outline-primary-100 hover:outline-2 transition-shadow cursor-pointer"
         >
             <div className="flex items-start gap-4">
