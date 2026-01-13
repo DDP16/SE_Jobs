@@ -530,7 +530,7 @@
   },
   "jobListing": {
     "title": "Danh sách việc làm",
-    "description": "Tình trạng danh sách việc làm của bạn từ {{dateRange}}.",
+    "description": "Tình trạng danh sách việc làm của bạn.",
     "dateRange": "19 tháng 7 - 25 tháng 7",
     "dateRangeSelector": "Chọn khoảng thời gian",
     "dateRangeHint": "Chức năng chọn khoảng thời gian tùy chỉnh có thể được thêm vào đây",
@@ -560,6 +560,44 @@
       "confirm": "Đồng ý",
       "cancel": "Hủy"
     }
+  },
+  "companyBranches": {
+    "title": "Chi nhánh công ty",
+    "description": "Quản lý các địa điểm chi nhánh của công ty",
+    "searchPlaceholder": "Tìm kiếm chi nhánh...",
+    "addBranch": "Thêm chi nhánh",
+    "table": {
+      "branchName": "Tên chi nhánh",
+      "address": "Địa chỉ",
+      "country": "Quốc gia",
+      "province": "Tỉnh/Thành phố",
+      "ward": "Phường/Xã",
+      "createdAt": "Ngày tạo",
+      "actions": "Hành động"
+    },
+    "createDialog": {
+      "title": "Thêm chi nhánh mới",
+      "description": "Tạo địa điểm chi nhánh mới cho công ty",
+      "branchName": "Tên chi nhánh",
+      "branchNamePlaceholder": "VD: Văn phòng chính, Chi nhánh 1",
+      "address": "Địa chỉ",
+      "addressPlaceholder": "Địa chỉ đường phố",
+      "country": "Quốc gia",
+      "province": "Tỉnh/Thành phố",
+      "selectProvince": "Chọn tỉnh/thành phố",
+      "noProvincesAvailable": "Không có tỉnh/thành phố",
+      "ward": "Phường/Xã",
+      "selectWard": "Chọn phường/xã",
+      "noWardsAvailable": "Không có phường/xã",
+      "cancel": "Hủy",
+      "create": "Tạo chi nhánh"
+    },
+    "editDialog": {
+      "title": "Chỉnh sửa chi nhánh",
+      "description": "Cập nhật thông tin chi nhánh",
+      "update": "Cập nhật chi nhánh"
+    },
+    "deleteConfirm": "Bạn có chắc chắn muốn xóa chi nhánh này không?"
   },
   "applicantList": {
     "title": "Tổng số ứng viên",
@@ -744,6 +782,11 @@
       "saving": "Đang lưu...",
       "saveChanges": "Lưu thay đổi"
     }
+  },
+  "companyTopBar": {
+    "company": "Công ty",
+    "switchCompany": "Chuyển công ty",
+    "postAJob": "Đăng tuyển"
   },
   "companyProfile": {
     "loading": "Đang tải...",

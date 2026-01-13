@@ -530,7 +530,7 @@
   },
   "jobListing": {
     "title": "Job Listing",
-    "description": "Here is your jobs listing status from {{dateRange}}.",
+    "description": "Here is your jobs listing status.",
     "dateRange": "July 19 - July 25",
     "dateRangeSelector": "Date range selector",
     "dateRangeHint": "Custom date range functionality can be added here",
@@ -560,6 +560,44 @@
       "confirm": "Yes",
       "cancel": "Cancel"
     }
+  },
+  "companyBranches": {
+    "title": "Company Branches",
+    "description": "Manage your company branch locations",
+    "searchPlaceholder": "Search branches...",
+    "addBranch": "Add Branch",
+    "table": {
+      "branchName": "Branch Name",
+      "address": "Address",
+      "country": "Country",
+      "province": "Province",
+      "ward": "Ward",
+      "createdAt": "Created At",
+      "actions": "Actions"
+    },
+    "createDialog": {
+      "title": "Add New Branch",
+      "description": "Create a new branch location for your company",
+      "branchName": "Branch Name",
+      "branchNamePlaceholder": "e.g. Main Office, Branch 1",
+      "address": "Address",
+      "addressPlaceholder": "Street address",
+      "country": "Country",
+      "province": "Province",
+      "selectProvince": "Select Province",
+      "noProvincesAvailable": "No provinces available",
+      "ward": "Ward",
+      "selectWard": "Select Ward",
+      "noWardsAvailable": "No wards available",
+      "cancel": "Cancel",
+      "create": "Create Branch"
+    },
+    "editDialog": {
+      "title": "Edit Branch",
+      "description": "Update branch information",
+      "update": "Update Branch"
+    },
+    "deleteConfirm": "Are you sure you want to delete this branch?"
   },
   "applicantList": {
     "title": "Total Applicants",
@@ -744,6 +782,11 @@
       "saving": "Saving...",
       "saveChanges": "Save Changes"
     }
+  },
+  "companyTopBar": {
+    "company": "Company",
+    "switchCompany": "Switch Company",
+    "postAJob": "Post a job"
   },
   "companyProfile": {
     "loading": "Loading...",

@@ -2,12 +2,14 @@ import { Bell, Plus, ChevronDown } from "lucide-react";
 import { Button, DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "../ui";
 import { Link, useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
+import { useTranslation } from "react-i18next";
 import { logout } from "../../modules";
 import LangButtonGroup from "../common/LangButtonGroup";
 
 export default function TopBar() {
   const dispatch = useDispatch();
   const nav = useNavigate();
+  const { t } = useTranslation();
   const company = useSelector((state) => state.auth.user?.company);
   return (
     <header className="h-16 border-b border-l border-gray-300 bg-white z-10 flex items-center justify-between px-6">
@@ -28,19 +30,19 @@ export default function TopBar() {
               )}
             </div>
             <div className="text-left">
-              <p className="text-xs text-muted-foreground">Company</p>
-              <p className="text-sm font-semibold text-foreground">{company?.name || 'Company'}</p>
+              <p className="text-xs text-muted-foreground">{t('companyTopBar.company')}</p>
+              <p className="text-sm font-semibold text-foreground">{company?.name || t('companyTopBar.company')}</p>
             </div>
             <ChevronDown className="w-4 h-4 text-muted-foreground" />
           </button>
         </DropdownMenuTrigger>
         <DropdownMenuContent align="start" className="w-48">
-          <DropdownMenuItem>{company?.name || 'Company'}</DropdownMenuItem>
+          <DropdownMenuItem>{company?.name || t('companyTopBar.company')}</DropdownMenuItem>
           <DropdownMenuItem onClick={() => {
             dispatch(logout());
             // window.history.go(-(window.history.length - 1));
             nav("/signin", { replace: true });
-          }}>Switch Company</DropdownMenuItem>
+          }}>{t('companyTopBar.switchCompany')}</DropdownMenuItem>
         </DropdownMenuContent>
       </DropdownMenu>
 
@@ -57,7 +59,7 @@ export default function TopBar() {
           onClick={() => {nav('/post-job')}}
         >
           <Plus className="w-4 h-4" />
-          <div>Post a job</div>
+          <div>{t('companyTopBar.postAJob')}</div>
         </Button>
         <LangButtonGroup />
       </div>

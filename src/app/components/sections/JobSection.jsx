@@ -127,7 +127,10 @@ export default function JobSection() {
     // Memoize transformed jobs to avoid recreating on every render
     const transformedJobs = useMemo(() => {
         if (!latestJobs || !Array.isArray(latestJobs)) return [];
-        return latestJobs.map(transformJobData).filter(Boolean);
+        return latestJobs
+            .filter(job => job.status !== 'Closed') // Filter out closed jobs
+            .map(transformJobData)
+            .filter(Boolean);
     }, [latestJobs]);
 
     const handleJobAction = (action, job, meta) => {
