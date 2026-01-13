@@ -305,8 +305,8 @@ export const useProfileHandlers = ({
             const userData = {
                 userId: currentUser.user_id,
                 userData: {
-                    first_name: formData.fullName?.split(' ')[0] || '',
-                    last_name: formData.fullName?.split(' ').slice(1).join(' ') || '',
+                    first_name: formData.first_name || '',
+                    last_name: formData.last_name || '',
                     student_info: {
                         ...studentInfo,
                         phone_number: phoneNumber,

@@ -120,7 +120,11 @@
     "tip_2": "Nâng cấp hồ sơ của bạn lên 100% để thu hút nhà tuyển dụng hơn!",
     "view_download_cv": "Xem và Tải CV",
     "languages": "Ngoại ngữ",
-    "languages_empty": "Liệt kê các ngôn ngữ mà bạn biết"
+    "languages_empty": "Liệt kê các ngôn ngữ mà bạn biết",
+    "phone_placeholder": "Chưa cập nhật",
+    "dob_placeholder": "Chưa cập nhật",
+    "gender_placeholder": "Chưa cập nhật",
+    "location_placeholder": "Chưa cập nhật"
   },
   "setting": {
     "my_account": "Tài khoản của tôi",

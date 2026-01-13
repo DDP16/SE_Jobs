@@ -52,19 +52,19 @@ export default function ProfileHeader({ user, onEdit }) {
             </Box>
             <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
               <PhoneIcon sx={{ fontSize: 18, color: 'text.disabled' }} />
-              <Typography variant="body2" color="text.secondary">{user.phone}</Typography>
+              <Typography variant="body2" color="text.secondary">{user.phone || t("profile.phone_placeholder")}</Typography>
             </Box>
             <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
               <PersonIcon sx={{ fontSize: 18, color: 'text.disabled' }} />
-              <Typography variant="body2" color="text.secondary">{user.dateOfBirth}</Typography>
+              <Typography variant="body2" color="text.secondary">{user.dateOfBirth || t("profile.dob_placeholder")}</Typography>
             </Box>
             <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
               <PersonIcon sx={{ fontSize: 18, color: 'text.disabled' }} />
-              <Typography variant="body2" color="text.secondary">{mapGenderFromBackend(user.gender)}</Typography>
+              <Typography variant="body2" color="text.secondary">{mapGenderFromBackend(user.gender) || t("profile.gender_placeholder")}</Typography>
             </Box>
             <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
               <LocationOnIcon sx={{ fontSize: 18, color: 'text.disabled' }} />
-              <Typography variant="body2" color="text.secondary">{user.location}</Typography>
+              <Typography variant="body2" color="text.secondary">{user.location || t("profile.location_placeholder")}</Typography>
             </Box>
             {/* <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
               <LinkIcon sx={{ fontSize: 18, color: 'text.disabled' }} />

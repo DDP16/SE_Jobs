@@ -19,7 +19,7 @@ export const useProfileData = () => {
     const [user, setUser] = useState({
         name: '',
         email: '',
-        phone: '012345679899',
+        phone: '',
         dateOfBirth: '',
         gender: '',
         desiredPositions: [],
@@ -52,7 +52,7 @@ export const useProfileData = () => {
                 name: `${currentUser.last_name || ''} ${currentUser.first_name || ''}`.trim() || 'User',
                 email: currentUser.email || '',
                 location: studentInfo?.location || '',
-                phone: studentInfo?.phone_number || studentInfo?.phone || '012345678',
+                phone: studentInfo?.phone_number || studentInfo?.phone || '',
                 dateOfBirth: studentInfo?.date_of_birth || '',
                 gender: mapGenderFromBackend(studentInfo?.gender),
                 desiredPositions: Array.isArray(studentInfo?.desired_positions)

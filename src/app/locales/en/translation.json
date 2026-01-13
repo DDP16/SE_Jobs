@@ -120,7 +120,11 @@
     "tip_2": "Upgrade your profile to 100% to attract more employers!",
     "view_download_cv": "View and Download CV",
     "languages": "Languages",
-    "languages_empty": "List the languages you know"
+    "languages_empty": "List the languages you know",
+    "phone_placeholder": "Not updated",
+    "dob_placeholder": "Not updated",
+    "gender_placeholder": "Not updated",
+    "location_placeholder": "Not updated"
   },
   "setting": {
     "my_account": "My Account",
