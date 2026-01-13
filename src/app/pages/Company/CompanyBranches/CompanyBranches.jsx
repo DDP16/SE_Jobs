@@ -1,5 +1,6 @@
 import { use, useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
+import { useTranslation } from 'react-i18next';
 import { Plus, Search, Edit, Trash2, MapPin, ChevronDown } from 'lucide-react';
 import { Table, Spin } from 'antd';
 import { LoadingOutlined } from '@ant-design/icons';
@@ -28,6 +29,7 @@ import { getProvinces, getWards } from '../../../modules/services/addressService
 
 export default function CompanyBranches() {
   const dispatch = useDispatch();
+  const { t } = useTranslation();
   const [searchQuery, setSearchQuery] = useState('');
   const [currentPage, setCurrentPage] = useState(1);
   const [pageSize, setPageSize] = useState(10);
@@ -70,7 +72,7 @@ export default function CompanyBranches() {
 
   const columns = [
     {
-      title: 'Branch Name',
+      title: t('companyBranches.table.branchName'),
       dataIndex: 'name',
       key: 'name',
       render: (name) => (
@@ -81,36 +83,36 @@ export default function CompanyBranches() {
       ),
     },
     {
-      title: 'Address',
+      title: t('companyBranches.table.address'),
       dataIndex: 'address',
       key: 'address',
     },
     {
-      title: 'Country',
+      title: t('companyBranches.table.country'),
       dataIndex: 'country',
       key: 'country',
       render: (country, record) => country?.name || record.country_name || 'N/A',
     },
     {
-      title: 'Province',
+      title: t('companyBranches.table.province'),
       dataIndex: 'province',
       key: 'province',
       render: (province, record) => province?.name || record.province_name || 'N/A',
     },
     {
-      title: 'Ward',
+      title: t('companyBranches.table.ward'),
       dataIndex: 'ward',
       key: 'ward',
       render: (ward, record) => ward?.name || record.ward_name || 'N/A',
     },
     {
-      title: 'Created At',
+      title: t('companyBranches.table.createdAt'),
       dataIndex: 'created_at',
       key: 'created_at',
       render: (created_at) => created_at ? new Date(created_at).toLocaleDateString('en-GB') : 'N/A',
     },
     {
-      title: 'Actions',
+      title: t('companyBranches.table.actions'),
       key: 'action',
       align: 'center',
       fixed: 'right',
@@ -162,7 +164,7 @@ export default function CompanyBranches() {
   };
 
   const handleDeleteBranch = async (id) => {
-    if (window.confirm('Are you sure you want to delete this branch?')) {
+    if (window.confirm(t('companyBranches.deleteConfirm'))) {
       await dispatch(deleteCompanyBranch(id));
       dispatch(getCompanyBranches({ page: currentPage, limit: pageSize, companyId: companyId }));
     }
@@ -189,14 +191,14 @@ export default function CompanyBranches() {
     <div className="space-y-6 p-4 lg:p-6 2xl:p-8 flex flex-col">
       <div className="flex items-center justify-between">
         <div>
-          <h4 className="text-gray-900 mb-1 font-semibold">Company Branches</h4>
-          <p className="text-gray-600">Manage your company branch locations</p>
+          <h4 className="text-gray-900 mb-1 font-semibold">{t('companyBranches.title')}</h4>
+          <p className="text-gray-600">{t('companyBranches.description')}</p>
         </div>
         <div className='flex gap-4'>
           <div className="flex items-center gap-4 relative">
             <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
             <Input
-              placeholder="Search branches..."
+              placeholder={t('companyBranches.searchPlaceholder')}
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               className={`pl-10 focus:w-[25vw] transition-all ${searchQuery ? 'w-[25vw]' : ''}`}
@@ -207,7 +209,7 @@ export default function CompanyBranches() {
             className="bg-primary/90 hover:bg-primary text-white hover:scale-105 rounded-lg transition-all cursor-pointer"
           >
             <Plus className="w-4 h-4" />
-            Add Branch
+            {t('companyBranches.addBranch')}
           </Button>
         </div>
       </div>
@@ -242,26 +244,26 @@ export default function CompanyBranches() {
       <Dialog open={isCreateDialogOpen} onOpenChange={setIsCreateDialogOpen}>
         <DialogContent className="max-w-2xl">
           <DialogHeader>
-            <h4 className='font-semibold text-primary'>Add New Branch</h4>
+            <h4 className='font-semibold text-primary'>{t('companyBranches.createDialog.title')}</h4>
             <DialogDescription>
-              Create a new branch location for your company
+              {t('companyBranches.createDialog.description')}
             </DialogDescription>
           </DialogHeader>
           <div className="space-y-4">
             <div className="space-y-2">
-              <Label htmlFor="name">Branch Name *</Label>
+              <Label htmlFor="name">{t('companyBranches.createDialog.branchName')} *</Label>
               <Input
                 id="name"
-                placeholder="e.g. Main Office, Branch 1"
+                placeholder={t('companyBranches.createDialog.branchNamePlaceholder')}
                 value={formData.name}
                 onChange={(e) => setFormData({ ...formData, name: e.target.value })}
               />
             </div>
             <div className="space-y-2">
-              <Label htmlFor="address">Address *</Label>
+              <Label htmlFor="address">{t('companyBranches.createDialog.address')} *</Label>
               <Input
                 id="address"
-                placeholder="Street address"
+                placeholder={t('companyBranches.createDialog.addressPlaceholder')}
                 value={formData.address}
                 onChange={(e) => setFormData({ ...formData, address: e.target.value })}
               />
@@ -269,7 +271,7 @@ export default function CompanyBranches() {
             <div className="grid grid-cols-3 gap-4">
               {/* Country is hardcoded to Vietnam (id = 1) */}
               <div className="space-y-2">
-                <Label htmlFor="edit-country_id">Country</Label>
+                <Label htmlFor="edit-country_id">{t('companyBranches.createDialog.country')}</Label>
                 <Input
                   id="edit-country_id"
                   value="Việt Nam"
@@ -278,7 +280,7 @@ export default function CompanyBranches() {
                 />
               </div>
               <div className="space-y-2">
-                <Label htmlFor="province_id">Province *</Label>
+                <Label htmlFor="province_id">{t('companyBranches.createDialog.province')} *</Label>
                 <DropdownMenu>
                   <DropdownMenuTrigger asChild>
                     <Button
@@ -308,7 +310,7 @@ export default function CompanyBranches() {
                 </DropdownMenu>
               </div>
               <div className="space-y-2">
-                <Label htmlFor="ward_id">Ward</Label>
+                <Label htmlFor="ward_id">{t('companyBranches.createDialog.ward')}</Label>
                 <DropdownMenu>
                   <DropdownMenuTrigger asChild>
                     <Button
@@ -316,7 +318,7 @@ export default function CompanyBranches() {
                       className="justify-between bg-white border-border hover:bg-white rounded-lg w-full"
                       disabled={!formData.province_id}
                     >
-                      {(Array.isArray(wards) && wards.find(w => w.id === formData.ward_id)?.name) || 'Select Ward'}
+                      {(Array.isArray(wards) && wards.find(w => w.id === formData.ward_id)?.name) || t('companyBranches.createDialog.selectWard')}
                       <ChevronDown className="ml-2 h-4 w-4 opacity-50" />
                     </Button>
                   </DropdownMenuTrigger>
@@ -333,7 +335,7 @@ export default function CompanyBranches() {
                         {ward.name}
                       </DropdownMenuItem>
                     )) : (
-                      <DropdownMenuItem disabled>No wards available</DropdownMenuItem>
+                      <DropdownMenuItem disabled>{t('companyBranches.createDialog.noWardsAvailable')}</DropdownMenuItem>
                     )}
                   </DropdownMenuContent>
                 </DropdownMenu>
@@ -342,14 +344,14 @@ export default function CompanyBranches() {
           </div>
           <DialogFooter>
             <Button className="rounded-lg cursor-pointer" variant="outline" onClick={() => setIsCreateDialogOpen(false)}>
-              Cancel
+              {t('companyBranches.createDialog.cancel')}
             </Button>
             <Button
               className="bg-primary/90 hover:bg-primary text-white rounded-lg cursor-pointer"
               onClick={handleCreateBranch}
               disabled={!formData.name || !formData.address}
             >
-              Create Branch
+              {t('companyBranches.createDialog.create')}
             </Button>
           </DialogFooter>
         </DialogContent>
@@ -359,26 +361,26 @@ export default function CompanyBranches() {
       <Dialog open={isEditDialogOpen} onOpenChange={setIsEditDialogOpen}>
         <DialogContent className="max-w-2xl">
           <DialogHeader>
-            <DialogTitle>Edit Branch</DialogTitle>
+            <DialogTitle>{t('companyBranches.editDialog.title')}</DialogTitle>
             <DialogDescription>
-              Update branch information
+              {t('companyBranches.editDialog.description')}
             </DialogDescription>
           </DialogHeader>
           <div className="space-y-4">
             <div className="space-y-2">
-              <Label htmlFor="edit-name">Branch Name *</Label>
+              <Label htmlFor="edit-name">{t('companyBranches.createDialog.branchName')} *</Label>
               <Input
                 id="edit-name"
-                placeholder="e.g. Main Office, Branch 1"
+                placeholder={t('companyBranches.createDialog.branchNamePlaceholder')}
                 value={formData.name}
                 onChange={(e) => setFormData({ ...formData, name: e.target.value })}
               />
             </div>
             <div className="space-y-2">
-              <Label htmlFor="edit-address">Address *</Label>
+              <Label htmlFor="edit-address">{t('companyBranches.createDialog.address')} *</Label>
               <Input
                 id="edit-address"
-                placeholder="Street address"
+                placeholder={t('companyBranches.createDialog.addressPlaceholder')}
                 value={formData.address}
                 onChange={(e) => setFormData({ ...formData, address: e.target.value })}
               />
@@ -386,7 +388,7 @@ export default function CompanyBranches() {
             <div className="grid grid-cols-3 gap-4">
               {/* Country is hardcoded to Vietnam (id = 1) */}
               <div className="space-y-2">
-                <Label htmlFor="country_id">Country</Label>
+                <Label htmlFor="country_id">{t('companyBranches.createDialog.country')}</Label>
                 <Input
                   id="country_id"
                   value="Việt Nam"
@@ -395,14 +397,14 @@ export default function CompanyBranches() {
                 />
               </div>
               <div className="space-y-2">
-                <Label htmlFor="edit-province_id">Province *</Label>
+                <Label htmlFor="edit-province_id">{t('companyBranches.createDialog.province')} *</Label>
                 <DropdownMenu>
                   <DropdownMenuTrigger asChild>
                     <Button
                       variant="outline"
                       className="justify-between bg-white border-border hover:bg-white rounded-lg w-full"
                     >
-                      {(Array.isArray(provinces) && provinces.find(p => p.id === formData.province_id)?.name) || 'Select Province'}
+                      {(Array.isArray(provinces) && provinces.find(p => p.id === formData.province_id)?.name) || t('companyBranches.createDialog.selectProvince')}
                       <ChevronDown className="ml-2 h-4 w-4 opacity-50" />
                     </Button>
                   </DropdownMenuTrigger>
@@ -419,13 +421,13 @@ export default function CompanyBranches() {
                         {province.name}
                       </DropdownMenuItem>
                     )) : (
-                      <DropdownMenuItem disabled>No provinces available</DropdownMenuItem>
+                      <DropdownMenuItem disabled>{t('companyBranches.createDialog.noProvincesAvailable')}</DropdownMenuItem>
                     )}
                   </DropdownMenuContent>
                 </DropdownMenu>
               </div>
               <div className="space-y-2">
-                <Label htmlFor="edit-ward_id">Ward</Label>
+                <Label htmlFor="edit-ward_id">{t('companyBranches.createDialog.ward')}</Label>
                 <DropdownMenu>
                   <DropdownMenuTrigger asChild>
                     <Button
@@ -433,7 +435,7 @@ export default function CompanyBranches() {
                       className="justify-between bg-white border-border hover:bg-white rounded-lg w-full"
                       disabled={!formData.province_id}
                     >
-                      {(Array.isArray(wards) && wards.find(w => w.id === formData.ward_id)?.name) || 'Select Ward'}
+                      {(Array.isArray(wards) && wards.find(w => w.id === formData.ward_id)?.name) || t('companyBranches.createDialog.selectWard')}
                       <ChevronDown className="ml-2 h-4 w-4 opacity-50" />
                     </Button>
                   </DropdownMenuTrigger>
@@ -450,7 +452,7 @@ export default function CompanyBranches() {
                         {ward.name}
                       </DropdownMenuItem>
                     )) : (
-                      <DropdownMenuItem disabled>No wards available</DropdownMenuItem>
+                      <DropdownMenuItem disabled>{t('companyBranches.createDialog.noWardsAvailable')}</DropdownMenuItem>
                     )}
                   </DropdownMenuContent>
                 </DropdownMenu>
@@ -459,14 +461,14 @@ export default function CompanyBranches() {
           </div>
           <DialogFooter>
             <Button className="rounded-lg cursor-pointer" variant="outline" onClick={() => setIsEditDialogOpen(false)}>
-              Cancel
+              {t('companyBranches.createDialog.cancel')}
             </Button>
             <Button
               className="bg-primary/90 hover:bg-primary text-white rounded-lg cursor-pointer"
               onClick={handleUpdateBranch}
               disabled={!formData.name || !formData.address}
             >
-              Update Branch
+              {t('companyBranches.editDialog.update')}
             </Button>
           </DialogFooter>
         </DialogContent>

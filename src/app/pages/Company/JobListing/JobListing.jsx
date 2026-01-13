@@ -24,10 +24,10 @@ export default function JobListing() {
                 <div>
                     <h4 className="font-semibold mb-1">{t('jobListing.title')}</h4>
                     <p className="text-gray-600">
-                        {t('jobListing.description', { dateRange })}
+                        {t('jobListing.description')}
                     </p>
                 </div>
-                <Popover>
+                {/* <Popover>
                     <PopoverTrigger asChild>
                         <Button variant="outline" className="gap-2">
                             <Calendar className="w-4 h-4" />
@@ -38,7 +38,7 @@ export default function JobListing() {
                         <p className="text-sm text-gray-600">{t('jobListing.dateRangeSelector')}</p>
                         <p className="text-xs text-gray-500 mt-2">{t('jobListing.dateRangeHint')}</p>
                     </PopoverContent>
-                </Popover>
+                </Popover> */}
             </div>
 
             <div className="bg-white rounded-lg border border-gray-200">

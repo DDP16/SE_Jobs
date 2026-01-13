@@ -30,6 +30,9 @@ export default function JobListSection({ onJobSelect, selectedJob, onClearFilter
     const savedJobs = useSelector(state => state.savedJobs.savedJobs);
     const currentUser = useSelector(state => state.auth.user);
 
+    // Filter out closed jobs
+    const filteredJobs = jobsList.filter(job => job.status !== 'Closed');
+
     const handleJobAction = (action, job, meta) => {
         switch (action) {
             case 'bookmark':
@@ -97,9 +100,9 @@ export default function JobListSection({ onJobSelect, selectedJob, onClearFilter
                         <div className="flex items-center justify-center">
                             <Spin indicator={<LoadingOutlined spin />} size="large" />
                         </div>
-                    ) : (jobsList.length > 0 ? (
+                    ) : (filteredJobs.length > 0 ? (
                         <div className={`grid grid-cols-1 ${selectedJob ? '' : 'md:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4'} gap-4`}>
-                            {jobsList.map((job) => {
+                            {filteredJobs.map((job) => {
                                 const keyId = job.id ?? job.job_id ?? job.jobId ?? job._id;
                                 const isSelected = selectedJob && ((selectedJob?.id ?? selectedJob?.job_id ?? selectedJob?.jobId ?? selectedJob?._id) === keyId);
                                 const isBookmarked = savedJobs.some(savedJob =>
