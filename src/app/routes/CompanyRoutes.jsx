@@ -49,8 +49,6 @@ export default function CompanyRoutes() {
                 <Route path="company" element={<CompanyProfile />} />
                 <Route path="applicants/:id" element={<ApplicantDetails />} />
                 <Route path="applicants" element={<ApplicantList />} />
-                {/* <Route path="applicants/:id" element={<ComingSoon />} />
-                <Route path="applicants" element={<ComingSoon />} /> */}
                 <Route path="settings" element={<CompanySetting />} />
                 <Route path="post-job" element={<PostJob />} />
                 <Route path="edit-job/:jobId" element={<EditJob />} />

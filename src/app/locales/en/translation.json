@@ -255,7 +255,8 @@
     "tech_stack": {
       "title": "Tech Stack",
       "description": "Learn about the technology and tools that {{companyName}} uses.",
-      "view_all": "View tech stack"
+      "view_all": "View tech stack",
+      "no_tech_stack": "No tech stack listed."
     },
     "office_location": {
       "title": "Office Location",
@@ -597,13 +598,55 @@
     "moreAction": "More Action",
     "appliedJobs": "Applied Jobs",
     "stage": "Stage",
-    "scheduleInterview": "Schedule Interview",
     "contact": "Contact",
     "email": "Email",
     "phone": "Phone",
-    "instagram": "Instagram",
-    "twitter": "Twitter",
-    "website": "Website",
+    "failedToLoad": "Failed to load applicant details.",
+    "failedToLoadUser": "Failed to load user information.",
+    "stageUpdated": "Stage updated successfully.",
+    "stageUpdatedDesc": "The hiring stage has been updated.",
+    "stageUpdateFailed": "Failed to update stage.",
+    "button": {
+      "Interview_Scheduled": "Schedule Interview",
+      "updateStage": "Update Stage",
+      "Shortlisted": "Shortlist Candidate",
+      "hire": "Hire",
+      "reject": "Reject",
+      "cancel": "Cancel",
+      "save": "Save",
+      "confirm": "Confirm"
+    },
+    "modal": {
+      "updateStageTitle": "Update Hiring Stage",
+      "selectStage": "Select Stage",
+      "confirmTitle": "Confirm Action",
+      "confirmMessage": "Are you sure you want to update this stage?",
+      "scheduleInterview": {
+        "title": "Schedule Interview",
+        "selectDateTime": "Select date and time for the interview.",
+        "enterLocation": "Enter interview location",
+        "dateTimePlaceholder": "Select date & time",
+        "locationPlaceholder": "Enter location or video call link"
+      },
+      "offeredSalary": {
+        "title": "Offered Salary",
+        "enterSalary": "Enter the offered salary for the candidate.",
+        "salaryPlaceholder": "Enter offered salary"
+      }
+    },
+    "stages": {
+      "Applied": "Applied",
+      "Viewed": "Viewed",
+      "Shortlisted": "Shortlisted",
+      "Interview": "Interview",
+      "Interview_Scheduled": "Interview Scheduled",
+      "Offered": "Offered",
+      "Declined": "Declined",
+      "Hired": "Hired",
+      "Rejected": "Rejected",
+      "Cancelled": "Cancelled",
+      "Interviewed": "Interviewed"
+    },
     "tabs": {
       "profile": "Applicant Profile",
       "resume": "Resume",
@@ -629,15 +672,20 @@
     "resume": {
       "title": "Resume",
       "description": "View and download applicant's resume",
-      "downloadResume": "Download Resume"
+      "downloadResume": "Download Resume",
+      "noResumeDesc": "The applicant has not uploaded a resume."
     },
     "hiringProgress": {
       "title": "Hiring Progress",
       "description": "Track the candidate's progress through the hiring pipeline",
+      "applicationSubmit": "Application Submit",
       "applicationSubmitted": "Application Submitted",
+      "resumeReview": "Resume Review",
       "resumeReviewed": "Resume Reviewed",
       "interviewStage": "Interview Stage",
-      "finalDecision": "Final Decision"
+      "interviewCompleted": "Interview Completed",
+      "finalDecision": "Final Decision",
+      "finalDecided": "Final Decision Made"
     },
     "interviewSchedule": {
       "title": "Interview Schedule",

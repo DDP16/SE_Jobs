@@ -255,7 +255,8 @@
     "tech_stack": {
       "title": "Công nghệ sử dụng",
       "description": "Các công nghệ mà {{companyName}} sử dụng trong các dự án của họ",
-      "view_all": "Xem tất cả công nghệ"
+      "view_all": "Xem tất cả công nghệ",
+      "no_tech_stack": "Không có công nghệ nào được liệt kê."
     },
     "office_location": {
       "title": "Vị trí văn phòng",
@@ -597,16 +598,58 @@
     "moreAction": "Thêm hành động",
     "appliedJobs": "Việc làm đã ứng tuyển",
     "stage": "Giai đoạn",
-    "scheduleInterview": "Lên lịch phỏng vấn",
     "contact": "Liên hệ",
     "email": "Email",
     "phone": "Điện thoại",
-    "instagram": "Instagram",
-    "twitter": "Twitter",
-    "website": "Website",
+    "failedToLoad": "Không thể tải chi tiết ứng viên.",
+    "failedToLoadUser": "Không thể tải thông tin người dùng.",
+    "stageUpdated": "Giai đoạn tuyển dụng đã được cập nhật.",
+    "stageUpdateFailed": "Cập nhật giai đoạn tuyển dụng thất bại.",
+    "stageUpdatedDesc": "Giai đoạn tuyển dụng của ứng viên đã được cập nhật thành công.",
+    "button": {
+      "Interview_Scheduled": "Lên lịch phỏng vấn",
+      "updateStage": "Cập nhật giai đoạn",
+      "Shortlisted": "Duyệt ứng viên",
+      "hire": "Tuyển dụng",
+      "reject": "Từ chối",
+      "cancel": "Hủy",
+      "save": "Lưu",
+      "confirm": "Xác nhận"
+    },
+    "modal": {
+      "updateStageTitle": "Cập nhật giai đoạn tuyển dụng",
+      "selectStage": "Chọn giai đoạn",
+      "confirmTitle": "Xác nhận hành động",
+      "confirmMessage": "Bạn có chắc chắn muốn cập nhật giai đoạn này không?",
+      "scheduleInterview": {
+        "title": "Lên lịch phỏng vấn",
+        "selectDateTime": "Chọn ngày và giờ phỏng vấn cho ứng viên.",
+        "enterLocation": "Nhập địa điểm phỏng vấn",
+        "dateTimePlaceholder": "Chọn ngày và giờ",
+        "locationPlaceholder": "Nhập địa điểm hoặc liên kết video call"
+      },
+      "offeredSalary": {
+        "title": "Mức lương đề nghị",
+        "enterSalary": "Nhập mức lương đề nghị cho ứng viên.",
+        "salaryPlaceholder": "Nhập mức lương"
+      }
+    },
+    "stages": {
+      "Applied": "Đã ứng tuyển",
+      "Viewed": "Đã xem",
+      "Shortlisted": "Đã lọc",
+      "Interview": "Phỏng vấn",
+      "Interview_Scheduled": "Đã lên lịch phỏng vấn",
+      "Offered": "Đã đề nghị",
+      "Declined": "Đã từ chối",
+      "Hired": "Đã tuyển",
+      "Rejected": "Đã từ chối",
+      "Cancelled": "Đã hủy",
+      "Interviewed": "Đã phỏng vấn"
+    },
     "tabs": {
       "profile": "Hồ sơ ứng viên",
-      "resume": "CV",
+      "resume": "Sơ yếu lý lịch",
       "hiring": "Tiến trình tuyển dụng",
       "interview": "Lịch phỏng vấn"
     },
@@ -627,17 +670,22 @@
       "skillSet": "Kỹ năng"
     },
     "resume": {
-      "title": "CV",
+      "title": "Sơ yếu lý lịch",
       "description": "Xem và tải xuống CV của ứng viên",
-      "downloadResume": "Tải xuống CV"
+      "downloadResume": "Tải xuống CV",
+      "noResumeDesc": "Ứng viên chưa tải lên CV nào."
     },
     "hiringProgress": {
       "title": "Tiến trình tuyển dụng",
       "description": "Theo dõi tiến trình của ứng viên qua quy trình tuyển dụng",
+      "applicationSubmit": "Nộp đơn",
       "applicationSubmitted": "Đã nộp đơn",
-      "resumeReviewed": "Đã xem xét CV",
+      "resumeReview": "Xem xét hồ sơ",
+      "resumeReviewed": "Đã xem xét hồ sơ",
       "interviewStage": "Giai đoạn phỏng vấn",
-      "finalDecision": "Quyết định cuối cùng"
+      "interviewCompleted": "Đã hoàn thành phỏng vấn",
+      "finalDecision": "Quyết định cuối cùng",
+      "finalDecided": "Đã quyết định cuối cùng"
     },
     "interviewSchedule": {
       "title": "Lịch phỏng vấn",

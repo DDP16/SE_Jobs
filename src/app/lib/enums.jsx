@@ -1,3 +1,5 @@
+import { Facebook, Instagram, Linkedin, Mail, X, Youtube } from "lucide-react";
+
 // Layout types for pages and components
 export const layoutType = Object.freeze({
   full: 'full',
@@ -77,6 +79,15 @@ export const infoApplyStatus = Object.freeze({
   LACK: "Lack",
   COMPLETE: "Complete"
 });
+
+export const SOCIAL_ICONS = {
+  twitter: { icon: X, color: "text-sky-500" },
+  facebook: { icon: Facebook, color: "text-blue-600" },
+  linkedin: { icon: Linkedin, color: "text-blue-700" },
+  youtube: { icon: Youtube, color: "text-red-500" },
+  mail: { icon: Mail, color: "text-red-500" },
+  instagram: { icon: Instagram, color: "text-pink-500" },
+};
 
 // Helper functions to get all values
 export const getRoles = () => Object.values(Role);

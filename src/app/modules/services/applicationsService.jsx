@@ -58,10 +58,10 @@ export const getCompanyApplicationDetail = createAsyncThunk(
 
 export const updateCompanyApplication = createAsyncThunk(
     "applications/updateCompanyApplication",
-    async ({ id, status, feedback }, { rejectWithValue }) => {
+    async ({ id, data = {} }, { rejectWithValue }) => {
         try {
             const ApplicationData = Object.fromEntries(
-                Object.entries({ status, feedback }).filter(
+                Object.entries(data).filter(
                     ([, value]) => value !== undefined && value !== null
                 )
             )
@@ -183,7 +183,7 @@ const applicationsSlice = createSlice({
             })
             .addCase(getCompanyApplicationDetail.fulfilled, (state, action) => {
                 state.status = "succeeded";
-                state.application = action.payload || null;
+                state.application = action.payload.data || null;
             })
             .addCase(getCompanyApplicationDetail.rejected, (state, action) => {
                 state.status = "failed";
@@ -199,6 +199,7 @@ const applicationsSlice = createSlice({
                 if (index !== -1) {
                     state.applications[index] = action.payload.data;
                 }
+                state.application = action.payload.data;
             })
             .addCase(updateCompanyApplication.rejected, (state, action) => {
                 state.status = "failed";
