@@ -1,5 +1,4 @@
 import { motion } from "framer-motion";
-import { Check } from "lucide-react";
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
 
@@ -42,104 +41,80 @@ export default function NotificationsTab() {
         <div className="lg:col-span-8 space-y-6">
           <motion.div
             whileHover={{ backgroundColor: "rgba(37, 99, 235, 0.02)" }}
-            className="rounded-lg cursor-pointer transition-colors"
-            onClick={() => handleNotificationChange("applications")}
+            className="rounded-lg transition-colors p-4 flex items-center justify-between"
           >
-            <div className="flex items-center gap-3">
-              <div className="pt-0.5">
-                <motion.div
-                  whileTap={{ scale: 0.9 }}
-                  className={`w-5 h-5 rounded flex items-center justify-center transition-all ${notifications.applications
-                    ? "bg-blue-600"
-                    : "border-2 border-gray-300 bg-white"
-                    }`}
-                >
-                  {notifications.applications && (
-                    <motion.div
-                      initial={{ scale: 0, opacity: 0 }}
-                      animate={{ scale: 1, opacity: 1 }}
-                      transition={{ type: "spring", stiffness: 500 }}
-                    >
-                      <Check className="w-3 h-3 text-white" />
-                    </motion.div>
-                  )}
-                </motion.div>
-              </div>
-              <div>
-                <div className="body-normal font-medium text-gray-900 mb-1">{t("setting.applications")}</div>
-                <div className="text-gray-500">
-                  {t("setting.applications_description")}
-                </div>
+            <div className="flex-1">
+              <div className="body-normal font-medium text-gray-900 mb-1">{t("setting.applications")}</div>
+              <div className="text-gray-500">
+                {t("setting.applications_description")}
               </div>
             </div>
+            <motion.button
+              whileTap={{ scale: 0.95 }}
+              onClick={() => handleNotificationChange("applications")}
+              className={`relative inline-flex h-7 w-12 items-center rounded-full transition-colors flex-shrink-0 ${
+                notifications.applications ? "bg-blue-600" : "bg-gray-300"
+              }`}
+            >
+              <motion.div
+                initial={false}
+                animate={{ x: notifications.applications ? 22 : 3 }}
+                transition={{ type: "spring", stiffness: 500, damping: 30 }}
+                className="h-5 w-5 rounded-full bg-white"
+              />
+            </motion.button>
           </motion.div>
 
           <motion.div
             whileHover={{ backgroundColor: "rgba(37, 99, 235, 0.02)" }}
-            className="rounded-lg cursor-pointer transition-colors"
-            onClick={() => handleNotificationChange("jobs")}
+            className="rounded-lg transition-colors p-4 flex items-center justify-between"
           >
-            <div className="flex items-center gap-3">
-              <div className="pt-0.5">
-                <motion.div
-                  whileTap={{ scale: 0.9 }}
-                  className={`w-5 h-5 rounded flex items-center justify-center transition-all ${notifications.jobs
-                    ? "bg-blue-600"
-                    : "border-2 border-gray-300 bg-white"
-                    }`}
-                >
-                  {notifications.jobs && (
-                    <motion.div
-                      initial={{ scale: 0, opacity: 0 }}
-                      animate={{ scale: 1, opacity: 1 }}
-                      transition={{ type: "spring", stiffness: 500 }}
-                    >
-                      <Check className="w-3 h-3 text-white" />
-                    </motion.div>
-                  )}
-                </motion.div>
-              </div>
-              <div>
-                <div className="body-normal font-medium text-gray-900 mb-1">{t("setting.jobs")}</div>
-                <div className="text-gray-500">
-                  {t("setting.jobs_description")}
-                </div>
+            <div className="flex-1">
+              <div className="body-normal font-medium text-gray-900 mb-1">{t("setting.jobs")}</div>
+              <div className="text-gray-500">
+                {t("setting.jobs_description")}
               </div>
             </div>
+            <motion.button
+              whileTap={{ scale: 0.95 }}
+              onClick={() => handleNotificationChange("jobs")}
+              className={`relative inline-flex h-7 w-12 items-center rounded-full transition-colors flex-shrink-0 ${
+                notifications.jobs ? "bg-blue-600" : "bg-gray-300"
+              }`}
+            >
+              <motion.div
+                initial={false}
+                animate={{ x: notifications.jobs ? 22 : 3 }}
+                transition={{ type: "spring", stiffness: 500, damping: 30 }}
+                className="h-5 w-5 rounded-full bg-white"
+              />
+            </motion.button>
           </motion.div>
 
           <motion.div
             whileHover={{ backgroundColor: "rgba(37, 99, 235, 0.02)" }}
-            className="rounded-lg cursor-pointer transition-colors"
-            onClick={() => handleNotificationChange("recommendations")}
+            className="rounded-lg transition-colors p-4 flex items-center justify-between"
           >
-            <div className="flex items-center gap-3">
-              <div className="pt-0.5">
-                <motion.div
-                  whileTap={{ scale: 0.9 }}
-                  className={`w-5 h-5 rounded flex items-center justify-center transition-all ${notifications.recommendations
-                    ? "bg-blue-600"
-                    : "border-2 border-gray-300 bg-white"
-                    }`}
-                >
-                  {notifications.recommendations && (
-                    <motion.div
-                      initial={{ scale: 0, opacity: 0 }}
-                      animate={{ scale: 1, opacity: 1 }}
-                      transition={{ type: "spring", stiffness: 500 }}
-                    >
-                      <Check className="w-3 h-3 text-white" />
-                    </motion.div>
-                  )}
-                </motion.div>
-              </div>
-              <div>
-                <div className="body-normal font-medium text-gray-900 mb-1">{t("setting.recommendations")}</div>
-                <div className="text-gray-500">
-                  {t("setting.recommendations_description")}
-                </div>
+            <div className="flex-1">
+              <div className="body-normal font-medium text-gray-900 mb-1">{t("setting.recommendations")}</div>
+              <div className="text-gray-500">
+                {t("setting.recommendations_description")}
               </div>
             </div>
+            <motion.button
+              whileTap={{ scale: 0.95 }}
+              onClick={() => handleNotificationChange("recommendations")}
+              className={`relative inline-flex h-7 w-12 items-center rounded-full transition-colors flex-shrink-0 ${
+                notifications.recommendations ? "bg-blue-600" : "bg-gray-300"
+              }`}
+            >
+              <motion.div
+                initial={false}
+                animate={{ x: notifications.recommendations ? 22 : 3 }}
+                transition={{ type: "spring", stiffness: 500, damping: 30 }}
+                className="h-5 w-5 rounded-full bg-white"
+              />
+            </motion.button>
           </motion.div>
 
           <motion.button
