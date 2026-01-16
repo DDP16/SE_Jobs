@@ -69,102 +69,99 @@ export default function CategorySection({ onCategoryClick }) {
     };
 
     return (
-        <div className="py-6 md:py-10 bg-gray-50">
-            <div className="container mx-auto px-4 sm:px-6 md:px-8 max-w-7xl">
-                {/* Header */}
-                <div className="flex justify-between items-center mb-6">
-                    <h3 className="text-3xl md:text-4xl font-bold text-gray-900">
-                        {t("homeSections.categorySection.title")} <span className="text-blue-600">{t("homeSections.categorySection.category")}</span>
-                    </h3>
-                    <button 
-                        className="hidden md:flex items-center gap-2 text-blue-600 hover:text-blue-700 font-medium transition-colors"
-                        onClick={() => navigate('/jobs')}
-                    >
-                        {t("homeSections.categorySection.showAllJobs")}
-                        <ArrowForward className="w-5 h-5" />
-                    </button>
-                </div>
-
-                <Box
-                    sx={{
-                        display: 'grid',
-                        gridTemplateColumns: {
-                            xs: '1fr',
-                            sm: 'repeat(2, 1fr)',
-                            md: 'repeat(4, 1fr)'
-                        },
-                        gap: 2
-                    }}
+        <div className="container mx-auto px-4 sm:px-6 md:px-8 max-w-7xl space-y-6">
+            {/* Header */}
+            <div className="flex justify-between items-center">
+                <h3 className="text-3xl md:text-4xl font-bold text-gray-900">
+                    {t("homeSections.categorySection.title")} <span className="text-blue-600">{t("homeSections.categorySection.category")}</span>
+                </h3>
+                <button
+                    className="hidden md:flex items-center gap-2 text-blue-600 hover:text-blue-700 font-medium transition-colors"
+                    onClick={() => navigate('/jobs')}
                 >
-                    {categories.map((category) => (
-                        <Card
-                            key={category.id || category.name}
+                    {t("homeSections.categorySection.showAllJobs")}
+                    <ArrowForward className="w-5 h-5" />
+                </button>
+            </div>
+
+            <Box
+                sx={{
+                    display: 'grid',
+                    gridTemplateColumns: {
+                        xs: '1fr',
+                        sm: 'repeat(2, 1fr)',
+                        md: 'repeat(4, 1fr)'
+                    },
+                    gap: 2
+                }}
+            >
+                {categories.map((category) => (
+                    <Card
+                        key={category.id || category.name}
+                        sx={{
+                            height: '100%',
+                            cursor: 'pointer',
+                            borderRadius: '12px',
+                            boxShadow: '0 1px 3px rgba(0, 0, 0, 0.1)',
+                            transition: 'all 0.2s ease-in-out',
+                            backgroundColor: 'white',
+                            '&:hover': {
+                                transform: 'translateY(-2px)',
+                                boxShadow: '0 4px 12px rgba(0, 0, 0, 0.15)'
+                            }
+                        }}
+                        onClick={() => handleClick(category)}
+                    >
+                        <CardContent
                             sx={{
+                                textAlign: 'center',
+                                p: 3,
                                 height: '100%',
-                                cursor: 'pointer',
-                                borderRadius: '12px',
-                                boxShadow: '0 1px 3px rgba(0, 0, 0, 0.1)',
-                                transition: 'all 0.2s ease-in-out',
-                                backgroundColor: 'white',
-                                '&:hover': {
-                                    transform: 'translateY(-2px)',
-                                    boxShadow: '0 4px 12px rgba(0, 0, 0, 0.15)'
-                                }
+                                display: 'flex',
+                                flexDirection: 'column',
+                                justifyContent: 'space-between'
                             }}
-                            onClick={() => handleClick(category)}
                         >
-                            <CardContent
+                            <Box
                                 sx={{
-                                    textAlign: 'center',
-                                    p: 3,
-                                    height: '100%',
                                     display: 'flex',
-                                    flexDirection: 'column',
-                                    justifyContent: 'space-between'
+                                    justifyContent: 'center',
+                                    alignItems: 'center',
+                                    mb: 2,
+                                    color: 'primary.main'
                                 }}
                             >
-                                <Box
+                                {React.cloneElement(getIconForCategory(category.name), {
+                                    sx: { fontSize: '2.5rem' }
+                                })}
+                            </Box>
+                            <Box>
+                                <Typography
+                                    variant="h6"
                                     sx={{
-                                        display: 'flex',
-                                        justifyContent: 'center',
-                                        alignItems: 'center',
-                                        mb: 2,
-                                        color: 'primary.main'
+                                        fontWeight: 600,
+                                        mb: 1,
+                                        fontSize: '1.1rem',
+                                        color: 'text.primary'
                                     }}
                                 >
-                                    {React.cloneElement(getIconForCategory(category.name), {
-                                        sx: { fontSize: '2.5rem' }
-                                    })}
-                                </Box>
-                                <Box>
-                                    <Typography
-                                        variant="h6"
-                                        sx={{
-                                            fontWeight: 600,
-                                            mb: 1,
-                                            fontSize: '1.1rem',
-                                            color: 'text.primary'
-                                        }}
-                                    >
-                                        {category.name}
-                                    </Typography>
-                                    <Typography
-                                        variant="body2"
-                                        sx={{
-                                            color: 'text.secondary',
-                                            fontSize: '0.9rem',
-                                            fontWeight: 500
-                                        }}
-                                    >
-                                        {category.count ? t("homeSections.categorySection.jobsAvailable", { count: category.count }) : t("homeSections.categorySection.viewJobs")}
-                                    </Typography>
-                                </Box>
-                            </CardContent>
-                        </Card>
-                    ))}
-                </Box>
-
-            </div>
+                                    {category.name}
+                                </Typography>
+                                <Typography
+                                    variant="body2"
+                                    sx={{
+                                        color: 'text.secondary',
+                                        fontSize: '0.9rem',
+                                        fontWeight: 500
+                                    }}
+                                >
+                                    {category.count ? t("homeSections.categorySection.jobsAvailable", { count: category.count }) : t("homeSections.categorySection.viewJobs")}
+                                </Typography>
+                            </Box>
+                        </CardContent>
+                    </Card>
+                ))}
+            </Box>
         </div>
     );
 }

@@ -1,21 +1,20 @@
-import React, { useCallback } from "react";
-import { useNavigate } from "react-router-dom";
 import { HeroSection, CompanySection, CategorySection, JobSection, CTASection, HotJobTopCVSection, RecommendJobSection } from "../../../components";
 import useSearch from "../../../hooks/useSearch";
 
 export default function Home() {
-  const navigate = useNavigate();
   const { handleSearch } = useSearch();
 
   return (
     <>
       <HeroSection onSearch={handleSearch} />
-      <JobSection />
-      <HotJobTopCVSection />
-      <CategorySection />
+      <div className="bg-gray-50 py-6 md:py-10 space-y-6 md:space-y-10">
+        <JobSection />
+        <HotJobTopCVSection />
+        <CategorySection />
+        <RecommendJobSection />
+      </div>
       {/* <CompanySection /> */}
       {/* <CTASection /> */}
-      <RecommendJobSection />
     </>
   );
 }

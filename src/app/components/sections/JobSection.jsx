@@ -160,134 +160,132 @@ export default function JobSection() {
     };
 
     return (
-        <div className="py-6 md:py-10 bg-gray-50">
-            <div className="container mx-auto px-4 sm:px-6 md:px-8 max-w-7xl">
-                {/* Header */}
-                <div className="flex justify-between items-center mb-6">
-                    <h3 className="text-3xl md:text-4xl font-bold text-gray-900">
-                        {t("homeSections.jobSection.title")} <span className="text-blue-600">{t("homeSections.jobSection.jobsOpen")}</span>
-                    </h3>
-                    <button 
-                        onClick={() => navigate('/jobs')}
-                        className="hidden md:flex items-center gap-2 text-blue-600 hover:text-blue-700 font-medium transition-colors"
-                    >
-                        {t("homeSections.jobSection.showAllJobs")}
-                        <ArrowForward className="w-5 h-5" />
-                    </button>
+        <div className="container mx-auto px-4 sm:px-6 md:px-8 max-w-7xl space-y-6">
+            {/* Header */}
+            <div className="flex justify-between items-center">
+                <h3 className="text-3xl md:text-4xl font-bold text-gray-900">
+                    {t("homeSections.jobSection.title")} <span className="text-blue-600">{t("homeSections.jobSection.jobsOpen")}</span>
+                </h3>
+                <button
+                    onClick={() => navigate('/jobs')}
+                    className="hidden md:flex items-center gap-2 text-blue-600 hover:text-blue-700 font-medium transition-colors"
+                >
+                    {t("homeSections.jobSection.showAllJobs")}
+                    <ArrowForward className="w-5 h-5" />
+                </button>
+            </div>
+
+            {/* Loading State */}
+            {status === 'loading' && (
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6">
+                    {[...Array(9)].map((_, index) => (
+                        <div key={index} className="h-40 bg-gray-200 rounded-lg animate-pulse"></div>
+                    ))}
                 </div>
+            )}
 
-                {/* Loading State */}
-                {status === 'loading' && (
-                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6 mb-6">
-                        {[...Array(9)].map((_, index) => (
-                            <div key={index} className="h-40 bg-gray-200 rounded-lg animate-pulse"></div>
-                        ))}
-                    </div>
-                )}
+            {/* 3x3 Grid */}
+            {status !== 'loading' && (
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6">
+                    {transformedJobs.map((job) => {
+                        const jobId = job.id || job.job_id;
+                        const isBookmarked = savedJobs.some(savedJob =>
+                            (savedJob.id || savedJob.job_id) === jobId
+                        );
+                        return (
+                            <div key={job.id} className="h-full">
+                                <JobCard
+                                    job={job}
+                                    isBookmarked={isBookmarked}
+                                    onBookmark={(job, meta) => handleJobAction('bookmark', job, meta)}
+                                    onClick={() => handleJobAction('click', job)}
+                                />
+                            </div>
+                        );
+                    })}
+                </div>
+            )}
 
-                {/* 3x3 Grid */}
-                {status !== 'loading' && (
-                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6 mb-6">
-                        {transformedJobs.map((job) => {
-                            const jobId = job.id || job.job_id;
-                            const isBookmarked = savedJobs.some(savedJob => 
-                                (savedJob.id || savedJob.job_id) === jobId
-                            );
+            {/* Pagination */}
+            {totalPages > 1 && (
+                <div className="flex justify-center items-center gap-2 mt-6">
+                    {/* Previous Button */}
+                    <button
+                        onClick={() => handlePageChange(currentPage - 1)}
+                        disabled={currentPage === 1}
+                        className={`
+                                px-4 py-2 rounded-lg font-medium transition-all
+                                ${currentPage === 1
+                                ? 'bg-gray-200 text-gray-400 cursor-not-allowed'
+                                : 'bg-white text-gray-700 hover:bg-gray-100 shadow-sm'
+                            }
+                            `}
+                    >
+                        {t("homeSections.jobSection.previous")}
+                    </button>
+
+                    {/* Page Numbers */}
+                    <div className="flex gap-2">
+                        {pageNumbers.map((page, index) => {
+                            if (page === '...') {
+                                return (
+                                    <span key={`ellipsis-${index}`} className="w-10 h-10 flex items-center justify-center text-gray-500">
+                                        ...
+                                    </span>
+                                );
+                            }
                             return (
-                                <div key={job.id} className="h-full">
-                                    <JobCard
-                                        job={job}
-                                        isBookmarked={isBookmarked}
-                                        onBookmark={(job, meta) => handleJobAction('bookmark', job, meta)}
-                                        onClick={() => handleJobAction('click', job)}
-                                    />
-                                </div>
+                                <button
+                                    key={page}
+                                    onClick={() => handlePageChange(page)}
+                                    className={`
+                                            w-10 h-10 rounded-lg font-medium transition-all
+                                            ${currentPage === page
+                                            ? 'bg-blue-600 text-white shadow-md'
+                                            : 'bg-white text-gray-700 hover:bg-gray-100 shadow-sm'
+                                        }
+                                        `}
+                                >
+                                    {page}
+                                </button>
                             );
                         })}
                     </div>
-                )}
 
-                {/* Pagination */}
-                {totalPages > 1 && (
-                    <div className="flex justify-center items-center gap-2 mt-6">
-                        {/* Previous Button */}
-                        <button
-                            onClick={() => handlePageChange(currentPage - 1)}
-                            disabled={currentPage === 1}
-                            className={`
-                                px-4 py-2 rounded-lg font-medium transition-all
-                                ${currentPage === 1
-                                    ? 'bg-gray-200 text-gray-400 cursor-not-allowed'
-                                    : 'bg-white text-gray-700 hover:bg-gray-100 shadow-sm'
-                                }
-                            `}
-                        >
-                            {t("homeSections.jobSection.previous")}
-                        </button>
-
-                        {/* Page Numbers */}
-                        <div className="flex gap-2">
-                            {pageNumbers.map((page, index) => {
-                                if (page === '...') {
-                                    return (
-                                        <span key={`ellipsis-${index}`} className="w-10 h-10 flex items-center justify-center text-gray-500">
-                                            ...
-                                        </span>
-                                    );
-                                }
-                                return (
-                                    <button
-                                        key={page}
-                                        onClick={() => handlePageChange(page)}
-                                        className={`
-                                            w-10 h-10 rounded-lg font-medium transition-all
-                                            ${currentPage === page
-                                                ? 'bg-blue-600 text-white shadow-md'
-                                                : 'bg-white text-gray-700 hover:bg-gray-100 shadow-sm'
-                                            }
-                                        `}
-                                    >
-                                        {page}
-                                    </button>
-                                );
-                            })}
-                        </div>
-
-                        {/* Next Button */}
-                        <button
-                            onClick={() => handlePageChange(currentPage + 1)}
-                            disabled={currentPage === totalPages}
-                            className={`
+                    {/* Next Button */}
+                    <button
+                        onClick={() => handlePageChange(currentPage + 1)}
+                        disabled={currentPage === totalPages}
+                        className={`
                                 px-4 py-2 rounded-lg font-medium transition-all
                                 ${currentPage === totalPages
-                                    ? 'bg-gray-200 text-gray-400 cursor-not-allowed'
-                                    : 'bg-white text-gray-700 hover:bg-gray-100 shadow-sm'
-                                }
+                                ? 'bg-gray-200 text-gray-400 cursor-not-allowed'
+                                : 'bg-white text-gray-700 hover:bg-gray-100 shadow-sm'
+                            }
                             `}
-                        >
-                            {t("homeSections.jobSection.next")}
-                        </button>
-                    </div>
-                )}
+                    >
+                        {t("homeSections.jobSection.next")}
+                    </button>
+                </div>
+            )}
 
-                {/* Show message if no jobs and not loading */}
-                {status !== 'loading' && transformedJobs.length === 0 && (
-                    <div className="text-center py-10">
-                        <p className="text-gray-500 text-lg">{t("homeSections.jobSection.noJobsAvailable")}</p>
-                    </div>
-                )}
+            {/* Show message if no jobs and not loading */}
+            {status !== 'loading' && transformedJobs.length === 0 && (
+                <div className="text-center py-10">
+                    <p className="text-gray-500 text-lg">{t("homeSections.jobSection.noJobsAvailable")}</p>
+                </div>
+            )}
 
-                {/* Pagination Info */}
-                {totalPages > 1 && totalItems > 0 && (
-                    <div className="text-center mt-4">
-                        <p className="text-sm text-gray-600">
-                            {t("homeSections.jobSection.showingJobs", { showing: transformedJobs.length, total: totalItems })}
-                            <span className="mx-2">•</span>
-                            {t("homeSections.jobSection.pageInfo", { current: currentPage, total: totalPages })}
-                        </p>
-                    </div>
-                )}
-            </div>
+            {/* Pagination Info */}
+            {totalPages > 1 && totalItems > 0 && (
+                <div className="text-center mt-4">
+                    <p className="text-sm text-gray-600">
+                        {t("homeSections.jobSection.showingJobs", { showing: transformedJobs.length, total: totalItems })}
+                        <span className="mx-2">•</span>
+                        {t("homeSections.jobSection.pageInfo", { current: currentPage, total: totalPages })}
+                    </p>
+                </div>
+            )}
         </div>
     );
 }
