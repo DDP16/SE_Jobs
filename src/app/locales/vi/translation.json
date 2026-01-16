@@ -216,6 +216,17 @@
     "no_similar_jobs": "Không tìm thấy việc làm tương tự"
   },
   "company": {
+    "post_job": "Đăng tin tuyển dụng",
+    "sidebar": {
+      "dashboard": "Dashboard",
+      "profile": "Hồ sơ công ty",
+      "branches": "Chi nhánh công ty",
+      "all_applicants": "Tất cả ứng viên",
+      "job_listing": "Danh sách công việc",
+      "settings": "Cài đặt",
+      "help_center": "Trung tâm trợ giúp",
+      "logout": "Đăng xuất"
+    },
     "perks_benefits": {
       "title": "Phúc lợi & Quyền lợi",
       "description": "Công việc này đi kèm với nhiều phúc lợi và quyền lợi"
@@ -290,6 +301,48 @@
       "applied": "Đã ứng tuyển {{count}}",
       "of": "trên",
       "capacity": "chỉ tiêu"
+    },
+    "branches": {
+      "title": "Chi nhánh công ty",
+      "description": "Quản lý các chi nhánh công ty của bạn",
+      "add_branch": "Thêm chi nhánh",
+      "search_placeholder": "Tìm kiếm chi nhánh",
+      "table": {
+        "branch_name": "Tên chi nhánh",
+        "address": "Địa chỉ",
+        "country": "Quốc gia",
+        "province": "Tỉnh/Thành phố",
+        "ward": "Phường/Xã",
+        "created_at": "Ngày tạo",
+        "actions": "Hành động",
+        "edit": "Chỉnh sửa",
+        "delete": "Xóa"
+      },
+      "modal": {
+        "add_title": "Thêm chi nhánh mới",
+        "add_description": "Tạo vị trí chi nhánh mới cho công ty của bạn",
+        "edit_title": "Chỉnh sửa chi nhánh công ty",
+        "edit_description": "Cập nhật thông tin chi nhánh công ty của bạn",
+        "branch_name_placeholder": "Ví dụ: Văn phòng chính, Chi nhánh 1",
+        "address_placeholder": "Nhập địa chỉ chi nhánh",
+        "country_placeholder": "Chọn quốc gia",
+        "province_placeholder": "Chọn tỉnh/thành phố",
+        "ward_placeholder": "Chọn phường/xã",
+        "create": "Tạo chi nhánh",
+        "update": "Cập nhật chi nhánh",
+        "errors": {
+          "branch_name_required": "Vui lòng nhập tên chi nhánh.",
+          "address_required": "Vui lòng nhập địa chỉ chi nhánh.",
+          "country_required": "Vui lòng chọn quốc gia.",
+          "province_required": "Vui lòng chọn tỉnh/thành phố.",
+          "ward_required": "Vui lòng chọn phường/xã."
+        }
+      },
+      "delete_confirm": {
+        "title": "Xác nhận xóa chi nhánh",
+        "content": "Bạn có chắc chắn muốn xóa chi nhánh này không? Hành động này không thể hoàn tác.",
+        "delete": "Xóa"
+      }
     }
   },
   "sidebar": {

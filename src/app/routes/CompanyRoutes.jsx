@@ -33,11 +33,6 @@ export default function CompanyRoutes() {
         }
     }, [dispatch, companyId, company]);
 
-    // useEffect(() => {
-    //     console.log("User ", user);
-    //     console.log("Company ", company);
-    // }, []);
-
     return (
         <Routes>
             <Route path="/" element={

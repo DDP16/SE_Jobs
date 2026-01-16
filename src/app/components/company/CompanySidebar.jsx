@@ -17,20 +17,24 @@ import NavLink from "./NavLink";
 import { logout } from "../../modules";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
-
-const navigation = [
-  { name: "Dashboard", icon: Home, badge: null, path: "/" },
-  { name: "Company Profile", icon: Building2, badge: null, path: "/company" },
-  { name: "Company Branches", icon: Building2, badge: null, path: "/branches" },
-  { name: "All Applicants", icon: Users, badge: null, path: "/applicants" },
-  { name: "Job Listing", icon: FileText, badge: null, path: "/job-listing" },
-  // { name: "My Schedule", icon: Calendar, badge: null },
-];
+import { useTranslation } from "react-i18next";
 
 export default function CompanySidebar() {
+  const { t } = useTranslation();
   const dispatch = useDispatch();
   const nav = useNavigate();
   const user = useSelector((state) => state.auth.user);
+  const company = useSelector((state) => state.auth.user?.company);
+
+  const navigation = [
+    { name: t("company.sidebar.dashboard"), icon: Home, badge: null, path: "/" },
+    { name: t("company.sidebar.profile"), icon: Building2, badge: null, path: "/company" },
+    { name: t("company.sidebar.branches"), icon: Building2, badge: null, path: "/branches" },
+    { name: t("company.sidebar.all_applicants"), icon: Users, badge: null, path: "/applicants" },
+    { name: t("company.sidebar.job_listing"), icon: FileText, badge: null, path: "/job-listing" },
+    // { name: t("company.sidebar.mySchedule"), icon: Calendar, badge: null },
+  ];
+
   return (
     <aside className="h-screen w-1/6 min-w-[220px] border-r border-border bg-white flex flex-col overflow-y-auto border-gray-300">
       {/* Logo */}
@@ -76,7 +80,7 @@ export default function CompanySidebar() {
       </nav>
       {/* Settings Section */}
       <div className="px-3 py-4 border-t border-border space-y-1 border-gray-300">
-        <div className="px-3 py-2 text-xs font-medium text-muted-foreground">SETTINGS</div>
+        <div className="px-3 py-2 text-xs font-medium text-muted-foreground">{t("company.sidebar.settings").toUpperCase()}</div>
         <NavLink
           to="/settings"
           className={({ isActive }) =>
@@ -93,7 +97,7 @@ export default function CompanySidebar() {
                   }`}
               ></span>
               <Settings className="w-5 h-5" />
-              <span>Settings</span>
+              <span>{t("company.sidebar.settings")}</span>
             </>
           )}
         </NavLink>
@@ -107,14 +111,14 @@ export default function CompanySidebar() {
         >
           <span className="absolute left-0 top-0 h-full w-1 rounded-r bg-transparent group-hover:bg-primary group-active:bg-primary transition-colors"></span>
           <HelpCircle className="w-5 h-5" />
-          <span>Help Center</span>
+          <span>{t("company.sidebar.help_center")}</span>
         </button>
       </div>
       {/* User Profile */}
       <div className="p-4 border-t border-border border-gray-300">
         <div className="flex items-center gap-3 mb-3">
           <Avatar className="h-10 w-10">
-            <AvatarImage src="https://api.dicebear.com/7.x/avataaars/svg?seed=Maria" />
+            <AvatarImage src={company.logo ? company.logo : "https://api.dicebear.com/7.x/avataaars/svg?seed=Maria"} />
             <AvatarFallback>MK</AvatarFallback>
           </Avatar>
           <div className="flex-1 min-w-0">
@@ -125,7 +129,12 @@ export default function CompanySidebar() {
         <Button
           variant="ghost"
           size="sm"
-          className="w-full justify-start text-destructive hover:text-destructive hover:bg-red-50 active:bg-red-100 active:text-white"
+          className="
+            w-full justify-start text-destructive cursor-pointer
+            hover:bg-red-500 hover:text-white hover:scale-105
+            active:bg-red-500 active:text-white active:scale-100
+            transition-all
+          "
           onClick={() => {
             // Dispatch logout action
             dispatch(logout());
@@ -133,7 +142,7 @@ export default function CompanySidebar() {
           }}
         >
           <LogOut className="w-4 h-4 mr-2" />
-          Logout
+          {t("company.sidebar.logout")}
         </Button>
       </div>
     </aside>

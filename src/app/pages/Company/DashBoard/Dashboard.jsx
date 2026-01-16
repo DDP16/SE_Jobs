@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from "react";
+import { useState, useMemo } from "react";
 import { useTranslation } from "react-i18next";
 import { Calendar, ChevronRight, TrendingUp, TrendingDown, Eye, FileCheck, X, Info } from "lucide-react";
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from "recharts";
@@ -129,11 +129,11 @@ const Dashboard = () => {
 
   return (
     <div className="min-h-screen bg-gray-50 p-6">
-      <div className="max-w-7xl mx-auto">
+      <div className="max-w-7xl mx-auto space-y-6">
         {/* Info Banner */}
         {showInfoBanner && (
-          <div className="mb-6 bg-blue-50 border border-blue-200 rounded-lg p-4 flex items-start gap-3 relative">
-            <div className="flex-shrink-0 mt-0.5">
+          <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 flex items-start gap-3">
+            <div className="py-1">
               <Info className="w-5 h-5 text-blue-600" />
             </div>
             <div className="flex-1">
@@ -146,7 +146,7 @@ const Dashboard = () => {
             </div>
             <button
               onClick={() => setShowInfoBanner(false)}
-              className="flex-shrink-0 text-blue-600 hover:text-blue-800 transition-colors"
+              className="shrink-0 text-blue-600 hover:text-blue-800 transition-colors"
               aria-label="Đóng thông báo"
             >
               <X className="w-5 h-5" />
@@ -155,9 +155,9 @@ const Dashboard = () => {
         )}
 
         {/* Header */}
-        <div className="flex justify-between items-center mb-6">
+        <div className="flex justify-between items-center">
           <div>
-            <h2 className="text-2xl font-bold text-gray-900">{t("company.dashboard.greeting", { name: currentUser.first_name })}</h2>
+            <h3 className="text-2xl font-bold text-gray-900">{t("company.dashboard.greeting", { name: currentUser.first_name })}</h3>
             <p className="text-gray-500 text-sm">
               {t("company.dashboard.statisticReport", { from: currentWeekRange.fromLong, to: currentWeekRange.toLong })}
             </p>
@@ -169,22 +169,22 @@ const Dashboard = () => {
         </div>
 
         {/* Top Cards */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
-          <div className="bg-purple-600 text-white p-6 rounded-xl flex justify-between items-center cursor-pointer hover:bg-purple-700 transition">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+          <div className="bg-purple-600 text-white py-4 px-6 rounded-xl flex justify-between items-center cursor-pointer hover:bg-purple-700 transition">
             <div>
               <div className="text-4xl font-bold mb-1">76</div>
               <div className="text-sm opacity-90">{t("company.dashboard.newCandidates")}</div>
             </div>
             <ChevronRight className="w-6 h-6" />
           </div>
-          <div className="bg-cyan-400 text-white p-6 rounded-xl flex justify-between items-center cursor-pointer hover:bg-cyan-500 transition">
+          <div className="bg-cyan-400 text-white py-4 px-6 rounded-xl flex justify-between items-center cursor-pointer hover:bg-cyan-500 transition">
             <div>
               <div className="text-4xl font-bold mb-1">3</div>
               <div className="text-sm opacity-90">{t("company.dashboard.scheduleToday")}</div>
             </div>
             <ChevronRight className="w-6 h-6" />
           </div>
-          <div className="bg-blue-500 text-white p-6 rounded-xl flex justify-between items-center cursor-pointer hover:bg-blue-600 transition">
+          <div className="bg-blue-500 text-white py-4 px-6 rounded-xl flex justify-between items-center cursor-pointer hover:bg-blue-600 transition">
             <div>
               <div className="text-4xl font-bold mb-1">24</div>
               <div className="text-sm opacity-90">{t("company.dashboard.messagesReceived")}</div>
@@ -195,10 +195,10 @@ const Dashboard = () => {
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
           {/* Left Column - Chart */}
-          <div className="lg:col-span-2 bg-white rounded-xl p-6 shadow-sm">
-            <div className="flex justify-between items-center mb-6">
+          <div className="lg:col-span-2 bg-white rounded-xl p-6 shadow-sm space-y-4">
+            <div className="flex justify-between items-center">
               <div>
-                <h2 className="text-lg font-semibold text-gray-900">{t("company.dashboard.jobStatistics")}</h2>
+                <h3 className="text-lg font-semibold text-gray-900">{t("company.dashboard.jobStatistics")}</h3>
                 <p className="text-sm text-gray-500">
                   {t("company.dashboard.showingJobStatistic", { from: currentWeekRange.fromShort, to: currentWeekRange.toShort })}
                 </p>
@@ -217,7 +217,7 @@ const Dashboard = () => {
               </div>
             </div>
 
-            <div className="flex gap-4 mb-4 border-b">
+            <div className="flex gap-4 border-b">
               {["Overview", "Jobs View", "Jobs Applied"].map((tab) => (
                 <button
                   key={tab}
@@ -247,7 +247,7 @@ const Dashboard = () => {
               </BarChart>
             </ResponsiveContainer>
 
-            <div className="flex gap-6 mt-4 justify-center">
+            <div className="flex gap-6 justify-center">
               <div className="flex items-center gap-2">
                 <div className="w-3 h-3 bg-blue-400 rounded"></div>
                 <span className="text-sm text-gray-600">{t("company.dashboard.jobView")}</span>
@@ -258,7 +258,7 @@ const Dashboard = () => {
               </div>
             </div>
 
-            <div className="grid grid-cols-2 gap-4 mt-6">
+            <div className="grid grid-cols-2 gap-4">
               <div className="p-4 border border-gray-200 rounded-lg">
                 <div className="flex items-center gap-2 mb-2">
                   <div className="p-2 bg-blue-50 rounded-lg">
@@ -291,62 +291,64 @@ const Dashboard = () => {
           </div>
 
           {/* Right Column - Stats */}
-          <div className="space-y-6">
-            <div className="bg-white rounded-xl p-6 shadow-sm">
-              <h3 className="text-lg font-semibold text-gray-900 mb-4">{t("company.dashboard.jobOpen")}</h3>
-              <div className="text-5xl font-bold text-gray-900 mb-2">12</div>
-              <div className="text-sm text-gray-500">{t("company.dashboard.jobsOpened")}</div>
-            </div>
-
-            <div className="bg-white rounded-xl p-6 shadow-sm">
-              <h3 className="text-lg font-semibold text-gray-900 mb-4">{t("company.dashboard.applicantsSummary")}</h3>
-              <div className="text-5xl font-bold text-gray-900 mb-4">67</div>
-              <div className="text-sm text-gray-500 mb-4">{t("company.dashboard.applicants")}</div>
-
-              <div className="h-2 bg-gray-100 rounded-full overflow-hidden mb-4">
-                <div className="h-full flex">
-                  <div className="bg-purple-600" style={{ width: "45%" }}></div>
-                  <div className="bg-emerald-400" style={{ width: "24%" }}></div>
-                  <div className="bg-cyan-400" style={{ width: "22%" }}></div>
-                  <div className="bg-blue-400" style={{ width: "9%" }}></div>
-                </div>
+          <div>
+            <div className="sticky top-4 space-y-6">
+              <div className="bg-white rounded-xl py-4 px-6 shadow-sm space-y-2">
+                <h3 className="text-lg font-semibold text-gray-900">{t("company.dashboard.jobOpen")}</h3>
+                <div className="text-4xl font-bold text-gray-900">12</div>
+                <div className="text-sm text-gray-500">{t("company.dashboard.jobsOpened")}</div>
               </div>
 
-              <div className="space-y-2">
-                <div className="flex items-center justify-between text-sm">
-                  <div className="flex items-center gap-2">
-                    <div className="w-3 h-3 bg-purple-600 rounded"></div>
-                    <span className="text-gray-600">{t("company.dashboard.fullTime")}</span>
+              <div className="bg-white rounded-xl py-4 px-6 shadow-sm space-y-2">
+                <h3 className="text-lg font-semibold text-gray-900">{t("company.dashboard.applicantsSummary")}</h3>
+                <div className="text-4xl font-bold text-gray-900">67</div>
+                <div className="text-sm text-gray-500">{t("company.dashboard.applicants")}</div>
+
+                <div className="h-2 bg-gray-100 rounded-full overflow-hidden">
+                  <div className="h-full flex">
+                    <div className="bg-purple-600" style={{ width: "45%" }}></div>
+                    <div className="bg-emerald-400" style={{ width: "24%" }}></div>
+                    <div className="bg-cyan-400" style={{ width: "22%" }}></div>
+                    <div className="bg-blue-400" style={{ width: "9%" }}></div>
                   </div>
-                  <span className="font-medium">45</span>
                 </div>
-                <div className="flex items-center justify-between text-sm">
-                  <div className="flex items-center gap-2">
-                    <div className="w-3 h-3 bg-cyan-400 rounded"></div>
-                    <span className="text-gray-600">{t("company.dashboard.internship")}</span>
+
+                <div className="space-y-2">
+                  <div className="flex items-center justify-between text-sm">
+                    <div className="flex items-center gap-2">
+                      <div className="w-3 h-3 bg-purple-600 rounded"></div>
+                      <span className="text-gray-600">{t("company.dashboard.fullTime")}</span>
+                    </div>
+                    <span className="font-medium">45</span>
                   </div>
-                  <span className="font-medium">32</span>
-                </div>
-                <div className="flex items-center justify-between text-sm">
-                  <div className="flex items-center gap-2">
-                    <div className="w-3 h-3 bg-emerald-400 rounded"></div>
-                    <span className="text-gray-600">{t("company.dashboard.partTime")}</span>
+                  <div className="flex items-center justify-between text-sm">
+                    <div className="flex items-center gap-2">
+                      <div className="w-3 h-3 bg-cyan-400 rounded"></div>
+                      <span className="text-gray-600">{t("company.dashboard.internship")}</span>
+                    </div>
+                    <span className="font-medium">32</span>
                   </div>
-                  <span className="font-medium">24</span>
-                </div>
-                <div className="flex items-center justify-between text-sm">
-                  <div className="flex items-center gap-2">
-                    <div className="w-3 h-3 bg-red-500 rounded"></div>
-                    <span className="text-gray-600">{t("company.dashboard.contract")}</span>
+                  <div className="flex items-center justify-between text-sm">
+                    <div className="flex items-center gap-2">
+                      <div className="w-3 h-3 bg-emerald-400 rounded"></div>
+                      <span className="text-gray-600">{t("company.dashboard.partTime")}</span>
+                    </div>
+                    <span className="font-medium">24</span>
                   </div>
-                  <span className="font-medium">30</span>
-                </div>
-                <div className="flex items-center justify-between text-sm">
-                  <div className="flex items-center gap-2">
-                    <div className="w-3 h-3 bg-blue-400 rounded"></div>
-                    <span className="text-gray-600">{t("company.dashboard.remote")}</span>
+                  <div className="flex items-center justify-between text-sm">
+                    <div className="flex items-center gap-2">
+                      <div className="w-3 h-3 bg-red-500 rounded"></div>
+                      <span className="text-gray-600">{t("company.dashboard.contract")}</span>
+                    </div>
+                    <span className="font-medium">30</span>
                   </div>
-                  <span className="font-medium">22</span>
+                  <div className="flex items-center justify-between text-sm">
+                    <div className="flex items-center gap-2">
+                      <div className="w-3 h-3 bg-blue-400 rounded"></div>
+                      <span className="text-gray-600">{t("company.dashboard.remote")}</span>
+                    </div>
+                    <span className="font-medium">22</span>
+                  </div>
                 </div>
               </div>
             </div>
@@ -354,16 +356,16 @@ const Dashboard = () => {
         </div>
 
         {/* Job Updates Section */}
-        <div className="mt-6 bg-white rounded-xl p-6 shadow-sm">
-          <div className="flex justify-between items-center mb-6">
-            <h2 className="text-lg font-semibold text-gray-900">{t("company.dashboard.jobUpdates")}</h2>
+        <div className="bg-white rounded-xl py-4 px-6 shadow-sm space-y-4">
+          <div className="flex justify-between items-center">
+            <h3 className="text-lg font-semibold text-gray-900">{t("company.dashboard.jobUpdates")}</h3>
             <button className="flex items-center gap-2 text-purple-600 hover:text-purple-700 font-medium text-sm">
               {t("company.dashboard.viewAll")}
               <ChevronRight className="w-4 h-4" />
             </button>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
             {jobs.map((job) => (
               <div key={job.id} className="border border-gray-200 rounded-xl p-5 hover:shadow-md transition">
                 <div className="flex items-start justify-between mb-4">
@@ -375,7 +377,7 @@ const Dashboard = () => {
                   </span>
                 </div>
 
-                <h3 className="font-semibold text-gray-900 mb-1">{job.title}</h3>
+                <h4 className="font-semibold text-gray-900 mb-1">{job.title}</h4>
                 <p className="text-sm text-gray-500 mb-4">
                   {job.company} • {job.location}
                 </p>

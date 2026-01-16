@@ -78,7 +78,7 @@ const DropdownMenuItem = React.forwardRef(({ className, inset, style, ...props }
       backgroundColor: "transparent",
       ...style,
     }}
-    className={cn("data-[disabled]:pointer-events-none data-[disabled]:opacity-50", className)}
+    className={cn("data-disabled:pointer-events-none data-disabled:opacity-50", className)}
     {...props}
     onMouseEnter={(e) => {
       e.target.style.backgroundColor = "#f3f4f6";
