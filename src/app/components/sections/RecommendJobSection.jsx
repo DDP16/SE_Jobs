@@ -129,7 +129,10 @@ export default function RecommendJobSection() {
     // Memoize transformed jobs to avoid recreating on every render
     const transformedJobs = useMemo(() => {
         if (!recomendationsJobs || !Array.isArray(recomendationsJobs)) return [];
-        return recomendationsJobs.map(transformJobData).filter(Boolean);
+        return recomendationsJobs
+            .filter(job => job.status !== 'Closed') // Filter out closed jobs
+            .map(transformJobData)
+            .filter(Boolean);
     }, [recomendationsJobs]);
 
     const handleBookmark = (job, meta) => {

@@ -559,9 +559,39 @@ export default function ApplicationModal({ open, onVisibleChange, jobId }) {
     );
   }
 
-  // Default return - should not be reached if logic is correct
+  // Modal for EMPTY status - User needs to add information
   return (
     <>
+      <Modal
+        title={
+          <div className="flex items-center gap-2">
+            <AlertCircle className="w-8 h-8 text-red-500" />
+            <span className="text-xl font-semibold">{t("application.noInfo")}</span>
+          </div>
+        }
+        open={open}
+        onCancel={handleClose}
+        centered
+        footer={
+          <div className="flex justify-end gap-2">
+            <button
+              onClick={handleClose}
+              className="px-4 py-2 bg-white rounded-lg border hover:bg-gray-50 transition-all cursor-pointer"
+            >
+              {t("application.close")}
+            </button>
+            <button
+              onClick={handleNavigateToProfile}
+              className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-all cursor-pointer"
+            >
+              {t("application.updateInfo")}
+            </button>
+          </div>
+        }
+      >
+        <p className="text-lg">{t("application.noInfoMessage")}</p>
+        <p className="italic">{t("application.pleaseAddInfo")}</p>
+      </Modal>
       <CustomAlert
         {...alertConfig}
         onClose={hideAlert}

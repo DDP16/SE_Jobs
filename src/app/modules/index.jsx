@@ -30,11 +30,14 @@ export { getExperiencesByStudentId, getExperienceById, createExperience, updateE
 export { getEducationByStudentId, getEducation, createEducation, updateEducation, deleteEducation } from "./services/educationsService";
 export { getCvs, getCvsByStudentId, getCvById, createCv, updateCv, deleteCv } from "./services/cvService";
 export { getSavedJobs, addSavedJob, removeSavedJob } from "./services/savedJobsService";
-export { 
+export {
   getCompanyApplications, getCompanyApplicationsByJobId, getCompanyApplicationDetail,
-  updateCompanyApplication, getApplications, getApplicationDetail, createApplication, updateApplication 
+  updateCompanyApplication, getApplications, getApplicationDetail, createApplication, updateApplication
 } from "./services/applicationsService";
 export { getStudents, getStudent } from "./services/studentService";
 export {
   getRecommendedJobs, getRecommendedJobsWithTopCV, getRecommendedJobsWithCustomWeights
 } from "./services/recommendationService";
+export {
+  getSubscriptionStatus, subscribe, unsubscribe, toggleSubscription, updateSubscription, resetSubscriptionState
+} from "./services/jobNotificationSubscription";

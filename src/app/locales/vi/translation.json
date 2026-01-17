@@ -120,7 +120,11 @@
     "tip_2": "Nâng cấp hồ sơ của bạn lên 100% để thu hút nhà tuyển dụng hơn!",
     "view_download_cv": "Xem và Tải CV",
     "languages": "Ngoại ngữ",
-    "languages_empty": "Liệt kê các ngôn ngữ mà bạn biết"
+    "languages_empty": "Liệt kê các ngôn ngữ mà bạn biết",
+    "phone_placeholder": "Chưa cập nhật",
+    "dob_placeholder": "Chưa cập nhật",
+    "gender_placeholder": "Chưa cập nhật",
+    "location_placeholder": "Chưa cập nhật"
   },
   "setting": {
     "my_account": "Tài khoản của tôi",
@@ -579,7 +583,7 @@
   },
   "jobListing": {
     "title": "Danh sách việc làm",
-    "description": "Tình trạng danh sách việc làm của bạn từ {{dateRange}}.",
+    "description": "Tình trạng danh sách việc làm của bạn.",
     "dateRange": "19 tháng 7 - 25 tháng 7",
     "dateRangeSelector": "Chọn khoảng thời gian",
     "dateRangeHint": "Chức năng chọn khoảng thời gian tùy chỉnh có thể được thêm vào đây",
@@ -609,6 +613,44 @@
       "confirm": "Đồng ý",
       "cancel": "Hủy"
     }
+  },
+  "companyBranches": {
+    "title": "Chi nhánh công ty",
+    "description": "Quản lý các địa điểm chi nhánh của công ty",
+    "searchPlaceholder": "Tìm kiếm chi nhánh...",
+    "addBranch": "Thêm chi nhánh",
+    "table": {
+      "branchName": "Tên chi nhánh",
+      "address": "Địa chỉ",
+      "country": "Quốc gia",
+      "province": "Tỉnh/Thành phố",
+      "ward": "Phường/Xã",
+      "createdAt": "Ngày tạo",
+      "actions": "Hành động"
+    },
+    "createDialog": {
+      "title": "Thêm chi nhánh mới",
+      "description": "Tạo địa điểm chi nhánh mới cho công ty",
+      "branchName": "Tên chi nhánh",
+      "branchNamePlaceholder": "VD: Văn phòng chính, Chi nhánh 1",
+      "address": "Địa chỉ",
+      "addressPlaceholder": "Địa chỉ đường phố",
+      "country": "Quốc gia",
+      "province": "Tỉnh/Thành phố",
+      "selectProvince": "Chọn tỉnh/thành phố",
+      "noProvincesAvailable": "Không có tỉnh/thành phố",
+      "ward": "Phường/Xã",
+      "selectWard": "Chọn phường/xã",
+      "noWardsAvailable": "Không có phường/xã",
+      "cancel": "Hủy",
+      "create": "Tạo chi nhánh"
+    },
+    "editDialog": {
+      "title": "Chỉnh sửa chi nhánh",
+      "description": "Cập nhật thông tin chi nhánh",
+      "update": "Cập nhật chi nhánh"
+    },
+    "deleteConfirm": "Bạn có chắc chắn muốn xóa chi nhánh này không?"
   },
   "applicantList": {
     "title": "Tổng số ứng viên",
@@ -794,6 +836,11 @@
       "saveChanges": "Lưu thay đổi"
     }
   },
+  "companyTopBar": {
+    "company": "Công ty",
+    "switchCompany": "Chuyển công ty",
+    "postAJob": "Đăng tuyển"
+  },
   "companyProfile": {
     "loading": "Đang tải...",
     "failedToLoad": "Không thể tải thông tin công ty.",
@@ -935,6 +982,10 @@
     "close": "Đóng",
     "viewInformation": "Xem thông tin",
     "apply": "Ứng tuyển",
+    "noInfo": "Chưa có thông tin",
+    "noInfoMessage": "Bạn chưa thêm bất kỳ thông tin nào vào hồ sơ của mình.",
+    "pleaseAddInfo": "Vui lòng thêm thông tin của bạn để có thể ứng tuyển vào các công việc.",
+    "updateInfo": "Cập nhật thông tin",
     "inCompleteInfo": "Thông tin chưa đầy đủ",
     "yourInfoIncomplete": "Thông tin hồ sơ của bạn chưa đầy đủ.",
     "pleaseUpdateInfo": "Vui lòng cập nhật hồ sơ của bạn để tiếp tục ứng tuyển.",

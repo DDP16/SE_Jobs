@@ -2,6 +2,7 @@ import { Bell, Plus, ChevronDown } from "lucide-react";
 import { Button, DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "../ui";
 import { Link, useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
+import { useTranslation } from "react-i18next";
 import { logout } from "../../modules";
 import LangButtonGroup from "../common/LangButtonGroup";
 import { useTranslation } from "react-i18next";
@@ -28,8 +29,8 @@ export default function TopBar() {
           )}
         </div>
         <div className="text-left">
-          <p className="text-xs text-muted-foreground">Company</p>
-          <p className="text-sm font-semibold text-foreground">{company?.name || 'Company'}</p>
+          <p className="text-xs text-muted-foreground">{t('companyTopBar.company')}</p>
+          <p className="text-sm font-semibold text-foreground">{company?.name || t('companyTopBar.company')}</p>
         </div>
       </div>
 

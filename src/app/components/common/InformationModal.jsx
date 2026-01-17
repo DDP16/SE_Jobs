@@ -108,8 +108,27 @@ export default function InformationModal({ open, onOpenChange, initialData, onSa
             ? formData.title.map(t => t.trim()).filter(t => t !== '')
             : [(formData.title || '').trim()].filter(t => t !== '');
 
+        // Split full name into first_name and last_name
+        const fullNameTrimmed = (formData.fullName || '').trim();
+        const nameParts = fullNameTrimmed.split(' ').filter(part => part.length > 0);
+        
+        // Ensure we have both first_name and last_name
+        let lastName = '';
+        let firstName = '';
+        
+        if (nameParts.length === 1) {
+            // If only one part, use it as last_name and set first_name to it
+            lastName = nameParts[0];
+            firstName = nameParts[0];
+        } else if (nameParts.length > 1) {
+            // If multiple parts, first is last_name, rest is first_name
+            lastName = nameParts[0];
+            firstName = nameParts.slice(1).join(' ');
+        }
+
         const sanitized = {
-            fullName: (formData.fullName || '').trim(),
+            first_name: firstName,
+            last_name: lastName,
             title: sanitizedTitles.length > 0 ? sanitizedTitles : [],
             email: (formData.email || '').trim(),
             phone: (formData.phone || '').trim(),

@@ -21,6 +21,7 @@ import savedJobsReducer from "./app/modules/services/savedJobsService";
 import applicationsReducer from "./app/modules/services/applicationsService";
 import studentsReducer from "./app/modules/services/studentService";
 import recommendationReducer from "./app/modules/services/recommendationService";
+import jobNotificationSubscriptionReducer from "./app/modules/services/jobNotificationSubscription";
 
 export default configureStore({
   reducer: {
@@ -46,5 +47,6 @@ export default configureStore({
     applications: applicationsReducer,
     students: studentsReducer,
     recommendations: recommendationReducer,
+    jobNotificationSubscription: jobNotificationSubscriptionReducer,
   },
 });
