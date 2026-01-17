@@ -5,7 +5,6 @@ import { useDispatch, useSelector } from "react-redux";
 import { useTranslation } from "react-i18next";
 import { logout } from "../../modules";
 import LangButtonGroup from "../common/LangButtonGroup";
-import { useTranslation } from "react-i18next";
 
 export default function TopBar() {
   const { t } = useTranslation();
