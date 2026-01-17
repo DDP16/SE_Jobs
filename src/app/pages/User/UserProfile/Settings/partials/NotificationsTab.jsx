@@ -1,21 +1,64 @@
 import { motion } from "framer-motion";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useTranslation } from "react-i18next";
+import { useDispatch, useSelector } from "react-redux";
+import { getSubscriptionStatus, toggleSubscription, subscribe, unsubscribe } from "../../../../../modules";
+import { Spin } from "antd";
 
 export default function NotificationsTab() {
   const { t } = useTranslation();
+  const dispatch = useDispatch();
+
+  const { isSubscribed, subscription, status, error } = useSelector(state => state.jobNotificationSubscription);
+
   const [notifications, setNotifications] = useState({
     applications: true,
     jobs: false,
     recommendations: false,
   });
 
-  const handleNotificationChange = (key) => {
-    setNotifications((prev) => ({
-      ...prev,
-      [key]: !prev[key],
-    }));
+  useEffect(() => {
+    dispatch(getSubscriptionStatus());
+  }, [dispatch]);
+
+  useEffect(() => {
+    if (status === 'succeeded') {
+      setNotifications(prev => ({
+        ...prev,
+        jobs: isSubscribed,
+      }));
+    }
+  }, [isSubscribed, status]);
+
+  const handleNotificationChange = async (key) => {
+    if (key === 'jobs') {
+      const newValue = !notifications.jobs;
+      setNotifications((prev) => ({
+        ...prev,
+        jobs: newValue,
+      }));
+
+      try {
+        if (!subscription) {
+          await dispatch(subscribe()).unwrap();
+        } else {
+          await dispatch(toggleSubscription()).unwrap();
+        }
+      } catch (err) {
+        setNotifications((prev) => ({
+          ...prev,
+          jobs: !newValue,
+        }));
+      }
+    } else {
+      setNotifications((prev) => ({
+        ...prev,
+        [key]: !prev[key],
+      }));
+    }
   };
+
+  const isLoading = status === 'loading';
 
   return (
     <motion.div
@@ -39,7 +82,7 @@ export default function NotificationsTab() {
           </p>
         </div>
         <div className="lg:col-span-8 space-y-6">
-          <motion.div
+          {/* <motion.div
             whileHover={{ backgroundColor: "rgba(37, 99, 235, 0.02)" }}
             className="rounded-lg transition-colors p-4 flex items-center justify-between"
           >
@@ -63,24 +106,32 @@ export default function NotificationsTab() {
                 className="h-5 w-5 rounded-full bg-white"
               />
             </motion.button>
-          </motion.div>
+          </motion.div> */}
 
           <motion.div
             whileHover={{ backgroundColor: "rgba(37, 99, 235, 0.02)" }}
             className="rounded-lg transition-colors p-4 flex items-center justify-between"
           >
             <div className="flex-1">
-              <div className="body-normal font-medium text-gray-900 mb-1">{t("setting.jobs")}</div>
+              <div className="body-normal font-medium text-gray-900 mb-1">
+                {t("setting.jobs")}
+                {isLoading && <Spin size="small" className="ml-2" />}
+              </div>
               <div className="text-gray-500">
                 {t("setting.jobs_description")}
               </div>
+              {error && (
+                <div className="text-red-500 text-sm mt-1">
+                  {error}
+                </div>
+              )}
             </div>
             <motion.button
               whileTap={{ scale: 0.95 }}
               onClick={() => handleNotificationChange("jobs")}
-              className={`relative inline-flex h-7 w-12 items-center rounded-full transition-colors flex-shrink-0 ${
-                notifications.jobs ? "bg-blue-600" : "bg-gray-300"
-              }`}
+              disabled={isLoading}
+              className={`relative inline-flex h-7 w-12 items-center rounded-full transition-colors flex-shrink-0 ${notifications.jobs ? "bg-blue-600" : "bg-gray-300"
+                } ${isLoading ? "opacity-50 cursor-not-allowed" : ""}`}
             >
               <motion.div
                 initial={false}
@@ -91,7 +142,7 @@ export default function NotificationsTab() {
             </motion.button>
           </motion.div>
 
-          <motion.div
+          {/* <motion.div
             whileHover={{ backgroundColor: "rgba(37, 99, 235, 0.02)" }}
             className="rounded-lg transition-colors p-4 flex items-center justify-between"
           >
@@ -104,9 +155,8 @@ export default function NotificationsTab() {
             <motion.button
               whileTap={{ scale: 0.95 }}
               onClick={() => handleNotificationChange("recommendations")}
-              className={`relative inline-flex h-7 w-12 items-center rounded-full transition-colors flex-shrink-0 ${
-                notifications.recommendations ? "bg-blue-600" : "bg-gray-300"
-              }`}
+              className={`relative inline-flex h-7 w-12 items-center rounded-full transition-colors flex-shrink-0 ${notifications.recommendations ? "bg-blue-600" : "bg-gray-300"
+                }`}
             >
               <motion.div
                 initial={false}
@@ -115,15 +165,15 @@ export default function NotificationsTab() {
                 className="h-5 w-5 rounded-full bg-white"
               />
             </motion.button>
-          </motion.div>
+          </motion.div> */}
 
-          <motion.button
+          {/* <motion.button
             whileHover={{ scale: 1.02 }}
             whileTap={{ scale: 0.98 }}
             className="px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
           >
             {t("save")}
-          </motion.button>
+          </motion.button> */}
         </div>
       </div>
     </motion.div>
