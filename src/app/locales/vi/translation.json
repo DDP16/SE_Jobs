@@ -199,6 +199,10 @@
     "who_you_are": "Yêu cầu",
     "no_requirements": "Không có yêu cầu nào được liệt kê.",
     "nice_to_haves": "Những điều nên có",
+    "status": {
+      "pending": "Thông tin việc làm này chưa được xác thực",
+      "closed": "Công việc đã đóng"
+    },
     "no_nice_to_haves": "Không có điều nên có nào được liệt kê.",
     "work_locations": "Vị trí văn phòng",
     "no_work_locations": "Không có vị trí văn phòng nào",

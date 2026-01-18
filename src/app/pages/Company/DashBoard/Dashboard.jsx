@@ -403,6 +403,26 @@ const Dashboard = () => {
 
         {/* Job Updates Section */}
         <div className="bg-white rounded-xl py-4 px-6 shadow-sm space-y-4">
+        <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 flex items-start gap-3">
+            <div className="py-1">
+              <Info className="w-5 h-5 text-blue-600" />
+            </div>
+            <div className="flex-1">
+              <h4 className="text-sm font-semibold text-blue-900 mb-1">
+                Lưu ý: Tính năng này đang trong quá trình hoàn thiện.
+              </h4>
+              <p className="text-sm text-blue-800">
+                Dữ liệu hiển thị hiện tại là dữ liệu mẫu và chưa phản ánh số liệu thực tế.
+              </p>
+            </div>
+            <button
+              onClick={() => setShowInfoBanner(false)}
+              className="shrink-0 text-blue-600 hover:text-blue-800 transition-colors"
+              aria-label="Đóng thông báo"
+            >
+              <X className="w-5 h-5" />
+            </button>
+          </div>
           <div className="flex justify-between items-center">
             <h3 className="text-lg font-semibold text-gray-900">{t("company.dashboard.jobUpdates")}</h3>
             <button className="flex items-center gap-2 text-purple-600 hover:text-purple-700 font-medium text-sm">

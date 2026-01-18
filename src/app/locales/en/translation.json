@@ -199,6 +199,10 @@
     "who_you_are": "Who You Are",
     "no_requirements": "No requirements listed.",
     "nice_to_haves": "Nice-To-Haves",
+    "status": {
+      "pending": "Job information not verified yet",
+      "closed": "This job has been closed"
+    },
     "no_nice_to_haves": "No nice-to-haves listed.",
     "work_locations": "Office Locations",
     "no_work_locations": "No office locations available",

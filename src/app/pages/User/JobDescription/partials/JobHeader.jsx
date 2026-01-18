@@ -1,5 +1,5 @@
 import { motion } from "framer-motion";
-import { Share2 } from "lucide-react";
+import { Share2, CheckCircle } from "lucide-react";
 import { ApplicationModal } from "../../../../components";
 import { layoutType, srcAsset } from "../../../../lib";
 import { useState } from "react";
@@ -7,7 +7,7 @@ import { useTranslation } from "react-i18next";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui";
 
-export default function JobHeader({ job = {}, layout = layoutType.full, textButton, onClickButton }) {
+export default function JobHeader({ job = {}, layout = layoutType.full, textButton, onClickButton, disabled = false, statusInfo }) {
   const { t } = useTranslation();
   const navigate = useNavigate();
 
@@ -77,12 +77,18 @@ export default function JobHeader({ job = {}, layout = layoutType.full, textButt
             />
             <div>
               {layout === layoutType.preview ? (
-                <h5 className="text-3xl font-bold text-foreground mb-2">
+                <h5 className="text-3xl font-bold text-foreground mb-2 flex items-center gap-2">
                   {jobTitle}
+                  {statusInfo?.type === 'success' && statusInfo?.icon && (
+                    <CheckCircle className="w-7 h-7 text-green-600" />
+                  )}
                 </h5>
               ) : (
-                <h4 className="text-3xl font-bold text-foreground mb-2">
+                <h4 className="text-3xl font-bold text-foreground mb-2 flex items-center gap-2">
                   {jobTitle}
+                  {statusInfo?.type === 'success' && statusInfo?.icon && (
+                    <CheckCircle className="w-7 h-7 text-green-600" />
+                  )}
                 </h4>
               )}
               <p className="text-muted-foreground">
@@ -111,19 +117,23 @@ export default function JobHeader({ job = {}, layout = layoutType.full, textButt
                 <Button variant="outline" size="icon" className="rounded-md">
                   <Share2 className="w-5 h-5" />
                 </Button>
-                
+
                 <Button
-                  className="bg-primary hover:bg-primary/90 text-white font-semibold px-6 rounded-lg cursor-pointer"
+                  className={`font-semibold px-6 rounded-lg ${disabled
+                      ? 'bg-gray-400 cursor-not-allowed opacity-60'
+                      : 'bg-primary hover:bg-primary/90 cursor-pointer'
+                    } text-white`}
                   onClick={() => {
-                    if (onClickButton) {
+                    if (!disabled && onClickButton) {
                       onClickButton();
                     }
                   }}
+                  disabled={disabled}
                 >
                   {t("apply")}
                 </Button>
               </>
-            )}            
+            )}
           </div>
         </div>
       </motion.div>

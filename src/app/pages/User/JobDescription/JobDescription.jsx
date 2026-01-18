@@ -8,10 +8,12 @@ import { layoutType } from "../../../lib";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
 import { getJobById } from "../../../modules/services/jobsService";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useMemo } from "react";
 import { CircularProgress, Box, Skeleton, Container } from "@mui/material";
 import { Modal } from "antd";
 import { AUTHENTICATED } from "../../../../settings/localVar";
+import { AlertCircle, CheckCircle, XCircle } from "lucide-react";
+import { useTranslation } from "react-i18next";
 
 export default function JobDescription({
   job,
@@ -72,6 +74,7 @@ export default function JobDescription({
   const jobId = searchParams.get("id");
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const { t } = useTranslation();
 
   const jobFromStore = useSelector(state => state.jobs.job);
   const jobStatus = useSelector(state => state.jobs.status);
@@ -79,6 +82,51 @@ export default function JobDescription({
 
   const [isModalOpen, setIsModalOpen] = useState(false);
   const isLoggedIn = localStorage.getItem(AUTHENTICATED) === 'true';
+
+  // Calculate job status display
+  const jobStatusInfo = useMemo(() => {
+    const status = job?.status || jobFromStore?.status;
+
+    if (!status) return null;
+
+    switch (status.toLowerCase()) {
+      case 'pending':
+        return {
+          type: 'warning',
+          icon: AlertCircle,
+          message: t('job.status.pending'),
+          bgColor: 'bg-yellow-50',
+          borderColor: 'border-yellow-200',
+          textColor: 'text-yellow-800',
+          iconColor: 'text-yellow-600',
+          showApplyButton: true,
+        };
+      case 'approved':
+        return {
+          type: 'success',
+          icon: CheckCircle,
+          message: null,
+          showApplyButton: true,
+        };
+      case 'rejected':
+      case 'closed':
+        return {
+          type: 'error',
+          icon: XCircle,
+          message: t('job.status.closed'),
+          bgColor: 'bg-red-50',
+          borderColor: 'border-red-200',
+          textColor: 'text-red-800',
+          iconColor: 'text-red-600',
+          showApplyButton: false,
+        };
+      default:
+        return {
+          type: 'success',
+          showApplyButton: true,
+        };
+    }
+  }, [job?.status, jobFromStore?.status, t]);
 
   useEffect(() => {
     if (!jobId && job) return;
@@ -217,9 +265,23 @@ export default function JobDescription({
             job={job}
             layout={layout}
             onClickButton={() => setIsModalOpen(true)}
+            disabled={jobStatusInfo && !jobStatusInfo.showApplyButton}
+            statusInfo={jobStatusInfo}
           />
         }
       </div>
+
+      {/* Job Status Banner */}
+      {jobStatusInfo && jobStatusInfo.message && (
+        <div className={`mx-10 lg:mx-25 ${layout === layoutType.preview ? 'mt-4' : ''}`}>
+          <div className={`flex items-center gap-3 p-4 rounded-lg border ${jobStatusInfo.bgColor} ${jobStatusInfo.borderColor}`}>
+            {jobStatusInfo.icon && <jobStatusInfo.icon className={`w-6 h-6 ${jobStatusInfo.iconColor}`} />}
+            <p className={`font-medium ${jobStatusInfo.textColor}`}>
+              {jobStatusInfo.message}
+            </p>
+          </div>
+        </div>
+      )}
 
       <div className={`grid grid-cols-1 ${layout !== layoutType.preview ? "px-10 lg:px-25 lg:grid-cols-3 md:grid-cols-2 gap-8" : "px-10 lg:grid-cols-1 gap-y-8"}`}>
         <div className="lg:col-span-2">
