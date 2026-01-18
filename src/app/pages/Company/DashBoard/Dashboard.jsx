@@ -1,15 +1,36 @@
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect } from "react";
 import { useTranslation } from "react-i18next";
 import { Calendar, ChevronRight, TrendingUp, TrendingDown, Eye, FileCheck, X, Info } from "lucide-react";
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from "recharts";
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
+import { useNavigate } from "react-router-dom";
+import { getCompanyStats } from "@/modules";
+import { Spin } from "antd";
 
 const Dashboard = () => {
   const { t } = useTranslation();
-  const [timePeriod, setTimePeriod] = useState("Week");
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+  const [timePeriod, setTimePeriod] = useState("Year");
   const [activeTab, setActiveTab] = useState("Overview");
-  const [showInfoBanner, setShowInfoBanner] = useState(true);
+  const [showInfoBanner, setShowInfoBanner] = useState(false);
+  const [selectedYear, setSelectedYear] = useState(new Date().getFullYear());
+
   const currentUser = useSelector((state) => state.auth.user) || {};
+  const { stats, statsStatus, statsError } = useSelector((state) => state.company);
+
+  // Fetch company stats on mount
+  useEffect(() => {
+    const companyId = currentUser.company.id
+    if (companyId) {
+      dispatch(getCompanyStats({
+        companyId: companyId,
+        year: selectedYear
+      }));
+    } else {
+      console.warn('No company ID found in currentUser');
+    }
+  }, [dispatch, currentUser, selectedYear]);
 
   // Tính toán tuần hiện tại (từ thứ 2 đến chủ nhật)
   const currentWeekRange = useMemo(() => {
@@ -42,39 +63,20 @@ const Dashboard = () => {
     };
   }, []);
 
-  const chartDataByPeriod = {
-    Week: [
-      { day: "Mon", jobView: 150, jobApplied: 120 },
-      { day: "Tue", jobView: 122, jobApplied: 90 },
-      { day: "Wed", jobView: 130, jobApplied: 110 },
-      { day: "Thu", jobView: 165, jobApplied: 145 },
-      { day: "Fri", jobView: 180, jobApplied: 85 },
-      { day: "Sat", jobView: 95, jobApplied: 75 },
-      { day: "Sun", jobView: 140, jobApplied: 105 },
-    ],
-    Month: [
-      { day: "Week 1", jobView: 890, jobApplied: 650 },
-      { day: "Week 2", jobView: 920, jobApplied: 720 },
-      { day: "Week 3", jobView: 1050, jobApplied: 810 },
-      { day: "Week 4", jobView: 1120, jobApplied: 890 },
-    ],
-    Year: [
-      { day: "Jan", jobView: 3200, jobApplied: 2400 },
-      { day: "Feb", jobView: 2800, jobApplied: 2100 },
-      { day: "Mar", jobView: 3500, jobApplied: 2800 },
-      { day: "Apr", jobView: 3100, jobApplied: 2500 },
-      { day: "May", jobView: 3800, jobApplied: 3000 },
-      { day: "Jun", jobView: 3400, jobApplied: 2700 },
-      { day: "Jul", jobView: 3900, jobApplied: 3200 },
-      { day: "Aug", jobView: 3600, jobApplied: 2900 },
-      { day: "Sep", jobView: 4100, jobApplied: 3400 },
-      { day: "Oct", jobView: 3800, jobApplied: 3100 },
-      { day: "Nov", jobView: 4200, jobApplied: 3500 },
-      { day: "Dec", jobView: 4500, jobApplied: 3800 },
-    ],
-  };
+  const chartData = useMemo(() => {
+    if (!stats?.timeline) return [];
 
-  const chartData = chartDataByPeriod[timePeriod];
+    const monthNames = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+
+    return monthNames.map((month, index) => {
+      const monthKey = `${selectedYear}-${String(index + 1).padStart(2, '0')}`;
+      return {
+        day: month,
+        jobPosted: stats.timeline.jobsByMonth?.[monthKey] || 0,
+        jobApplied: stats.timeline.applicationsByMonth?.[monthKey] || 0,
+      };
+    });
+  }, [stats, selectedYear]);
 
   const jobs = [
     {
@@ -127,6 +129,35 @@ const Dashboard = () => {
     },
   ];
 
+  // Loading state
+  if (statsStatus === 'loading') {
+    return (
+      <div className="min-h-screen bg-gray-50 p-6 flex items-center justify-center">
+        <Spin size="large" />
+      </div>
+    );
+  }
+
+  // Error state
+  if (statsStatus === 'failed') {
+    return (
+      <div className="min-h-screen bg-gray-50 p-6 flex items-center justify-center">
+        <div className="text-center">
+          <p className="text-red-600 mb-4">{statsError || "Failed to load statistics"}</p>
+          <button
+            onClick={() => dispatch(getCompanyStats({ companyId: currentUser.company_id, year: selectedYear }))}
+            className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700"
+          >
+            Retry
+          </button>
+        </div>
+      </div>
+    );
+  }
+
+  const overview = stats?.overview || {};
+  const employmentTypes = stats?.categories?.employmentTypes || {};
+
   return (
     <div className="min-h-screen bg-gray-50 p-6">
       <div className="max-w-7xl mx-auto space-y-6">
@@ -141,7 +172,7 @@ const Dashboard = () => {
                 Lưu ý: Tính năng này đang trong quá trình hoàn thiện.
               </h4>
               <p className="text-sm text-blue-800">
-                Dữ liệu hiển thị hiện tại là dữ liệu mẫu và chưa phản ánh số liệu thực tế.              
+                Dữ liệu hiển thị hiện tại là dữ liệu mẫu và chưa phản ánh số liệu thực tế.
               </p>
             </div>
             <button
@@ -158,36 +189,45 @@ const Dashboard = () => {
         <div className="flex justify-between items-center">
           <div>
             <h3 className="text-2xl font-bold text-gray-900">{t("company.dashboard.greeting", { name: currentUser.first_name })}</h3>
-            <p className="text-gray-500 text-sm">
+            {/* <p className="text-gray-500 text-sm">
               {t("company.dashboard.statisticReport", { from: currentWeekRange.fromLong, to: currentWeekRange.toLong })}
-            </p>
+            </p> */}
           </div>
-          <button className="flex items-center gap-2 px-4 py-2 border border-gray-300 rounded-lg bg-white hover:bg-gray-50">
+          {/* <button className="flex items-center gap-2 px-4 py-2 border border-gray-300 rounded-lg bg-white hover:bg-gray-50">
             <span className="text-sm">{t("company.dashboard.dateRange", { from: currentWeekRange.fromShort, to: currentWeekRange.toShort })}</span>
             <Calendar className="w-4 h-4" />
-          </button>
+          </button> */}
         </div>
 
         {/* Top Cards */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          <div className="bg-purple-600 text-white py-4 px-6 rounded-xl flex justify-between items-center cursor-pointer hover:bg-purple-700 transition">
+          <div
+            onClick={() => navigate('/applicants')}
+            className="bg-purple-600 text-white py-4 px-6 rounded-xl flex justify-between items-center cursor-pointer hover:bg-purple-700 transition"
+          >
             <div>
-              <div className="text-4xl font-bold mb-1">76</div>
-              <div className="text-sm opacity-90">{t("company.dashboard.newCandidates")}</div>
+              <div className="text-4xl font-bold mb-1">{overview.totalApplications || 0}</div>
+              <div className="text-sm opacity-90">{t("company.dashboard.totalApplications") || "Total Applications"}</div>
             </div>
             <ChevronRight className="w-6 h-6" />
           </div>
-          <div className="bg-cyan-400 text-white py-4 px-6 rounded-xl flex justify-between items-center cursor-pointer hover:bg-cyan-500 transition">
+          <div
+            onClick={() => navigate('job-listing')}
+            className="bg-cyan-400 text-white py-4 px-6 rounded-xl flex justify-between items-center cursor-pointer hover:bg-cyan-500 transition"
+          >
             <div>
-              <div className="text-4xl font-bold mb-1">3</div>
-              <div className="text-sm opacity-90">{t("company.dashboard.scheduleToday")}</div>
+              <div className="text-4xl font-bold mb-1">{overview.activeJobs || 0}</div>
+              <div className="text-sm opacity-90">{t("company.dashboard.activeJobs") || "Active Jobs"}</div>
             </div>
             <ChevronRight className="w-6 h-6" />
           </div>
-          <div className="bg-blue-500 text-white py-4 px-6 rounded-xl flex justify-between items-center cursor-pointer hover:bg-blue-600 transition">
+          <div
+            // onClick={() => navigate('/company/all-applicants')}
+            className="bg-blue-500 text-white py-4 px-6 rounded-xl flex justify-between items-center cursor-pointer hover:bg-blue-600 transition"
+          >
             <div>
-              <div className="text-4xl font-bold mb-1">24</div>
-              <div className="text-sm opacity-90">{t("company.dashboard.messagesReceived")}</div>
+              <div className="text-4xl font-bold mb-1">{overview.successRate || 0}%</div>
+              <div className="text-sm opacity-90">{t("company.dashboard.successRate") || "Success Rate"}</div>
             </div>
             <ChevronRight className="w-6 h-6" />
           </div>
@@ -200,34 +240,45 @@ const Dashboard = () => {
               <div>
                 <h3 className="text-lg font-semibold text-gray-900">{t("company.dashboard.jobStatistics")}</h3>
                 <p className="text-sm text-gray-500">
-                  {t("company.dashboard.showingJobStatistic", { from: currentWeekRange.fromShort, to: currentWeekRange.toShort })}
+                  {t("company.dashboard.yearlyStatistics", { year: selectedYear }) || `Showing statistics for year ${selectedYear}`}
                 </p>
               </div>
               <div className="flex gap-2">
-                {["Week", "Month", "Year"].map((period) => (
+                {stats?.availableYears?.map((year) => (
                   <button
-                    key={period}
-                    onClick={() => setTimePeriod(period)}
-                    className={`px-4 py-2 text-sm font-medium rounded-lg transition ${timePeriod === period ? "text-purple-600 bg-purple-50" : "text-gray-600 hover:bg-gray-50"
+                    key={year}
+                    onClick={() => setSelectedYear(year)}
+                    className={`px-4 py-2 text-sm font-medium rounded-lg transition ${selectedYear === year ? "text-purple-600 bg-purple-50" : "text-gray-600 hover:bg-gray-50"
                       }`}
                   >
-                    {t(`company.dashboard.${period.toLowerCase()}`) || period}
+                    {year}
                   </button>
                 ))}
+                <button
+                  onClick={() => setSelectedYear(new Date().getFullYear())}
+                  className={`px-4 py-2 text-sm font-medium rounded-lg transition ${selectedYear === new Date().getFullYear() ? "text-purple-600 bg-purple-50" : "text-gray-600 hover:bg-gray-50"
+                    }`}
+                >
+                  {new Date().getFullYear()}
+                </button>
               </div>
             </div>
 
             <div className="flex gap-4 border-b">
-              {["Overview", "Jobs View", "Jobs Applied"].map((tab) => (
+              {[
+                { key: "Overview", label: t("company.dashboard.overview") },
+                { key: "Jobs Posted", label: t("company.dashboard.jobsposted") || "Jobs Posted" },
+                { key: "Applications", label: t("company.dashboard.applications") || "Applications" }
+              ].map((tab) => (
                 <button
-                  key={tab}
-                  onClick={() => setActiveTab(tab)}
-                  className={`pb-3 text-sm font-medium transition ${activeTab === tab
+                  key={tab.key}
+                  onClick={() => setActiveTab(tab.key)}
+                  className={`pb-3 text-sm font-medium transition ${activeTab === tab.key
                     ? "text-purple-600 border-b-2 border-purple-600"
                     : "text-gray-500 hover:text-gray-700"
                     }`}
                 >
-                  {t(`company.dashboard.${tab.replace(/\s/g, "").toLowerCase()}`) || tab}
+                  {tab.label}
                 </button>
               ))}
             </div>
@@ -238,11 +289,11 @@ const Dashboard = () => {
                 <XAxis dataKey="day" tick={{ fill: "#6b7280", fontSize: 12 }} />
                 <YAxis tick={{ fill: "#6b7280", fontSize: 12 }} />
                 <Tooltip />
-                {(activeTab === "Overview" || activeTab === "Jobs View") && (
-                  <Bar dataKey="jobView" fill="#60a5fa" radius={[4, 4, 0, 0]} />
+                {(activeTab === "Overview" || activeTab === "Jobs Posted") && (
+                  <Bar dataKey="jobPosted" fill="#60a5fa" radius={[4, 4, 0, 0]} name="Jobs Posted" />
                 )}
-                {(activeTab === "Overview" || activeTab === "Jobs Applied") && (
-                  <Bar dataKey="jobApplied" fill="#10b981" radius={[4, 4, 0, 0]} />
+                {(activeTab === "Overview" || activeTab === "Applications") && (
+                  <Bar dataKey="jobApplied" fill="#10b981" radius={[4, 4, 0, 0]} name="Applications" />
                 )}
               </BarChart>
             </ResponsiveContainer>
@@ -250,11 +301,11 @@ const Dashboard = () => {
             <div className="flex gap-6 justify-center">
               <div className="flex items-center gap-2">
                 <div className="w-3 h-3 bg-blue-400 rounded"></div>
-                <span className="text-sm text-gray-600">{t("company.dashboard.jobView")}</span>
+                <span className="text-sm text-gray-600">{t("company.dashboard.jobsposted") || "Jobs Posted"}</span>
               </div>
               <div className="flex items-center gap-2">
                 <div className="w-3 h-3 bg-emerald-500 rounded"></div>
-                <span className="text-sm text-gray-600">{t("company.dashboard.jobApplied")}</span>
+                <span className="text-sm text-gray-600">{t("company.dashboard.applications") || "Applications"}</span>
               </div>
             </div>
 
@@ -264,13 +315,11 @@ const Dashboard = () => {
                   <div className="p-2 bg-blue-50 rounded-lg">
                     <Eye className="w-5 h-5 text-blue-500" />
                   </div>
-                  <span className="text-sm text-gray-600">Job Views</span>
+                  <span className="text-sm text-gray-600">{t("company.dashboard.jobOpen") || "Total Jobs"}</span>
                 </div>
-                <div className="text-3xl font-bold text-gray-900">2,342</div>
+                <div className="text-3xl font-bold text-gray-900">{overview.totalJobs || 0}</div>
                 <div className="flex items-center gap-1 mt-1">
-                  <span className="text-sm text-gray-600">This Week</span>
-                  <span className="text-sm text-emerald-500 font-medium">6.4%</span>
-                  <TrendingUp className="w-4 h-4 text-emerald-500" />
+                  <span className="text-sm text-gray-600">{t("company.dashboard.activeJobs")}: {overview.activeJobs || 0}</span>
                 </div>
               </div>
               <div className="p-4 border border-gray-200 rounded-lg">
@@ -278,13 +327,11 @@ const Dashboard = () => {
                   <div className="p-2 bg-emerald-50 rounded-lg">
                     <FileCheck className="w-5 h-5 text-emerald-500" />
                   </div>
-                  <span className="text-sm text-gray-600">Job Applied</span>
+                  <span className="text-sm text-gray-600">{t("company.dashboard.applications") || "Applications"}</span>
                 </div>
-                <div className="text-3xl font-bold text-gray-900">654</div>
+                <div className="text-3xl font-bold text-gray-900">{overview.totalApplications || 0}</div>
                 <div className="flex items-center gap-1 mt-1">
-                  <span className="text-sm text-gray-600">This Week</span>
-                  <span className="text-sm text-red-500 font-medium">0.5%</span>
-                  <TrendingDown className="w-4 h-4 text-red-500" />
+                  <span className="text-sm text-gray-600">{t("company.dashboard.successRate")}: {overview.successfulApplications || 0}</span>
                 </div>
               </div>
             </div>
@@ -295,61 +342,60 @@ const Dashboard = () => {
             <div className="sticky top-4 space-y-6">
               <div className="bg-white rounded-xl py-4 px-6 shadow-sm space-y-2">
                 <h3 className="text-lg font-semibold text-gray-900">{t("company.dashboard.jobOpen")}</h3>
-                <div className="text-4xl font-bold text-gray-900">12</div>
+                <div className="text-4xl font-bold text-gray-900">{overview.activeJobs || 0}</div>
                 <div className="text-sm text-gray-500">{t("company.dashboard.jobsOpened")}</div>
               </div>
 
               <div className="bg-white rounded-xl py-4 px-6 shadow-sm space-y-2">
                 <h3 className="text-lg font-semibold text-gray-900">{t("company.dashboard.applicantsSummary")}</h3>
-                <div className="text-4xl font-bold text-gray-900">67</div>
+                <div className="text-4xl font-bold text-gray-900">{overview.totalApplications || 0}</div>
                 <div className="text-sm text-gray-500">{t("company.dashboard.applicants")}</div>
 
-                <div className="h-2 bg-gray-100 rounded-full overflow-hidden">
-                  <div className="h-full flex">
-                    <div className="bg-purple-600" style={{ width: "45%" }}></div>
-                    <div className="bg-emerald-400" style={{ width: "24%" }}></div>
-                    <div className="bg-cyan-400" style={{ width: "22%" }}></div>
-                    <div className="bg-blue-400" style={{ width: "9%" }}></div>
-                  </div>
-                </div>
+                {Object.keys(employmentTypes).length > 0 ? (
+                  <>
+                    <div className="h-2 bg-gray-100 rounded-full overflow-hidden">
+                      <div className="h-full flex">
+                        {Object.entries(employmentTypes).map(([_, count], index) => {
+                          const colors = ["bg-purple-600", "bg-emerald-400", "bg-cyan-400", "bg-blue-400", "bg-red-500"];
+                          const total = Object.values(employmentTypes).reduce((a, b) => a + b, 0);
+                          const percentage = total > 0 ? (count / total) * 100 : 0;
+                          return (
+                            <div
+                              key={index}
+                              className={colors[index % colors.length]}
+                              style={{ width: `${percentage}%` }}
+                            ></div>
+                          );
+                        })}
+                      </div>
+                    </div>
 
-                <div className="space-y-2">
-                  <div className="flex items-center justify-between text-sm">
-                    <div className="flex items-center gap-2">
-                      <div className="w-3 h-3 bg-purple-600 rounded"></div>
-                      <span className="text-gray-600">{t("company.dashboard.fullTime")}</span>
+                    <div className="space-y-2">
+                      {Object.entries(employmentTypes).map(([type, count], index) => {
+                        const colors = [
+                          { bg: "bg-purple-600", text: "text-purple-600" },
+                          { bg: "bg-emerald-400", text: "text-emerald-400" },
+                          { bg: "bg-cyan-400", text: "text-cyan-400" },
+                          { bg: "bg-blue-400", text: "text-blue-400" },
+                          { bg: "bg-red-500", text: "text-red-500" }
+                        ];
+                        const color = colors[index % colors.length];
+
+                        return (
+                          <div key={type} className="flex items-center justify-between text-sm">
+                            <div className="flex items-center gap-2">
+                              <div className={`w-3 h-3 ${color.bg} rounded`}></div>
+                              <span className="text-gray-600">{type || "Unknown"}</span>
+                            </div>
+                            <span className="font-medium">{count}</span>
+                          </div>
+                        );
+                      })}
                     </div>
-                    <span className="font-medium">45</span>
-                  </div>
-                  <div className="flex items-center justify-between text-sm">
-                    <div className="flex items-center gap-2">
-                      <div className="w-3 h-3 bg-cyan-400 rounded"></div>
-                      <span className="text-gray-600">{t("company.dashboard.internship")}</span>
-                    </div>
-                    <span className="font-medium">32</span>
-                  </div>
-                  <div className="flex items-center justify-between text-sm">
-                    <div className="flex items-center gap-2">
-                      <div className="w-3 h-3 bg-emerald-400 rounded"></div>
-                      <span className="text-gray-600">{t("company.dashboard.partTime")}</span>
-                    </div>
-                    <span className="font-medium">24</span>
-                  </div>
-                  <div className="flex items-center justify-between text-sm">
-                    <div className="flex items-center gap-2">
-                      <div className="w-3 h-3 bg-red-500 rounded"></div>
-                      <span className="text-gray-600">{t("company.dashboard.contract")}</span>
-                    </div>
-                    <span className="font-medium">30</span>
-                  </div>
-                  <div className="flex items-center justify-between text-sm">
-                    <div className="flex items-center gap-2">
-                      <div className="w-3 h-3 bg-blue-400 rounded"></div>
-                      <span className="text-gray-600">{t("company.dashboard.remote")}</span>
-                    </div>
-                    <span className="font-medium">22</span>
-                  </div>
-                </div>
+                  </>
+                ) : (
+                  <p className="text-sm text-gray-500 italic">No employment type data available</p>
+                )}
               </div>
             </div>
           </div>

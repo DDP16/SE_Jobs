@@ -73,12 +73,34 @@ export const deleteCompany = createAsyncThunk(
     }
 );
 
+export const getCompanyStats = createAsyncThunk(
+    "companies/getCompanyStats",
+    async ({ companyId, year }, { rejectWithValue }) => {
+        try {
+            const params = {};
+            if (year) {
+                params.year = year;
+            }
+
+            const response = await api.get(`${apiBaseUrl}/${companyId}/stats`, {
+                params,
+            });
+            return response.data;
+        } catch (error) {
+            return rejectWithValue(error.response?.data?.message || "Failed to get company stats");
+        }
+    }
+);
+
 const initialState = {
     company: null,
     companies: [],
+    stats: null,
     status: "idle",
     error: null,
-    pagination: {}
+    pagination: {},
+    statsStatus: "idle",
+    statsError: null,
 }
 
 const companiesSlice = createSlice({
@@ -172,6 +194,20 @@ const companiesSlice = createSlice({
             .addCase(deleteCompany.rejected, (state, action) => {
                 state.status = "failed";
                 state.error = action.payload;
+            })
+
+            // getCompanyStats
+            .addCase(getCompanyStats.pending, (state) => {
+                state.statsStatus = "loading";
+                state.statsError = null;
+            })
+            .addCase(getCompanyStats.fulfilled, (state, action) => {
+                state.statsStatus = "succeeded";
+                state.stats = action.payload?.data || action.payload;
+            })
+            .addCase(getCompanyStats.rejected, (state, action) => {
+                state.statsStatus = "failed";
+                state.statsError = action.payload;
             });
     },
 });

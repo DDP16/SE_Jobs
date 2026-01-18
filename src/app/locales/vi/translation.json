@@ -281,18 +281,24 @@
       "newCandidates": "Ứng viên mới",
       "scheduleToday": "Lịch hôm nay",
       "messagesReceived": "Tin nhắn nhận được",
+      "totalApplications": "Tổng đơn ứng tuyển",
+      "activeJobs": "Công việc đang tuyển",
+      "successRate": "Tỷ lệ thành công",
       "jobStatistics": "Thống kê công việc",
       "showingJobStatistic": "Hiển thị thống kê công việc từ {{from}} đến {{to}}",
+      "yearlyStatistics": "Hiển thị thống kê năm {{year}}",
       "week": "Tuần",
       "month": "Tháng",
       "year": "Năm",
       "overview": "Tổng quan",
       "jobsview": "Lượt xem công việc",
       "jobsapplied": "Đơn ứng tuyển",
+      "jobsposted": "Công việc đã đăng",
+      "applications": "Đơn ứng tuyển",
       "jobView": "Lượt xem",
       "jobApplied": "Đã ứng tuyển",
       "jobOpen": "Công việc đang mở",
-      "jobsOpened": "Công việc được mở trong tuần",
+      "jobsOpened": "Công việc đã mở",
       "applicantsSummary": "Tổng quan ứng viên",
       "applicants": "Ứng viên",
       "fullTime": "Toàn thời gian",
@@ -922,8 +928,8 @@
       "viewAllCompanies": "Xem tất cả công ty"
     },
     "recommendJobSection": {
-        "title": "Việc làm",
-        "subtitle":"Đề xuất cho bạn"
+      "title": "Việc làm",
+      "subtitle": "Đề xuất cho bạn"
     },
     "ctaSection": {
       "postJob": {
