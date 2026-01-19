@@ -1,15 +1,12 @@
 import React, { useState } from "react";
-import { Box, Typography, Button, Chip } from "@mui/material";
+import { Box, Typography, Chip } from "@mui/material";
 import {
   Business,
-  CalendarToday,
-  Favorite,
-  FavoriteBorder,
   LocationOn,
   People,
 } from "@mui/icons-material";
-import { srcAsset } from "../../../../lib";
 import { useTranslation } from "react-i18next";
+import { srcAsset } from "../../lib";
 
 export default function CompanyHeader({ company = {} }) {
   const { t } = useTranslation();
@@ -80,12 +77,7 @@ export default function CompanyHeader({ company = {} }) {
   };
 
   return (
-    <Box
-      sx={{
-        px: { xs: 2, sm: 4, md: 6, lg: 8 },
-        py: { xs: 2, md: 3, lg: 4 }
-      }}
-    >
+    <Box>
       <Box
         sx={{
           display: "flex",

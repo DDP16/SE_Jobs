@@ -1,14 +1,14 @@
 import { FileText } from "lucide-react";
 import { useTranslation } from "react-i18next";
 
-export default function ResumeTab({ application, studentInfo }) {
+export default function ResumeTab({ studentInfo }) {
     const { t } = useTranslation();
 
     return (
         <div className={`w-full ${studentInfo.cv && studentInfo.cv[0] ? 'h-[800px]' : 'h-64'} border rounded-lg overflow-hidden`}>
             {studentInfo.cv && studentInfo.cv[0] ? (
                 <embed
-                    src={application.resume_url}
+                    src={studentInfo.cv[0].filepath}
                     type="application/pdf"
                     width="100%"
                     height="100%"

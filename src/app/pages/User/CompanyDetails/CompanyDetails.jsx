@@ -1,16 +1,10 @@
 import { useEffect } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import { Box, Paper, Typography } from '@mui/material';
-import CompanyHeader from './partials/CompanyHeader';
-import CompanyOverview from './partials/CompanyOverview';
-import CompanyInfo from './partials/CompanyInfo';
-import CompanyJobs from './partials/CompanyJobs';
-import { PerksSection } from "../../../components";
 import { getCompany } from '../../../modules/services/companyService';
 import { useDispatch, useSelector } from 'react-redux';
-import { mockJobs } from '../../../../mocks/mockData';
-import OpenJobs from './partials/OpenJobs';
 import { useTranslation } from 'react-i18next';
+import { CompanyHeader, CompanyInfo, CompanyOverview, OpenJobs } from '../../../components/company';
 
 export default function CompanyDetails() {
     const { t } = useTranslation();
@@ -25,13 +19,6 @@ export default function CompanyDetails() {
             dispatch(getCompany(id));
         }
     }, [id, dispatch]);
-
-    // Get jobs for this company
-    const companyJobs = company?.name
-        ? mockJobs.filter(job =>
-            job.company?.toLowerCase() === company.name.toLowerCase()
-        )
-        : [];
 
     // Show loading state
     if (companyStatus === "loading") {
@@ -58,19 +45,10 @@ export default function CompanyDetails() {
     }
 
     return (
-        <Box sx={{ minHeight: '100vh', bgcolor: 'background.default' }}>
-            {/* Breadcrumb */}
-            <Box sx={{ bgcolor: 'background.paper', px: { xs: 2, md: 4 }, borderBottom: '1px solid', borderColor: 'divider' }}>
-                {/* <Box sx={{ maxWidth: 1200, mx: 'auto' }}>
-                    <p className="text-sm text-muted-foreground">
-                        Trang chủ / Danh sách công ty / {company.name}
-                    </p>
-                </Box> */}
-            </Box>
-
+        <Box sx={{ minHeight: '100vh', bgcolor: 'background.default' }} className="px-8 xl:px-16 py-8 space-y-8">
             <CompanyHeader company={company} />
 
-            <Box className="px-8 xl:px-16">
+            <Box>
                 <Box sx={{
                     display: 'grid',
                     gridTemplateColumns: { xs: '1fr', md: '2fr 1fr' },
@@ -125,9 +103,7 @@ export default function CompanyDetails() {
                 </Box>
             </Box>
 
-            <div className="px-8 xl:px-16 py-10 space-y-10">
-                <OpenJobs company={company} />
-            </div>
+            <OpenJobs company={company} />
         </Box>
     );
 }

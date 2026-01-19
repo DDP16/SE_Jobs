@@ -220,6 +220,7 @@
     "no_similar_jobs": "No similar jobs found"
   },
   "company": {
+    "text": "Company",
     "post_job": "Post a Job",
     "sidebar": {
       "dashboard": "Dashboard",
@@ -391,7 +392,9 @@
       "save": "Save",
       "close": "Close",
       "characters": "characters",
-      "tips": "Tips:"
+      "tips": "Tips:",
+      "update": "Update",
+      "confirm": "Confirm"
     },
     "skills": {
       "title": "Core Skills",
@@ -1013,5 +1016,42 @@
     "submitError": "An error occurred while submitting the application",
     "submitSuccess": "Application submitted successfully!",
     "pleaseSelectCv": "Please select a CV to apply."
+  },
+  "jobStatus": {
+    "updateTitle": "Update Job Status",
+    "updateMessage": "Are you sure you want to update the status of this job?",
+    "currentStatus": "Current Status",
+    "newStatus": "New Status",
+    "updateWarning": "Changing the job status will affect its visibility to applicants.",
+    "confirmTitle": "Confirm Status Update",
+    "confirmMessage": "Are you sure you want to update the job status?",
+    "from": "From",
+    "to": "To",
+    "confirmWarning": "This action will immediately change the job status. Make sure this is what you want.",
+    "closed": "Closed",
+    "pending": "Pending",
+    "approved": "Approved",
+    "rejected": "Rejected",
+    "updateSuccess": "Success",
+    "updateSuccessDesc": "Job status has been updated successfully.",
+    "updateFailed": "Failed",
+    "updateFailedDesc": "Failed to update job status. Please try again."
+  },
+  "companyStatus": {
+    "updateTitle": "Update Company Status",
+    "updateSuccess": "Success",
+    "updateSuccessMessage": "Company status has been updated successfully.",
+    "updateFailed": "Update Failed",
+    "updateFailedMessage": "Failed to update company status. Please try again.",
+    "verified": "Verified Status",
+    "verifiedDesc": "Company is verified",
+    "unverifiedDesc": "Company is not verified",
+    "active": "Active Status",
+    "activeDesc": "Company account is active",
+    "inactiveDesc": "Company account is inactive",
+    "updateWarning": "Changing the company status will affect its visibility and permissions.",
+    "confirmTitle": "Confirm Status Update",
+    "confirmMessage": "Are you sure you want to update the company status?",
+    "confirmWarning": "This action will immediately change the company status. Make sure this is what you want."
   }
 }

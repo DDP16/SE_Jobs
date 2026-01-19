@@ -3,6 +3,7 @@ import api from "../AxiosInstance";
 
 const apiBaseUrl = "/api/applications";
 const companyApiBaseUrl = apiBaseUrl + "/company";
+const adminApiBaseUrl = apiBaseUrl + "/admin";
 
 // Service applications for the company
 export const getCompanyApplications = createAsyncThunk(
@@ -135,6 +136,45 @@ export const updateApplication = createAsyncThunk(
     }
 );
 
+export const getAdminApplications = createAsyncThunk(
+    "applications/getAdminApplications",
+    async (params = {}, { rejectWithValue }) => {
+        try {
+            const queryParams = Object.fromEntries(
+                Object.entries(params).filter(
+                    ([, value]) => value !== undefined && value !== null && value !== ""
+                )
+            );
+            const response = await api.get(`${adminApiBaseUrl}/list`, {
+                params: queryParams,
+            });
+            return response.data;
+        } catch (error) {
+            return rejectWithValue(error.response?.data?.message || "Something went wrong");
+        }
+    }
+);
+
+export const getAdminApplicationsByJobId = createAsyncThunk(
+    "applications/getAdminApplicationsByJobId",
+    async ({ jobId, params = {} }, { rejectWithValue }) => {
+        try {
+            let queryParams = Object.fromEntries(
+                Object.entries(params).filter(
+                    ([, value]) => value !== undefined && value !== null && value !== ""
+                )
+            );
+            queryParams.job_id = jobId;
+            const response = await api.get(`${adminApiBaseUrl}/list`, {
+                params: queryParams,
+            });
+            return response.data;
+        } catch (error) {
+            return rejectWithValue(error.response?.data?.message || "Something went wrong");
+        }
+    }
+);
+
 const initialState = {
     application: null,
     applications: [],
@@ -258,6 +298,32 @@ const applicationsSlice = createSlice({
             .addCase(updateApplication.rejected, (state, action) => {
                 state.status = "failed";
                 state.error = action.payload || "Failed to update application";
+            })
+            .addCase(getAdminApplications.pending, (state) => {
+                state.status = "loading";
+                state.error = null;
+            })
+            .addCase(getAdminApplications.fulfilled, (state, action) => {
+                state.status = "succeeded";
+                state.applications = action.payload.data || [];
+                state.pagination = action.payload.pagination || null;
+            })
+            .addCase(getAdminApplications.rejected, (state, action) => {
+                state.status = "failed";
+                state.error = action.payload || "Failed to fetch applications";
+            })
+            .addCase(getAdminApplicationsByJobId.pending, (state) => {
+                state.status = "loading";
+                state.error = null;
+            })
+            .addCase(getAdminApplicationsByJobId.fulfilled, (state, action) => {
+                state.status = "succeeded";
+                state.applicationsByJobId = action.payload.data || [];
+                state.paginationByJobId = action.payload.pagination || null;
+            })
+            .addCase(getAdminApplicationsByJobId.rejected, (state, action) => {
+                state.status = "failed";
+                state.error = action.payload || "Failed to fetch applications";
             });
     },
 });

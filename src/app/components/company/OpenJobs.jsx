@@ -1,12 +1,12 @@
 import { ArrowRight } from "lucide-react";
-import { srcAsset } from "../../../../lib";
+import { srcAsset } from "../../lib";
 import { JobCardSecond } from "@/components";
 import { useTranslation } from "react-i18next";
 import { useDispatch, useSelector } from 'react-redux';
-import { getJobs } from '../../../../modules';
 import { useEffect, useMemo } from 'react';
 import { Spin } from 'antd';
 import { LoadingOutlined } from '@ant-design/icons';
+import { getJobs } from "../../modules";
 
 export default function OpenJobs({ company = {} }) {
   const { t } = useTranslation();

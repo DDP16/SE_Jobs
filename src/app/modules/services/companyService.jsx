@@ -61,6 +61,22 @@ export const updateCompany = createAsyncThunk(
     }
 );
 
+export const updateCompanyAdmin = createAsyncThunk(
+    "companies/updateCompanyAdmin",
+    async ({ companyId, adminData }, { rejectWithValue }) => {
+        try {
+            const response = await api.put(
+                `${apiBaseUrl}/${companyId}/admin`,
+                adminData,
+                { withCredentials: true }
+            );
+            return response.data;
+        } catch (error) {
+            return rejectWithValue(error.response?.data?.message || "Something went wrong");
+        }
+    }
+);
+
 export const deleteCompany = createAsyncThunk(
     "companies/deleteCompany",
     async (companyId, { rejectWithValue }) => {
@@ -144,14 +160,35 @@ const companiesSlice = createSlice({
                     const updatedId = updated.id || updated.company_id || updated.companyId;
                     // Update in companies array
                     const idx = state.companies.findIndex(c => c.id === updatedId || c.company_id === updatedId || c.companyId === updatedId);
-                    if (idx !== -1) state.companies[idx] = updated;
+                    if (idx !== -1) state.companies[idx] = { ...state.companies[idx], ...updated };
                     // Update current company if it matches
                     if (state.company && (state.company.id === updatedId || state.company.company_id === updatedId || state.company.companyId === updatedId)) {
-                        state.company = updated;
+                        state.company = { ...state.company, ...updated };
                     }
                 }
             })
             .addCase(updateCompany.rejected, (state, action) => {
+                state.status = "failed";
+                state.error = action.payload;
+            })
+            // updateCompanyAdmin
+            .addCase(updateCompanyAdmin.pending, (state) => {
+                state.status = "loading";
+                state.error = null;
+            })
+            .addCase(updateCompanyAdmin.fulfilled, (state, action) => {
+                state.status = "succeeded";
+                const updated = action.payload?.data ?? action.payload;
+                if (updated) {
+                    const updatedId = updated.id || updated.company_id || updated.companyId;
+                    const idx = state.companies.findIndex(c => c.id === updatedId || c.company_id === updatedId || c.companyId === updatedId);
+                    if (idx !== -1) state.companies[idx] = { ...state.companies[idx], ...updated };
+                    if (state.company && (state.company.id === updatedId || state.company.company_id === updatedId || state.company.companyId === updatedId)) {
+                        state.company = { ...state.company, ...updated };
+                    }
+                }
+            })
+            .addCase(updateCompanyAdmin.rejected, (state, action) => {
                 state.status = "failed";
                 state.error = action.payload;
             })
