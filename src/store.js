@@ -22,6 +22,7 @@ import applicationsReducer from "./app/modules/services/applicationsService";
 import studentsReducer from "./app/modules/services/studentService";
 import recommendationReducer from "./app/modules/services/recommendationService";
 import jobNotificationSubscriptionReducer from "./app/modules/services/jobNotificationSubscription";
+import adminReducer from "./app/modules/services/adminService";
 
 export default configureStore({
   reducer: {
@@ -48,5 +49,6 @@ export default configureStore({
     students: studentsReducer,
     recommendations: recommendationReducer,
     jobNotificationSubscription: jobNotificationSubscriptionReducer,
+    admin: adminReducer,
   },
 });

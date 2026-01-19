@@ -15,6 +15,7 @@ export { loginWithEmail, register, getMe, logout, requestPasswordReset, resetPas
 export { getProvinces, getWards } from './services/addressService';
 export { getJobs, getJobById, getJobsByCompanyId, getMergedJobs, updateJob } from './services/jobsService';
 export { getCompanies, getCompany, createCompany, updateCompany, deleteCompany, getCompanyStats } from './services/companyService';
+export { getAdminDashboard } from './services/adminService';
 export { getTopCVJobs } from './services/topCVService';
 export { getUserById, updateUser } from './services/userService';
 export { getCategories } from "./services/categoriesService";
