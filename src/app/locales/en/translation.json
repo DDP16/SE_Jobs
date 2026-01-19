@@ -203,6 +203,11 @@
       "pending": "Job information not verified yet",
       "closed": "This job has been closed"
     },
+    "apply": {
+      "title": "Apply for Job",
+      "loginRequired": "Please log in to apply for this job.",
+      "close": "Close"
+    },
     "no_nice_to_haves": "No nice-to-haves listed.",
     "work_locations": "Office Locations",
     "no_work_locations": "No office locations available",
