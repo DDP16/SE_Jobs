@@ -14,6 +14,7 @@ import {
     People,
     WorkOutline
 } from '@mui/icons-material';
+import { CheckCircle } from 'lucide-react';
 
 export default function CompanyCard({
     company = {},
@@ -130,10 +131,16 @@ export default function CompanyCard({
                                         lineHeight: 1.3,
                                         overflow: 'hidden',
                                         textOverflow: 'ellipsis',
-                                        whiteSpace: 'nowrap'
+                                        whiteSpace: 'nowrap',
+                                        display: 'flex',
+                                        alignItems: 'center',
+                                        gap: 0.75
                                     }}
                                 >
                                     {name}
+                                    {company.is_verified && (
+                                        <CheckCircle className="w-5 h-5 text-green-600" style={{ flexShrink: 0 }} />
+                                    )}
                                 </Typography>
                                 <Typography
                                     variant="body2"
