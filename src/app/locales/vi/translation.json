@@ -203,6 +203,11 @@
       "pending": "Thông tin việc làm này chưa được xác thực",
       "closed": "Công việc đã đóng"
     },
+    "apply": {
+      "title": "Ứng tuyển công việc",
+      "loginRequired": "Vui lòng đăng nhập để ứng tuyển công việc này.",
+      "close": "Đóng"
+    },
     "no_nice_to_haves": "Không có điều nên có nào được liệt kê.",
     "work_locations": "Vị trí văn phòng",
     "no_work_locations": "Không có vị trí văn phòng nào",

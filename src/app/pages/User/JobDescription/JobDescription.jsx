@@ -305,7 +305,7 @@ export default function JobDescription({
 
       {!isLoggedIn ? (
         <Modal
-          title="Apply for Job"
+          title={t('job.apply.title')}
           open={isModalOpen}
           onCancel={() => setIsModalOpen(false)}
           centered
@@ -322,7 +322,7 @@ export default function JobDescription({
                 onClick={() => setIsModalOpen(false)}
                 className="px-4 py-1 bg-white rounded-lg border hover:scale-105 transition-all cursor-pointer"
               >
-                Close
+                {t('job.apply.close')} 
               </button>
               <button
                 onClick={() => {
@@ -330,12 +330,12 @@ export default function JobDescription({
                 }}
                 className="px-4 py-1 bg-blue-600 text-white rounded-lg hover:scale-105 transition-all cursor-pointer"
               >
-                Sign In
+                {t('auth.sign_in')}
               </button>
             </div>
           }
         >
-          <p>Please log in to apply for this job.</p>
+          <p>{t('job.apply.loginRequired')}</p>
         </Modal>
       ) : (
         <ApplicationModal open={isModalOpen} onVisibleChange={setIsModalOpen} jobId={job?.id} />
