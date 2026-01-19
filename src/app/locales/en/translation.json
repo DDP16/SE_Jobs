@@ -199,6 +199,10 @@
     "who_you_are": "Who You Are",
     "no_requirements": "No requirements listed.",
     "nice_to_haves": "Nice-To-Haves",
+    "status": {
+      "pending": "Job information not verified yet",
+      "closed": "This job has been closed"
+    },
     "no_nice_to_haves": "No nice-to-haves listed.",
     "work_locations": "Office Locations",
     "no_work_locations": "No office locations available",
@@ -282,18 +286,24 @@
       "newCandidates": "New Candidates",
       "scheduleToday": "Schedule Today",
       "messagesReceived": "Messages Received",
+      "totalApplications": "Total Applications",
+      "activeJobs": "Active Jobs",
+      "successRate": "Success Rate",
       "jobStatistics": "Job Statistics",
       "showingJobStatistic": "Showing job statistics from {{from}} to {{to}}",
+      "yearlyStatistics": "Showing statistics for year {{year}}",
       "week": "Week",
       "month": "Month",
       "year": "Year",
       "overview": "Overview",
       "jobsview": "Jobs View",
       "jobsapplied": "Jobs Applied",
+      "jobsposted": "Jobs Posted",
+      "applications": "Applications",
       "jobView": "Job View",
       "jobApplied": "Job Applied",
       "jobOpen": "Job Open",
-      "jobsOpened": "Jobs opened this week",
+      "jobsOpened": "Jobs opened",
       "applicantsSummary": "Applicants Summary",
       "applicants": "Applicants",
       "fullTime": "Full Time",
@@ -926,8 +936,8 @@
       "viewAllCompanies": "View All Companies"
     },
     "recommendJobSection": {
-        "title": "Jobs",
-        "subtitle":" Recommended for you"
+      "title": "Jobs",
+      "subtitle": " Recommended for you"
     },
     "ctaSection": {
       "postJob": {
