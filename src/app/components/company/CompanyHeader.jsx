@@ -5,6 +5,7 @@ import {
   LocationOn,
   People,
 } from "@mui/icons-material";
+import { CheckCircle } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { srcAsset } from "../../lib";
 
@@ -129,9 +130,15 @@ export default function CompanyHeader({ company = {} }) {
                 fontWeight: 700,
                 mb: { xs: 0.25, md: 0.5 },
                 fontSize: { xs: "1.1rem", sm: "1.25rem", md: "1.5rem" },
+                display: "flex",
+                alignItems: "center",
+                gap: 1,
               }}
             >
               {name}
+              {company.is_verified && (
+                <CheckCircle className="w-6 h-6 text-green-600" style={{ flexShrink: 0 }} />
+              )}
             </Typography>
             <Box
               sx={{
