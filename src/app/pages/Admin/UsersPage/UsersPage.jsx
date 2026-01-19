@@ -30,19 +30,7 @@ import {
 import { Pagination } from 'antd';
 import { useDispatch, useSelector } from 'react-redux';
 import { getUsers } from '../../../modules/services/userService';
-import { create } from 'lodash';
 import { Avatar } from '@mui/material';
-
-const mockUsers = [
-  { id: 1, name: 'John Doe', email: 'john.doe@university.edu', role: 'Student', status: 'Active', createdAt: '2024-01-15' },
-  { id: 2, name: 'Jane Smith', email: 'jane.smith@university.edu', role: 'Student', status: 'Active', createdAt: '2024-02-20' },
-  { id: 3, name: 'Robert Johnson', email: 'robert@techcorp.com', role: 'Company', status: 'Active', createdAt: '2024-01-10' },
-  { id: 4, name: 'Emily Davis', email: 'emily.davis@university.edu', role: 'Manager', status: 'Active', createdAt: '2024-03-05' },
-  { id: 5, name: 'Michael Brown', email: 'michael@startup.io', role: 'Company', status: 'Inactive', createdAt: '2024-02-14' },
-  { id: 6, name: 'Sarah Wilson', email: 'sarah.wilson@university.edu', role: 'Admin', status: 'Active', createdAt: '2023-12-01' },
-  { id: 7, name: 'David Martinez', email: 'david.martinez@university.edu', role: 'Student', status: 'Active', createdAt: '2024-03-12' },
-  { id: 8, name: 'Lisa Anderson', email: 'lisa@corporate.com', role: 'Company', status: 'Active', createdAt: '2024-01-25' },
-];
 
 export default function UsersPage() {
   const [searchQuery, setSearchQuery] = useState('');
@@ -60,17 +48,6 @@ export default function UsersPage() {
   useEffect(() => {
     dispatch(getUsers({ page: currentPage, limit: pageSize }));
   }, [currentPage, pageSize]);
-
-  const filteredUsers = users.map((user) => ({
-      name: user.first_name + ' ' + user.last_name,
-      createdAt: new Date(user.created_at).toLocaleDateString('en-GB'),
-      ...user,
-  })).filter((user) => {
-    const matchesSearch = user.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      user.email.toLowerCase().includes(searchQuery.toLowerCase());
-    const matchesRole = roleFilter === 'all' || user.role === roleFilter;
-    return matchesSearch && matchesRole;
-  });
 
   const getRoleBadgeColor = (role) => {
     const colors = {
@@ -164,7 +141,7 @@ export default function UsersPage() {
                     </Badge>
                   </TableCell>
                   <TableCell className="text-gray-600 text-center">
-                    {user.createdAt}
+                    {new Date(user.created_at).toLocaleDateString('en-GB')}
                   </TableCell>
                   <TableCell className="text-right">
                     <DropdownMenu>

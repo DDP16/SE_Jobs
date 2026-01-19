@@ -1,5 +1,4 @@
-import React from 'react';
-import { Box, Typography, Paper, Button, Stack, Grid } from '@mui/material';
+import { Typography, Paper, Grid } from '@mui/material';
 import { Facebook, Link, Linkedin, Mail, X, Youtube } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 

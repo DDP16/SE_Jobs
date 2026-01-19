@@ -1,18 +1,11 @@
-import React from 'react';
 import {
     Box,
     Typography,
-    Paper,
-    Divider
+    Paper
 } from '@mui/material';
-import {
-    Business,
-    People,
-    LocationOn
-} from '@mui/icons-material';
 import { useTranslation } from 'react-i18next';
 import { Image } from 'antd';
-import { srcAsset } from '../../../../lib';
+import { srcAsset } from '../../lib';
 import { ArrowRight } from 'lucide-react';
 
 export default function CompanyInfo({ company = {} }) {

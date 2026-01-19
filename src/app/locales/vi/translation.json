@@ -220,6 +220,7 @@
     "no_similar_jobs": "Không tìm thấy việc làm tương tự"
   },
   "company": {
+    "text": "Công ty",
     "post_job": "Đăng tin tuyển dụng",
     "sidebar": {
       "dashboard": "Dashboard",
@@ -390,7 +391,9 @@
       "save": "Lưu",
       "close": "Đóng",
       "characters": "ký tự",
-      "tips": "Mẹo"
+      "tips": "Mẹo",
+      "update": "Cập nhật",
+      "confirm": "Xác nhận"
     },
     "skills": {
       "title": "Kỹ năng chính",
@@ -1012,5 +1015,42 @@
     "submitError": "Có lỗi xảy ra khi gửi đơn ứng tuyển",
     "submitSuccess": "Đơn ứng tuyển đã được gửi thành công!",
     "pleaseSelectCv": "Vui lòng chọn CV để ứng tuyển."
+  },
+  "jobStatus": {
+    "updateTitle": "Cập nhật trạng thái công việc",
+    "updateMessage": "Bạn có chắc chắn muốn cập nhật trạng thái của công việc này?",
+    "currentStatus": "Trạng thái hiện tại",
+    "newStatus": "Trạng thái mới",
+    "updateWarning": "Thay đổi trạng thái công việc sẽ ảnh hưởng đến khả năng hiển thị của nó đối với ứng viên.",
+    "confirmTitle": "Xác nhận cập nhật trạng thái công việc",
+    "confirmMessage": "Bạn có chắc chắn muốn cập nhật trạng thái công việc?",
+    "from": "Từ",
+    "to": "Đến",
+    "confirmWarning": "Hành động này sẽ ngay lập tức thay đổi trạng thái công việc. Hãy chắc chắn rằng bạn muốn làm điều này.",
+    "closed": "Đã đóng",
+    "pending": "Đang chờ",
+    "approved": "Đã duyệt",
+    "rejected": "Đã từ chối",
+    "updateSuccess": "Thành công",
+    "updateSuccessDesc": "Trạng thái công việc đã được cập nhật thành công.",
+    "updateFailed": "Thất bại",
+    "updateFailedDesc": "Cập nhật trạng thái công việc thất bại. Vui lòng thử lại."
+  },
+  "companyStatus": {
+    "updateTitle": "Cập nhật trạng thái công ty",
+    "updateSuccess": "Thành công",
+    "updateSuccessMessage": "Trạng thái công ty đã được cập nhật thành công.",
+    "updateFailed": "Cập nhật thất bại",
+    "updateFailedMessage": "Không thể cập nhật trạng thái công ty. Vui lòng thử lại.",
+    "verified": "Trạng thái xác minh",
+    "verifiedDesc": "Công ty đã được xác minh",
+    "unverifiedDesc": "Công ty chưa được xác minh",
+    "active": "Trạng thái hoạt động",
+    "activeDesc": "Tài khoản công ty đang hoạt động",
+    "inactiveDesc": "Tài khoản công ty không hoạt động",
+    "updateWarning": "Thay đổi trạng thái công ty sẽ ảnh hưởng đến khả năng hiển thị và quyền hạn của công ty.",
+    "confirmTitle": "Xác nhận cập nhật trạng thái",
+    "confirmMessage": "Bạn có chắc chắn muốn cập nhật trạng thái công ty không?",
+    "confirmWarning": "Hành động này sẽ ngay lập tức thay đổi trạng thái công ty. Hãy chắc chắn đây là điều bạn muốn."
   }
 }

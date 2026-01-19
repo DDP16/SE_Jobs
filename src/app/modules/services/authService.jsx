@@ -33,7 +33,6 @@ export const loginWithEmail = createAsyncThunk(
             try {
               const data = await res.json();
               const isAuthenticated = await res.ok;
-              console.log("Login response:", res);
               if (isAuthenticated) {
                 const userId = data.data.user.user_id;
                 setAuthStorage(userId, isAuthenticated);

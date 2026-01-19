@@ -134,7 +134,7 @@ export default function StudentsPage() {
                       </DropdownMenuTrigger>
                       <DropdownMenuContent className="bg-white" align="end">
                         <DropdownMenuItem asChild>
-                          <Link to={`/students/${student.id}`}>
+                          <Link to={`/students/${student.id}`} state={{ userId: student.user_id }}>
                             <Eye className="w-4 h-4 mr-2" />
                             View Details
                           </Link>

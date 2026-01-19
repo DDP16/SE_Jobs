@@ -1,6 +1,6 @@
 import { Edit, Eye, MoreVertical, Trash2 } from "lucide-react";
 import { LoadingOutlined } from '@ant-design/icons';
-import { Badge, Button, DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "../../../../components/ui";
+import { Badge, Button, DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "../../../components/ui";
 import { Spin, Table } from "antd";
 import { useTranslation } from "react-i18next";
 import { useNavigate } from "react-router-dom";

@@ -1,21 +1,22 @@
-import { useNavigate, useSearchParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
 import { getJobById } from "../../../modules/services/jobsService";
 import { useEffect, useState } from "react";
-import { CircularProgress, Box, Skeleton, Container, Tab } from "@mui/material";
+import { CircularProgress, Box, Skeleton, Container } from "@mui/material";
 import { useTranslation } from "react-i18next";
-import { getCompanyApplicationsByJobId } from "../../../modules/services/applicationsService";
+import { getAdminApplicationsByJobId } from "../../../modules/services/applicationsService";
 import { JobHeader, TabApplicants, TabDetails } from "../../../components/manage/job";
+import UpdateJobStatusModal from "./partials/UpdateJobStatusModal";
 
 export default function JobDescription({
   tabShow = "details"
 }) {
   const { t } = useTranslation();
-  const [searchParams] = useSearchParams();
-  const jobId = searchParams.get("id");
+  const jobId = useParams().id;
   const dispatch = useDispatch();
   const nav = useNavigate();
   const [tabActive, setTabActive] = useState(tabShow);
+  const [isStatusModalOpen, setIsStatusModalOpen] = useState(false);
 
   const { job, status: jobStatus, error: jobError } = useSelector(state => state.jobs);
   const { status: applicationStatus, error: applicationError } = useSelector(state => state.applications);
@@ -28,7 +29,7 @@ export default function JobDescription({
     }
 
     dispatch(getJobById(jobId));
-    dispatch(getCompanyApplicationsByJobId({ jobId }));
+    dispatch(getAdminApplicationsByJobId({ jobId }));
   }, [jobId, dispatch]);
 
   const handleChangeTab = (tab) => {
@@ -113,7 +114,10 @@ export default function JobDescription({
     );
   }
 
-  if (applicationStatus === "failed" && applicationError === "Authentication required") {
+  if (
+    applicationStatus === "failed" 
+    && (applicationError === "Authentication required" || applicationError === "Forbidden: insufficient permissions")
+  ) {
     return (
       <div className="h-full w-full bg-white mx-auto flex items-center justify-center">
         <Box
@@ -138,10 +142,10 @@ export default function JobDescription({
             You do not have permission to access this data.
           </p>
           <button
-            onClick={() => nav("/job-listing")}
+            onClick={() => nav("/jobs")}
             className="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors cursor-pointer"
           >
-            Go Back to Job Listings
+            Go Back to Job Page
           </button>
         </Box>
       </div>
@@ -187,8 +191,8 @@ export default function JobDescription({
   return (
     <div className={`min-h-screen w-full bg-white mx-auto`}>
       <div>
-        <div className={`px-5 lg:px-10 pt-8 pb-4 bg-background-lightBlue`}>
-          <JobHeader job={job} textButton={t("edit")} onClickButton={() => {nav(`/edit-job/${jobId}`)}} />
+        <div className={`px-5 lg:px-10 pb-4 bg-background-lightBlue`}>
+          <JobHeader job={job} textButton={"Update Status"} onClickButton={() => setIsStatusModalOpen(true)} />
         </div>
         <div className={`flex space-x-2 bg-background-lightBlue px-5 lg:px-10 transition-all`}>
           <button 
@@ -217,6 +221,12 @@ export default function JobDescription({
       ) : (
         <TabApplicants />
       )}
+
+      <UpdateJobStatusModal
+        job={job}
+        open={isStatusModalOpen}
+        onOpenChange={setIsStatusModalOpen}
+      />
     </div>
   );
 }

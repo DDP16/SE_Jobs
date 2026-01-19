@@ -1,4 +1,4 @@
-import { PerksSection } from "../../../../components";
+import { PerksSection } from "../../../components";
 import JobDetails from "./JobDetails";
 import JobSidebar from "./JobSidebar";
 

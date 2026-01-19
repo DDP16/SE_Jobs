@@ -24,11 +24,14 @@ import {
 import { Pagination } from 'antd';
 import { useDispatch, useSelector } from 'react-redux';
 import { getCompanies } from '../../../modules';
+import UpdateCompanyStatusModal from './partials/UpdateCompanyStatusModal';
 
 export default function CompaniesPage() {
   const dispatch = useDispatch();
   const [searchQuery, setSearchQuery] = useState('');
   const [typeFilter, setTypeFilter] = useState('all');
+  const [selectedCompany, setSelectedCompany] = useState(null);
+  const [isStatusModalOpen, setIsStatusModalOpen] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
   const [pageSize, setPageSize] = useState(10);
 
@@ -38,6 +41,10 @@ export default function CompaniesPage() {
   useEffect(() => {
     dispatch(getCompanies({ page: currentPage, limit: pageSize }));
   }, [currentPage, pageSize]);
+
+  const onUpdate = async () => {
+    await dispatch(getCompanies({ page: currentPage, limit: pageSize }));
+  };
 
   return (
     <div className="space-y-6">
@@ -92,7 +99,8 @@ export default function CompaniesPage() {
                 <TableHead className="text-center">Active Jobs</TableHead>
                 <TableHead className="text-center">Types</TableHead>
                 <TableHead className="text-center">Status</TableHead>
-                <TableHead className="text-right">Actions</TableHead>
+                <TableHead className="text-center">Verified</TableHead>
+                <TableHead className="text-center sticky right-0 bg-white z-10 shadow-2xl">Actions</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
@@ -125,19 +133,24 @@ export default function CompaniesPage() {
                   </TableCell>
                   <TableCell className="text-center">
                     <div className="flex flex-wrap gap-1">
-                      {company.company_types.slice(0, 2).map((type, index) => (
+                      {company.company_types?.slice(0, 2).map((type, index) => (
                         <Badge key={index} variant="secondary" className="bg-purple-50 text-purple-700 text-xs">
                           {type.name}
                         </Badge>
-                      ))}
+                      )) || '-'}
                     </div>
                   </TableCell>
                   <TableCell className="text-center">
-                    <Badge className={`${company.users.is_active ? 'bg-green-500 text-white border-2 border-accent-green/50' : 'bg-gray-100'} px-4 py-1`}>
-                      {company.users.is_active ? 'Active' : 'Inactive'}
+                    <Badge className={`${company.users?.is_active ? 'bg-green-500 text-white border-2 border-accent-green/50 hover:bg-green-400' : 'bg-gray-100 hover:bg-gray-200'} px-4 py-1`}>
+                      {company.users?.is_active ? 'Active' : 'Inactive'}
                     </Badge>
                   </TableCell>
-                  <TableCell className="text-right">
+                  <TableCell className="text-center">
+                    <Badge className={`${company?.is_verified ? 'bg-blue-500 text-white border-2 border-accent-blue/50 hover:bg-blue-400' : 'bg-gray-100 hover:bg-gray-200'} px-4 py-1`}>
+                      {company?.is_verified ? 'Verified' : 'Unverified'}
+                    </Badge>
+                  </TableCell>
+                  <TableCell className="text-center sticky right-0 bg-gray-100 z-10 shadow-2xl">
                     <DropdownMenu>
                       <DropdownMenuTrigger asChild>
                         <Button variant="ghost" size="icon">
@@ -151,7 +164,10 @@ export default function CompaniesPage() {
                             View Details
                           </Link>
                         </DropdownMenuItem>
-                        <DropdownMenuItem>
+                        <DropdownMenuItem onClick={() => {
+                          setSelectedCompany(company);
+                          setIsStatusModalOpen(true);
+                        }}>
                           <Edit className="w-4 h-4 mr-2" />
                           Edit
                         </DropdownMenuItem>
@@ -180,6 +196,15 @@ export default function CompaniesPage() {
           }
         }
       />
+
+      {selectedCompany && (
+        <UpdateCompanyStatusModal
+          company={selectedCompany}
+          onUpdate={onUpdate}
+          open={isStatusModalOpen}
+          onOpenChange={setIsStatusModalOpen}
+        />
+      )}
     </div>
   );
 }

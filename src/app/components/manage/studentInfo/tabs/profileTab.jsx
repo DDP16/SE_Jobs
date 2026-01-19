@@ -4,7 +4,7 @@ import EducationSection from "../EducationSection";
 import ExperienceSection from "../ExperienceSection";
 import ProjectsSection from "../ProjectsSection";
 
-export default function ProfileTab({ application, studentInfo }) {
+export default function ProfileTab({ studentInfo }) {
     const { t } = useTranslation();
 
     const formatDateOfBirth = (dateString) => {
@@ -39,7 +39,7 @@ export default function ProfileTab({ application, studentInfo }) {
                 <div className="grid grid-cols-3 gap-2">
                     <div>
                         <p className="text-sm text-gray-600">{t("applicantDetails.personalInfo.fullName")}</p>
-                        <p className="text-gray-900">{application.full_name ?? "N/A"}</p>
+                        <p className="text-gray-900">{studentInfo.full_name ?? "N/A"}</p>
                     </div>
                     <div>
                         <p className="text-sm text-gray-600">{t("applicantDetails.personalInfo.gender")}</p>

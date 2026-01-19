@@ -1,7 +1,7 @@
 import { App } from "antd";
 import { BarChart3 } from "lucide-react";
 import { useTranslation } from "react-i18next";
-import { ApplicationStatus } from "../../../../../lib/enums";
+import { ApplicationStatus } from "../../../../lib/enums";
 
 export default function HiringTab({ status }) {
     const { t } = useTranslation();

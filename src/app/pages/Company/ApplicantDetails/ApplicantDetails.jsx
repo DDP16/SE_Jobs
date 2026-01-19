@@ -8,10 +8,7 @@ import { ApplicationStatus } from "../../../lib/enums";
 import { Spin } from "antd";
 import { LoadingOutlined } from '@ant-design/icons';
 import Sidebar from "./partials/Sidebar";
-import ProfileTab from "./partials/tabs/profileTab";
-import ResumeTab from "./partials/tabs/resumeTab";
-import HiringTab from "./partials/tabs/hiringTab";
-import InterviewScheduleTab from "./partials/tabs/interviewScheduleTab";
+import { HiringTab, InterviewScheduleTab, ProfileTab, ResumeTab } from "../../../components/manage/studentInfo";
 
 export default function ApplicantDetails() {
   const { t } = useTranslation();
@@ -65,20 +62,14 @@ export default function ApplicantDetails() {
   return (
     <div className="bg-gray-50 px-6 py-4 flex-1 mx-auto min-h-screen space-y-4">
       {/* Header */}
-      <div className="flex items-center justify-between">
-        <div className="flex items-center gap-4">
-          <button 
-            className="p-2 hover:bg-gray-100 rounded-lg"
-            onClick={() => window.history.back()}
-          >
-            <ArrowLeft className="w-6 h-6 cursor-pointer" />
-          </button>
-          <div className="text-2xl font-bold text-gray-900">{t("applicantDetails.title")}</div>
-        </div>
-        <button className="flex items-center gap-2 px-4 py-2 text-blue-600 border border-gray-200 rounded-lg hover:bg-gray-50">
-          <ChevronDown className="w-4 h-4" />
-          <span>{t("applicantDetails.moreAction")}</span>
+      <div className="flex items-center gap-4">
+        <button 
+          className="p-2 hover:bg-gray-100 rounded-lg"
+          onClick={() => window.history.back()}
+        >
+          <ArrowLeft className="w-6 h-6 cursor-pointer" />
         </button>
+        <div className="text-2xl font-bold text-gray-900">{t("applicantDetails.title")}</div>
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
