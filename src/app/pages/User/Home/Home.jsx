@@ -11,7 +11,7 @@ export default function Home() {
         <JobSection />
         <HotJobTopCVSection />
         <CategorySection />
-        <RecommendJobSection />
+        {/* <RecommendJobSection /> */}
       </div>
       {/* <CompanySection /> */}
       {/* <CTASection /> */}
