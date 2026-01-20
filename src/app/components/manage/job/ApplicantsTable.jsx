@@ -95,6 +95,10 @@ export default function ApplicantsTable({ applicants, pagination }) {
     const [pageSize, setPageSize] = useState(10);
     const status = "succeeded";
 
+    const handleSeeApplication = (applicant) => {
+        nav(`/applicants/${applicant.id}`, { state: { status: applicant.status } });
+    }
+
     const getColumns = () => [
         {
             title: t('applicantList.table.fullName'),
@@ -160,7 +164,7 @@ export default function ApplicantsTable({ applicants, pagination }) {
             key: 'action',
             align: 'center',
             fixed: 'end',
-            render: (_, job) => (
+            render: (_, applicant) => (
                 <DropdownMenu>
                     <DropdownMenuTrigger asChild>
                         <Button variant="ghost" size="icon">
@@ -168,7 +172,7 @@ export default function ApplicantsTable({ applicants, pagination }) {
                         </Button>
                     </DropdownMenuTrigger>
                     <DropdownMenuContent className="bg-white" align="center" side="left">
-                        <DropdownMenuItem onClick={() => { }}>
+                        <DropdownMenuItem onClick={() => { handleSeeApplication(applicant) }}>
                             <Eye className="w-4 h-4 mr-2" />
                             {t('applicantList.table.seeApplication')}
                         </DropdownMenuItem>
