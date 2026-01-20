@@ -254,13 +254,15 @@ const Dashboard = () => {
                     {year}
                   </button>
                 ))}
-                <button
-                  onClick={() => setSelectedYear(new Date().getFullYear())}
-                  className={`px-4 py-2 text-sm font-medium rounded-lg transition ${selectedYear === new Date().getFullYear() ? "text-purple-600 bg-purple-50" : "text-gray-600 hover:bg-gray-50"
-                    }`}
-                >
-                  {new Date().getFullYear()}
-                </button>
+                {!stats?.availableYears?.includes(new Date().getFullYear()) && (
+                  <button
+                    onClick={() => setSelectedYear(new Date().getFullYear())}
+                    className={`px-4 py-2 text-sm font-medium rounded-lg transition ${selectedYear === new Date().getFullYear() ? "text-purple-600 bg-purple-50" : "text-gray-600 hover:bg-gray-50"
+                      }`}
+                  >
+                    {new Date().getFullYear()}
+                  </button>
+                )}
               </div>
             </div>
 
@@ -403,7 +405,7 @@ const Dashboard = () => {
 
         {/* Job Updates Section */}
         <div className="bg-white rounded-xl py-4 px-6 shadow-sm space-y-4">
-        <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 flex items-start gap-3">
+          <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 flex items-start gap-3">
             <div className="py-1">
               <Info className="w-5 h-5 text-blue-600" />
             </div>
