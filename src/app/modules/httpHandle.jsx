@@ -8,6 +8,7 @@ const baseURL = import.meta.env.MODE === "production" ? productURL : development
 const HEADERS = {
   "Content-Type": "application/json",
   accept: "application/json",
+  "ngrok-skip-browser-warning": "69420"
 };
 
 export const get = async (uri, onSuccess, onFail) => {
