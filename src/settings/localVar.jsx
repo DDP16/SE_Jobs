@@ -1,5 +1,5 @@
 export const BE_ENPOINT = "http://localhost:3000";
-export const PUBLIC_ENPOINT = "https://sejobs.online";
+export const PUBLIC_ENPOINT = "https://f9b14d9ce634.ngrok-free.app";
 
 export const TOKEN = "auth_token";
 export const AUTHENTICATED = "is_authenticated";
